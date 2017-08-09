@@ -1,7 +1,7 @@
 # RadAR - a COMP30022 project
 \[To be added\]
 
-## Team
+## Team Oxygen
 Full Name | GitHub Username | Student ID 
 ----------|--------------------|------------
 Edelin Onggo | edelinonggo | 784172
