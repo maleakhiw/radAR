@@ -1,4 +1,4 @@
-package com.radar;
+package com.oxygen.radar;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
