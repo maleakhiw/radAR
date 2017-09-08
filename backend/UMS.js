@@ -5,14 +5,25 @@
  */
 
 const common = require('./common')
+const consts = require('./consts')
 const svs = require('./SVS')
 
+// Data models
+const Metadata = require('./models/metadata')
+const User = require('./models/user')
+
 // const mongoose = module.parent.exports.mongoose   // import from index.js
+const ONLINE_THRESHOLD_SEC = consts.ONLINE_THRESHOLD_SEC
 
 // callback for '/UMS/isOnline' route
 module.exports.isOnline = (req, res) => {
   callback = (req, res) => {
+    let userID = req.body.userID
     let userIDsToCheck = req.body.userIDsToCheck
+
+    let onlineUsers = null
+    console.log(userIDsToCheck)
+    // TODO: type checks for invalid type
 
     let errorKeys = []
     if (!userIDsToCheck) errorKeys.push('missingUserIDsToCheck')
@@ -23,17 +34,78 @@ module.exports.isOnline = (req, res) => {
         errors: common.errorObjectBuilder(errorKeys)
       }
     } else {
-      response = {
-        success: true,
-        errors: [],
-        onlineStatus: { // TODO: check with Metadata collection to see when user was last online
-          1: true,
-          2: false
-        }
-      }
-    }
+      // get friends first - don't let requester check online status of non-friends
+      User.find({ userID: userID }).exec()
 
-    res.json(response)
+      .then((user) => {
+        let friends = user.friends
+        if (!friends) { // if undefined
+          friends = []
+        }
+        userIDsToCheck = userIDsToCheck.filter((userID) => userID in friends)
+        userIDsToCheck = [1, 2] // TODO: remove - testing only
+        return Metadata.find( { userID : { $in: userIDsToCheck } } )
+      })
+
+      .then((metadatas) => {
+        // filter off the users who have not been online
+        // console.log('metadatas', metadatas)
+        // metadatas.map((metadata) => {
+        //   console.log((Date.now() - metadata.lastSeen.getTime())/1000)
+        // })
+        metadatas = metadatas.filter((metadata) => (Date.now() - metadata.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
+
+        onlineUsers = metadatas.map((metadata) => metadata.userID)
+
+        console.log('metadatas_filtered', metadatas)
+
+        metadatas = metadatas.map((metadata) => new Promise((resolve, reject) => {
+          let firstName = null
+          let lastName = null
+          let profilePicture = null
+
+          User.findOne({ userID: metadata.userID }).exec()
+          .then((user) => {
+            let retVal = {
+              firstName: user.firstName,
+              lastName: user.lastName,
+              profilePicture: user.profilePicture
+            }
+
+            resolve(retVal)
+          })
+          .catch((err) => {
+            console.log(err)
+            reject("dbError")
+          })
+
+        }))
+
+        return Promise.all(metadatas) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
+      })
+
+      .then((userInfos) => {
+        console.log('userInfos', userInfos)
+        onlineStatus = {}
+        userIDsToCheck.map((userID) => {
+          onlineStatus[userID] = (userID in onlineUsers)
+        })
+
+        response = {
+          success: true,
+          errors: [],
+          onlineStatus: onlineStatus,
+          userInfos: userInfos
+        }
+        res.json(response)
+      })
+
+
+      .catch((err) => {
+        console.log(err)
+      })
+
+    }
   }
 
   svs.validateRequest(req, res, callback)

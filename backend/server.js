@@ -12,6 +12,9 @@ app.use(cors())
 // Common constants/variables
 const common = require('./common')
 
+// Use JS Promises library
+mongoose.Promise = global.Promise
+
 // Error handling for invalid JSON
 app.use(function (error, req, res, next) {
   if (error instanceof SyntaxError) {
