@@ -166,27 +166,32 @@ module.exports.login = function(req, res) {
   } else {
     // TODO: validate username and password
     let token = generateToken(userID)
-    Metadata.findOne({ userID: userID }, (err, doc) => {
-      if (err) {
-        sendError()
-      } else {
-        doc.activeTokens.push(token)  // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
-        doc.save( (err) => {
-          if (err) {
-            sendError()
-          }
-          else {
-            response = {
-              success: true,
-              errors: [],
-              token: token  // TODO: stub
-            }
-            res.json(response)
-          }
-        })
+    Metadata.findOne({ userID: userID }).exec()
 
+    .then( (metadata) => {
+      if (!metadata) {  // cannot find metadata on the user
+        sendError()
+        throw Error('')
+      } else {
+        metadata.activeTokens.push(token)  // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
+        return metadata.save()
       }
     })
 
-    }
+    .then((metadata) => {
+      response = {
+        success: true,
+        errors: [],
+        token: token  // TODO: stub
+      }
+      res.json(response)
+    })
+
+    .catch((err) => {
+      console.log(err)
+      errorKeys.push('dbError')
+      sendError()
+    })
   }
+
+}
