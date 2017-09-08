@@ -11,9 +11,13 @@ const svs = require('./SVS')
 // Data models
 const Metadata = require('./models/metadata')
 const User = require('./models/user')
+const Request = require('./models/request')
+const LastRequestID = require('./models/lastRequestID')
 
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 const ONLINE_THRESHOLD_SEC = consts.ONLINE_THRESHOLD_SEC
+
+const getPublicUserInfo = common.getPublicUserInfo
 
 // callback for '/UMS/isOnline' route
 module.exports.isOnline = (req, res) => {
@@ -66,13 +70,7 @@ module.exports.isOnline = (req, res) => {
 
           User.findOne({ userID: metadata.userID }).exec()
           .then((user) => {
-            let retVal = {
-              firstName: user.firstName,
-              lastName: user.lastName,
-              profilePicture: user.profilePicture
-            }
-
-            resolve(retVal)
+            resolve(getPublicUserInfo(user))
           })
           .catch((err) => {
             console.log(err)
@@ -117,34 +115,136 @@ module.exports.addFriend = (req, res) => {
     let invitedUserID = req.body.invitedUserID
 
     let errorKeys = []
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+    }
+
     if (!invitedUserID) errorKeys.push('missingInvitedUserID')
 
     if (errorKeys.length) {
       response = {
         success: false,
-        erros: common.errorObjectBuilder(errorKeys)
+        errors: common.errorObjectBuilder(errorKeys)
       }
     } else {
-      response = {
-        success: true,
-        errors: [],
-      }
+      let requestID = null
+
+      Request.find({
+        from: userID,
+        to: invitedUserID,
+        responded: false
+      }).exec()
+      .then((requests) => {
+        // check if an existing request exists
+        if (requests.length > 0) {
+          return new Promise((resolve, reject) => {
+            reject('Request already exists')
+          })
+        } else {
+          return LastRequestID.findOneAndRemove({})
+        }
+
+      })
+
+      .then((lastRequestID) => {
+        console.log(lastRequestID)
+        if (lastRequestID) {
+          requestID = lastRequestID.requestID + 1
+        } else {
+          requestID = 1
+        }
+        return LastRequestID.create({ requestID: requestID })
+      })
+
+      .then((lastRequestID) => {
+        console.log(lastRequestID)
+        let request = {
+          requestID: requestID,
+          from: userID,
+          to: invitedUserID,
+          for: "friend",
+          responded: false
+        }
+        console.log(request)
+
+        // TODO: check if a request already exists for this!
+        // TODO: add error message
+        return Request.create(request)
+      })
+
+      .then((request) => {
+        console.log('create', request)
+        let response = {
+          success: true,
+          error: [],
+          requestID: requestID
+        }
+        res.json(response)
+      })
+
+      .catch((err) => {
+        console.log(err)
+        if (err == 'Request already exists') {
+          errorKeys.push('friendRequestAlreadyExists')
+        } else {
+          errorKeys.push('dbError')
+        }
+        sendError()
+      })
     }
 
-    res.json(response)
   }
 
   svs.validateRequest(req, res, callback)
 }
 
+module.exports.getFriendRequests = (req, res) => {
+
+}
+
 module.exports.getFriends = (req, res) => {
   callback = (req, res) => {
     let userID = req.body.userID
+    let friends = []
+    let errorKeys = []
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+    }
 
-    // get user information, access list of friends
-    // for friend in friends, access information (map)
-      // only access public fields
-      // build up return json, return
+    User.findOne({ userID: userID }).exec()
+    .then((user) => {
+      console.log(user)
+      friends = user.friends
+      if (!friends) friends = []
+      return User.find({ userID: { $in: friends } })
+    })
+
+    .then((users) => {  // friends
+      console.log('users', users)
+      friends = users.map((user) => getPublicUserInfo(user))
+      console.log('friends', friends)
+
+      let response = {
+        success: true,
+        errors: [],
+        friends: friends
+      }
+      res.json(response)
+    })
+
+    .catch((err) => {
+      console.log(err)
+      errorKeys.push('dbError')
+      sendError()
+    })
   }
 
   svs.validateRequest(req, res, callback)

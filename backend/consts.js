@@ -65,5 +65,9 @@ module.exports.errors = {
   missingUserIDsToCheck: {
     code: 80,
     reason: "Missing param: users to check (for online status)."
+  },
+  friendRequestAlreadyExists: {
+    code: 81,
+    reason: "You have already sent a friend request to this User."
   }
 }

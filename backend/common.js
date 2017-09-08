@@ -11,3 +11,13 @@ module.exports.errorObjectBuilder = function(errorKeys) {
   }
   return errors
 }
+
+module.exports.getPublicUserInfo = function(user) {
+  let retVal = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+    profilePicture: user.profilePicture,
+    profileDesc: user.profileDesc
+  }
+  return retVal
+}
