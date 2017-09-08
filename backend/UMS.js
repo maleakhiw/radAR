@@ -272,7 +272,8 @@ module.exports.respondToRequest = (req, res) => {
     } else {
       Request.findOne({
         requestID: requestID,
-        to: userID
+        to: userID,
+        responded: false
       }).exec()
       .then((request) => {
         console.log(request)
@@ -308,6 +309,12 @@ module.exports.respondToRequest = (req, res) => {
                 })
               })
 
+            } else {
+              response = {
+                success: true,
+                error: []
+              }
+              res.json(response)
             }
           }
           else {
