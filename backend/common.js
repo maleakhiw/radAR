@@ -15,6 +15,7 @@ module.exports.errorObjectBuilder = function(errorKeys) {
 module.exports.getPublicUserInfo = function(user) {
   // TODO: check settings - privacy, visibility (Iteration 3)
   let retVal = {
+    userID: user.userID,
     firstName: user.firstName,
     lastName: user.lastName,
     profilePicture: user.profilePicture,

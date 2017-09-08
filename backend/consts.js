@@ -101,5 +101,9 @@ module.exports.errors = {
   invalidUserID: {
     code: 88,
     reason: 'Invalid user ID'
+  },
+  selfInviteError: {
+    code: 89,
+    reason: 'userID and invitedUserID cannot be the same.'
   }
 }

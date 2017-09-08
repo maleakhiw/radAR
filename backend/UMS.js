@@ -121,11 +121,12 @@ module.exports.addFriend = (req, res) => {
 
     if (!invitedUserID) errorKeys.push('missingInvitedUserID')
 
+    if (userID && invitedUserID && userID == invitedUserID) {
+      errorKeys.push('selfInviteError')
+    }
+
     if (errorKeys.length) {
-      response = {
-        success: false,
-        errors: common.errorObjectBuilder(errorKeys)
-      }
+      sendError()
     } else {
       let requestID = null
 
@@ -246,6 +247,66 @@ module.exports.getFriendRequests = (req, res) => {
       errorKeys.push('internalError')
       sendError()
     })
+  }
+
+  svs.validateRequest(req, res, callback)
+}
+
+module.exports.getInformation = (req, res) => {
+  let callback = (req, res) => {
+    let queryUserID = req.body.queryUserID
+    let username = req.body.username
+
+    let errorKeys = []
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+    }
+
+    console.log(req.body)
+
+    if (!username && !queryUserID) {
+      errorKeys.push('missingUserIDOrUsername')
+      sendError()
+    } else {
+      if (username) {
+        User.findOne( { username: username } ).exec()
+        .then((user) => {
+          console.log(user)
+          let userInfo = getPublicUserInfo(user)
+          let response = {
+            success: true,
+            errors: [],
+            details: userInfo
+          }
+          res.json(response)
+        })
+        .catch((err) => {
+          errorKeys.push('internalError')
+          sendError()
+        })
+      } else {
+        User.findOne( { userID: queryUserID } ).exec()
+        .then((user) => {
+          console.log(user)
+          let userInfo = getPublicUserInfo(user)
+          let response = {
+            success: true,
+            errors: [],
+            details: userInfo
+          }
+          res.json(response)
+        })
+        .catch((err) => {
+          errorKeys.push('internalError')
+          sendError()
+        })
+      }
+    }
+
   }
 
   svs.validateRequest(req, res, callback)
