@@ -51,7 +51,7 @@ const validateRequest = function(req, res, callback) {
   })
   .catch((err) => {
     console.log(err)
-    errorKeys.push('dbError')
+    errorKeys.push('internalError')
     sendError()
   })
 }
@@ -150,7 +150,7 @@ module.exports.signUp = function(req, res) {
 
     .catch((err) => { // one error handler for the chain of Promises
       console.log(err)
-      errorKeys.push('dbError')
+      errorKeys.push('internalError')
       sendError()
     })
   }
@@ -201,7 +201,7 @@ module.exports.login = function(req, res) {
 
     .catch((err) => {
       console.log(err)
-      errorKeys.push('dbError')
+      errorKeys.push('internalError')
       sendError()
     })
   }

@@ -12,19 +12,19 @@ module.exports.errors = {
   },
   missingToken: {
     code: 2,
-    reason: "Missing param: request token."
+    reason: "Missing param: token."
   },
   invalidToken: {
     code: 3,
-    reason: "Invalid param: request token."
+    reason: "Invalid request token."
   },
   missingFirstName: {
     code: 4,
-    reason: "Missing param: first name."
+    reason: "Missing param: firstName."
   },
   missingLastName: {
     code: 5,
-    reason: "Missing param: last name."
+    reason: "Missing param: lastName."
   },
   missingEmail: {
     code: 6,
@@ -40,13 +40,13 @@ module.exports.errors = {
   },
   missingInvitedUserID: {
     code: 9,
-    reason: "Missing param: invited userID."
+    reason: "Missing param: invitedUserID."
   },
   missingUserIDOrUsername: {
     code: 10,
     reason: "Missing param: queryUserID or username."
   },
-  dbError: {
+  internalError: {
     code: 11,
     reason: "Internal error."
   },
@@ -64,10 +64,22 @@ module.exports.errors = {
   },
   missingUserIDsToCheck: {
     code: 80,
-    reason: "Missing param: users to check (for online status)."
+    reason: "Missing param: userIDsToCheck (for online status)."
   },
   friendRequestAlreadyExists: {
     code: 81,
     reason: "You have already sent a friend request to this User."
+  },
+  missingRequestID: {
+    code: 82,
+    reason: "Missing param: requestID"
+  },
+  invalidRequestID: {
+    code: 83,
+    reason: "Invalid requestID."
+  },
+  invalidAction: {
+    code: 84,
+    reason: 'Invalid request action. Valid actions: "accept" or "deny"'
   }
 }

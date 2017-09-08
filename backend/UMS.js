@@ -21,7 +21,7 @@ const getPublicUserInfo = common.getPublicUserInfo
 
 // callback for '/UMS/isOnline' route
 module.exports.isOnline = (req, res) => {
-  callback = (req, res) => {
+  let callback = (req, res) => {
     let userID = req.body.userID
     let userIDsToCheck = req.body.userIDsToCheck
 
@@ -187,7 +187,7 @@ module.exports.addFriend = (req, res) => {
         if (err == 'Request already exists') {
           errorKeys.push('friendRequestAlreadyExists')
         } else {
-          errorKeys.push('dbError')
+          errorKeys.push('internalError')
         }
         sendError()
       })
@@ -199,7 +199,7 @@ module.exports.addFriend = (req, res) => {
 }
 
 module.exports.getFriendRequests = (req, res) => {
-  callback = (req, res) => {
+  let callback = (req, res) => {
     let userID = req.body.userID
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure
@@ -210,16 +210,19 @@ module.exports.getFriendRequests = (req, res) => {
       res.json(response)
     }
 
-    Request.find({ to: userID }).exec()
+    Request.find({ to: userID, responded: false }).exec()
     .then((requests) => {
       console.log(requests)
       let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
         User.findOne({ userID: request.from }).exec()
         .then((user) => {
+          let publicUserInfo = getPublicUserInfo(user)
           let resolved = {
             requestID: request.requestID,
             from: request.from,
-            userInfo: getPublicUserInfo(user)
+            firstName: publicUserInfo.firstName,
+            lastName: publicUserInfo.lastName,
+            profilePicture: publicUserInfo.profilePicture
           }
           resolve(resolved)
         }) // Promise for the public user data
@@ -228,19 +231,19 @@ module.exports.getFriendRequests = (req, res) => {
       return Promise.all(requestsPromise)
     })
 
-    .then((friendDetails) => {
-      console.log(friendDetails)
+    .then((requestsDetails) => {
+      console.log(requestsDetails)
       let response = {
         success: true,
         errors: [],
-        friendDetails: friendDetails
+        requestDetails: requestsDetails
       }
       res.json(response)
     })
 
     .catch((err) => {
       console.log(err)
-      errorKeys.push('dbError')
+      errorKeys.push('internalError')
       sendError()
     })
   }
@@ -248,8 +251,86 @@ module.exports.getFriendRequests = (req, res) => {
   svs.validateRequest(req, res, callback)
 }
 
+module.exports.respondToRequest = (req, res) => {
+  let callback = (req, res) => {
+    let userID = req.body.userID
+    let requestID = req.body.requestID
+    let action = req.body.action
+    let errorKeys = []
+
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+    }
+
+    if (!requestID) {
+      errorKeys.push('missingRequestID')
+      sendError()
+    } else {
+      Request.findOne({
+        requestID: requestID,
+        to: userID
+      }).exec()
+      .then((request) => {
+        console.log(request)
+        if (!request) {
+          errorKeys.push('invalidRequestID')
+          sendError()
+        } else {
+          if (action == 'accept' || action == 'decline') {
+            // update request
+            request.responded = true
+            request.save()
+
+            if (action == 'accept') {
+              let from = request.from
+              let to = request.to
+              let usersToUpdate = [from, to]
+              User.find({ userID: { $in: usersToUpdate } }).exec()
+              .then((users) => {
+                users.map((user) => {
+                  if (user.userID == from) {
+                    user.friends.push(to)
+                  } else {
+                    user.friends.push(from)
+                  }
+                  user.save()
+
+                  response = {
+                    success: true,
+                    error: []
+                  }
+                  res.json(response)
+
+                })
+              })
+
+            }
+          }
+          else {
+            errorKeys.push('invalidAction')
+            sendError()
+          }
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+        errorKeys.push('internalError')
+        sendError()
+      })
+    }
+
+  }
+
+
+  svs.validateRequest(req, res, callback)
+}
+
 module.exports.getFriends = (req, res) => {
-  callback = (req, res) => {
+  let callback = (req, res) => {
     let userID = req.body.userID
     let friends = []
     let errorKeys = []
@@ -284,7 +365,7 @@ module.exports.getFriends = (req, res) => {
 
     .catch((err) => {
       console.log(err)
-      errorKeys.push('dbError')
+      errorKeys.push('internalError')
       sendError()
     })
   }
