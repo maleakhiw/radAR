@@ -51,6 +51,7 @@ app.post("/UMS/isOnline", ums.isOnline)
 app.post("/UMS/addFriend", ums.addFriend)
 app.post("/UMS/getFriends", ums.getFriends)
 app.post("/UMS/getInformation", ums.getInformation)
+app.post("/UMS/getFriendRequests", ums.getFriendRequests)
 
 app.post("/GMS/getGroupInfo", gms.getGroupInfo)
 

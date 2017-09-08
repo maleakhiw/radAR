@@ -210,16 +210,33 @@ module.exports.getFriendRequests = (req, res) => {
       res.json(response)
     }
 
-    Requets.find({ to: userID }).exec()
+    Request.find({ to: userID }).exec()
     .then((requests) => {
+      console.log(requests)
       let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
         User.findOne({ userID: request.from }).exec()
-        .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
+        .then((user) => {
+          let resolved = {
+            requestID: request.requestID,
+            from: request.from,
+            userInfo: getPublicUserInfo(user)
+          }
+          resolve(resolved)
+        }) // Promise for the public user data
+        .catch((err) => console.log(err)) // TODO: send fail
       }))
       return Promise.all(requestsPromise)
     })
 
-    .then()
+    .then((friendDetails) => {
+      console.log(friendDetails)
+      let response = {
+        success: true,
+        errors: [],
+        friendDetails: friendDetails
+      }
+      res.json(response)
+    })
 
     .catch((err) => {
       console.log(err)
@@ -229,7 +246,7 @@ module.exports.getFriendRequests = (req, res) => {
   }
 
   svs.validateRequest(req, res, callback)
-  }
+}
 
 module.exports.getFriends = (req, res) => {
   callback = (req, res) => {

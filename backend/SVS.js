@@ -24,6 +24,13 @@ function generateToken(userID) {  // TODO: stub
 // also checks if userID and token is present in the request.
 const validateRequest = function(req, res, callback) {
   let errorKeys = []
+  function sendError() {  // assumption: variables are in closure
+    let response = {
+      success: false,
+      errors: common.errorObjectBuilder(errorKeys)
+    }
+    res.json(response)
+  }
   if (!('token' in req.body)) {
     errorKeys.push('missingToken')
   }
@@ -34,14 +41,19 @@ const validateRequest = function(req, res, callback) {
     errorKeys.push('invalidToken')
   }
 
-  if (errorKeys.length) {   // if there is an error
-    res.json({
-      success: false,
-      errors: common.errorObjectBuilder(errorKeys)
-    })
-  } else {
+  let userID = req.body.userID
+  // update last seen
+  Metadata.findOne({userID: userID}).exec()
+  .then((metadata) => {
+    metadata.lastSeen = Date.now()
+    metadata.save()
     callback(req, res)
-  }
+  })
+  .catch((err) => {
+    console.log(err)
+    errorKeys.push('dbError')
+    sendError()
+  })
 }
 
 module.exports.validateRequest = validateRequest
