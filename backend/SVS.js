@@ -69,32 +69,33 @@ module.exports.signUp = function(req, res) {
   if (!password) errorKeys.push('missingPassword')
   if (!deviceID) errorKeys.push('missingDeviceID')
 
-  if (errorKeys.length) {
+  function sendError() {  // assumption: variables are in closure
     let response = {
       success: false,
       errors: common.errorObjectBuilder(errorKeys)
     }
     res.json(response)
+  }
+
+  if (errorKeys.length) {
+    sendError()
   } else {
     let userID = null
-    let callback = (error, doc) => {
-      if (doc) {
-        userID = doc.userID + 1
+    let token = null
+
+    LastUserID.findOneAndRemove({}).exec()
+    .then((lastUserID) => {
+      console.log(lastUserID)
+      if (lastUserID) {
+        userID = lastUserID.userID + 1
       } else {
         userID = 1
       }
+      return LastUserID.create({ userID: userID })  // Promise
+    })
 
-      LastUserID.create({
-        userID: userID
-      }, (err, lastUserID) => {
-        if (err) {
-          // TODO: move everything below the create call to this callback
-          // console.log(err)
-        } else {
-          // console.log(lastUserID)
-        }
-      })
-
+    .then((lastUserID) => {
+      console.log(lastUserID)
       let object = {
         userID: userID,
         firstName: firstName,
@@ -109,53 +110,37 @@ module.exports.signUp = function(req, res) {
       }
 
       // TODO: add to Username/Password collection
-      // TODO: use one main callback for when to send response back to user,
-      // so we don't have nested callback hell
+      return User.create(object)  // Promise
+    })
 
-      // got all the required information, create a User
-      User.create(object, (err, user) => {
-        if (err) {  // TODO: refactor common code
-          console.log(err)
-          errorKeys.push('dbError')
-          let response = {
-            success: false,
-            errors: common.errorObjectBuilder(errorKeys)
-          }
-          res.json(response)
-        }
+    .then((user) => { // User successfully created, create Metadata
+      console.log(user)
+      token = generateToken(userID)
+      let object = {
+        userID: userID,
+        lastSeen: Date.now(),
+        deviceIDs: [deviceID],
+        activeTokens: [token]
+      }
+      Metadata.create(object) // Promise
+    })
 
-        else {
-          let token = generateToken(userID)
-          let object = {
-            userID: userID,
-            lastSeen: Date.now(),
-            deviceIDs: [deviceID],
-            activeTokens: [token]
-          }
-          Metadata.create(object, (err, metadata) => {
-            if (err) {
-              console.log(err)
-              errorKeys.push('dbError')
-              let response = {
-                success: false,
-                errors: common.errorObjectBuilder(errorKeys)
-              }
-              res.json(response)
-            } else {
-              let response = {
-                success: true,
-                errors: [],
-                token: token,
-                userID: userID
-              }
-              res.json(response)
-            }
-          })
-        }
-      })
-    }
+    .then((metadata) => {
+      console.log(metadata)
+      let response = {
+        success: true,
+        errors: [],
+        token: token,
+        userID: userID
+      }
+      res.json(response)
+    })
 
-    getUserID(callback)
+    .catch((err) => { // one error handler for the chain of Promises
+      console.log(err)
+      errorKeys.push('dbError')
+      sendError()
+    })
   }
 }
 
@@ -168,29 +153,27 @@ module.exports.login = function(req, res) {
   if (!username) errorKeys.push('missingUsername')
   if (!password) errorKeys.push('missingPassword')
 
-  if (errorKeys.length) {
+  function sendError() {  // uses variables in closure
     response = {
       success: false,
       errors: common.errorObjectBuilder(errorKeys)
     }
     res.json(response)
+  }
 
-
+  if (errorKeys.length) {
+    sendError()
   } else {
     // TODO: validate username and password
     let token = generateToken(userID)
-    Metadata.findOneAndRemove({ userID: userID }, (err, doc) => {
+    Metadata.findOne({ userID: userID }, (err, doc) => {
       if (err) {
-        // TODO: send error
-      }
-
-      else {
-        // TODO: update metadata with updated object
-        doc.tokens = doc.tokens.push(token)
-
-        Metadata.create(doc, (err, metadata) => {
+        sendError()
+      } else {
+        doc.activeTokens.push(token)  // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
+        doc.save( (err) => {
           if (err) {
-            // TODO: send err
+            sendError()
           }
           else {
             response = {
