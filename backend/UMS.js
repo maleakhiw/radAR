@@ -39,15 +39,18 @@ module.exports.isOnline = (req, res) => {
       }
     } else {
       // get friends first - don't let requester check online status of non-friends
-      User.find({ userID: userID }).exec()
+      User.findOne({ userID: userID }).exec()
 
       .then((user) => {
         let friends = user.friends
+        console.log(user)
         if (!friends) { // if undefined
           friends = []
         }
-        userIDsToCheck = userIDsToCheck.filter((userID) => userID in friends)
-        userIDsToCheck = [1, 2] // TODO: remove - testing only
+
+        console.log(friends)
+        userIDsToCheck = userIDsToCheck.filter((userID) => friends.includes(userID))
+        console.log(userIDsToCheck)
         return Metadata.find( { userID : { $in: userIDsToCheck } } )
       })
 
@@ -63,23 +66,16 @@ module.exports.isOnline = (req, res) => {
 
         console.log('metadatas_filtered', metadatas)
 
-        metadatas = metadatas.map((metadata) => new Promise((resolve, reject) => {
+        let metadatasPromise = metadatas.map((metadata) => new Promise((resolve, reject) => {
           let firstName = null
           let lastName = null
           let profilePicture = null
 
           User.findOne({ userID: metadata.userID }).exec()
-          .then((user) => {
-            resolve(getPublicUserInfo(user))
-          })
-          .catch((err) => {
-            console.log(err)
-            reject("dbError")
-          })
-
+          .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
         }))
 
-        return Promise.all(metadatas) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
+        return Promise.all(metadatasPromise) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
       })
 
       .then((userInfos) => {
@@ -203,8 +199,37 @@ module.exports.addFriend = (req, res) => {
 }
 
 module.exports.getFriendRequests = (req, res) => {
+  callback = (req, res) => {
+    let userID = req.body.userID
+    let errorKeys = []
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+    }
 
-}
+    Requets.find({ to: userID }).exec()
+    .then((requests) => {
+      let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
+        User.findOne({ userID: request.from }).exec()
+        .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
+      }))
+      return Promise.all(requestsPromise)
+    })
+
+    .then()
+
+    .catch((err) => {
+      console.log(err)
+      errorKeys.push('dbError')
+      sendError()
+    })
+  }
+
+  svs.validateRequest(req, res, callback)
+  }
 
 module.exports.getFriends = (req, res) => {
   callback = (req, res) => {

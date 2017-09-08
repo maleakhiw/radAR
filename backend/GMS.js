@@ -6,6 +6,7 @@
 const common = require('./common')
 const SVS = require('./SVS')
 
+// NOTE: for iteration 2
 module.exports.getGroupInfo = function(req, res) {
   callback = function(req, res) {
     let groupID = req.body.groupID
