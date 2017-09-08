@@ -1,0 +1,7 @@
+#Fri Sep 08 20:55:39 AEST 2017
+base.0=C\:\\Additional Subjects\\TestApplication\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_8a9dbdd3fe0449554fd026fc1bd1eb6f63eab8fd
+renamed.1=classes.dex
+renamed.0=classes2.dex
+file.1=C\:\\Additional Subjects\\TestApplication\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_2823fcbb176150bb6ef3d55c0b01fb40cba1ea40\\classes.dex
+base.1=C\:\\Additional Subjects\\TestApplication\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run-bootstrap_2823fcbb176150bb6ef3d55c0b01fb40cba1ea40
+file.0=C\:\\Additional Subjects\\TestApplication\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10000\\instant-run_8a9dbdd3fe0449554fd026fc1bd1eb6f63eab8fd\\classes.dex
