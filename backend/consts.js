@@ -42,11 +42,19 @@ module.exports.errors = {
   },
   missingUserIDOrUsername: {
     code: 10,
-    reason: "Missing param: queryUserID or username"
+    reason: "Missing param: queryUserID or username."
+  },
+  dbError: {
+    code: 11,
+    reason: "Internal error."
+  },
+  missingDeviceID: {
+    code: 12,
+    reason: "Missing param: deviceID"
   },
   missingGroupID: {
     code: 78,
-    reason: "Missing param: groupID"
+    reason: "Missing param: groupID."
   },
   missingUserID: {
     code: 79,

@@ -7,9 +7,11 @@
 const common = require('./common')
 const svs = require('./SVS')
 
+// const mongoose = module.parent.exports.mongoose   // import from index.js
+
 // callback for '/UMS/isOnline' route
-module.exports.isOnline = function (req, res) {
-  callback = function(req, res) {
+module.exports.isOnline = (req, res) => {
+  callback = (req, res) => {
     let userIDsToCheck = req.body.userIDsToCheck
 
     let errorKeys = []
@@ -37,8 +39,8 @@ module.exports.isOnline = function (req, res) {
   svs.validateRequest(req, res, callback)
 }
 
-module.exports.addFriend = function(req, res) {
-  callback = function(req, res) {
+module.exports.addFriend = (req, res) => {
+  callback = (req, res) => {
     let userID = req.body.userID
     let invitedUserID = req.body.invitedUserID
 
@@ -63,8 +65,51 @@ module.exports.addFriend = function(req, res) {
   svs.validateRequest(req, res, callback)
 }
 
-module.exports.getInformation = function(req, res) {
-  callback = function(req, res) {
+module.exports.getFriends = (req, res) => {
+  callback = (req, res) => {
+    let userID = req.body.userID
+
+    // get user information, access list of friends
+    // for friend in friends, access information (map)
+      // only access public fields
+      // build up return json, return
+  }
+
+  svs.validateRequest(req, res, callback)
+}
+
+module.exports.search = (req, res) => {
+  callback = (req, res) => {
+    let userID = req.body.userID
+    let query = req.body.query
+    let searchType = req.body.searchType
+
+    // get user information, access list of friends
+    // for friend in friends, access information (map)
+      // only access public fields
+      // build up return json, return
+  }
+
+  svs.validateRequest(req, res, callback)
+}
+
+module.exports.removeFriend = (req, res) => {
+  callback = (req, res) => {
+    let userID = req.body.userID
+    let query = req.body.query
+    let searchType = req.body.searchType
+
+    // get user information, access list of friends
+    // for friend in friends, access information (map)
+      // only access public fields
+      // build up return json, return
+  }
+
+  svs.validateRequest(req, res, callback)
+}
+
+module.exports.getInformation = (req, res) => {
+  callback = (req, res) => {
     let userID = req.body.userID
     let username = req.body.username
     let queryUserID = req.body.queryUserID

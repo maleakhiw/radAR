@@ -4,10 +4,20 @@
  */
 
 const common = require('./common')
+// const mongoose = module.parent.exports.mongoose   // import from index.js
+
+// Mongoose models
+const User = require('./models/user')
+const Metadata = require('./models/metadata')
+const LastUserID = require('./models/lastUserID')
 
 // validate a request token
 function validateToken(userID, token) {  // TODO: stub
   return true;
+}
+
+function generateToken(userID) {  // TODO: stub
+  return "79"
 }
 
 // validates request tokens - if token is valid, call callback
@@ -36,6 +46,10 @@ const validateRequest = function(req, res, callback) {
 
 module.exports.validateRequest = validateRequest
 
+function getUserID(callback) {
+  LastUserID.findOneAndRemove({}, callback)
+}
+
 // callback for '/SVS/signUp' route
 module.exports.signUp = function(req, res) {
   let firstName = req.body.firstName
@@ -44,6 +58,7 @@ module.exports.signUp = function(req, res) {
   let username = req.body.username
   let profileDesc = req.body.profileDesc
   let password = req.body.password
+  let deviceID = req.body.deviceID
 
   let errorKeys = []
   // required fields
@@ -52,23 +67,96 @@ module.exports.signUp = function(req, res) {
   if (!email) errorKeys.push('missingEmail')
   if (!username) errorKeys.push('missingUsername')
   if (!password) errorKeys.push('missingPassword')
+  if (!deviceID) errorKeys.push('missingDeviceID')
 
   if (errorKeys.length) {
-    response = {
+    let response = {
       success: false,
       errors: common.errorObjectBuilder(errorKeys)
     }
+    res.json(response)
   } else {
-    response = {
-      success: true,
-      errors: [],
-      token: "79" // TODO: stub
+    let userID = null
+    let callback = (error, doc) => {
+      if (doc) {
+        userID = doc.userID + 1
+      } else {
+        userID = 1
+      }
+
+      LastUserID.create({
+        userID: userID
+      }, (err, lastUserID) => {
+        if (err) {
+          // TODO: move everything below the create call to this callback
+          // console.log(err)
+        } else {
+          // console.log(lastUserID)
+        }
+      })
+
+      let object = {
+        userID: userID,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        profilePicture: null,
+        profileDesc: profileDesc,
+        friends: [],
+        groups: [],
+        chats: [],
+        signUpDate: Date.now()
+      }
+
+      // got all the required information, create a User
+      User.create(object, (err, user) => {
+        if (err) {  // TODO: refactor common code
+          console.log(err)
+          errorKeys.push('dbError')
+          let response = {
+            success: false,
+            errors: common.errorObjectBuilder(errorKeys)
+          }
+          res.json(response)
+        }
+
+        else {
+          let token = generateToken(userID)
+          let object = {
+            userID: userID,
+            lastSeen: Date.now(),
+            deviceIDs: [deviceID],
+            activeTokens: [token]
+          }
+          Metadata.create(object, (err, metadata) => {
+            if (err) {
+              console.log(err)
+              errorKeys.push('dbError')
+              let response = {
+                success: false,
+                errors: common.errorObjectBuilder(errorKeys)
+              }
+              res.json(response)
+            } else {
+              let response = {
+                success: true,
+                errors: [],
+                token: token,
+                userID: userID
+              }
+              res.json(response)
+            }
+          })
+        }
+      })
     }
+
+    getUserID(callback)
   }
-  res.json(response)
 }
 
 module.exports.login = function(req, res) {
+  let userID = req.body.userID
   let username = req.body.username
   let password = req.body.password
 
@@ -81,13 +169,37 @@ module.exports.login = function(req, res) {
       success: false,
       errors: common.errorObjectBuilder(errorKeys)
     }
+    res.json(response)
+
+
   } else {
     // TODO: validate username and password
-    response = {
-      success: true,
-      errors: [],
-      token: "79" // TODO: stub
+    let token = generateToken(userID)
+    Metadata.findOneAndRemove({ userID: userID }, (err, doc) => {
+      if (err) {
+        // TODO: send error
+      }
+
+      else {
+        // TODO: update metadata with updated object
+        doc.tokens = doc.tokens.push(token)
+
+        Metadata.create(doc, (err, metadata) => {
+          if (err) {
+            // TODO: send err
+          }
+          else {
+            response = {
+              success: true,
+              errors: [],
+              token: token  // TODO: stub
+            }
+            res.json(response)
+          }
+        })
+
+      }
+    })
+
     }
   }
-  res.json(response)
-}
