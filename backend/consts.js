@@ -97,5 +97,9 @@ module.exports.errors = {
   invalidSearchType: {
     code: 87,
     reason: 'Invalid search type. Valid search types: "username", "name", or "email"'
+  },
+  invalidUserID: {
+    code: 88,
+    reason: 'Invalid user ID'
   }
 }

@@ -13,7 +13,7 @@ const LastUserID = require('./models/lastUserID')
 
 // validate a request token
 function validateToken(userID, token) {  // TODO: stub
-  return true;
+  return true
 }
 
 function generateToken(userID) {  // TODO: stub
@@ -102,7 +102,7 @@ module.exports.signUp = function(req, res) {
         sendError()
         throw Error('usernameTaken')  // TODO: somehow reject the promise?
       } else {
-        LastUserID.findOneAndRemove({})
+        return LastUserID.findOneAndRemove({})
       }
     })
 
@@ -145,7 +145,7 @@ module.exports.signUp = function(req, res) {
         deviceIDs: [deviceID],
         activeTokens: [token]
       }
-      Metadata.create(object) // Promise
+      return Metadata.create(object) // Promise
     })
 
     .then((metadata) => {
@@ -197,6 +197,7 @@ module.exports.login = function(req, res) {
 
     .then( (metadata) => {
       if (!metadata) {  // cannot find metadata on the user
+        errorKeys.push('invalidUserID')
         sendError()
         throw Error('')
       } else {
