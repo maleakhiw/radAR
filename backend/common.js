@@ -13,6 +13,7 @@ module.exports.errorObjectBuilder = function(errorKeys) {
 }
 
 module.exports.getPublicUserInfo = function(user) {
+  // TODO: check settings - privacy, visibility (Iteration 3)
   let retVal = {
     firstName: user.firstName,
     lastName: user.lastName,

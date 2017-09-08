@@ -386,59 +386,99 @@ module.exports.search = (req, res) => {
     let query = req.body.query
     let searchType = req.body.searchType
 
-    // get user information, access list of friends
-    // for friend in friends, access information (map)
-      // only access public fields
-      // build up return json, return
-  }
-
-  svs.validateRequest(req, res, callback)
-}
-
-module.exports.removeFriend = (req, res) => {
-  callback = (req, res) => {
-    let userID = req.body.userID
-    let query = req.body.query
-    let searchType = req.body.searchType
-
-    // get user information, access list of friends
-    // for friend in friends, access information (map)
-      // only access public fields
-      // build up return json, return
-  }
-
-  svs.validateRequest(req, res, callback)
-}
-
-module.exports.getInformation = (req, res) => {
-  callback = (req, res) => {
-    let userID = req.body.userID
-    let username = req.body.username
-    let queryUserID = req.body.queryUserID
-
     let errorKeys = []
-    if (!queryUserID || !username) {
-      errorKeys.push('missingQueryUserIDOrUsername')
+    function sendError() {  // assumption: variables are in closure
+      let response = {
+        success: false,
+        errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
     }
+
+    if (!query) errorKeys.push('missingQuery')
+    if (!searchType) errorKeys.push('missingSearchType')
 
     if (errorKeys.length) {
       response = {
         success: false,
-        erros: common.errorObjectBuilder(errorKeys)
+        errors: common.errorObjectBuilder(errorKeys)
       }
+      res.json(response)
     } else {
-      response = {  // TODO: replace with database calls
-        success: true,
-        errors: [],
-        details: {
-          firstName: "TestFirstName",
-          lastName: "TestLastName",
-          profilePictureResID: ""
-        }
+      if (searchType == 'name') {
+        let regexQuery = new RegExp(query, "i") // http://snipref.com/uncategorized/mongoose-js-find-with-regex/
+        console.log(regexQuery)
+        User.find({ $or:
+          [
+            { firstName: regexQuery },
+            { lastName: regexQuery }
+          ]
+        }).exec()
+
+        .then((users) => {
+          console.log(users)
+          if (users.length) {
+            users = users.map(getPublicUserInfo)
+          }
+          let response = {
+            success: true,
+            errors: [],
+            results: users
+          }
+          res.json(response)
+        })
+
+        .catch((err) => {
+          console.log(err)
+          errorKeys.push('dbError')
+          sendError()
+        })
       }
+      else if (searchType == 'username') {
+        User.find({ username: query }).exec()
+
+        .then((users) => {
+          if (users.length) {
+            users = users.map(getPublicUserInfo)
+          }
+
+          let response = {
+            success: true,
+            errors: [],
+            results: users
+          }
+          res.json(response)
+        })
+
+        .catch((err) => {
+          console.log(err)
+          errorKeys.push('dbError')
+          sendError()
+        })
+
+      } else if (searchType == 'email') {
+        User.find({ email: query }).exec()
+        .then((users) => {
+          users = users.map(getPublicUserInfo)
+          let response = {
+            success: true,
+            errors: [],
+            results: users
+          }
+          res.json(response)
+        })
+        .catch((err) => {
+          console.log(err)
+          errorKeys.push('dbError')
+          sendError()
+        })
+      } else {
+        errorKeys.push('invalidSearchType')
+        sendError()
+      }
+
     }
 
-    res.json(response)
   }
 
   svs.validateRequest(req, res, callback)

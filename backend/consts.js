@@ -54,6 +54,10 @@ module.exports.errors = {
     code: 12,
     reason: "Missing param: deviceID"
   },
+  usernameTaken: {
+    code: 13,
+    reason: "Username is already taken"
+  },
   missingGroupID: {
     code: 78,
     reason: "Missing param: groupID."
@@ -81,5 +85,17 @@ module.exports.errors = {
   invalidAction: {
     code: 84,
     reason: 'Invalid request action. Valid actions: "accept" or "deny"'
+  },
+  missingQuery: {
+    code: 85,
+    reason: 'Missing param: query.'
+  },
+  missingSearchType: {
+    code: 86,
+    reason: 'Missing param: searchType.'
+  },
+  invalidSearchType: {
+    code: 87,
+    reason: 'Invalid search type. Valid search types: "username", "name", or "email"'
   }
 }

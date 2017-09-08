@@ -95,7 +95,17 @@ module.exports.signUp = function(req, res) {
     let userID = null
     let token = null
 
-    LastUserID.findOneAndRemove({}).exec()
+    User.find( { username: username } ).exec()
+    .then((user) => {
+      if (user.length) {
+        errorKeys.push('usernameTaken')
+        sendError()
+        throw Error('usernameTaken')  // TODO: somehow reject the promise?
+      } else {
+        LastUserID.findOneAndRemove({})
+      }
+    })
+
     .then((lastUserID) => {
       console.log(lastUserID)
       if (lastUserID) {
@@ -110,6 +120,7 @@ module.exports.signUp = function(req, res) {
       console.log(lastUserID)
       let object = {
         userID: userID,
+        username: username,
         firstName: firstName,
         lastName: lastName,
         email: email,
@@ -149,9 +160,13 @@ module.exports.signUp = function(req, res) {
     })
 
     .catch((err) => { // one error handler for the chain of Promises
-      console.log(err)
-      errorKeys.push('internalError')
-      sendError()
+      if (err == 'usernameTaken') {
+
+      } else {
+        console.log(err)
+        errorKeys.push('internalError')
+        sendError()
+      }
     })
   }
 }
