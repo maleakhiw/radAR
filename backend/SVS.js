@@ -108,6 +108,10 @@ module.exports.signUp = function(req, res) {
         signUpDate: Date.now()
       }
 
+      // TODO: add to Username/Password collection
+      // TODO: use one main callback for when to send response back to user,
+      // so we don't have nested callback hell
+
       // got all the required information, create a User
       User.create(object, (err, user) => {
         if (err) {  // TODO: refactor common code
