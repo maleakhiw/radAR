@@ -216,6 +216,10 @@
         "source": "C:\\Users\\keyst\\.android\\build-cache\\5272f08d8da181565b8f35b227c1056686c51892\\output\\res\\layout\\notification_template_media.xml"
     },
     {
+        "merged": "C:\\ITProject\\oxygen-comp30022\\RecyclerView\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_details.xml",
+        "source": "C:\\ITProject\\oxygen-comp30022\\RecyclerView\\app\\src\\main\\res\\layout\\activity_details.xml"
+    },
+    {
         "merged": "C:\\Additional Subjects\\RecyclerView\\app\\build\\intermediates\\res\\merged\\debug\\layout\\select_dialog_singlechoice_material.xml",
         "source": "C:\\Users\\keyst\\.android\\build-cache\\5272f08d8da181565b8f35b227c1056686c51892\\output\\res\\layout\\select_dialog_singlechoice_material.xml"
     },

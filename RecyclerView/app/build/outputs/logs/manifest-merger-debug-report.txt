@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:2:1-21:12
+ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:2:1-22:12
 	package
 		ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:3:5-51
 		INJECTED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml
@@ -14,7 +14,7 @@ ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManife
 		INJECTED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml
 		INJECTED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml
 application
-ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:5:5-19:19
+ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:5:5-20:19
 MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\keyst\.android\build-cache\5272f08d8da181565b8f35b227c1056686c51892\output\AndroidManifest.xml:29:5-20
 MERGED from [com.android.support:support-v4:25.3.1] C:\Users\keyst\.android\build-cache\fe3155a4d4ec80f8a09a9aea9bb673dee0d698db\output\AndroidManifest.xml:29:5-20
 MERGED from [com.android.support:support-fragment:25.3.1] C:\Users\keyst\.android\build-cache\2ba23272db308519fbaa23a1e3d31120f02f31fa\output\AndroidManifest.xml:29:5-20
@@ -52,6 +52,10 @@ category#android.intent.category.LAUNCHER
 ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:16:17-77
 	android:name
 		ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:16:27-74
+activity#com.gohool.recyclerview.recyclerview.DetailsActivity
+ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:19:9-62
+	android:name
+		ADDED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml:19:19-50
 uses-sdk
 INJECTED from C:\ITProject\oxygen-comp30022\RecyclerView\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 MERGED from [com.android.support:appcompat-v7:25.3.1] C:\Users\keyst\.android\build-cache\5272f08d8da181565b8f35b227c1056686c51892\output\AndroidManifest.xml:21:5-23:78

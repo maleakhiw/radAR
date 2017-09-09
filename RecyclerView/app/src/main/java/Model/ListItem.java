@@ -5,6 +5,7 @@ package Model;
  */
 
 /** Class that are used for each item on the List View */
+
 /** This class is for data model class */
 public class ListItem {
     private String name;
