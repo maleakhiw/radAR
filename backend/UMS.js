@@ -34,7 +34,7 @@ module.exports.isOnline = (req, res) => {
       errorKeys.push('missingUserIDsToCheck')
     }
 
-    if (!userIDsToCheck.isArray) {
+    if (!userIDsToCheck instanceof Array) {
       errorKeys.push('invalidUserIDsToCheck')
     }
 
