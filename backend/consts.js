@@ -2,7 +2,7 @@
  * Common resources for radar-backend - error codes + reasons, ...
  */
 
-module.exports.ONLINE_THRESHOLD_SEC = 3000
+module.exports.ONLINE_THRESHOLD_SEC = 60
 
 module.exports.errors = {
   // TODO: serve up link to API documentation (on static route) in error string.
