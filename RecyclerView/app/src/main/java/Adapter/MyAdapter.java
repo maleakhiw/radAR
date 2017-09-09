@@ -18,18 +18,20 @@ import Model.ListItem;
  * Created by keyst on 9/09/2017.
  */
 
+/** Adapter connects template listview, data model, card view individual elements layout */
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
     private Context context;
-    private List<ListItem> listItems;
+    private List<ListItem> listItems; // An array like data structure consisting of list item
 
-    public MyAdapter(Context context, List listitem) {
+    public MyAdapter(Context context, List listItems) {
         this.context = context;
-        this.listItems = listitem;
+        this.listItems = listItems;
 
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // make sure that the view from here can be used as an object that we can manipulate
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_row, parent, false);
 
@@ -38,15 +40,18 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(MyAdapter.ViewHolder holder, int position) {
-
+        ListItem item = listItems.get(position);
+        holder.name.setText(item.getName());
+        holder.description.setText(item.getDescription());
     }
 
+    // Get the size of list items
     @Override
     public int getItemCount() {
-        return 0;
+        return listItems.size();
     }
 
-    // Fetch the text view name and description
+    // Fetch the text view name and description and set of the view so that it can be viewed
     public class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
         public TextView description;
