@@ -43,6 +43,7 @@ module.exports.isOnline = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
+      res.json(response)
     } else {
       // get friends first - don't let requester check online status of non-friends
       User.findOne({ userID: userID }).exec()
