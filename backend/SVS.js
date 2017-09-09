@@ -193,7 +193,7 @@ module.exports.login = function(req, res) {
   } else {
     // TODO: validate username and password
     let token = generateToken(userID)
-    Metadata.findOne({ userID: userID }).exec()
+    Metadata.findOne({ username: username }).exec()
 
     .then( (metadata) => {
       if (!metadata) {  // cannot find metadata on the user
