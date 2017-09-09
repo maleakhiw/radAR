@@ -61,7 +61,7 @@ module.exports.errors = {
   invalidUsername: {
     code: 14,
     reason: "Invalid param: username"
-  }
+  },
   missingGroupID: {
     code: 78,
     reason: "Missing param: groupID."
