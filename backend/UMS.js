@@ -63,10 +63,10 @@ module.exports.isOnline = (req, res) => {
 
       .then((metadatas) => {
         // filter off the users who have not been online
-        // console.log('metadatas', metadatas)
-        // metadatas.map((metadata) => {
-        //   console.log((Date.now() - metadata.lastSeen.getTime())/1000)
-        // })
+        console.log('metadatas', metadatas)
+        metadatas.map((metadata) => {
+          console.log((Date.now() - metadata.lastSeen.getTime())/1000)
+        })
         metadatas = metadatas.filter((metadata) => (Date.now() - metadata.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
         onlineUsers = metadatas.map((metadata) => metadata.userID)
