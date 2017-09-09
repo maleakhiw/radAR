@@ -142,6 +142,7 @@ module.exports.signUp = function(req, res) {
             token = generateToken(userID)
             let object = {
                 userID: userID,
+                username: username,
                 lastSeen: Date.now(),
                 deviceIDs: [deviceID],
                 activeTokens: [token]
@@ -201,7 +202,7 @@ module.exports.login = function(req, res) {
                 sendError()
                 throw Error('')
             } else {
-                generateToken(metadata.userID)
+                token = generateToken(metadata.userID)
                 metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
                 return metadata.save()
             }
