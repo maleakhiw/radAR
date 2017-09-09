@@ -30,7 +30,13 @@ module.exports.isOnline = (req, res) => {
     // TODO: type checks for invalid type
 
     let errorKeys = []
-    if (!userIDsToCheck) errorKeys.push('missingUserIDsToCheck')
+    if (!(req.body.hasOwnProperty('userIDsToCheck'))) {
+      errorKeys.push('missingUserIDsToCheck')
+    }
+
+    if (!userIDsToCheck.isArray) {
+      errorKeys.push('invalidUserIDsToCheck')
+    }
 
     if (errorKeys.length) {
       response = {
