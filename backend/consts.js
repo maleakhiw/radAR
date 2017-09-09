@@ -58,6 +58,10 @@ module.exports.errors = {
     code: 13,
     reason: "Username is already taken"
   },
+  invalidUsername: {
+    code: 14,
+    reason: "Invalid param: username"
+  }
   missingGroupID: {
     code: 78,
     reason: "Missing param: groupID."
