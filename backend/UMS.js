@@ -88,6 +88,7 @@ module.exports.isOnline = (req, res) => {
       .then((userInfos) => {
         console.log('userInfos', userInfos)
         onlineStatus = {}
+        console.log('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
           onlineStatus[userID] = onlineUsers.includes(userID)
         })
