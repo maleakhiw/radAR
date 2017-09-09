@@ -89,7 +89,7 @@ module.exports.isOnline = (req, res) => {
         console.log('userInfos', userInfos)
         onlineStatus = {}
         userIDsToCheck.map((userID) => {
-          onlineStatus[userID] = (userID in onlineUsers)
+          onlineStatus[userID] = onlineUsers.includes(userID)
         })
 
         response = {
