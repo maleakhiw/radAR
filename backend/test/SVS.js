@@ -1,6 +1,8 @@
 let mongoose = require('mongoose')
-let User = require('../models/user')
-let Metadata = require('../models/metadata')
+
+const User = require('../models/user')
+const Metadata = require('../models/metadata')
+const LastUserID = require('../models/lastUserID')
 
 // dev dependencies
 let chai = require('chai')
@@ -12,16 +14,40 @@ let expect = chai.expect
 
 chai.use(chaiHttp)
 
+mongoose.Promise = global.Promise
+
 // parent block
 describe('User', () => {
 
-  beforeEach((done) => {
+  before((done) => {  // NOTE: you can also return a Promise instead of
+                          // using the done object
+    mongoose.connect('mongodb://localhost/radarTest',
+      { useMongoClient: true },
+      (err) => { // TODO: see if this breaks
+        if (!err) console.log('Connected to mongoDB')
+        else console.log('Failed to connect to mongoDB')
+    })
+
     User.remove({}).exec()
-    .then(done())
+    .then(() => {
+      console.log('Users cleared')
+      return Metadata.remove({})
+    })
+    .then(() => {
+      console.log('Metadatas cleared')
+      return LastUserID.remove({})
+    })
+    .then(() => {
+      console.log('LastUserIDs cleared')
+      done()
+    })
     .catch((err) => {
-      console.log(err)
+      console.log('err', err)
+      done()
     })
   })
+
+  // beforeEach((done) => {done()})
 
   describe('/POST SVS/signUp', () => {
     it('it should create a new user', (done) => {
@@ -39,7 +65,15 @@ describe('User', () => {
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res)
+          console.log(res.body)
+          expect(res.body.success).to.equal(true)
+          // User.find({username: "manshar"}).exec()
+          //   .then((users) => {
+          //     users.map((user) => {
+          //       console.log(user)
+          //     }
+          //   })
+
           done()
         })
     })
