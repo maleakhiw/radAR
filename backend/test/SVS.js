@@ -7,8 +7,7 @@ const LastUserID = require('../models/lastUserID')
 // dev dependencies
 let chai = require('chai')
 let chaiHttp = require('chai-http')
-// let server = require('../server')
-let serverURL = 'http://35.185.35.117/'
+let server = require('../server')
 let should = chai.should()
 let expect = chai.expect
 
@@ -51,8 +50,8 @@ describe('User', () => {
 
   describe('/POST SVS/signUp', () => {
     it('it should create a new user', (done) => {
-      chai.request(serverURL + 'SVS')
-        .post('/signUp')
+      chai.request(server)
+        .post('/SVS/signUp')
         .send({
             "firstName": "Fadhil",
             "lastName": "Anshar",

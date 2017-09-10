@@ -61,3 +61,6 @@ app.post("/GMS/getGroupInfo", gms.getGroupInfo)
 app.listen(3000, function(req, res) {
   console.log("Listening at port 3000.")
 })
+
+// export the app, for testing
+module.exports = app
