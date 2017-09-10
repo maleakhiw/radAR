@@ -37,7 +37,7 @@ const gms = require('./GMS')
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
-mongoose.connect('mongodb://localhost/radarTest')
+mongoose.connect('mongodb://localhost/radarTest') {
   { useMongoClient: true },
   (err) => { // TODO: see if this breaks
     if (!err) console.log('Connected to mongoDB')
