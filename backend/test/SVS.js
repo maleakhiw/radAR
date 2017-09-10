@@ -23,8 +23,8 @@ describe('User', () => {
     mongoose.connect('mongodb://localhost/radarTest',
       { useMongoClient: true },
       (err) => { // TODO: see if this breaks
-        if (!err) console.log('Connected to mongoDB')
-        else console.log('Failed to connect to mongoDB')
+        if (!err) console.log('Connected to mongoDB (test)')
+        else console.log('Failed to connect to mongoDB (test)')
     })
 
     User.remove({}).exec()
@@ -48,7 +48,8 @@ describe('User', () => {
 
   // beforeEach((done) => {done()})
 
-  describe('/POST SVS/signUp', () => {
+  describe('POST SVS/signUp', () => {
+
     it('it should create a new user', (done) => {
       chai.request(server)
         .post('/SVS/signUp')
@@ -66,16 +67,43 @@ describe('User', () => {
           expect(res).to.be.json
           console.log(res.body)
           expect(res.body.success).to.equal(true)
-          // User.find({username: "manshar"}).exec()
-          //   .then((users) => {
-          //     users.map((user) => {
-          //       console.log(user)
-          //     }
-          //   })
+
+          User.findOne({username: "manshar"}).exec()
+          .then((user) => {
+            user.firstName.should.equal('Fadhil')
+            done()
+          })
+          .catch((err) => {
+            throw new Error('Database error')
+          })
+        })
+
+    })
+
+  })
+
+  describe('POST SVS/login', () => {
+
+    it('it should log in (provide token + userID for use with future requests)', (done) => {
+      chai.request(server)
+        .post('/SVS/login')
+        .send({
+          username: "manshar",
+          password: "hunter2"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          console.log(res.body)
+          expect(res.body.success).to.equal(true)
+
+          // do we have a token and userID?
+          expect(res.body).to.include.all.keys('token', 'userID')
 
           done()
         })
     })
+
   })
 
 })

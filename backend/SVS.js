@@ -194,6 +194,7 @@ module.exports.login = function(req, res) {
     } else {
         // TODO: validate username and password
         let token;
+        let userID;
         Metadata.findOne({ username: username }).exec()
 
         .then((metadata) => {
@@ -203,6 +204,7 @@ module.exports.login = function(req, res) {
                 throw Error('')
             } else {
                 token = generateToken(metadata.userID)
+                userID = metadata.userID;
                 if (!metadata.activeTokens.includes(token)) {
                   metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
                 }
@@ -214,7 +216,8 @@ module.exports.login = function(req, res) {
             response = {
                 success: true,
                 errors: [],
-                token: token // TODO: stub
+                token: token,
+                userID: userID
             }
             res.json(response)
         })
