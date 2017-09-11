@@ -4,7 +4,7 @@
  */
 
 const common = require('./common')
-    // const mongoose = module.parent.exports.mongoose   // import from index.js
+// const mongoose = module.parent.exports.mongoose   // import from index.js
 
 // Mongoose models
 const User = require('./models/user')
@@ -19,6 +19,9 @@ function validateToken(userID, token) { // TODO: stub
 function generateToken(userID) { // TODO: stub
     return "79"
 }
+
+const isString = common.isString
+const isValidEmail = common.isValidEmail
 
 // validates request tokens - if token is valid, call callback
 // also checks if userID and token is present in the request.
@@ -74,13 +77,24 @@ module.exports.signUp = function(req, res) {
     let deviceID = req.body.deviceID
 
     let errorKeys = []
-        // required fields
+
+    // required fields
     if (!firstName) errorKeys.push('missingFirstName')
     if (!lastName) errorKeys.push('missingLastName')
     if (!email) errorKeys.push('missingEmail')
     if (!username) errorKeys.push('missingUsername')
     if (!password) errorKeys.push('missingPassword')
     if (!deviceID) errorKeys.push('missingDeviceID')
+
+    // check if valid
+    // TODO: new error codes
+    if (!isString(firstName)) errorKeys.push('invalidFirstName')
+    if (!isString(lastName)) errorKeys.push('invalidLastName')
+    if (!isString(email) || !isValidEmail(email)) errorKeys.push('invalidEmail')
+    if (!isString(username)) errorKeys.push('invalidUsername')
+    if (!isString(password)) errorKeys.push('invalidPassword')
+    if (!isString(deviceID)) errorKeys.push('invalidDeviceID')
+
 
     function sendError() { // assumption: variables are in closure
         let response = {
@@ -108,7 +122,7 @@ module.exports.signUp = function(req, res) {
             })
 
         .then((lastUserID) => {
-            console.log(lastUserID)
+            // console.log(lastUserID)
             if (lastUserID) {
                 userID = lastUserID.userID + 1
             } else {
@@ -118,7 +132,7 @@ module.exports.signUp = function(req, res) {
         })
 
         .then((lastUserID) => {
-            console.log(lastUserID)
+            // console.log(lastUserID)
             let object = {
                 userID: userID,
                 username: username,
@@ -138,7 +152,7 @@ module.exports.signUp = function(req, res) {
         })
 
         .then((user) => { // User successfully created, create Metadata
-            console.log(user)
+            // console.log(user)
             token = generateToken(userID)
             let object = {
                 userID: userID,
@@ -151,7 +165,7 @@ module.exports.signUp = function(req, res) {
         })
 
         .then((metadata) => {
-            console.log(metadata)
+            // console.log(metadata)
             let response = {
                 success: true,
                 errors: [],
@@ -201,7 +215,7 @@ module.exports.login = function(req, res) {
             if (!metadata) { // cannot find metadata on the user
                 errorKeys.push('invalidUsername')
                 sendError()
-                throw Error('')
+                throw Error('invalidUsername')
             } else {
                 token = generateToken(metadata.userID)
                 userID = metadata.userID;
@@ -223,9 +237,11 @@ module.exports.login = function(req, res) {
         })
 
         .catch((err) => {
+          if (err != 'Error: invalidUsername') {
             console.log(err)
             errorKeys.push('internalError')
             sendError()
+          }
         })
     }
 

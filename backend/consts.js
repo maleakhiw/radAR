@@ -66,6 +66,23 @@ module.exports.errors = {
     code: 15,
     reason: "Invalid param: userIDsToCheck. userIDsToCheck is an array of userIDs."
   },
+  invalidFirstName: {
+    code: 16,
+    reason: "Invalid param: firstName."
+  },
+  invalidLastName: {
+    code: 17,
+    reason: "Invalid param: lastName."
+  },
+  invalidEmail: {
+    code: 18,
+    reason: "Invalid param: email."
+  },
+  invalidPassword: {
+    code: 20,
+    reason: "Invalid param: password."
+  },
+
   missingGroupID: {
     code: 78,
     reason: "Missing param: groupID."

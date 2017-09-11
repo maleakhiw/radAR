@@ -22,22 +22,20 @@ describe('User', () => {
                           // using the done object
     mongoose.connect('mongodb://localhost/radarTest',
       { useMongoClient: true },
-      (err) => { // TODO: see if this breaks
-        if (!err) console.log('Connected to mongoDB (test)')
-        else console.log('Failed to connect to mongoDB (test)')
+      (err) => {
+        if (err) {
+          console.log(err)
+        }
     })
 
     User.remove({}).exec()
     .then(() => {
-      console.log('Users cleared')
       return Metadata.remove({})
     })
     .then(() => {
-      console.log('Metadatas cleared')
       return LastUserID.remove({})
     })
     .then(() => {
-      console.log('LastUserIDs cleared')
       done()
     })
     .catch((err) => {
@@ -80,6 +78,29 @@ describe('User', () => {
 
     })
 
+    it('it return an invalid email error', (done) => {
+      chai.request(server)
+        .post('/SVS/signUp')
+        .send({
+            "firstName": "Fadhil",
+            "lastName": "Anshar",
+            "email": "invalidEmail",
+            "username": "manshar",
+            "profileDesc": "am horse",
+            "password": "hunter2",
+            "deviceID": "memes"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          console.log(res.body)
+          expect(res.body.success).to.equal(false)
+          done()
+        })
+
+    })
+
+
   })
 
   describe('POST SVS/login', () => {
@@ -99,6 +120,23 @@ describe('User', () => {
 
           // do we have a token and userID?
           expect(res.body).to.include.all.keys('token', 'userID')
+
+          done()
+        })
+    })
+
+    it('should not log in an invalid user', (done) => {
+      chai.request(server)
+        .post('/SVS/login')
+        .send({
+          username: "invalidUsername",
+          password: "password"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          console.log(res.body)
+          expect(res.body.success).to.equal(false)
 
           done()
         })

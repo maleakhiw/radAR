@@ -40,8 +40,11 @@ const gms = require('./GMS')
 mongoose.connect('mongodb://localhost/radarTest',
   { useMongoClient: true },
   (err) => { // TODO: see if this breaks
-    if (!err) console.log('Connected to mongoDB')
-    else console.log('Failed to connect to mongoDB')
+    // if (!err) console.log('Connected to mongoDB')
+    // else console.log('Failed to connect to mongoDB')
+    if (err) {
+      console.log(err)
+    }
 })
 
 // Functions
@@ -59,7 +62,7 @@ app.post("/UMS/search", ums.search)
 app.post("/GMS/getGroupInfo", gms.getGroupInfo)
 
 app.listen(3000, function(req, res) {
-  console.log("Listening at port 3000.")
+  // console.log("Listening at port 3000.")
 })
 
 // export the app, for testing
