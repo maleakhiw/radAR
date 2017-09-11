@@ -138,14 +138,23 @@ module.exports.addFriend = (req, res) => {
     } else {
       let requestID = null
 
-      Request.find({
-        from: userID,
-        to: invitedUserID,
-        responded: false
+      User.find({
+        userID: invitedUserID
       }).exec()
+      .then((users) => {
+        if (!users.length) {
+          throw new Error('invalidUserID')
+        } else {
+          return Request.find({
+            from: userID,
+            to: invitedUserID,
+            responded: false
+          })
+        }
+      })
+
       .then((requests) => {
-        // check if an existing request exists
-        if (requests.length > 0) {
+        if (requests.length) {
           return new Promise((resolve, reject) => {
             reject('Request already exists')
           })
@@ -156,7 +165,7 @@ module.exports.addFriend = (req, res) => {
       })
 
       .then((lastRequestID) => {
-        console.log(lastRequestID)
+        // console.log(lastRequestID)
         if (lastRequestID) {
           requestID = lastRequestID.requestID + 1
         } else {
@@ -166,7 +175,7 @@ module.exports.addFriend = (req, res) => {
       })
 
       .then((lastRequestID) => {
-        console.log(lastRequestID)
+        // console.log(lastRequestID)
         let request = {
           requestID: requestID,
           from: userID,
@@ -174,7 +183,7 @@ module.exports.addFriend = (req, res) => {
           for: "friend",
           responded: false
         }
-        console.log(request)
+        // console.log(request)
 
         // TODO: check if a request already exists for this!
         // TODO: add error message
@@ -182,7 +191,7 @@ module.exports.addFriend = (req, res) => {
       })
 
       .then((request) => {
-        console.log('create', request)
+        // console.log('create', request)
         let response = {
           success: true,
           error: [],
@@ -192,9 +201,11 @@ module.exports.addFriend = (req, res) => {
       })
 
       .catch((err) => {
-        console.log(err)
+        // console.log(err)
         if (err == 'Request already exists') {
           errorKeys.push('friendRequestAlreadyExists')
+        } else if (err == 'Error: invalidUserID') {
+          errorKeys.push('invalidUserID')
         } else {
           errorKeys.push('internalError')
         }

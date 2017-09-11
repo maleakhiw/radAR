@@ -16,7 +16,7 @@ chai.use(chaiHttp)
 mongoose.Promise = global.Promise
 
 // parent block
-describe('User', () => {
+describe('SVS', () => {
 
   before((done) => {  // NOTE: you can also return a Promise instead of
                           // using the done object
@@ -46,7 +46,7 @@ describe('User', () => {
 
   // beforeEach((done) => {done()})
 
-  describe('POST SVS/signUp', () => {
+  describe('POST /SVS/signUp', () => {
 
     it('it should create a new user', (done) => {
       chai.request(server)
@@ -103,7 +103,7 @@ describe('User', () => {
 
   })
 
-  describe('POST SVS/login', () => {
+  describe('POST /SVS/login', () => {
 
     it('it should log in (provide token + userID for use with future requests)', (done) => {
       chai.request(server)
