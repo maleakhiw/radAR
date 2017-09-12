@@ -82,7 +82,10 @@ module.exports.errors = {
     code: 20,
     reason: "Invalid param: password."
   },
-
+  emailTaken: {
+    code: 21,
+    reason: "An account with this email has already been registered on the system."
+  },
   missingGroupID: {
     code: 78,
     reason: "Missing param: groupID."

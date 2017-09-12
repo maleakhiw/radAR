@@ -50,14 +50,14 @@ module.exports.isOnline = (req, res) => {
 
       .then((user) => {
         let friends = user.friends
-        console.log(user)
+        // console.log(user)
         if (!friends) { // if undefined
           friends = []
         }
 
-        console.log(friends)
+        // console.log(friends)
         userIDsToCheck = userIDsToCheck.filter((userID) => friends.includes(userID))
-        console.log(userIDsToCheck)
+        // console.log(userIDsToCheck)
         return Metadata.find( { userID : { $in: userIDsToCheck } } )
       })
 
@@ -71,7 +71,7 @@ module.exports.isOnline = (req, res) => {
 
         onlineUsers = metadatas.map((metadata) => metadata.userID)
 
-        console.log('metadatas_filtered', metadatas)
+        // console.log('metadatas_filtered', metadatas)
 
         let metadatasPromise = metadatas.map((metadata) => new Promise((resolve, reject) => {
           let firstName = null
@@ -86,9 +86,9 @@ module.exports.isOnline = (req, res) => {
       })
 
       .then((userInfos) => {
-        console.log('userInfos', userInfos)
+        // console.log('userInfos', userInfos)
         onlineStatus = {}
-        console.log('onlineUsers', onlineUsers)
+        // console.log('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
           onlineStatus[userID] = onlineUsers.includes(userID)
         })
@@ -124,7 +124,7 @@ module.exports.addFriend = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     if (!invitedUserID) errorKeys.push('missingInvitedUserID')
@@ -227,7 +227,7 @@ module.exports.getFriendRequests = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     Request.find({ to: userID, responded: false }).exec()
@@ -282,7 +282,7 @@ module.exports.getInformation = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     console.log(req.body)
@@ -294,7 +294,7 @@ module.exports.getInformation = (req, res) => {
       if (username) {
         User.findOne( { username: username } ).exec()
         .then((user) => {
-          console.log(user)
+          // console.log(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -310,7 +310,7 @@ module.exports.getInformation = (req, res) => {
       } else {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
-          console.log(user)
+          // console.log(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -344,7 +344,7 @@ module.exports.respondToRequest = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     if (!requestID) {
@@ -360,7 +360,7 @@ module.exports.respondToRequest = (req, res) => {
       .then((request) => {
         if (!request) {
           errorKeys.push('invalidRequestID')
-          sendError()
+          throw new Error('invalidRequestID')
         } else {
           if (action == 'accept' || action == 'decline') {
             // update request
@@ -399,15 +399,20 @@ module.exports.respondToRequest = (req, res) => {
             }
           }
           else {
-            errorKeys.push('invalidAction')
-            sendError()
+            throw new Error('invalidAction')
           }
         }
       })
 
       .catch((err) => {
-        console.log(err)
-        errorKeys.push('internalError')
+        if (err == 'Error: invalidAction') {
+          errorKeys.push('invalidAction')
+        } else if (err == 'Error: invalidRequestID') {
+          errorKeys.push('invalidRequestID')
+        } else {
+          console.log(err)
+          errorKeys.push('internalError')
+        }
         sendError()
       })
     }
@@ -428,21 +433,21 @@ module.exports.getFriends = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     User.findOne({ userID: userID }).exec()
     .then((user) => {
-      console.log(user)
+      // console.log(user)
       friends = user.friends
       if (!friends) friends = []
       return User.find({ userID: { $in: friends } })
     })
 
     .then((users) => {  // friends
-      console.log('users', users)
+      // console.log('users', users)
       friends = users.map((user) => getPublicUserInfo(user))
-      console.log('friends', friends)
+      // console.log('friends', friends)
 
       let response = {
         success: true,
@@ -474,7 +479,7 @@ module.exports.search = (req, res) => {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(400).json(response)
     }
 
     if (!query) errorKeys.push('missingQuery')
@@ -488,8 +493,8 @@ module.exports.search = (req, res) => {
       res.json(response)
     } else {
       if (searchType == 'name') {
-        let regexQuery = new RegExp(query, "i") // http://snipref.com/uncategorized/mongoose-js-find-with-regex/
-        console.log(regexQuery)
+        let regexQuery = new RegExp(query, "i") // case-insensitive matching
+        // console.log(regexQuery)
         User.find({ $or:
           [
             { firstName: regexQuery },
@@ -498,7 +503,7 @@ module.exports.search = (req, res) => {
         }).exec()
 
         .then((users) => {
-          console.log(users)
+          // console.log(users)
           if (users.length) {
             users = users.map(getPublicUserInfo)
           }

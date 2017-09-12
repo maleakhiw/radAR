@@ -39,7 +39,7 @@ const validateRequest = function(req, res, callback) {
           success: false,
           errors: common.errorObjectBuilder(errorKeys)
       }
-      res.json(response)
+      res.status(401).json(response)
   }
   if (!('token' in req.body)) {
       errorKeys.push('missingToken')
@@ -112,7 +112,7 @@ module.exports.signUp = function(req, res) {
             success: false,
             errors: common.errorObjectBuilder(errorKeys)
         }
-        res.json(response)
+        res.status(400).json(response)
     }
 
     if (errorKeys.length) {
@@ -122,15 +122,24 @@ module.exports.signUp = function(req, res) {
         let token = null
 
         User.find({ username: username }).exec()
-            .then((user) => {
-                if (user.length) {
-                    errorKeys.push('usernameTaken')
-                    sendError()
-                    throw Error('usernameTaken') // TODO: somehow reject the promise?
-                } else {
-                    return LastUserID.findOneAndRemove({})
-                }
-            })
+        .then((users) => {
+            if (users.length) {
+                errorKeys.push('usernameTaken')
+                // sendError()
+                throw Error('usernameTaken')
+            } else {
+              return User.find({ email: email }).exec()
+            }
+        })
+
+        .then((users) => {
+          if (users.length) {
+            errorKeys.push('emailTaken')
+            throw Error('emailTaken')
+          } else {
+            return LastUserID.findOneAndRemove({})
+          }
+        })
 
         .then((lastUserID) => {
             // console.log(lastUserID)
@@ -187,8 +196,12 @@ module.exports.signUp = function(req, res) {
         })
 
         .catch((err) => { // one error handler for the chain of Promises
-            if (err == 'usernameTaken') {
-
+            if (err == 'Error: usernameTaken') {
+              errorKeys.push('usernameTaken')
+              sendError()
+            } else if (err == 'Error: emailTaken') {
+              errorKeys.push('emailTaken')
+              sendError()
             } else {
                 console.log(err)
                 errorKeys.push('internalError')
@@ -212,7 +225,7 @@ module.exports.login = function(req, res) {
             success: false,
             errors: common.errorObjectBuilder(errorKeys)
         }
-        res.json(response)
+        res.status(400).json(response)
     }
 
     if (errorKeys.length) {

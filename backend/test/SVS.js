@@ -90,7 +90,7 @@ describe('SVS', () => {
             "deviceID": "memes"
         })
         .end((err, res) => {
-          res.should.have.status(200)
+          res.should.have.status(400)
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
           done()
@@ -130,7 +130,7 @@ describe('SVS', () => {
           password: "password"
         })
         .end((err, res) => {
-          res.should.have.status(200)
+          res.should.have.status(400)
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
 
@@ -147,8 +147,8 @@ describe('SVS', () => {
         .get('/api/users/1/friendRequests')
         .send({})
         .end((err, res) => {  // TODO: error codes
-          console.log(res.body)
-          res.should.have.status(200)
+          // console.log(res.body)
+          res.should.have.status(401)
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
 
