@@ -13,6 +13,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+// Extensible by https://www.androidhive.info/2013/11/android-sliding-menu-using-navigation-drawer/
+
 public class DrawerActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -84,9 +86,10 @@ public class DrawerActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_tracking_groups) {
 
+        // et al
        // } else if (id == R.id.nav_) {
 
-//     et al
+
 //     } else if (id == R.id.nav_manage) {
 //
 //        } else if (id == R.id.nav_share) {
