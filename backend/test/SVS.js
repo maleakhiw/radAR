@@ -46,11 +46,11 @@ describe('SVS', () => {
 
   // beforeEach((done) => {done()})
 
-  describe('POST /api/accounts', () => {
+  describe('POST /api/auth', () => {
 
     it('should create a new user', (done) => {
       chai.request(server)
-        .post('/api/accounts')
+        .post('/api/auth')
         .send({
             "firstName": "Fadhil",
             "lastName": "Anshar",
@@ -79,7 +79,7 @@ describe('SVS', () => {
 
     it('should return an invalid email error', (done) => {
       chai.request(server)
-        .post('/api/accounts')
+        .post('/api/auth')
         .send({
             "firstName": "Fadhil",
             "lastName": "Anshar",
@@ -103,12 +103,12 @@ describe('SVS', () => {
 
   })
 
-  describe('POST /api/accounts/:username', () => {
+  describe('POST /api/auth/:username', () => {
 
     it('should log in (provide token + userID for use with future requests)', (done) => {
       chai.request(server)
-        .post('/api/accounts/manshar')
-        .send({
+        .get('/api/auth/manshar')
+        .query({
           password: "hunter2"
         })
         .end((err, res) => {
@@ -125,8 +125,8 @@ describe('SVS', () => {
 
     it('should not log in an invalid user', (done) => {
       chai.request(server)
-        .post('/api/accounts/invalidUsername')
-        .send({
+        .get('/api/auth/invalidUsername')
+        .query({
           password: "password"
         })
         .end((err, res) => {
@@ -144,8 +144,7 @@ describe('SVS', () => {
 
     it('should tell requester that token is missing', (done) => {
       chai.request(server)
-        .get('/api/users/1/friendRequests')
-        .send({})
+        .get('/api/accounts/1/friendRequests')
         .end((err, res) => {  // TODO: error codes
           // console.log(res.body)
           res.should.have.status(401)

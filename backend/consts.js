@@ -4,6 +4,21 @@
 
 module.exports.ONLINE_THRESHOLD_SEC = 60
 
+module.exports.metas = {  // route -> metadata
+  "/": {
+    resources: [{URI: "/api", method: "GET"}]
+  },
+  "/api": {
+    resources: [
+      {URI: "/api/auth", methods: ["POST"], desc: "Create a new user account."},
+      {URI: "/api/auth/{username}", methods: ["GET"], desc: "Log into a user account."},
+      {URI: "/api/accounts/{userID}", methods: ["GET", "POST", "PUT", "DELETE"], desc: "Accounts (management)."},
+      {URI: "/api/users", methods: ["GET"], desc: "Users on the system."},
+      {URI: "/api/groups", methods: ["GET", "POST", "PUT"], desc: "Tracking Groups."}
+    ]
+  }
+}
+
 module.exports.errors = {
   // TODO: serve up link to API documentation (on static route) in error string.
   invalidJSON: {
@@ -85,6 +100,10 @@ module.exports.errors = {
   emailTaken: {
     code: 21,
     reason: "An account with this email has already been registered on the system."
+  },
+  invalidDeviceID: {
+    code: 22,
+    reason: "Invalid param: deviceID"
   },
   missingGroupID: {
     code: 78,

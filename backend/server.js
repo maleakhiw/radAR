@@ -11,6 +11,7 @@ app.use(cors())
 
 // Common constants/variables
 const common = require('./common')
+const addMetas = common.addMetas
 
 // Use JS Promises library
 mongoose.Promise = global.Promise
@@ -51,15 +52,23 @@ mongoose.connect('mongodb://localhost/radarTest',
 // app.post("/SVS/signUp", svs.signUp)
 // app.post("/SVS/login", svs.login)
 
+app.get("/", (req, res) => {
+  res.json(addMetas({}, "/"))
+})
+
+app.get("/api", (req, res) => {
+  res.json(addMetas({}, "/api"))
+})
+
 // signup and login
-app.post("/api/accounts", svs.signUp)
-app.post("/api/accounts/:username", svs.login)
+app.post("/api/auth", svs.signUp)
+app.get("/api/auth/:username", svs.login)
 
 // friends
-app.post("/api/users/:userID/friends", ums.addFriend)
-app.get("/api/users/:userID/friendRequests", ums.getFriendRequests)
-app.delete("/api/users/:userID/friendRequests/:requestID", ums.respondToRequest)
-app.get("/api/users/:userID/friends", ums.getFriends)
+app.post("/api/accounts/:userID/friends", ums.addFriend)
+app.get("/api/accounts/:userID/friendRequests", ums.getFriendRequests)
+app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToRequest)
+app.get("/api/accounts/:userID/friends", ums.getFriends)
 
 // users TODO: test
 app.get("/api/users", ums.search) // get all users (only if query specified)
@@ -69,16 +78,8 @@ app.get("/api/users/:userID", ums.getInformation)
 app.get("/api/users/:userID/usersOnlineStatuses", ums.isOnline)
 
 // groups
-
-// app.post("/UMS/isOnline", ums.isOnline)
-// app.post("/UMS/addFriend", ums.addFriend)
-// app.post("/UMS/getFriends", ums.getFriends)
-// app.post("/UMS/getInformation", ums.getInformation)
-// app.post("/UMS/getFriendRequests", ums.getFriendRequests)
-// app.post("/UMS/respondToRequest", ums.respondToRequest)
-// app.post("/UMS/search", ums.search)
-
-app.post("/GMS/getGroupInfo", gms.getGroupInfo)
+// app.get("/api/groups", gms.getAllGroups)  // requires username, token
+app.get("/api/groups/:groupID", gms.getGroupInfo)
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")

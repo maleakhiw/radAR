@@ -30,6 +30,8 @@ const validateRequest = function(req, res, callback) {
 
   if (req.params.userID) {  // accept userID passed via URL
     req.body.userID = req.params.userID
+  } else if (req.query.userID) {
+    req.body.userID = req.query.userID
   }
 
   let errorKeys = []
@@ -41,13 +43,16 @@ const validateRequest = function(req, res, callback) {
       }
       res.status(401).json(response)
   }
-  if (!('token' in req.body)) {
+  if (!('token' in req.body) && !('token' in req.query)) {
       errorKeys.push('missingToken')
   }
   if (!req.body.userID) {
       errorKeys.push('missingUserID')
   }
-  if (!validateToken(req.body.userID, req.body.token)) {
+
+  let token = req.body.token || req.query.token
+
+  if (!validateToken(req.body.userID, token)) {
       errorKeys.push('invalidToken')
   }
 
@@ -214,7 +219,7 @@ module.exports.signUp = function(req, res) {
 module.exports.login = function(req, res) {
     // let username = req.body.username
     let username = req.params.username
-    let password = req.body.password
+    let password = req.query.password
 
     errorKeys = []
     if (!username) errorKeys.push('missingUsername')

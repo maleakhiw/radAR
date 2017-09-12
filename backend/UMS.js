@@ -469,9 +469,9 @@ module.exports.getFriends = (req, res) => {
 
 module.exports.search = (req, res) => {
   let callback = (req, res) => {
-    let userID = req.body.userID
-    let query = req.body.query
-    let searchType = req.body.searchType
+    let userID = req.query.userID
+    let query = req.query.query
+    let searchType = req.query.searchType
 
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure

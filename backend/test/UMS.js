@@ -36,7 +36,7 @@ describe('UMS', () => {
     .then(() => {
       // create dummy users
       chai.request(server)
-      .post('/api/accounts')
+      .post('/api/auth')
       .send({
           "firstName": "User1",
           "lastName": "LastName",
@@ -53,7 +53,7 @@ describe('UMS', () => {
         expect(res.body.userID).to.equal(1)
 
         chai.request(server)
-        .post('/api/accounts')
+        .post('/api/auth')
         .send({
             "firstName": "User2",
             "lastName": "LastName",
@@ -83,10 +83,10 @@ describe('UMS', () => {
 
   })
 
-  describe('POST /api/users/:userID/friends', () => {
+  describe('POST /api/accounts/:userID/friends', () => {
     it('should send a friend request from user1 to user2', (done) => {
       chai.request(server)
-      .post('/api/users/1/friends')
+      .post('/api/accounts/1/friends')
       .send({
         invitedUserID: 2,
         token: "79"
@@ -108,7 +108,7 @@ describe('UMS', () => {
 
     it('user1 should not be able to send another friend request to user2 while it is pending', (done) => {
       chai.request(server)
-      .post('/api/users/1/friends')
+      .post('/api/accounts/1/friends')
       .send({
         invitedUserID: 2,
         token: "79"
@@ -125,10 +125,10 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/users/:userID/friends', () => {
+  describe('GET /api/accounts/:userID/friends', () => {
     it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {
       chai.request(server)
-      .post('/api/users/1/friends')
+      .post('/api/accounts/1/friends')
       .send({
         invitedUserID: 10,
         token: "79"
@@ -145,11 +145,11 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/users/:userID/friendRequests and DELETE /api/users/:userID/friendRequests/:requestID', () => {
+  describe('GET /api/accounts/:userID/friendRequests and DELETE /api/accounts/:userID/friendRequests/:requestID', () => {
     it('user2 should receive a friend request from user1', (done) => {
       chai.request(server)
-      .get('/api/users/2/friendRequests')
-      .send({
+      .get('/api/accounts/2/friendRequests')
+      .query({
         token: "79"
       })
       .end((err, res) => {
@@ -165,7 +165,7 @@ describe('UMS', () => {
 
     it('user2 should accept the friend request from user1', (done) => {
       chai.request(server)
-      .delete('/api/users/2/friendRequests/1')
+      .delete('/api/accounts/2/friendRequests/1')
       .send({
         token: "79",
         action: "accept"
@@ -181,11 +181,11 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/users/:userID/friends', () => {
+  describe('GET /api/accounts/:userID/friends', () => {
     it("user1 should have user2 in user1's friends list", (done) => {
       chai.request(server)
-      .get('/api/users/1/friends')
-      .send({
+      .get('/api/accounts/1/friends')
+      .query({
         token: "79"
       })
       .end((err, res) => {
@@ -206,7 +206,7 @@ describe('UMS', () => {
     it("search by name (query: user, existing users: User1 and User2)", (done) => {
       chai.request(server)
       .get('/api/users/')
-      .send({
+      .query({
         userID: 1,
         token: "79",
         query: "user",
@@ -226,7 +226,7 @@ describe('UMS', () => {
     it("search by email (query: user, existing users: User1 and User2)", (done) => {
       chai.request(server)
       .get('/api/users')
-      .send({
+      .query({
         userID: 1,
         token: "79",
         query: "email1@example.com",
@@ -244,7 +244,7 @@ describe('UMS', () => {
     it("search by email and get no results", (done) => {
       chai.request(server)
       .get('/api/users')
-      .send({
+      .query({
         userID: 1,
         token: "79",
         query: "email@example.com",
@@ -262,7 +262,7 @@ describe('UMS', () => {
     it("search by username and get one result (user1)", (done) => {
       chai.request(server)
       .get('/api/users')
-      .send({
+      .query({
         userID: 1,
         token: "79",
         query: "user1",

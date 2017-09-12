@@ -1,9 +1,17 @@
 const errorValues = require('./consts').errors
+const metas = require('./consts').metas
+
+module.exports.addMetas = (obj, key) => {
+  console.log(obj, key)
+  obj.resources = metas[key].resources
+  return obj
+}
 
 module.exports.errorObjectBuilder = function(errorKeys) {
   errors = []
   // TODO: error handling for keys that don't exist
   for (let i=0; i<errorKeys.length; i++) {
+    // console.log(errorKeys[i], errorValues[errorKeys[i]])
     errors.push({
       reason: errorValues[errorKeys[i]].reason,
       errorCode: errorValues[errorKeys[i]].code
