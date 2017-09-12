@@ -203,7 +203,9 @@ module.exports.login = function(req, res) {
                 throw Error('')
             } else {
                 token = generateToken(metadata.userID)
-                metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
+                if (!metadata.activeTokens.includes(token)) {
+                    metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
+                }
                 return metadata.save()
             }
         })

@@ -2,7 +2,7 @@
  * Common resources for radar-backend - error codes + reasons, ...
  */
 
-module.exports.ONLINE_THRESHOLD_SEC = 300
+module.exports.ONLINE_THRESHOLD_SEC = 60
 
 module.exports.errors = {
   // TODO: serve up link to API documentation (on static route) in error string.
@@ -61,6 +61,10 @@ module.exports.errors = {
   invalidUsername: {
     code: 14,
     reason: "Invalid param: username"
+  },
+  invalidUserIDsToCheck: {
+    code: 15,
+    reason: "Invalid param: userIDsToCheck. userIDsToCheck is an array of userIDs."
   },
   missingGroupID: {
     code: 78,

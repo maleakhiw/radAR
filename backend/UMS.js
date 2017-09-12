@@ -30,13 +30,20 @@ module.exports.isOnline = (req, res) => {
     // TODO: type checks for invalid type
 
     let errorKeys = []
-    if (!userIDsToCheck) errorKeys.push('missingUserIDsToCheck')
+    if (!(req.body.hasOwnProperty('userIDsToCheck'))) {
+      errorKeys.push('missingUserIDsToCheck')
+    }
+
+    if (!userIDsToCheck instanceof Array) {
+      errorKeys.push('invalidUserIDsToCheck')
+    }
 
     if (errorKeys.length) {
       response = {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
+      res.json(response)
     } else {
       // get friends first - don't let requester check online status of non-friends
       User.findOne({ userID: userID }).exec()
@@ -56,10 +63,10 @@ module.exports.isOnline = (req, res) => {
 
       .then((metadatas) => {
         // filter off the users who have not been online
-        // console.log('metadatas', metadatas)
-        // metadatas.map((metadata) => {
-        //   console.log((Date.now() - metadata.lastSeen.getTime())/1000)
-        // })
+        console.log('metadatas', metadatas)
+        metadatas.map((metadata) => {
+          console.log((Date.now() - metadata.lastSeen.getTime())/1000)
+        })
         metadatas = metadatas.filter((metadata) => (Date.now() - metadata.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
         onlineUsers = metadatas.map((metadata) => metadata.userID)
@@ -81,8 +88,9 @@ module.exports.isOnline = (req, res) => {
       .then((userInfos) => {
         console.log('userInfos', userInfos)
         onlineStatus = {}
+        console.log('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
-          onlineStatus[userID] = (userID in onlineUsers)
+          onlineStatus[userID] = onlineUsers.includes(userID)
         })
 
         response = {
