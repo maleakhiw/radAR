@@ -61,7 +61,7 @@ app.get("/api", (req, res) => {
 })
 
 app.get("/api/accounts/:userID", (req, res) => {
-  res.json(addMetas({}, "/accounts/:userID"))
+  res.json(addMetas({}, "/api/accounts/:userID"))
 })
 
 // object: auth
@@ -85,10 +85,12 @@ app.get("/api/users", ums.search) // get all users (only if query specified)
 app.get("/api/users/:userID", ums.getInformation)
 
 // object: groups
-// app.get("/api/groups", gms.getAllGroups)  // requires username, token
+// app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token
+app.get("/api/groups", (req, res) => {
+  res.json(addMetas({}, "/api/groups"))
+})
 app.get("/api/groups/:groupID", gms.getGroupInfo)
-
-
+app.post("/api/groups", gms.newGroup)
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")

@@ -17,11 +17,17 @@ module.exports.metas = {  // route -> metadata
       {URI: "/api/groups", methods: ["GET", "POST", "PUT"], desc: "Tracking Groups."}
     ]
   },
-  "/accounts/:userID": {
+  "/api/accounts/:userID": {
     resources: [
       {URI: "/api/accounts/{userID}/friends", methods: ["POST"], desc: "Add a new friend."},
       {URI: "/api/accounts/{userID}/friendRequests", methods: ["GET", "POST", "DELETE"], desc: "Manage friend requests."},
       {URI: "/api/accounts/{userID}/usersOnlineStatuses", methods: ["GET"], desc: "Check a list of users to see if they are online."}
+    ]
+  },
+  "/api/groups": {
+    resources: [
+      {URI: "/api/groups", methods: ["POST"], desc: "Create a new group."},
+      {URI: "/api/groups/{groupID}", methods: ["GET", "PUT", "DELETE"], desc: "Manage a group."}
     ]
   }
 }
@@ -110,7 +116,19 @@ module.exports.errors = {
   },
   invalidDeviceID: {
     code: 22,
-    reason: "Invalid param: deviceID"
+    reason: "Invalid param: deviceID."
+  },
+  missingGroupName: {
+    code: 23,
+    reason: "Missing param: name."
+  },
+  missingMemberUserIDs: {
+    code: 24,
+    reason: "Missing param: memberUserIDs."
+  },
+  invalidMemberUserIDs: {
+    code: 25,
+    reason: "Invalid param: memberUserIDs."
   },
   missingGroupID: {
     code: 78,

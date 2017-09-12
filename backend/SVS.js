@@ -60,9 +60,15 @@ const validateRequest = function(req, res, callback) {
     sendError()
   } else {
     let userID = req.body.userID
+
         // update last seen
     Metadata.findOne({ userID: userID }).exec()
         .then((metadata) => {
+            if (!metadata) {  // TODO: new test case w/ invalid user ID
+              errorKeys.push('invalidUserID')
+              sendError()
+              return
+            }
             metadata.lastSeen = Date.now()
             metadata.save()
             callback(req, res)
