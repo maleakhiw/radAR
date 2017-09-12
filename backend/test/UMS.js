@@ -36,7 +36,7 @@ describe('UMS', () => {
     .then(() => {
       // create dummy users
       chai.request(server)
-      .post('/SVS/signUp')
+      .post('/api/accounts')
       .send({
           "firstName": "User1",
           "lastName": "LastName",
@@ -47,14 +47,13 @@ describe('UMS', () => {
           "deviceID": "memes"
       })
       .end((err, res) => {
-        console.log('request 1 done')
         res.should.have.status(200)
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
         expect(res.body.userID).to.equal(1)
 
         chai.request(server)
-        .post('/SVS/signUp')
+        .post('/api/accounts')
         .send({
             "firstName": "User2",
             "lastName": "LastName",
@@ -65,7 +64,6 @@ describe('UMS', () => {
             "deviceID": "memes"
         })
         .end((err, res) => {
-          console.log('request 2 done')
           res.should.have.status(200)
           expect(res).to.be.json
           expect(res.body.success).to.equal(true)
@@ -85,19 +83,17 @@ describe('UMS', () => {
 
   })
 
-  describe('POST /UMS/addFriend', () => {
-    it('it should send a friend request from user1 to user2', (done) => {
+  describe('GET /api/users/:userID/friends', () => {
+    it('should send a friend request from user1 to user2', (done) => {
       chai.request(server)
-        .post('/UMS/addFriend')
+        .post('/api/users/1/friends')
         .send({
-          userID: 1,
           invitedUserID: 2,
           token: "79"
         })
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(true)
 
           Request.findOne({requestID: 1}).exec()
@@ -110,19 +106,70 @@ describe('UMS', () => {
         })
     })
 
-    it('it should send a friend request from user1 to userID 10 (and fail)', (done) => {
+    it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {
       chai.request(server)
-        .post('/UMS/addFriend')
+        .post('/api/users/1/friends')
         .send({
-          userID: 1,
           invitedUserID: 10,
           token: "79"
         })
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(false)
+
+          done()
+        })
+    })
+
+    it('user1 should not be able to send another friend request to user2 while it is pending', (done) => {
+      chai.request(server)
+        .post('/api/users/1/friends')
+        .send({
+          invitedUserID: 2,
+          token: "79"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(false)
+
+          done()
+        })
+    })
+
+
+  })
+
+  describe('GET /api/users/:userID/friendRequests and DELETE /api/users/:userID/friendRequests/:requestID', () => {
+    it('user2 should receive a friend request from user1', (done) => {
+      chai.request(server)
+        .get('/api/users/2/friendRequests')
+        .send({
+          token: "79"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(true)
+          expect(res.body.requestDetails[0].requestID).to.equal(1)
+          expect(res.body.requestDetails[0].from).to.equal(1)
+
+          done()
+        })
+    })
+
+    it('user2 should accept the friend request from user1', (done) => {
+      chai.request(server)
+        .delete('/api/users/2/friendRequests/1')
+        .send({
+          token: "79",
+          action: "accept"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(true)
 
           done()
         })
@@ -130,5 +177,25 @@ describe('UMS', () => {
 
   })
 
+  describe('GET /api/users/:userID/friends', () => {
+    it("user1 should have user2 in user1's friends list", (done) => {
+      chai.request(server)
+        .get('/api/users/1/friends')
+        .send({
+          token: "79"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(true)
+
+          expect(res.body.friends.map((entry) => entry.userID)).contains(2)
+
+          done()
+
+        })
+    })
+
+  })
 
 })

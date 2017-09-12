@@ -26,25 +26,34 @@ const isValidEmail = common.isValidEmail
 // validates request tokens - if token is valid, call callback
 // also checks if userID and token is present in the request.
 const validateRequest = function(req, res, callback) {
-    let errorKeys = []
+  // TODO: check if needed
 
-    function sendError() { // assumption: variables are in closure
-        let response = {
-            success: false,
-            errors: common.errorObjectBuilder(errorKeys)
-        }
-        res.json(response)
-    }
-    if (!('token' in req.body)) {
-        errorKeys.push('missingToken')
-    }
-    if (!req.body.userID) {
-        errorKeys.push('missingUserID')
-    }
-    if (!validateToken(req.body.userID, req.body.token)) {
-        errorKeys.push('invalidToken')
-    }
+  if (req.params.userID) {  // accept userID passed via URL
+    req.body.userID = req.params.userID
+  }
 
+  let errorKeys = []
+
+  function sendError() { // assumption: variables are in closure
+      let response = {
+          success: false,
+          errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.json(response)
+  }
+  if (!('token' in req.body)) {
+      errorKeys.push('missingToken')
+  }
+  if (!req.body.userID) {
+      errorKeys.push('missingUserID')
+  }
+  if (!validateToken(req.body.userID, req.body.token)) {
+      errorKeys.push('invalidToken')
+  }
+
+  if (errorKeys.length) {
+    sendError()
+  } else {
     let userID = req.body.userID
         // update last seen
     Metadata.findOne({ userID: userID }).exec()
@@ -58,6 +67,8 @@ const validateRequest = function(req, res, callback) {
             errorKeys.push('internalError')
             sendError()
         })
+  }
+
 }
 
 module.exports.validateRequest = validateRequest
@@ -188,7 +199,8 @@ module.exports.signUp = function(req, res) {
 }
 
 module.exports.login = function(req, res) {
-    let username = req.body.username
+    // let username = req.body.username
+    let username = req.params.username
     let password = req.body.password
 
     errorKeys = []

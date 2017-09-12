@@ -46,11 +46,11 @@ describe('SVS', () => {
 
   // beforeEach((done) => {done()})
 
-  describe('POST /SVS/signUp', () => {
+  describe('POST /api/accounts', () => {
 
-    it('it should create a new user', (done) => {
+    it('should create a new user', (done) => {
       chai.request(server)
-        .post('/SVS/signUp')
+        .post('/api/accounts')
         .send({
             "firstName": "Fadhil",
             "lastName": "Anshar",
@@ -63,7 +63,6 @@ describe('SVS', () => {
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(true)
 
           User.findOne({username: "manshar"}).exec()
@@ -78,9 +77,9 @@ describe('SVS', () => {
 
     })
 
-    it('it return an invalid email error', (done) => {
+    it('should return an invalid email error', (done) => {
       chai.request(server)
-        .post('/SVS/signUp')
+        .post('/api/accounts')
         .send({
             "firstName": "Fadhil",
             "lastName": "Anshar",
@@ -93,29 +92,28 @@ describe('SVS', () => {
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(false)
           done()
         })
 
     })
 
+    // TODO: create 2nd user, validate userID is 2
+
 
   })
 
-  describe('POST /SVS/login', () => {
+  describe('POST /api/accounts/:username', () => {
 
-    it('it should log in (provide token + userID for use with future requests)', (done) => {
+    it('should log in (provide token + userID for use with future requests)', (done) => {
       chai.request(server)
-        .post('/SVS/login')
+        .post('/api/accounts/manshar')
         .send({
-          username: "manshar",
           password: "hunter2"
         })
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(true)
 
           // do we have a token and userID?
@@ -127,21 +125,36 @@ describe('SVS', () => {
 
     it('should not log in an invalid user', (done) => {
       chai.request(server)
-        .post('/SVS/login')
+        .post('/api/accounts/invalidUsername')
         .send({
-          username: "invalidUsername",
           password: "password"
         })
         .end((err, res) => {
           res.should.have.status(200)
           expect(res).to.be.json
-          console.log(res.body)
           expect(res.body.success).to.equal(false)
 
           done()
         })
     })
 
+  })
+
+  describe('GET request to restricted resource', () => {
+
+    it('should tell requester that token is missing', (done) => {
+      chai.request(server)
+        .get('/api/users/1/friendRequests')
+        .send({})
+        .end((err, res) => {  // TODO: error codes
+          console.log(res.body)
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(false)
+
+          done()
+        })
+    })
   })
 
 })

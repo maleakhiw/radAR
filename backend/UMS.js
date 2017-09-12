@@ -114,7 +114,7 @@ module.exports.isOnline = (req, res) => {
 }
 
 module.exports.addFriend = (req, res) => {
-  callback = (req, res) => {
+  let callback = (req, res) => {
     let userID = req.body.userID
     let invitedUserID = req.body.invitedUserID
 
@@ -232,7 +232,7 @@ module.exports.getFriendRequests = (req, res) => {
 
     Request.find({ to: userID, responded: false }).exec()
     .then((requests) => {
-      console.log(requests)
+      // console.log(requests)
       let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
         User.findOne({ userID: request.from }).exec()
         .then((user) => {
@@ -252,7 +252,7 @@ module.exports.getFriendRequests = (req, res) => {
     })
 
     .then((requestsDetails) => {
-      console.log(requestsDetails)
+      // console.log(requestsDetails)
       let response = {
         success: true,
         errors: [],
@@ -334,7 +334,8 @@ module.exports.getInformation = (req, res) => {
 module.exports.respondToRequest = (req, res) => {
   let callback = (req, res) => {
     let userID = req.body.userID
-    let requestID = req.body.requestID
+    // let requestID = req.body.requestID
+    let requestID = req.params.requestID
     let action = req.body.action
     let errorKeys = []
 
@@ -355,8 +356,8 @@ module.exports.respondToRequest = (req, res) => {
         to: userID,
         responded: false
       }).exec()
+
       .then((request) => {
-        console.log(request)
         if (!request) {
           errorKeys.push('invalidRequestID')
           sendError()
@@ -403,6 +404,7 @@ module.exports.respondToRequest = (req, res) => {
           }
         }
       })
+
       .catch((err) => {
         console.log(err)
         errorKeys.push('internalError')
@@ -461,7 +463,7 @@ module.exports.getFriends = (req, res) => {
 }
 
 module.exports.search = (req, res) => {
-  callback = (req, res) => {
+  let callback = (req, res) => {
     let userID = req.body.userID
     let query = req.body.query
     let searchType = req.body.searchType
