@@ -8,6 +8,9 @@ const common = require('./common')
 const consts = require('./consts')
 const svs = require('./SVS')
 
+const isNumber = common.isNumber
+const isArray = common.isArray
+
 // Data models
 const Metadata = require('./models/metadata')
 const User = require('./models/user')
@@ -23,14 +26,22 @@ const getPublicUserInfo = common.getPublicUserInfo
 module.exports.isOnline = (req, res) => {
   let callback = (req, res) => {
     let userID = req.body.userID
-    let userIDsToCheck = req.body.userIDsToCheck
+    let userIDsToCheck = req.query.userIDsToCheck
 
     let onlineUsers = null
+    console.log(userIDsToCheck)
+
+    if (userIDsToCheck instanceof Array) {
+      userIDsToCheck = userIDsToCheck.map((entry) => parseInt(entry))
+    } else {
+      userIDsToCheck = [parseInt(userIDsToCheck)]
+    }
+
     console.log(userIDsToCheck)
     // TODO: type checks for invalid type
 
     let errorKeys = []
-    if (!(req.body.hasOwnProperty('userIDsToCheck'))) {
+    if (!(req.query.hasOwnProperty('userIDsToCheck'))) {
       errorKeys.push('missingUserIDsToCheck')
     }
 
@@ -132,6 +143,8 @@ module.exports.addFriend = (req, res) => {
     if (userID && invitedUserID && userID == invitedUserID) {
       errorKeys.push('selfInviteError')
     }
+
+    // TODO: should not be able to send request if already friends
 
     if (errorKeys.length) {
       sendError()
@@ -359,7 +372,6 @@ module.exports.respondToRequest = (req, res) => {
 
       .then((request) => {
         if (!request) {
-          errorKeys.push('invalidRequestID')
           throw new Error('invalidRequestID')
         } else {
           if (action == 'accept' || action == 'decline') {

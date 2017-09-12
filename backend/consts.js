@@ -16,6 +16,13 @@ module.exports.metas = {  // route -> metadata
       {URI: "/api/users", methods: ["GET"], desc: "Users on the system."},
       {URI: "/api/groups", methods: ["GET", "POST", "PUT"], desc: "Tracking Groups."}
     ]
+  },
+  "/accounts/:userID": {
+    resources: [
+      {URI: "/api/accounts/{userID}/friends", methods: ["POST"], desc: "Add a new friend."},
+      {URI: "/api/accounts/{userID}/friendRequests", methods: ["GET", "POST", "DELETE"], desc: "Manage friend requests."},
+      {URI: "/api/accounts/{userID}/usersOnlineStatuses", methods: ["GET"], desc: "Check a list of users to see if they are online."}
+    ]
   }
 }
 
@@ -131,7 +138,7 @@ module.exports.errors = {
   },
   invalidAction: {
     code: 84,
-    reason: 'Invalid request action. Valid actions: "accept" or "deny"'
+    reason: 'Invalid request action. Valid actions: "accept" or "decline"'
   },
   missingQuery: {
     code: 85,

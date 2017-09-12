@@ -60,26 +60,35 @@ app.get("/api", (req, res) => {
   res.json(addMetas({}, "/api"))
 })
 
+app.get("/api/accounts/:userID", (req, res) => {
+  res.json(addMetas({}, "/accounts/:userID"))
+})
+
+// object: auth
 // signup and login
 app.post("/api/auth", svs.signUp)
 app.get("/api/auth/:username", svs.login)
 
+// object: accounts
 // friends
 app.post("/api/accounts/:userID/friends", ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", ums.getFriendRequests)
 app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", ums.getFriends)
 
-// users TODO: test
+// online statuses
+app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)
+
+// object: users
+// users
 app.get("/api/users", ums.search) // get all users (only if query specified)
 app.get("/api/users/:userID", ums.getInformation)
 
-// online statuses
-app.get("/api/users/:userID/usersOnlineStatuses", ums.isOnline)
-
-// groups
+// object: groups
 // app.get("/api/groups", gms.getAllGroups)  // requires username, token
 app.get("/api/groups/:groupID", gms.getGroupInfo)
+
+
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")
