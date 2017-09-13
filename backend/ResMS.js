@@ -61,12 +61,10 @@ module.exports.uploadResource = (req, res) => {
 module.exports.getResource = (req, res) => {
   let callback = (req, res) => {
     let fileID = req.params.resourceID
-    // console.log(fileID)
     let userID = parseInt(req.params.userID) || parseInt(req.body.userID)  // TODO: check
 
     Resource.find({ fileID: fileID }).exec()
     .then((resource) => {
-      // console.log(resource[0])
       if (resource.length) {
         let file = resource[0]
         // do checks - if unauthorised, send 401 unauthorised

@@ -36,6 +36,14 @@ module.exports.metas = {  // route -> metadata
       {URI: "/api/groups", methods: ["POST"], desc: "Create a new group."},
       {URI: "/api/groups/{groupID}", methods: ["GET", "PUT", "DELETE"], desc: "Manage a group."}
     ]
+  },
+  "/api/chats": {
+    resources: [
+      {URI: "/api/chats", methods: ["POST"], desc: "Create a new group."},
+      {URI: "/api/chats/{chatID}", methods: ["GET", "PUT", "DELETE"], desc: "Manage a chat."},
+      {URI: "/api/chats/{chatID}/messages", methods: ["POST"], desc: "Send a message/file."},
+      {URI: "/api/chats/{chatID}/messages/{messageID}", methods: ["GET"], desc: "Get a message (probably unused)."}
+    ]
   }
 }
 
@@ -140,6 +148,10 @@ module.exports.errors = {
   missingFile: {
     code: 26,
     reason: "Missing form-data field: file"
+  },
+  invalidParticipantUserIDs: {
+    code: 27,
+    reason: "Invalid params: participantUserIDs"
   },
   missingGroupID: {
     code: 78,

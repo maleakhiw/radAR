@@ -52,6 +52,7 @@ module.exports.connection = connection
 const ums = require('./UMS')
 const svs = require('./SVS')
 const gms = require('./GMS')
+const sms = require('./SMS')
 const resms = require('./ResMS')
 
 // export the mongoose object so it is accessible by other subsystems
@@ -86,6 +87,7 @@ app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToReque
 app.get("/api/accounts/:userID/friends", ums.getFriends)
 app.post("/api/accounts/:userID/resources", upload.single('file'), resms.uploadResource)
 app.get("/api/accounts/:userID/resources/:resourceID", resms.getResource)
+// app.get("/api/accounts/:userID/chats", sms.getChatsForUser)  // TODO
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)
@@ -94,6 +96,15 @@ app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)
 // users
 app.get("/api/users", ums.search) // get all users (only if query specified)
 app.get("/api/users/:userID", ums.getInformation)
+
+// object: chats
+app.get("/api/chats", (req, res) => {
+  // TODO: let obj = get all chats
+  let obj = {}
+  res.json(addMetas(obj, "/api/chats"))
+})
+
+app.post("/api/chats", sms.newChat)
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token

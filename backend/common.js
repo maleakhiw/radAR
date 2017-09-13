@@ -7,6 +7,13 @@ module.exports.addMetas = (obj, key) => {
   return obj
 }
 
+module.exports.unique = (a) => {
+    var seen = {};
+    return a.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+}
+
 module.exports.errorObjectBuilder = function(errorKeys) {
   errors = []
   // TODO: error handling for keys that don't exist
@@ -41,7 +48,7 @@ module.exports.isNumber = (object) => {
 }
 
 module.exports.isArray = (object) => {
-  return (!userIDsToCheck instanceof Array)
+  return (object instanceof Array)
 }
 
 module.exports.isValidEmail = (email) => {
