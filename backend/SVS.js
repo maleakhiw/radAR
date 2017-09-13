@@ -256,7 +256,7 @@ module.exports.login = function(req, res) {
                 token = generateToken(metadata.userID)
                 userID = metadata.userID;
                 if (!metadata.activeTokens.includes(token)) {
-                  metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
+                    metadata.activeTokens.push(token) // TODO: SIGN OUT ROUTE - REMOVES A TOKEN
                 }
                 return metadata.save()
             }
