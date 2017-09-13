@@ -3,7 +3,14 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
-const cors = require('cors');
+const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
+const cors = require('cors')
+
+// multer
+const upload = multer({
+  dest: 'uploads/'  // automatically gives unique filename
+})
+
 
 const app = express()
 app.use(bodyParser.json())
@@ -28,17 +35,9 @@ app.use(function (error, req, res, next) {
   }
 });
 
-// export the mongoose object so it is accessible by other subsystems
-// module.exports.mongoose = mongoose
-
-// Systems
-const ums = require('./UMS')
-const svs = require('./SVS')
-const gms = require('./GMS')
-
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
-mongoose.connect('mongodb://localhost/radarTest',
+const connection = mongoose.connect('mongodb://localhost/radarTest',
   { useMongoClient: true },
   (err) => { // TODO: see if this breaks
     // if (!err) console.log('Connected to mongoDB')
@@ -47,6 +46,16 @@ mongoose.connect('mongodb://localhost/radarTest',
       console.log(err)
     }
 })
+module.exports.connection = connection
+
+// Systems
+const ums = require('./UMS')
+const svs = require('./SVS')
+const gms = require('./GMS')
+const resms = require('./ResMS')
+
+// export the mongoose object so it is accessible by other subsystems
+// module.exports.mongoose = mongoose
 
 // Functions
 // app.post("/SVS/signUp", svs.signUp)
@@ -75,6 +84,8 @@ app.post("/api/accounts/:userID/friends", ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", ums.getFriendRequests)
 app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", ums.getFriends)
+app.post("/api/accounts/:userID/resources", upload.single('file'), resms.uploadResource)
+app.get("/api/accounts/:userID/resources/:resourceID", resms.getResource)
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)

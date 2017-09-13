@@ -14,14 +14,21 @@ module.exports.metas = {  // route -> metadata
       {URI: "/api/auth/{username}", methods: ["GET"], desc: "Log into a user account."},
       {URI: "/api/accounts/{userID}", methods: ["GET", "POST", "PUT", "DELETE"], desc: "Accounts (management)."},
       {URI: "/api/users", methods: ["GET"], desc: "Users on the system."},
-      {URI: "/api/groups", methods: ["GET", "POST", "PUT"], desc: "Tracking Groups."}
+      {URI: "/api/groups", methods: ["GET", "POST"], desc: "Tracking Groups."}
     ]
   },
   "/api/accounts/:userID": {
     resources: [
       {URI: "/api/accounts/{userID}/friends", methods: ["POST"], desc: "Add a new friend."},
       {URI: "/api/accounts/{userID}/friendRequests", methods: ["GET", "POST", "DELETE"], desc: "Manage friend requests."},
-      {URI: "/api/accounts/{userID}/usersOnlineStatuses", methods: ["GET"], desc: "Check a list of users to see if they are online."}
+      {URI: "/api/accounts/{userID}/usersOnlineStatuses", methods: ["GET"], desc: "Check a list of users to see if they are online."},
+      {URI: "/api/accounts/{userID}/resources", methods: ["GET", "POST"], desc: "Upload/download a file."}
+    ]
+  },
+  "/api/accounts/:userID/resources": {
+    resources: [
+      {URI: "/api/accounts/{userID}/resources", methods: ["POST"], desc: "Upload a file."},
+      {URI: "/api/accounts/{userID}/resources/{resourceID}", methods: ["GET"], desc: "Download a file."}
     ]
   },
   "/api/groups": {
@@ -129,6 +136,10 @@ module.exports.errors = {
   invalidMemberUserIDs: {
     code: 25,
     reason: "Invalid param: memberUserIDs."
+  },
+  missingFile: {
+    code: 26,
+    reason: "Missing form-data field: file"
   },
   missingGroupID: {
     code: 78,

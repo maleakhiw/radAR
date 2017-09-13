@@ -18,8 +18,7 @@ mongoose.Promise = global.Promise
 // parent block
 describe('SVS', () => {
 
-  before((done) => {  // NOTE: you can also return a Promise instead of
-                          // using the done object
+  before((done) => {  // clean up test database
     mongoose.connect('mongodb://localhost/radarTest',
       { useMongoClient: true },
       (err) => {
