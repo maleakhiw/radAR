@@ -85,9 +85,17 @@ app.post("/api/accounts/:userID/friends", ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", ums.getFriendRequests)
 app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", ums.getFriends)
+
+// resources
 app.post("/api/accounts/:userID/resources", upload.single('file'), resms.uploadResource)
 app.get("/api/accounts/:userID/resources/:resourceID", resms.getResource)
-// app.get("/api/accounts/:userID/chats", sms.getChatsForUser)  // TODO
+
+// chats
+app.get("/api/accounts/:userID/chats", sms.getChatsForUser)
+// NOTE: mirrors chats object below
+app.post("/api/accounts/:userID/chats", sms.newChat)
+app.get("/api/accounts/:userID/chats/:chatID", sms.getChat)
+app.get("/api/accounts/:userID/chats/:chatID/messages", sms.getMessages)
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)
@@ -104,7 +112,11 @@ app.get("/api/chats", (req, res) => {
   res.json(addMetas(obj, "/api/chats"))
 })
 
+// chats
 app.post("/api/chats", sms.newChat)
+app.get("/api/chats/:chatID", sms.getChat)
+app.post("/api/chats/:chatID/messages", sms.sendMessage)
+app.get("/api/chats/:chatID/messages", sms.getMessages)
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token

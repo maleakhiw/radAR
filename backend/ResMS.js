@@ -38,7 +38,11 @@ module.exports.uploadResource = (req, res) => {
       groupID: null
     })
     .then((resource) => {
-      // console.log(resource)
+      res.json({
+        success: true,
+        errors: [],
+        resourceID: fileID
+      })
     })
     .catch((err) => {
       console.log(err)
@@ -48,11 +52,6 @@ module.exports.uploadResource = (req, res) => {
       })
     })
 
-    res.json({
-      success: true,
-      errors: [],
-      resourceID: fileID
-    })
   }
 
   svs.validateRequest(req, res, callback)

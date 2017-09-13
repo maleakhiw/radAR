@@ -31,6 +31,15 @@ module.exports.metas = {  // route -> metadata
       {URI: "/api/accounts/{userID}/resources/{resourceID}", methods: ["GET"], desc: "Download a file."}
     ]
   },
+  "/api/accounts/:userID/chats": {
+    resources: [
+      {URI: "/api/accounts/{userID}/chats", methods: ["POST"], desc: "Create a new chat."},
+      {URI: "/api/accounts/{userID}/chats/{chatID}", methods: ["GET", "PUT", "DELETE"], desc: "Manage a chat."},
+      {URI: "/api/accounts/{userID}/chats/{chatID}/messages", methods: ["POST"], desc: "Send a message/file."},
+      {URI: "/api/accounts/{userID}/chats/{chatID}/messages/{messageID}", methods: ["GET"], desc: "Get a message (probably unused)."}
+    ]
+  },
+
   "/api/groups": {
     resources: [
       {URI: "/api/groups", methods: ["POST"], desc: "Create a new group."},
@@ -39,7 +48,7 @@ module.exports.metas = {  // route -> metadata
   },
   "/api/chats": {
     resources: [
-      {URI: "/api/chats", methods: ["POST"], desc: "Create a new group."},
+      {URI: "/api/chats", methods: ["POST"], desc: "Create a new chat."},
       {URI: "/api/chats/{chatID}", methods: ["GET", "PUT", "DELETE"], desc: "Manage a chat."},
       {URI: "/api/chats/{chatID}/messages", methods: ["POST"], desc: "Send a message/file."},
       {URI: "/api/chats/{chatID}/messages/{messageID}", methods: ["GET"], desc: "Get a message (probably unused)."}
@@ -147,11 +156,27 @@ module.exports.errors = {
   },
   missingFile: {
     code: 26,
-    reason: "Missing form-data field: file"
+    reason: "Missing form-data field: file."
   },
   invalidParticipantUserIDs: {
     code: 27,
-    reason: "Invalid params: participantUserIDs"
+    reason: "Invalid params: participantUserIDs."
+  },
+  invalidChatID: {
+    code: 28,
+    reason: "Invalid param: chatID."
+  },
+  unauthorisedChat: {
+    code: 29,
+    reason: "You do not have access to this chat."
+  },
+  missingChatID: {
+    code: 30,
+    reason: "Missing param: chatID."
+  },
+  missingMessage: {
+    code: 31,
+    reason: "Missing param: message."
   },
   missingGroupID: {
     code: 78,
