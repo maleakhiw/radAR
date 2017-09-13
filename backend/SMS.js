@@ -75,7 +75,14 @@ module.exports.newChat = (req, res) => {
       admins: [userID]
     }))
 
-    .then((chat) => {
+    .then((chat) => User.findOne({ userID: userID }))
+
+    .then((user) => {
+      user.chats.push(chatID)
+      return user.save()
+    })
+
+    .then((user) => {
       res.json({
         success: true,
         errors: [],
