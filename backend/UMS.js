@@ -26,7 +26,6 @@ module.exports = class UMS {
     Request = pRequest
     LastRequestID = pLastRequestID
     svs = new SVS(User, Metadata, pLastUserID)
-    console.log(svs)
   }
 
   isOnline(req, res) {

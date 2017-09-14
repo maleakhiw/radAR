@@ -12,10 +12,14 @@ const upload = multer({
 })
 
 // data models
+
+const Chat = require('./models/chat')
 const User = require('./models/user')
 const Request = require('./models/request')
+const Message = require('./models/message')
 const Resource = require('./models/resource')
 const Metadata = require('./models/metadata')
+const LastChatID = require('./models/lastChatID')
 const LastUserID = require('./models/lastUserID')
 const LastRequestID = require('./models/lastRequestID')
 
@@ -64,7 +68,9 @@ const svs = new SVS(User, Metadata, LastUserID, LastRequestID)
 
 const gms = require('./GMS')
 
-const sms = require('./SMS')
+const SMS = require('./SMS')
+const sms = new SMS(Chat, Message, User, LastRequestID, LastChatID, Metadata, LastUserID)
+
 
 const ResMS = require('./ResMS')
 const resms = new ResMS(Resource, User, Metadata, LastUserID)
