@@ -6,10 +6,7 @@
 const common = require('./common')
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 
-// Mongoose models
-const User = require('./models/user')
-const Metadata = require('./models/metadata')
-const LastUserID = require('./models/lastUserID')
+let User, Metadata, LastUserID
 
 // validate a request token
 function validateToken(userID, token) { // TODO: stub
@@ -23,73 +20,72 @@ function generateToken(userID) { // TODO: stub
 const isString = common.isString
 const isValidEmail = common.isValidEmail
 
-// validates request tokens - if token is valid, call callback
-// also checks if userID and token is present in the request.
-const validateRequest = function(req, res, callback) {
-  // TODO: check if needed
-
-  if (req.params.userID) {  // accept userID passed via URL
-    req.body.userID = req.params.userID
-  } else if (req.query.userID) {
-    req.body.userID = req.query.userID
-  }
-
-  let errorKeys = []
-
-  function sendError() { // assumption: variables are in closure
-      let response = {
-          success: false,
-          errors: common.errorObjectBuilder(errorKeys)
-      }
-      res.status(401).json(response)
-  }
-  if (!('token' in req.body) && !('token' in req.query)) {
-      errorKeys.push('missingToken')
-  }
-  if (!req.body.userID) {
-      errorKeys.push('missingUserID')
-  }
-
-  let token = req.body.token || req.query.token
-
-  if (!validateToken(req.body.userID, token)) {
-      errorKeys.push('invalidToken')
-  }
-
-  if (errorKeys.length) {
-    sendError()
-  } else {
-    let userID = req.body.userID
-
-        // update last seen
-    Metadata.findOne({ userID: userID }).exec()
-        .then((metadata) => {
-            if (!metadata) {  // TODO: new test case w/ invalid user ID
-              errorKeys.push('invalidUserID')
-              sendError()
-              return
-            }
-            metadata.lastSeen = Date.now()
-            metadata.save()
-            callback(req, res)
-        })
-        .catch((err) => {
-            console.log(err)
-            errorKeys.push('internalError')
-            sendError()
-        })
-  }
-
-}
-
-module.exports.validateRequest = validateRequest
-
 function getUserID(callback) {
     LastUserID.findOneAndRemove({}, callback)
 }
 
-// callback for '/SVS/signUp' route
-module.exports.signUp = function(req, res) {
+module.exports = class SVS {
+  constructor(pUser, pMetadata, pLastUserID) {
+    User = pUser
+    Metadata = pMetadata
+    LastUserID = pLastUserID
+  }
+
+  validateRequest(req, res, callback) {
+    if (req.params.userID) {  // accept userID passed via URL
+      req.body.userID = req.params.userID
+    } else if (req.query.userID) {
+      req.body.userID = req.query.userID
+    }
+
+    let errorKeys = []
+
+    function sendError() { // assumption: variables are in closure
+        let response = {
+            success: false,
+            errors: common.errorObjectBuilder(errorKeys)
+        }
+        res.status(401).json(response)
+    }
+    if (!('token' in req.body) && !('token' in req.query)) {
+        errorKeys.push('missingToken')
+    }
+    if (!req.body.userID) {
+        errorKeys.push('missingUserID')
+    }
+
+    let token = req.body.token || req.query.token
+
+    if (!validateToken(req.body.userID, token)) {
+        errorKeys.push('invalidToken')
+    }
+
+    if (errorKeys.length) {
+      sendError()
+    } else {
+      let userID = req.body.userID
+      // update last seen
+      Metadata.findOne({ userID: userID }).exec()
+          .then((metadata) => {
+              if (!metadata) {  // TODO: new test case w/ invalid user ID
+                errorKeys.push('invalidUserID')
+                sendError()
+                return
+              }
+              metadata.lastSeen = Date.now()
+              metadata.save()
+              callback(req, res)
+          })
+          .catch((err) => {
+              console.log(err)
+              errorKeys.push('internalError')
+              sendError()
+          })
+    }
+
+  }
+
+  signUp(req, res) {
     let firstName = req.body.firstName
     let lastName = req.body.lastName
     let email = req.body.email
@@ -129,110 +125,110 @@ module.exports.signUp = function(req, res) {
     if (errorKeys.length) {
         sendError()
     } else {
-        let userID = null
-        let token = null
+      let userID = null
+      let token = null
 
-        User.find({ username: username }).exec()
-        .then((users) => {
-            if (users.length) {
-                errorKeys.push('usernameTaken')
-                // sendError()
-                throw Error('usernameTaken')
-            } else {
-              return User.find({ email: email }).exec()
-            }
-        })
+      User.find({ username: username }).exec()
+      .then((users) => {
+        if (users.length) {
+            errorKeys.push('usernameTaken')
+            // sendError()
+            throw Error('usernameTaken')
+        } else {
+          return User.find({ email: email }).exec()
+        }
+      })
 
-        .then((users) => {
-          if (users.length) {
-            errorKeys.push('emailTaken')
-            throw Error('emailTaken')
-          } else {
-            return LastUserID.findOneAndRemove({})
+      .then((users) => {
+        if (users.length) {
+          errorKeys.push('emailTaken')
+          throw Error('emailTaken')
+        } else {
+          return LastUserID.findOneAndRemove({})
+        }
+      })
+
+      .then((lastUserID) => {
+        // console.log(lastUserID)
+        if (lastUserID) {
+            userID = lastUserID.userID + 1
+        } else {
+            userID = 1
+        }
+        return LastUserID.create({ userID: userID }) // Promise
+      })
+
+      .then((lastUserID) => {
+        // console.log(lastUserID)
+        let object = {
+            userID: userID,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            profilePicture: null,
+            profileDesc: profileDesc,
+            friends: [],
+            groups: [],
+            chats: [],
+            signUpDate: Date.now()
+        }
+
+        // TODO: add to Username/Password collection
+        return User.create(object) // Promise
+      })
+
+      .then((user) => { // User successfully created, create Metadata
+          // console.log(user)
+          token = generateToken(userID)
+          let object = {
+              userID: userID,
+              username: username,
+              lastSeen: Date.now(),
+              deviceIDs: [deviceID],
+              activeTokens: [token]
           }
-        })
+          return Metadata.create(object) // Promise
+      })
 
-        .then((lastUserID) => {
-            // console.log(lastUserID)
-            if (lastUserID) {
-                userID = lastUserID.userID + 1
-            } else {
-                userID = 1
-            }
-            return LastUserID.create({ userID: userID }) // Promise
-        })
+      .then((metadata) => {
+          // console.log(metadata)
+          let response = {
+              success: true,
+              errors: [],
+              token: token,
+              userID: userID
+          }
+          res.json(response)
+      })
 
-        .then((lastUserID) => {
-            // console.log(lastUserID)
-            let object = {
-                userID: userID,
-                username: username,
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                profilePicture: null,
-                profileDesc: profileDesc,
-                friends: [],
-                groups: [],
-                chats: [],
-                signUpDate: Date.now()
-            }
-
-            // TODO: add to Username/Password collection
-            return User.create(object) // Promise
-        })
-
-        .then((user) => { // User successfully created, create Metadata
-            // console.log(user)
-            token = generateToken(userID)
-            let object = {
-                userID: userID,
-                username: username,
-                lastSeen: Date.now(),
-                deviceIDs: [deviceID],
-                activeTokens: [token]
-            }
-            return Metadata.create(object) // Promise
-        })
-
-        .then((metadata) => {
-            // console.log(metadata)
-            let response = {
-                success: true,
-                errors: [],
-                token: token,
-                userID: userID
-            }
-            res.json(response)
-        })
-
-        .catch((err) => { // one error handler for the chain of Promises
-            if (err == 'Error: usernameTaken') {
-              errorKeys.push('usernameTaken')
+      .catch((err) => { // one error handler for the chain of Promises
+          if (err == 'Error: usernameTaken') {
+            errorKeys.push('usernameTaken')
+            sendError()
+          } else if (err == 'Error: emailTaken') {
+            errorKeys.push('emailTaken')
+            sendError()
+          } else {
+              console.log(err)
+              errorKeys.push('internalError')
               sendError()
-            } else if (err == 'Error: emailTaken') {
-              errorKeys.push('emailTaken')
-              sendError()
-            } else {
-                console.log(err)
-                errorKeys.push('internalError')
-                sendError()
-            }
-        })
+          }
+      })
     }
-}
+  }
 
-module.exports.login = function(req, res) {
+  login(req, res) {
     // let username = req.body.username
     let username = req.params.username
     let password = req.query.password
 
-    errorKeys = []
+    let errorKeys = []
     if (!username) errorKeys.push('missingUsername')
     if (!password) errorKeys.push('missingPassword')
 
     function sendError() { // uses variables in closure
-        response = {
+        let response = {
             success: false,
             errors: common.errorObjectBuilder(errorKeys)
         }
@@ -263,7 +259,7 @@ module.exports.login = function(req, res) {
         })
 
         .then((metadata) => {
-            response = {
+            let response = {
                 success: true,
                 errors: [],
                 token: token,
@@ -280,5 +276,5 @@ module.exports.login = function(req, res) {
           }
         })
     }
-
+  }
 }

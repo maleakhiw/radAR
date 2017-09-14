@@ -11,6 +11,13 @@ const upload = multer({
   dest: 'uploads/'  // automatically gives unique filename
 })
 
+// data models
+const User = require('./models/user')
+const Request = require('./models/request')
+const Resource = require('./models/resource')
+const Metadata = require('./models/metadata')
+const LastUserID = require('./models/lastUserID')
+const LastRequestID = require('./models/lastRequestID')
 
 const app = express()
 app.use(bodyParser.json())
@@ -49,11 +56,18 @@ const connection = mongoose.connect('mongodb://localhost/radarTest',
 module.exports.connection = connection
 
 // Systems
-const ums = require('./UMS')
-const svs = require('./SVS')
+const UMS = require('./UMS')
+const ums = new UMS(Metadata, User, Request, LastRequestID)
+// const svs = require('./SVS')
+const SVS = require('./SVS')
+const svs = new SVS(User, Metadata, LastUserID, LastRequestID)
+
 const gms = require('./GMS')
+
 const sms = require('./SMS')
-const resms = require('./ResMS')
+
+const ResMS = require('./ResMS')
+const resms = new ResMS(Resource, User, Metadata, LastUserID)
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
