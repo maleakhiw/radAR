@@ -64,7 +64,7 @@ const UMS = require('./UMS')
 const ums = new UMS(Metadata, User, Request, LastRequestID)
 // const svs = require('./SVS')
 const SVS = require('./SVS')
-const svs = new SVS(User, Metadata, LastUserID, LastRequestID)
+const svs = new SVS(User, Metadata, LastUserID)
 
 const gms = require('./GMS')
 
