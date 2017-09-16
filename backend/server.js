@@ -12,7 +12,6 @@ const upload = multer({
 })
 
 // data models
-
 const Chat = require('./models/chat')
 const User = require('./models/user')
 const Request = require('./models/request')
@@ -21,6 +20,7 @@ const Resource = require('./models/resource')
 const Metadata = require('./models/metadata')
 const LastChatID = require('./models/lastChatID')
 const LastUserID = require('./models/lastUserID')
+const PasswordHash = require('./models/passwordHash')
 const LastRequestID = require('./models/lastRequestID')
 
 const app = express()
@@ -31,7 +31,7 @@ app.use(cors())
 const common = require('./common')
 const addMetas = common.addMetas
 
-// Use JS Promises library
+// Use JS Promises library for Mongoose
 mongoose.Promise = global.Promise
 
 // Error handling for invalid JSON
@@ -41,8 +41,9 @@ app.use(function (error, req, res, next) {
       success: false,
       errors: common.errorObjectBuilder(['invalidJSON'])
     })
-  } else {
-    next();
+  }
+  else {
+    next()
   }
 });
 
@@ -61,19 +62,20 @@ module.exports.connection = connection
 
 // Systems
 const UMS = require('./UMS')
-const ums = new UMS(Metadata, User, Request, LastRequestID)
+const ums = new UMS(Metadata, User, Request, LastRequestID, PasswordHash)
 // const svs = require('./SVS')
 const SVS = require('./SVS')
-const svs = new SVS(User, Metadata, LastUserID)
+const svs = new SVS(User, Metadata, LastUserID, PasswordHash)
+const authenticate = svs.authenticate
 
 const gms = require('./GMS')
 
 const SMS = require('./SMS')
-const sms = new SMS(Chat, Message, User, LastRequestID, LastChatID, Metadata, LastUserID)
+const sms = new SMS(Chat, Message, User, LastRequestID, LastChatID, Metadata, LastUserID, PasswordHash)
 
 
 const ResMS = require('./ResMS')
-const resms = new ResMS(Resource, User, Metadata, LastUserID)
+const resms = new ResMS(Resource, User, Metadata, LastUserID, PasswordHash)
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
@@ -99,31 +101,43 @@ app.get("/api/accounts/:userID", (req, res) => {
 app.post("/api/auth", svs.signUp)
 app.get("/api/auth/:username", svs.login)
 
+// app.get("/api/auth/:username", svs.login)
+// app.post("/api/login",
+//   passport.authenticate('local', { session: false }),
+//   (req, res) => {
+//     // authentication successful, send token back
+//     res.json({
+//       success: true,
+//       token: "79",
+//       userID: req.query.userID
+//     })
+//   })
+
 // object: accounts
 // friends
-app.post("/api/accounts/:userID/friends", ums.addFriend)
-app.get("/api/accounts/:userID/friendRequests", ums.getFriendRequests)
-app.delete("/api/accounts/:userID/friendRequests/:requestID", ums.respondToRequest)
-app.get("/api/accounts/:userID/friends", ums.getFriends)
+app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
+app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)
+app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
+app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
 // resources
-app.post("/api/accounts/:userID/resources", upload.single('file'), resms.uploadResource)
-app.get("/api/accounts/:userID/resources/:resourceID", resms.getResource)
+app.post("/api/accounts/:userID/resources", upload.single('file'), authenticate, resms.uploadResource)
+app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getResource)
 
 // chats
-app.get("/api/accounts/:userID/chats", sms.getChatsForUser)
+app.get("/api/accounts/:userID/chats", authenticate, sms.getChatsForUser)
 // NOTE: mirrors chats object below
-app.post("/api/accounts/:userID/chats", sms.newChat)
-app.get("/api/accounts/:userID/chats/:chatID", sms.getChat)
-app.get("/api/accounts/:userID/chats/:chatID/messages", sms.getMessages)
+app.post("/api/accounts/:userID/chats", authenticate, sms.newChat)
+app.get("/api/accounts/:userID/chats/:chatID", authenticate, sms.getChat)
+app.get("/api/accounts/:userID/chats/:chatID/messages", authenticate, sms.getMessages)
 
 // online statuses
-app.get("/api/accounts/:userID/usersOnlineStatuses", ums.isOnline)
+app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 
 // object: users
 // users
-app.get("/api/users", ums.search) // get all users (only if query specified)
-app.get("/api/users/:userID", ums.getInformation)
+app.get("/api/users", authenticate, ums.search) // get all users (only if query specified)
+app.get("/api/users/:userID", authenticate, ums.getInformation)
 
 // object: chats
 app.get("/api/chats", (req, res) => {
@@ -133,18 +147,18 @@ app.get("/api/chats", (req, res) => {
 })
 
 // chats
-app.post("/api/chats", sms.newChat)
-app.get("/api/chats/:chatID", sms.getChat)
-app.post("/api/chats/:chatID/messages", sms.sendMessage)
-app.get("/api/chats/:chatID/messages", sms.getMessages)
+app.post("/api/chats", authenticate, sms.newChat)
+app.get("/api/chats/:chatID", authenticate, sms.getChat)
+app.post("/api/chats/:chatID/messages", authenticate, sms.sendMessage)
+app.get("/api/chats/:chatID/messages", authenticate, sms.getMessages)
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token
 app.get("/api/groups", (req, res) => {
   res.json(addMetas({}, "/api/groups"))
 })
-app.get("/api/groups/:groupID", gms.getGroupInfo)
-app.post("/api/groups", gms.newGroup)
+app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
+app.post("/api/groups", authenticate, gms.newGroup)
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")

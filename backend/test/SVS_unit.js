@@ -11,6 +11,7 @@ const User = require('../models/user')
 const Request = require('../models/request')
 const LastRequestID = require('../models/lastRequestID')
 const LastUserID = require('../models/lastUserID')
+const PasswordHash = require('../models/passwordHash')
 
 describe('SVS unit tests', () => {
   let Metadata = require('../models/metadata')  // shadow the external Metadata
@@ -19,7 +20,7 @@ describe('SVS unit tests', () => {
   describe('validateRequest(req, res, callback)', () => {
 
     afterEach(() => {
-      metadataFindOneStub.restore()
+      metadataFindOneStub.restore() // reset to unstubbed state
     })
 
     it('should handle errors gracefully', (done) => {
@@ -27,14 +28,14 @@ describe('SVS unit tests', () => {
       var mockFindOne = {
         where: () => this,
         equals: () => this,
-        exec: () => new Promise((resolve, reject) => {
+        exec: () => new Promise((resolve, reject) => {  // throw an error to see how the system reacts
           throw new Error('Some random error')
         })
       }
       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
 
       // SVS
-      let svs = new SVS(null, Metadata, null)
+      let svs = new SVS(null, Metadata, null, null)
 
       let callback = (req, res) => {
         done()
@@ -93,7 +94,7 @@ describe('SVS unit tests', () => {
       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
 
       // SVS
-      let svs = new SVS(null, Metadata, null)
+      let svs = new SVS(null, Metadata, null, null)
 
       let callback = (req, res) => {
         done()
@@ -133,7 +134,7 @@ describe('SVS unit tests', () => {
       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
 
       // SVS
-      let svs = new SVS(null, Metadata, null)
+      let svs = new SVS(null, Metadata, null, null)
 
       let callback
       let req = {
@@ -208,7 +209,7 @@ describe('SVS unit tests', () => {
   })
 
   after(() => {
-    let svs = new SVS(User, Metadata, LastUserID) // reinitialise with actual modules for other (integration) tests
+    let svs = new SVS(User, Metadata, LastUserID, PasswordHash) // reinitialise with actual modules for other (integration) tests
   })
 
 })

@@ -20,12 +20,12 @@ const getPublicUserInfo = common.getPublicUserInfo
 let Metadata, User, Request, LastRequestID
 
 module.exports = class UMS {
-  constructor(pMetadata, pUser, pRequest, pLastRequestID, pLastUserID) {
+  constructor(pMetadata, pUser, pRequest, pLastRequestID, pLastUserID, pPasswordHash) {
     Metadata = pMetadata
     User = pUser
     Request = pRequest
     LastRequestID = pLastRequestID
-    svs = new SVS(User, Metadata, pLastUserID)
+    svs = new SVS(User, Metadata, pLastUserID, pPasswordHash)
   }
 
   isOnline(req, res) {

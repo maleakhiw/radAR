@@ -4,17 +4,20 @@
  */
 
 const common = require('./common')
+const consts = require('./consts')
 // const mongoose = module.parent.exports.mongoose   // import from index.js
+const randomstring = require('randomstring')
+const bcrypt = require('bcrypt')
 
-let User, Metadata, LastUserID
+let User, Metadata, LastUserID, PasswordHash
 
-// validate a request token
-function validateToken(userID, token) { // TODO: stub
-    return true
+function generateToken(userID) {
+  return randomstring.generate(64) // TODO MOVE TO consts
 }
 
-function generateToken(userID) { // TODO: stub
-    return "79"
+function hashSaltPasssword(password) { // hashes and salts a plaintext password
+  // TODO: defensive (check for empty passwords?) or assume already done externally?
+  return bcrypt.hashSync(password, consts.SALT_ROUNDS)
 }
 
 const isString = common.isString
@@ -25,10 +28,65 @@ function getUserID(callback) {
 }
 
 module.exports = class SVS {
-  constructor(pUser, pMetadata, pLastUserID) {
+  constructor(pUser, pMetadata, pLastUserID, pPasswordHash) {
     User = pUser
     Metadata = pMetadata
-    LastUserID = pLastUserID
+    LastUserID = pLastUserID,
+    PasswordHash = pPasswordHash
+  }
+
+  authenticate(req, res, next) {
+    // TODO: check if in req.query, req.body or req.param
+    let userID = req.query.userID || req.params.userID
+    console.log(userID)
+    Metadata.findOne({ userID: userID }).exec()
+
+    .then((metadata) => {
+      if (!metadata) {
+        res.status(401).json({
+          success: false,
+          errors: common.errorObjectBuilder(['invalidUsername'])
+        })
+      } else {
+        // if (metadata.activeTokens.includes())
+        console.log(req.get('token'))
+        let authorizationToken = req.get('token')
+
+        if (!authorizationToken) {
+          throw new Error("Missing Token")
+        }
+        // authorizationToken = authorizationToken.slice(7)
+        // console.log(authorizationToken)
+
+        // console.log(metadata.activeTokens)
+        if (!metadata.activeTokens.includes(authorizationToken)) {
+          throw new Error('Unauthorized')
+        }
+
+        next()
+      }
+    })
+
+    .catch((err) => {
+      console.log(err)
+      if (err == 'Error: Missing Token') {
+        res.status(401).json({
+          success: false,
+          errors: common.errorObjectBuilder(['missingToken'])
+        })
+        return
+      } else if (err == 'Error: Unauthorized') {
+        res.status(401).json({
+          success: false,
+          errors: common.errorObjectBuilder(['invalidToken'])
+        })
+      }
+      res.status(400).json({  // TODO: verify status code
+        success: false,
+        errors: common.errorObjectBuilder(['internalError'])
+      })
+    })
+
   }
 
   validateRequest(req, res, callback) {
@@ -47,18 +105,18 @@ module.exports = class SVS {
         }
         res.status(401).json(response)
     }
-    if (!('token' in req.body) && !('token' in req.query)) {
-        errorKeys.push('missingToken')
-    }
+    // if (!('token' in req.body) && !('token' in req.query)) {
+    //     errorKeys.push('missingToken')
+    // }
     if (!req.body.userID) {
         errorKeys.push('missingUserID')
     }
 
     let token = req.body.token || req.query.token
 
-    if (!validateToken(req.body.userID, token)) {
-        errorKeys.push('invalidToken')
-    }
+    // if (!validateToken(req.body.userID, token)) {
+    //     errorKeys.push('invalidToken')
+    // }
 
     if (errorKeys.length) {
       sendError()
@@ -131,9 +189,7 @@ module.exports = class SVS {
       User.find({ username: username }).exec()
       .then((users) => {
         if (users.length) {
-            errorKeys.push('usernameTaken')
-            // sendError()
-            throw Error('usernameTaken')
+          throw Error('usernameTaken')
         } else {
           return User.find({ email: email }).exec()
         }
@@ -141,12 +197,11 @@ module.exports = class SVS {
 
       .then((users) => {
         if (users.length) {
-          errorKeys.push('emailTaken')
           throw Error('emailTaken')
-        } else {
-          return LastUserID.findOneAndRemove({})
         }
+        return LastUserID.create({ userID: userID })
       })
+
 
       .then((lastUserID) => {
         // console.log(lastUserID)
@@ -158,8 +213,22 @@ module.exports = class SVS {
         return LastUserID.create({ userID: userID }) // Promise
       })
 
-      .then((lastUserID) => {
+
+      .then((lastUserID) =>  {
+        let hashed = hashSaltPasssword(password)
+        // console.log(hashed)
+        return PasswordHash.create({
+          userID: userID,
+          hash: hashed
+        })
+      })
+
+      .then((passwordHash) => {
         // console.log(lastUserID)
+        console.log(passwordHash)
+        if (!passwordHash) {
+          throw new Error('') // becomes internalError
+        }
         let object = {
             userID: userID,
             username: username,
@@ -174,7 +243,6 @@ module.exports = class SVS {
             signUpDate: Date.now()
         }
 
-        // TODO: add to Username/Password collection
         return User.create(object) // Promise
       })
 
@@ -241,6 +309,7 @@ module.exports = class SVS {
         // TODO: validate username and password
         let token;
         let userID;
+
         Metadata.findOne({ username: username }).exec()
 
         .then((metadata) => {
@@ -259,6 +328,14 @@ module.exports = class SVS {
         })
 
         .then((metadata) => {
+            return PasswordHash.findOne({userID: userID})
+        })
+
+        .then((passwordHash) => {
+          let hash = passwordHash.hash
+          let success = bcrypt.compareSync(password, hash)
+
+          if (success) {
             let response = {
                 success: true,
                 errors: [],
@@ -266,11 +343,20 @@ module.exports = class SVS {
                 userID: userID
             }
             res.json(response)
+          } else {
+            res.status(401).json({
+              success: false,
+              errors: common.errorObjectBuilder['invalidPassword'],
+              token: null,
+              userID: null
+            })
+
+          }
+
         })
 
         .catch((err) => {
           if (err != 'Error: invalidUsername') {
-            console.log(err)
             errorKeys.push('internalError')
             sendError()
           }
