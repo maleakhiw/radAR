@@ -37,8 +37,8 @@ module.exports = class SVS {
 
   authenticate(req, res, next) {
     // TODO: check if in req.query, req.body or req.param
-    let userID = req.query.userID || req.params.userID
-    console.log(userID)
+    let userID = req.query.userID || req.params.userID || req.body.userID
+    console.log('userID', userID)
     Metadata.findOne({ userID: userID }).exec()
 
     .then((metadata) => {
@@ -49,7 +49,6 @@ module.exports = class SVS {
         })
       } else {
         // if (metadata.activeTokens.includes())
-        console.log(req.get('token'))
         let authorizationToken = req.get('token')
 
         if (!authorizationToken) {
@@ -89,59 +88,59 @@ module.exports = class SVS {
 
   }
 
-  validateRequest(req, res, callback) {
-    if (req.params.userID) {  // accept userID passed via URL
-      req.body.userID = req.params.userID
-    } else if (req.query.userID) {
-      req.body.userID = req.query.userID
-    }
-
-    let errorKeys = []
-
-    function sendError() { // assumption: variables are in closure
-        let response = {
-            success: false,
-            errors: common.errorObjectBuilder(errorKeys)
-        }
-        res.status(401).json(response)
-    }
-    // if (!('token' in req.body) && !('token' in req.query)) {
-    //     errorKeys.push('missingToken')
-    // }
-    if (!req.body.userID) {
-        errorKeys.push('missingUserID')
-    }
-
-    let token = req.body.token || req.query.token
-
-    // if (!validateToken(req.body.userID, token)) {
-    //     errorKeys.push('invalidToken')
-    // }
-
-    if (errorKeys.length) {
-      sendError()
-    } else {
-      let userID = req.body.userID
-      // update last seen
-      Metadata.findOne({ userID: userID }).exec()
-          .then((metadata) => {
-              if (!metadata) {  // TODO: new test case w/ invalid user ID
-                errorKeys.push('invalidUserID')
-                sendError()
-                return
-              }
-              metadata.lastSeen = Date.now()
-              metadata.save()
-              callback(req, res)
-          })
-          .catch((err) => {
-              console.log(err)
-              errorKeys.push('internalError')
-              sendError()
-          })
-    }
-
-  }
+  // validateRequest(req, res, callback) {
+  //   if (req.params.userID) {  // accept userID passed via URL
+  //     req.body.userID = req.params.userID
+  //   } else if (req.query.userID) {
+  //     req.body.userID = req.query.userID
+  //   }
+  //
+  //   let errorKeys = []
+  //
+  //   function sendError() { // assumption: variables are in closure
+  //       let response = {
+  //           success: false,
+  //           errors: common.errorObjectBuilder(errorKeys)
+  //       }
+  //       res.status(401).json(response)
+  //   }
+  //   // if (!('token' in req.body) && !('token' in req.query)) {
+  //   //     errorKeys.push('missingToken')
+  //   // }
+  //   if (!req.body.userID) {
+  //       errorKeys.push('missingUserID')
+  //   }
+  //
+  //   let token = req.body.token || req.query.token
+  //
+  //   // if (!validateToken(req.body.userID, token)) {
+  //   //     errorKeys.push('invalidToken')
+  //   // }
+  //
+  //   if (errorKeys.length) {
+  //     sendError()
+  //   } else {
+  //     let userID = req.body.userID
+  //     // update last seen
+  //     Metadata.findOne({ userID: userID }).exec()
+  //         .then((metadata) => {
+  //             if (!metadata) {  // TODO: new test case w/ invalid user ID
+  //               errorKeys.push('invalidUserID')
+  //               sendError()
+  //               return
+  //             }
+  //             metadata.lastSeen = Date.now()
+  //             metadata.save()
+  //             callback(req, res)
+  //         })
+  //         .catch((err) => {
+  //             console.log(err)
+  //             errorKeys.push('internalError')
+  //             sendError()
+  //         })
+  //   }
+  //
+  // }
 
   signUp(req, res) {
     let firstName = req.body.firstName
@@ -225,7 +224,6 @@ module.exports = class SVS {
 
       .then((passwordHash) => {
         // console.log(lastUserID)
-        console.log(passwordHash)
         if (!passwordHash) {
           throw new Error('') // becomes internalError
         }
@@ -328,7 +326,7 @@ module.exports = class SVS {
         })
 
         .then((metadata) => {
-            return PasswordHash.findOne({userID: userID})
+            return PasswordHash.findOne({ userID: userID })
         })
 
         .then((passwordHash) => {
