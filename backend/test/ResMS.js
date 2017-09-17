@@ -4,6 +4,7 @@ const User = require('../models/user')
 const Metadata = require('../models/metadata')
 const LastUserID = require('../models/lastUserID')
 const Resource = require('../models/resource')
+const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -19,6 +20,8 @@ chai.use(chaiHttp)
 mongoose.Promise = global.Promise
 
 describe('ResMS', () => {
+
+  let user1token, user2token
 
   before((done) => {  // clean up the database
     mongoose.connect('mongodb://localhost/radarTest',
@@ -40,6 +43,9 @@ describe('ResMS', () => {
       return Resource.remove({})
     })
     .then(() => {
+      return PasswordHash.remove({})
+    })
+    .then(() => {
       // create a user account
       chai.request(server)
       .post('/api/auth')
@@ -58,6 +64,7 @@ describe('ResMS', () => {
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
         expect(res.body.userID).to.equal(1)
+        user1token = res.body.token
 
         // create another user account - should not be able to access resources of 1st user account
         chai.request(server)
@@ -76,6 +83,7 @@ describe('ResMS', () => {
           expect(res).to.be.json
           expect(res.body.success).to.equal(true)
           expect(res.body.userID).to.equal(2)
+          user2token = res.body.token
           done()
           })
       })
@@ -95,7 +103,8 @@ describe('ResMS', () => {
     it('should upload test.txt for user1', (done) => {
       chai.request(server)
       .post('/api/accounts/1/resources')
-      .field('token', '79')
+      // .field('token', '79')
+      .set('token', user1token)
       .attach('file', fs.readFileSync('test/test.txt'), 'test.txt') // last param: filename that the server sees
       .end((err, res) => {
         res.should.have.status(200)
@@ -113,7 +122,8 @@ describe('ResMS', () => {
     it('should send test.txt back', (done) => {
       chai.request(server)
       .get('/api/accounts/1/resources/' + fileID)
-      .query({token: '79'})
+      // .query({token: '79'})
+      .set('token', user1token)
       .end((err, res) => {
         res.should.have.status(200)
         res.type.should.equal('text/plain')

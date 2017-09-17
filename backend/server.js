@@ -121,7 +121,7 @@ app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.
 app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
 // resources
-app.post("/api/accounts/:userID/resources", upload.single('file'), authenticate, resms.uploadResource)
+app.post("/api/accounts/:userID/resources", authenticate, upload.single('file'), resms.uploadResource)
 app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getResource)
 
 // chats

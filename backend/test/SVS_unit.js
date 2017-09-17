@@ -43,11 +43,13 @@ describe('SVS unit tests', () => {
       // mocks of req and res objects?
       let req = {
         body: {
-          userID: 1,
-          token: "80"
+          userID: 1
         },
         params: {},
-        query: {}
+        query: {},
+        get: (key) => {
+          return "80"  // token
+        }
       }
       let res = {
         json: (obj) => {
@@ -60,7 +62,7 @@ describe('SVS unit tests', () => {
         }
       }
 
-      svs.validateRequest(req, res, callback)
+      svs.authenticate(req, res, callback)
       done()
     })
 
@@ -75,7 +77,7 @@ describe('SVS unit tests', () => {
             username: "test",
             lastSeen: Date.now(),
             deviceIDs: [],
-            activeTokens: [],
+            activeTokens: ["80"],
 
             // methods
             save: () => new Promise((resolve, reject) => {
@@ -103,10 +105,12 @@ describe('SVS unit tests', () => {
       let req = {
         body: {
           userID: 1,
-          token: "80"
         },
         params: {},
-        query: {}
+        query: {},
+        get: (key) => {
+          return "80"  // token
+        }
       }
       let res = {
         json: (obj) => {
@@ -119,7 +123,7 @@ describe('SVS unit tests', () => {
         }
       }
 
-      svs.validateRequest(req, res, callback)
+      svs.authenticate(req, res, callback)
       // expect(callback.called).to.equal(true) does not work because Promises
       // executes *after* expect(callback.called).to.equal(true)
     })
@@ -138,17 +142,19 @@ describe('SVS unit tests', () => {
 
       let callback
       let req = {
-        body: {
-          userID: 1,
-          token: "80"
-        },
-        params: {},
-        query: {}
+        params: {userID: 1},
+        body: {},
+        query: {},
+        get: (key) => {
+          return "80"  // token
+        }
       }
 
       let res = {
         json: (obj) => {
           res.sent = obj
+          res.sent.success.should.equal(false)
+          done()
           return res
         },
         status: (statusCode) => {
@@ -157,9 +163,8 @@ describe('SVS unit tests', () => {
         }
       }
 
-      svs.validateRequest(req, res, callback)
+      svs.authenticate(req, res, callback)
 
-      done()
     })
 
     it('should send an error if token is missing', (done) => {
@@ -167,7 +172,27 @@ describe('SVS unit tests', () => {
       var mockFindOne = {
         where: () => this,
         equals: () => this,
-        exec: () => new Promise((resolve, reject) => resolve(null))
+        exec: () => new Promise((resolve, reject) => {
+          resolve({
+            userID: 1,
+            username: "test",
+            lastSeen: Date.now(),
+            deviceIDs: [],
+            activeTokens: ["80"],
+
+            // methods
+            save: () => new Promise((resolve, reject) => {
+              resolve({
+                userID: 1,
+                username: "test",
+                lastSeen: Date.now(),
+                deviceIDs: [],
+                activeTokens: []
+              })
+            })
+
+          })
+        })
       }
       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
 
@@ -176,16 +201,21 @@ describe('SVS unit tests', () => {
 
       let callback
       let req = {
-        body: {
+        params: {
           userID: 1
         },
-        params: {},
-        query: {}
+        body: {},
+        query: {},
+        get: (key) => {
+          return null  // token
+        }
       }
 
       let res = {
         json: (obj) => {
           res.sent = obj
+          res.sent.success.should.equal(false)
+          done()
           return res
         },
         status: (statusCode) => {
@@ -194,10 +224,9 @@ describe('SVS unit tests', () => {
         }
       }
 
-      svs.validateRequest(req, res, callback)
-      res.sent.success.should.equal(false)
+      // console.log(res)
+      svs.authenticate(req, res, callback)
 
-      done()
     })
 
   })
