@@ -198,7 +198,7 @@ module.exports = class SVS {
         if (users.length) {
           throw Error('emailTaken')
         }
-        return LastUserID.create({ userID: userID })
+        return LastUserID.findOneAndRemove({})
       })
 
 
