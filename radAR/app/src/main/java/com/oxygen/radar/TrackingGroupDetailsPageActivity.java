@@ -1,6 +1,13 @@
+package com.oxygen.radar;
+
+import android.support.v7.app.AppCompatActivity;
+
 /**
  * Created by Fadhil Anshar on 16-Sep-17.
  */
 
-public class TrackingGroupDetailsPageActivity {
+
+// https://developer.android.com/guide/topics/ui/layout/recyclerview.html
+
+public class TrackingGroupDetailsPageActivity extends AppCompatActivity {
 }

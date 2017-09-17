@@ -21,7 +21,7 @@ public class TrackingGroupActivity extends AppCompatActivity implements Tracking
         // use custom title bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(R.layout.tracking_group_titlebar);
+        actionBar.setCustomView(R.layout.tracking_group_details);
 
         presenter = new TrackingGroupPresenterImpl(this);
         presenter.loadGroupDetailsToView();

@@ -28,6 +28,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="left|center"
+                    android:clickable="true"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -38,7 +39,7 @@
                         app:srcCompat="@drawable/ic_person_black_48dp" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/user_list_item_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
