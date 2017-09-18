@@ -138,7 +138,7 @@ module.exports = class SMS {
 
       .catch((err) => {
         console.log(err)
-        res.status(400).json({
+        res.json({
           success: false,
           errors: []
         })
@@ -191,7 +191,7 @@ module.exports = class SMS {
 
       .then((chat) => {
         if (!chat) {
-          res.status(400).json({
+          res.json({
             success: false,
             errors: common.errorObjectBuilder(['invalidChatID'])
           })
@@ -229,7 +229,7 @@ module.exports = class SMS {
 
       .catch((err) => {
         console.log(err)
-        res.status(400).send({
+        res.send({
           success: false,
           errors: common.errorObjectBuilder(['internalError'])
         })
@@ -271,14 +271,14 @@ module.exports = class SMS {
 
       .then((chats) => {
         if (!chats.length) {
-          res.status(400).json({
+          res.json({
             success: false,
             errors: common.errorObjectBuilder(['invalidChatID']),
             sentMessage: null
           })
           return
         } else if (!chats[0].members.includes(from)) {  // not a member of the chat
-          res.status(400).json({
+          res.json({
             success: false,
             errors: common.errorObjectBuilder(['unauthorisedChat']),
             sentMessage: null

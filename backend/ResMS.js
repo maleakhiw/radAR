@@ -27,7 +27,7 @@ module.exports = class ResMS {
     let file = req.file
 
     if (!file) {
-      res.status(400).json({
+      res.json({
         success: false,
         error: [common.errorObjectBuilder(['missingFile'])]
       })
@@ -53,7 +53,7 @@ module.exports = class ResMS {
     })
     .catch((err) => {
       console.log(err)
-      res.status(400).json({
+      res.json({
         success: false,
         error: [common.errorObjectBuilder(['internalError'])]
       })

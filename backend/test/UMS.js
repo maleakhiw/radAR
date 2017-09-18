@@ -120,7 +120,7 @@ describe('UMS', () => {
         invitedUserID: 2,
       })
       .end((err, res) => {
-        res.should.have.status(400)
+
         expect(res).to.be.json
         expect(res.body.success).to.equal(false)
 
@@ -140,7 +140,7 @@ describe('UMS', () => {
         invitedUserID: 10,
       })
       .end((err, res) => {
-        res.should.have.status(400)
+
         expect(res).to.be.json
         expect(res.body.success).to.equal(false)
 

@@ -80,7 +80,7 @@ module.exports = class SVS {
           errors: common.errorObjectBuilder(['invalidToken'])
         })
       }
-      res.status(400).json({  // TODO: verify status code
+      res.json({  // TODO: verify status code
         success: false,
         errors: common.errorObjectBuilder(['internalError'])
       })
@@ -176,7 +176,7 @@ module.exports = class SVS {
             success: false,
             errors: common.errorObjectBuilder(errorKeys)
         }
-        res.status(400).json(response)
+        res.json(response)
     }
 
     if (errorKeys.length) {
@@ -298,7 +298,7 @@ module.exports = class SVS {
             success: false,
             errors: common.errorObjectBuilder(errorKeys)
         }
-        res.status(400).json(response)
+        res.json(response)
     }
 
     if (errorKeys.length) {
