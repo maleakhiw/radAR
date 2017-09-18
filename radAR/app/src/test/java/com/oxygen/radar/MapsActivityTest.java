@@ -1,14 +1,12 @@
 package com.oxygen.radar;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static android.provider.Settings.Global.getString;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by rtanudjaja on 19/09/17.
@@ -26,7 +24,8 @@ public class MapsActivityTest {
 
     @Test
     public void onMapReady() throws Exception {
-        assertEquals(1,1);
+        assertEquals(getString(R.string.melbourne_university_lat),"-37.7963689");
+        assertEquals(getString(R.string.melbourne_university_lng),"144.9611738");
     }
 
 }
