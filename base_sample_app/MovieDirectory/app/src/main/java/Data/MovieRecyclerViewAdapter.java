@@ -1,7 +1,9 @@
 package Data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gohool.moviedirectory.moviedirectory.MovieDetailActivity;
 import com.gohool.moviedirectory.moviedirectory.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.List;
 
 import Model.Movie;
@@ -79,8 +83,12 @@ public class MovieRecyclerViewAdapter extends RecyclerView.Adapter<MovieRecycler
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context,"Rowtaped!", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(context,"Rowtaped!", Toast.LENGTH_LONG).show();
+                    Movie movie = movieList.get(getAdapterPosition());
+                    Intent intent = new Intent(context, MovieDetailActivity.class);
 
+                    intent.putExtra("movie", movie);
+                    context.startActivity(intent);
                 }
             });
         }

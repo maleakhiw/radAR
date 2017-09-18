@@ -1,11 +1,13 @@
 package Model;
 
+import java.io.Serializable;
+
 /**
  * Created by keyst on 18/09/2017.
  * This represent blueprints for the movie
  */
 
-public class Movie {
+public class Movie implements Serializable {
     private String poster;
     private String title;
     private String movieType;
