@@ -133,7 +133,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     if (!invitedUserID) errorKeys.push('missingInvitedUserID')
@@ -234,7 +234,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     Request.find({ to: userID, responded: false }).exec()
@@ -284,7 +284,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     console.log(req.body)
@@ -343,7 +343,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     if (!requestID) {
@@ -427,7 +427,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     if (!userID) {
@@ -483,7 +483,7 @@ module.exports = class UMS {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
-      res.status(400).json(response)
+      res.json(response)
     }
 
     if (!query) errorKeys.push('missingQuery')

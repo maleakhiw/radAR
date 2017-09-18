@@ -94,7 +94,7 @@ describe('SVS', () => {
             "deviceID": "memes"
         })
         .end((err, res) => {
-          res.should.have.status(400)
+
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
           done()
@@ -135,7 +135,7 @@ describe('SVS', () => {
           password: "password"
         })
         .end((err, res) => {
-          res.should.have.status(400)
+
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
 
