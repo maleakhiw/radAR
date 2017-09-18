@@ -131,7 +131,7 @@
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
-        android:layout_height="570dp"
+        android:layout_height="wrap_content"
         app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
         tools:layout_editor_absoluteY="147dp">
 
@@ -235,13 +235,9 @@
                 </GridLayout>
 
 
-
-
             </LinearLayout>
 
         </android.support.constraint.ConstraintLayout>
-
-
 
 
     </android.support.v4.widget.NestedScrollView>
