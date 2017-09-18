@@ -3,6 +3,7 @@ let mongoose = require('mongoose')
 const User = require('../models/user')
 const Metadata = require('../models/metadata')
 const LastUserID = require('../models/lastUserID')
+const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -35,12 +36,16 @@ describe('SVS', () => {
       return LastUserID.remove({})
     })
     .then(() => {
+      return PasswordHash.remove({})
+    })
+    .then(() => {
       done()
     })
     .catch((err) => {
       console.log('err', err)
       done()
     })
+
   })
 
   // beforeEach((done) => {done()})
@@ -89,7 +94,7 @@ describe('SVS', () => {
             "deviceID": "memes"
         })
         .end((err, res) => {
-          res.should.have.status(400)
+
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
           done()
@@ -111,6 +116,7 @@ describe('SVS', () => {
           password: "hunter2"
         })
         .end((err, res) => {
+          console.log(res.body)
           res.should.have.status(200)
           expect(res).to.be.json
           expect(res.body.success).to.equal(true)
@@ -129,7 +135,7 @@ describe('SVS', () => {
           password: "password"
         })
         .end((err, res) => {
-          res.should.have.status(400)
+
           expect(res).to.be.json
           expect(res.body.success).to.equal(false)
 

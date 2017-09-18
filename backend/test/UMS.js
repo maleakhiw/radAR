@@ -5,6 +5,7 @@ const User = require('../models/user')
 const Request = require('../models/request')
 const LastRequestID = require('../models/lastRequestID')
 const LastUserID = require('../models/lastUserID')
+const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -18,6 +19,8 @@ chai.use(chaiHttp)
 mongoose.Promise = global.Promise
 
 describe('UMS', () => {
+
+  let user1token, user2token
 
   before((done) => {
     mongoose.connect('mongodb://localhost/radarTest',
@@ -33,6 +36,7 @@ describe('UMS', () => {
     .then(() => LastRequestID.remove({}))
     .then(() => User.remove({}))
     .then(() => LastUserID.remove({}))
+    .then(() => PasswordHash.remove({}))
     .then(() => {
       // create dummy users
       chai.request(server)
@@ -51,6 +55,7 @@ describe('UMS', () => {
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
         expect(res.body.userID).to.equal(1)
+        user1token = res.body.token
 
         chai.request(server)
         .post('/api/auth')
@@ -68,6 +73,7 @@ describe('UMS', () => {
           expect(res).to.be.json
           expect(res.body.success).to.equal(true)
           expect(res.body.userID).to.equal(2)
+          user2token = res.body.token
           done()
         })
 
@@ -87,9 +93,9 @@ describe('UMS', () => {
     it('should send a friend request from user1 to user2', (done) => {
       chai.request(server)
       .post('/api/accounts/1/friends')
+      .set('token', user1token)
       .send({
         invitedUserID: 2,
-        token: "79"
       })
       .end((err, res) => {
         res.should.have.status(200)
@@ -109,12 +115,12 @@ describe('UMS', () => {
     it('user1 should not be able to send another friend request to user2 while it is pending', (done) => {
       chai.request(server)
       .post('/api/accounts/1/friends')
+      .set('token', user1token)
       .send({
         invitedUserID: 2,
-        token: "79"
       })
       .end((err, res) => {
-        res.should.have.status(400)
+
         expect(res).to.be.json
         expect(res.body.success).to.equal(false)
 
@@ -129,12 +135,12 @@ describe('UMS', () => {
     it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {
       chai.request(server)
       .post('/api/accounts/1/friends')
+      .set('token', user1token)
       .send({
         invitedUserID: 10,
-        token: "79"
       })
       .end((err, res) => {
-        res.should.have.status(400)
+
         expect(res).to.be.json
         expect(res.body.success).to.equal(false)
 
@@ -149,10 +155,11 @@ describe('UMS', () => {
     it('user2 should receive a friend request from user1', (done) => {
       chai.request(server)
       .get('/api/accounts/2/friendRequests')
+      .set('token', user2token)
       .query({
-        token: "79"
       })
       .end((err, res) => {
+        console.log(res.body)
         res.should.have.status(200)
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
@@ -166,8 +173,8 @@ describe('UMS', () => {
     it('user2 should accept the friend request from user1', (done) => {
       chai.request(server)
       .delete('/api/accounts/2/friendRequests/1')
+      .set('token', user2token)
       .send({
-        token: "79",
         action: "accept"
       })
       .end((err, res) => {
@@ -185,9 +192,7 @@ describe('UMS', () => {
     it("user1 should have user2 in user1's friends list", (done) => {
       chai.request(server)
       .get('/api/accounts/1/friends')
-      .query({
-        token: "79"
-      })
+      .set('token', user1token)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res).to.be.json
@@ -206,9 +211,9 @@ describe('UMS', () => {
     it("search by name (query: user, existing users: User1 and User2)", (done) => {
       chai.request(server)
       .get('/api/users/')
+      .set('token', user1token)
       .query({
         userID: 1,
-        token: "79",
         query: "user",
         searchType: "name"
       })
@@ -226,9 +231,9 @@ describe('UMS', () => {
     it("search by email (query: user, existing users: User1 and User2)", (done) => {
       chai.request(server)
       .get('/api/users')
+      .set('token', user1token)
       .query({
-        userID: 1,
-        token: "79",
+        userID: 1,  // TODO move userID to header
         query: "email1@example.com",
         searchType: "email"
       })
@@ -246,10 +251,10 @@ describe('UMS', () => {
       .get('/api/users')
       .query({
         userID: 1,
-        token: "79",
         query: "email@example.com",
         searchType: "email"
       })
+      .set('token', user1token)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res).to.be.json
@@ -264,10 +269,10 @@ describe('UMS', () => {
       .get('/api/users')
       .query({
         userID: 1,
-        token: "79",
         query: "user1",
         searchType: "username"
       })
+      .set('token', user1token)
       .end((err, res) => {
         res.should.have.status(200)
         expect(res).to.be.json

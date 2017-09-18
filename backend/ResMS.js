@@ -16,83 +16,76 @@ let Resource
 // const connection = module.parent.exports.connection
 
 module.exports = class ResMS {
-  constructor(pResource, pUser, pMetadata, pLastUserID) {
+  constructor(pResource, pUser, pMetadata, pLastUserID, pPasswordHash) {
     Resource = pResource
-    svs = new SVS(pUser, pMetadata, pLastUserID)
+    svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
   }
 
   uploadResource(req, res) {
     // TODO: update API documentation to reflect fact that files are sent using multipart/form-data
-    let callback = (req, res) => {
-      let userID = req.body.userID
-      let file = req.file
+    let userID = req.params.userID
+    let file = req.file
 
-      if (!file) {
-        res.status(400).json({
-          success: false,
-          error: [common.errorObjectBuilder(['missingFile'])]
-        })
-        return
-      }
-
-      let fileID = file.filename
-
-      Resource.create({
-        fileID: fileID,
-        filename: file.originalname,
-        mimetype: file.mimetype,
-        owners: [userID],
-        chatID: null,
-        groupID: null
+    if (!file) {
+      res.json({
+        success: false,
+        error: [common.errorObjectBuilder(['missingFile'])]
       })
-      .then((resource) => {
-        res.json({
-          success: true,
-          errors: [],
-          resourceID: fileID
-        })
-      })
-      .catch((err) => {
-        console.log(err)
-        res.status(400).json({
-          success: false,
-          error: [common.errorObjectBuilder(['internalError'])]
-        })
-      })
-
+      return
     }
 
-    svs.validateRequest(req, res, callback)
+    let fileID = file.filename
+
+    Resource.create({
+      fileID: fileID,
+      filename: file.originalname,
+      mimetype: file.mimetype,
+      owners: [userID],
+      chatID: null,
+      groupID: null
+    })
+    .then((resource) => {
+      res.json({
+        success: true,
+        errors: [],
+        resourceID: fileID
+      })
+    })
+    .catch((err) => {
+      console.log(err)
+      res.json({
+        success: false,
+        error: [common.errorObjectBuilder(['internalError'])]
+      })
+    })
+
   }
 
+
   getResource(req, res) {
-    let callback = (req, res) => {
-      let fileID = req.params.resourceID
-      let userID = parseInt(req.params.userID) || parseInt(req.body.userID)  // TODO: check
+    let fileID = req.params.resourceID
+    let userID = parseInt(req.params.userID) || parseInt(req.body.userID)  // TODO: check
 
-      Resource.find({ fileID: fileID }).exec()
-      .then((resource) => {
-        if (resource.length) {
-          let file = resource[0]
-          // do checks - if unauthorised, send 401 unauthorised
+    Resource.find({ fileID: fileID }).exec()
+    .then((resource) => {
+      if (resource.length) {
+        let file = resource[0]
+        // do checks - if unauthorised, send 401 unauthorised
 
-          // TODO: Chats and Groups
-          if (file.owners.includes(userID)) {
-            res.setHeader('Content-Type', file.mimetype)
-            res.sendFile('uploads/' + fileID, { root: __dirname })
-          } else {
-            res.sendStatus(401)
-          }
-
+        // TODO: Chats and Groups
+        if (file.owners.includes(userID)) {
+          res.setHeader('Content-Type', file.mimetype)
+          res.sendFile('uploads/' + fileID, { root: __dirname })
         } else {
-          res.sendStatus(404)
+          res.sendStatus(401)
         }
-      })
+
+      } else {
+        res.sendStatus(404) // resource not found
+      }
+    })
 
 
-    }
-
-    svs.validateRequest(req, res, callback)
   }
 
   // NOTE:
