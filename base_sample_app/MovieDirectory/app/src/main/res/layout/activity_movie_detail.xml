@@ -85,6 +85,7 @@
 
             <TextView
                 android:text="Directed by"
+                android:layout_marginTop="7dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/movieDirectedIDDets"
@@ -117,6 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
+            android:layout_marginTop="7dp"
             android:text="Actors:" />
 
         <TextView
@@ -125,6 +127,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/movieActorsIDDets"
             android:paddingLeft="5dp"
+            android:layout_marginTop="7dp"
             android:text="Writers:" />
 
         <TextView
@@ -133,6 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/movieWritersIDDets"
             android:paddingLeft="5dp"
+            android:layout_marginTop="7dp"
             android:text="Plot" />
 
         <TextView
@@ -141,6 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/moviePlotIDDets"
             android:paddingLeft="5dp"
+            android:layout_marginTop="7dp"
             android:text="Box Office" />
 
     </RelativeLayout>
