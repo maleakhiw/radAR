@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorSuperAppBar">#237ccf</color>
+    <color name="colorWhite">#ffffff</color>
 </resources>
