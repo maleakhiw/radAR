@@ -49,5 +49,11 @@
     <string name="action_mark_all_read">Mark All as Read</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="trackuser">Track this user</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- Data related to MapsActivity -->
+    <string name="melbourne_university_lat">-37.7963689</string>
+    <string name="melbourne_university_lng">144.9611738</string>
+    <string name="unimelb">Melbourne University</string>
 
 </resources>
