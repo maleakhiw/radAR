@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const uniqueValidator = require('mongoose-unique-validator')
 
 const requestSchema = new Schema({
   requestID: Number,
@@ -8,5 +9,6 @@ const requestSchema = new Schema({
   for: String,  // "friend" or "tracking"
   responded: Boolean
 })
+requestSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Request', requestSchema)
