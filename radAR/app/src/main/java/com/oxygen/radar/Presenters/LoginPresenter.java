@@ -42,34 +42,35 @@ public class LoginPresenter {
 //        System.out.println(authService.getToken((Context) loginView));
 //        System.out.println(authService.getUserID((Context) loginView));
 //        login("krusli", "testPassword");
+        login("maleakhiw", "password");
 
-        // TODO move to FriendsPresenter
-        FriendsService friendsService = new FriendsService(retrofit.create(FriendsApi.class), (Context) loginView);
-        friendsService.getFriends().subscribe(new Observer<FriendsResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(FriendsResponse friendsResponse) {
-                System.out.println(friendsResponse.success);
-                System.out.println(friendsResponse.friends.size());
-                for (User user: friendsResponse.friends) {
-                    System.out.println(user.firstName);
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+//        // TODO move to FriendsPresenter
+//        FriendsService friendsService = new FriendsService(retrofit.create(FriendsApi.class), (Context) loginView);
+//        friendsService.getFriends().subscribe(new Observer<FriendsResponse>() {
+//            @Override
+//            public void onSubscribe(Disposable d) {
+//
+//            }
+//
+//            @Override
+//            public void onNext(FriendsResponse friendsResponse) {
+//                System.out.println(friendsResponse.success);
+//                System.out.println(friendsResponse.friends.size());
+//                for (User user: friendsResponse.friends) {
+//                    System.out.println(user.firstName);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//
+//            }
+//
+//            @Override
+//            public void onComplete() {
+//
+//            }
+//        });
     }
 
     public void signUp(String firstName, String lastName, String email, String username, String password) {
