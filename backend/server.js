@@ -53,10 +53,9 @@ var lastRequest;
 var lastRequestTime;
 var REQ_TIME_THRES = 200;
 app.use(function(req, res, next) {
-  console.log(req.body);
    if (!lastRequest) {
-     console.log('no last request')
-     lastRequest = req.body
+     lastRequest = req.body;
+     lastRequestTime = Date.now();
      next()
    } else {
      console.log('isEqual', req.body, _.isEqual(lastRequest, req.body));
