@@ -49,26 +49,26 @@ app.use(function (error, req, res, next) {
 });
 
 // handle rapid-fire duplicate requests
-var lastRequest;
-var lastRequestTime;
-var REQ_TIME_THRES = 20;
-app.use(function(req, res, next) {
-   if (!lastRequest) {
-     lastRequest = req.body;
-     lastRequestTime = Date.now();
-     next()
-   } else {
-     console.log('isEqual', req.body, _.isEqual(lastRequest, req.body));
-     console.log('TBR', (Date.now() - lastRequestTime));
-     if (_.isEqual(lastRequest, req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
-       // too soon
-     } else {
-       lastRequest = req.body;
-       lastRequestTime = Date.now();
-       next()
-     }
-   }
-})
+// var lastRequests = [];
+// var lastRequestTime;
+// var REQ_TIME_THRES = 20;
+// app.use(function(req, res, next) {
+//    if (!lastRequest.length) {
+//      lastRequest = req.body.push;
+//      lastRequestTime = Date.now();
+//      next()
+//    } else {
+//      console.log('isEqual', req.body, _.isEqual(lastRequest, req.body));
+//      console.log('TBR', (Date.now() - lastRequestTime));
+//      if (_.isEqual(lastRequest, req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
+//        // too soon
+//      } else {
+//        lastRequest = req.body;
+//        lastRequestTime = Date.now();
+//        next()
+//      }
+//    }
+// })
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
