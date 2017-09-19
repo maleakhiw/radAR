@@ -4,8 +4,11 @@ import android.content.Context;
 
 import com.oxygen.radar.Models.Requests.SignUpRequest;
 import com.oxygen.radar.Models.Responses.AuthResponse;
+import com.oxygen.radar.Models.Responses.FriendRequestsResponse;
 import com.oxygen.radar.Models.Responses.FriendsResponse;
+import com.oxygen.radar.Models.Responses.Status;
 import com.oxygen.radar.Models.Responses.User;
+import com.oxygen.radar.Models.Responses.UsersSearchResult;
 import com.oxygen.radar.Services.AuthApi;
 import com.oxygen.radar.Services.AuthService;
 import com.oxygen.radar.Services.FriendsApi;
@@ -39,10 +42,53 @@ public class LoginPresenter {
         this.authService = new AuthService(retrofit.create(AuthApi.class), (Context) loginView);
 
 //        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli", "testPassword");
-//        System.out.println(authService.getToken((Context) loginView));
-//        System.out.println(authService.getUserID((Context) loginView));
 //        login("krusli", "testPassword");
-        login("maleakhiw", "password");
+//        login("maleakhiw", "password");
+
+        FriendsService friendsService = new FriendsService(retrofit.create(FriendsApi.class), (Context) loginView);
+//        friendsService.searchForUsers("kiki", "name")
+//                .subscribe(new Observer<UsersSearchResult>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(UsersSearchResult usersSearchResult) {
+//                        System.out.println(usersSearchResult);
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+        friendsService.respondToFriendRequest(1, "accept").subscribe(new Observer<Status>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Status status) {
+                loginView.showTextToUser("Successfully added friend");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
 //        // TODO move to FriendsPresenter
 //        FriendsService friendsService = new FriendsService(retrofit.create(FriendsApi.class), (Context) loginView);
@@ -122,6 +168,8 @@ public class LoginPresenter {
                 System.out.println(authResponse.success);
                 System.out.println(authResponse.token);
                 System.out.println(authResponse.userID);
+
+
             }
 
             @Override

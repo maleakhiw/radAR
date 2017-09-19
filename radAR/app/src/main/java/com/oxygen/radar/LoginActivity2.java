@@ -18,5 +18,11 @@ public class LoginActivity2 extends AppCompatActivity implements LoginView {
         presenter = new LoginPresenter(this);
     }
 
+    @Override
+    public void showTextToUser(String text) {
+        // TODO stub
+        System.out.println(text);
+    }
+
 
 }
