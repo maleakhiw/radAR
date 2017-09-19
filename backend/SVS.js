@@ -1,4 +1,4 @@
-this.busy_signUp = false;/**
+/**
  * Server Validation System server-side component.
  * Handles user authentication, validation, sign up and login services.
  */
@@ -26,166 +26,6 @@ const isValidEmail = common.isValidEmail
 function getUserID(callback) {
     LastUserID.findOneAndRemove({}, callback)
 }
-
-function signUpImpl(req, res) {
-  this.busy_signUp = true;
-  console.log("signUpImpl: set busy_signUp to true")
-  console.log(requests_queue.length)
-  let firstName = req.body.firstName
-  let lastName = req.body.lastName
-  let email = req.body.email
-  let username = req.body.username
-  let profileDesc = req.body.profileDesc
-  let password = req.body.password
-  let deviceID = req.body.deviceID
-
-  let errorKeys = []
-
-  // required fields
-  if (!firstName) errorKeys.push('missingFirstName')
-  if (!lastName) errorKeys.push('missingLastName')
-  if (!email) errorKeys.push('missingEmail')
-  if (!username) errorKeys.push('missingUsername')
-  if (!password) errorKeys.push('missingPassword')
-  if (!deviceID) errorKeys.push('missingDeviceID')
-
-  // check if valid
-  // TODO: new error codes
-  if (!isString(firstName)) errorKeys.push('invalidFirstName')
-  if (!isString(lastName)) errorKeys.push('invalidLastName')
-  if (!isString(email) || !isValidEmail(email)) errorKeys.push('invalidEmail')
-  if (!isString(username)) errorKeys.push('invalidUsername')
-  if (!isString(password)) errorKeys.push('invalidPassword')
-  if (!isString(deviceID)) errorKeys.push('invalidDeviceID')
-
-
-  function sendError() { // assumption: variables are in closure
-      let response = {
-          success: false,
-          errors: common.errorObjectBuilder(errorKeys)
-      }
-      res.json(response)
-      this.busy_signUp = false;
-      console.log("signUpImpl: set busy_signUp to false")
-  }
-
-  if (errorKeys.length) {
-      sendError()
-  } else {
-    let userID = null
-    let token = null
-
-    User.find({ username: username }).exec()
-    .then((users) => {
-      if (users.length) {
-        throw Error('usernameTaken')
-      } else {
-        return User.find({ email: email }).exec()
-      }
-    })
-
-    .then((users) => {
-      if (users.length) {
-        throw Error('emailTaken')
-      }
-      return LastUserID.findOneAndRemove({})
-    })
-
-
-    .then((lastUserID) => {
-      // console.log(lastUserID)
-      if (lastUserID) {
-          userID = lastUserID.userID + 1
-      } else {
-          userID = 1
-      }
-      return LastUserID.create({ userID: userID }) // Promise
-    })
-
-
-    .then((lastUserID) =>  {
-      let hashed = hashSaltPasssword(password)
-      // console.log(hashed)
-      return PasswordHash.create({
-        userID: userID,
-        hash: hashed
-      })
-    })
-
-    .then((passwordHash) => {
-      // console.log(lastUserID)
-      if (!passwordHash) {
-        throw new Error('') // becomes internalError
-      }
-      let object = {
-          userID: userID,
-          username: username,
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          profilePicture: null,
-          profileDesc: profileDesc,
-          friends: [],
-          groups: [],
-          chats: [],
-          signUpDate: Date.now()
-      }
-
-      return User.create(object) // Promise
-    })
-
-    .then((user) => { // User successfully created, create Metadata
-        // console.log(user)
-        token = generateToken(userID)
-        let object = {
-            userID: userID,
-            username: username,
-            lastSeen: Date.now(),
-            deviceIDs: [deviceID],
-            activeTokens: [token]
-        }
-        return Metadata.create(object) // Promise
-    })
-
-    .then((metadata) => {
-        // console.log(metadata)
-        let response = {
-            success: true,
-            errors: [],
-            token: token,
-            userID: userID
-        }
-        res.json(response)
-        this.busy_signUp = false;
-        console.log("signUpImpl: set busy_signUp to false")
-    })
-
-    .catch((err) => { // one error handler for the chain of Promises
-        if (err == 'Error: usernameTaken') {
-          errorKeys.push('usernameTaken')
-          sendError()
-        } else if (err == 'Error: emailTaken') {
-          errorKeys.push('emailTaken')
-          sendError()
-        } else {
-            console.log(err)
-            errorKeys.push('internalError')
-            sendError()
-        }
-    })
-  }
-}
-
-var busy_signUp = false;
-var requests_queue = [];
-function sleep(time, callback, req, res) {
-  var stop = new Date().getTime();
-  while(new Date().getTime() < stop + time) {
-    ;
-  }
-  callback(req, res);
-}
-
 
 module.exports = class SVS {
 
@@ -249,74 +89,145 @@ module.exports = class SVS {
 
   }
 
-
-
-  // validateRequest(req, res, callback) {
-  //   if (req.params.userID) {  // accept userID passed via URL
-  //     req.body.userID = req.params.userID
-  //   } else if (req.query.userID) {
-  //     req.body.userID = req.query.userID
-  //   }
-  //
-  //   let errorKeys = []
-  //
-  //   function sendError() { // assumption: variables are in closure
-  //       let response = {
-  //           success: false,
-  //           errors: common.errorObjectBuilder(errorKeys)
-  //       }
-  //       res.status(401).json(response)
-  //   }
-  //   // if (!('token' in req.body) && !('token' in req.query)) {
-  //   //     errorKeys.push('missingToken')
-  //   // }
-  //   if (!req.body.userID) {
-  //       errorKeys.push('missingUserID')
-  //   }
-  //
-  //   let token = req.body.token || req.query.token
-  //
-  //   // if (!validateToken(req.body.userID, token)) {
-  //   //     errorKeys.push('invalidToken')
-  //   // }
-  //
-  //   if (errorKeys.length) {
-  //     sendError()
-  //   } else {
-  //     let userID = req.body.userID
-  //     // update last seen
-  //     Metadata.findOne({ userID: userID }).exec()
-  //         .then((metadata) => {
-  //             if (!metadata) {  // TODO: new test case w/ invalid user ID
-  //               errorKeys.push('invalidUserID')
-  //               sendError()
-  //               return
-  //             }
-  //             metadata.lastSeen = Date.now()
-  //             metadata.save()
-  //             callback(req, res)
-  //         })
-  //         .catch((err) => {
-  //             console.log(err)
-  //             errorKeys.push('internalError')
-  //             sendError()
-  //         })
-  //   }
-  //
-  // }
-
   signUp(req, res) {
-    requests_queue.push([req, res])
-    while (1==1) {
-      if (busy_signUp) {
-        // black for 100 ms
-        console.log("block");
-        sleep(100, signUpImpl, req, res);
-      } else {
-        console.log("calling signUpImpl")
-        signUpImpl(req, res);
-        break;
-      }
+    let firstName = req.body.firstName
+    let lastName = req.body.lastName
+    let email = req.body.email
+    let username = req.body.username
+    let profileDesc = req.body.profileDesc
+    let password = req.body.password
+    let deviceID = req.body.deviceID
+
+    let errorKeys = []
+
+    // required fields
+    if (!firstName) errorKeys.push('missingFirstName')
+    if (!lastName) errorKeys.push('missingLastName')
+    if (!email) errorKeys.push('missingEmail')
+    if (!username) errorKeys.push('missingUsername')
+    if (!password) errorKeys.push('missingPassword')
+    if (!deviceID) errorKeys.push('missingDeviceID')
+
+    // check if valid
+    // TODO: new error codes
+    if (!isString(firstName)) errorKeys.push('invalidFirstName')
+    if (!isString(lastName)) errorKeys.push('invalidLastName')
+    if (!isString(email) || !isValidEmail(email)) errorKeys.push('invalidEmail')
+    if (!isString(username)) errorKeys.push('invalidUsername')
+    if (!isString(password)) errorKeys.push('invalidPassword')
+    if (!isString(deviceID)) errorKeys.push('invalidDeviceID')
+
+
+    function sendError() { // assumption: variables are in closure
+        let response = {
+            success: false,
+            errors: common.errorObjectBuilder(errorKeys)
+        }
+        res.json(response)
+    }
+
+    if (errorKeys.length) {
+        sendError()
+    } else {
+      let userID = null
+      let token = null
+
+      User.find({ username: username }).exec()
+      .then((users) => {
+        if (users.length) {
+          throw Error('usernameTaken')
+        } else {
+          return User.find({ email: email }).exec()
+        }
+      })
+
+      .then((users) => {
+        if (users.length) {
+          throw Error('emailTaken')
+        }
+        return LastUserID.findOneAndRemove({})
+      })
+
+
+      .then((lastUserID) => {
+        // console.log(lastUserID)
+        if (lastUserID) {
+            userID = lastUserID.userID + 1
+        } else {
+            userID = 1
+        }
+        return LastUserID.create({ userID: userID }) // Promise
+      })
+
+
+      .then((lastUserID) =>  {
+        let hashed = hashSaltPasssword(password)
+        // console.log(hashed)
+        return PasswordHash.create({
+          userID: userID,
+          hash: hashed
+        })
+      })
+
+      .then((passwordHash) => {
+        // console.log(lastUserID)
+        if (!passwordHash) {
+          throw new Error('') // becomes internalError
+        }
+        let object = {
+            userID: userID,
+            username: username,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            profilePicture: null,
+            profileDesc: profileDesc,
+            friends: [],
+            groups: [],
+            chats: [],
+            signUpDate: Date.now()
+        }
+
+        return User.create(object) // Promise
+      })
+
+      .then((user) => { // User successfully created, create Metadata
+          // console.log(user)
+          token = generateToken(userID)
+          let object = {
+              userID: userID,
+              username: username,
+              lastSeen: Date.now(),
+              deviceIDs: [deviceID],
+              activeTokens: [token]
+          }
+          return Metadata.create(object) // Promise
+      })
+
+      .then((metadata) => {
+          // console.log(metadata)
+          let response = {
+              success: true,
+              errors: [],
+              token: token,
+              userID: userID
+          }
+          res.json(response)
+      })
+
+      .catch((err) => { // one error handler for the chain of Promises
+          if (err == 'Error: usernameTaken') {
+            errorKeys.push('usernameTaken')
+            sendError()
+          } else if (err == 'Error: emailTaken') {
+            errorKeys.push('emailTaken')
+            sendError()
+          } else {
+              console.log(err)
+              errorKeys.push('internalError')
+              sendError()
+          }
+      })
     }
   }
 
