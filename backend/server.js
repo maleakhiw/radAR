@@ -86,7 +86,7 @@ app.use(function(req, res, next) {
   // check if req.body is in array
   let isInArray = false;
   lastRequests.map((entry) => {
-   if (_.isEqual(entry, req.body)) {
+   if (_.isEqual(entry.reqBody, req.body)) {
      isInArray = true;
    }
   });
