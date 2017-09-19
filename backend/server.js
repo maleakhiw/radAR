@@ -54,8 +54,11 @@ var REQ_TIME_THRES = 200;
 app.use(function(req, res, next) {
   console.log(req.body);
    if (!lastRequest) {
+     console.log('no last request')
      next()
    } else {
+     console.log('isEqual', req.body, lastRequest.isEqual(req.body));
+     console.log('TBR', (Date.now() - lastRequestTime));
      if (lastRequest.isEqual(req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
        // too soon
      } else {
