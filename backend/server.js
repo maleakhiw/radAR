@@ -50,7 +50,7 @@ app.use(function (error, req, res, next) {
 
 // handle rapid-fire duplicate requests
 var lastRequests = [];
-var REQ_TIME_THRES = 5000;
+var REQ_TIME_THRES = 1000;
 var DELAY_BASE = 100;
 
 // Fibonacci delay
