@@ -2,8 +2,8 @@ package com.oxygen.radar.Presenters;
 
 import com.oxygen.radar.Models.GroupDetails;
 import com.oxygen.radar.Models.Info;
-import com.oxygen.radar.Models.TrackingGroupInteractor;
-import com.oxygen.radar.Models.TrackingGroupInteractorImpl;
+import com.oxygen.radar.Services.TrackingGroupInteractor;
+import com.oxygen.radar.Services.TrackingGroupInteractorImpl;
 import com.oxygen.radar.Views.TrackingGroupView;
 
 import java.util.ArrayList;

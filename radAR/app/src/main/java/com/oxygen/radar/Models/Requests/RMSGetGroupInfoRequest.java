@@ -1,4 +1,4 @@
-package com.oxygen.radar.Requests;
+package com.oxygen.radar.Models.Requests;
 
 /**
  * Created by kenneth on 6/9/17.
