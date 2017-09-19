@@ -31,6 +31,7 @@ module.exports.getPublicUserInfo = function(user) {
   // TODO: check settings - privacy, visibility (Iteration 3)
   let retVal = {
     userID: user.userID,
+    username: user.username,
     firstName: user.firstName,
     lastName: user.lastName,
     profilePicture: user.profilePicture,
