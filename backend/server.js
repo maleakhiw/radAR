@@ -59,10 +59,10 @@ function fibo(n) {
     return 0; // special case: no entries in queue
   }
   if (n==1) {
-    return 1;
+    return 5;
   }
   if (n==2) {
-    return 2;
+    return 11;
   }
   else {
     return fibo(n-1) + fibo(n-2);
@@ -72,7 +72,7 @@ function fibo(n) {
 app.use(function(req, res, next) {
   // give a little delay so the array has time to be updated
   let time = Date.now();
-  while (Date.now() - time < DELAY_BASE + fibo(lastRequests.length) + Math.random()*100) {
+  while (Date.now() - time < DELAY_BASE + 10*fibo(lastRequests.length)) {
     ;
   }
 
