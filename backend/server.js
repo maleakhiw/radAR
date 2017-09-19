@@ -51,6 +51,7 @@ app.use(function (error, req, res, next) {
 // handle rapid-fire duplicate requests
 var lastRequests = [];
 var REQ_TIME_THRES = 5000;
+var DELAY_BASE = 25;
 
 // Fibonacci delay
 function fibo(n) {
@@ -71,7 +72,7 @@ function fibo(n) {
 app.use(function(req, res, next) {
   // give a little delay so the array has time to be updated
   let time = Date.now();
-  while (Date.now() - time < fibo(lastRequests.length)) {
+  while (Date.now() - time < DELAY_BASE + fibo(lastRequests.length)) {
     ;
   }
 
