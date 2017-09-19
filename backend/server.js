@@ -52,13 +52,11 @@ app.use(function (error, req, res, next) {
 var lastRequests = [];
 var REQ_TIME_THRES = 2000;
 app.use(function(req, res, next) {
-  console.log(lastRequests.length)
 
   // remove requests older than threshold
   lastRequests = lastRequests.filter((entry) => {
-   (Date.now() - entry.time) < REQ_TIME_THRES;
+   return (Date.now() - entry.time) < REQ_TIME_THRES;
   })
-  console.log(lastRequests.length)
 
   // check if req.body is in array
   let isInArray = false;
