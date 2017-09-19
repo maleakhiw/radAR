@@ -50,13 +50,15 @@ app.use(function (error, req, res, next) {
 
 // handle rapid-fire duplicate requests
 var lastRequests = [];
-var REQ_TIME_THRES = 2000;
+var REQ_TIME_THRES = 5000;
 app.use(function(req, res, next) {
 
   // remove requests older than threshold
   lastRequests = lastRequests.filter((entry) => {
    return (Date.now() - entry.time) < REQ_TIME_THRES;
   })
+
+  console.log(lastRequests);
 
   // check if req.body is in array
   let isInArray = false;
