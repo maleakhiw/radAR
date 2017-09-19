@@ -3,7 +3,7 @@ package radar.radar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class UserDetail extends AppCompatActivity {
+public class UserDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
