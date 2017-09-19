@@ -94,7 +94,7 @@ public class SignupActivity extends AppCompatActivity {
     /** Setting up the User Interface */
     public void setupUI() {
         username = (EditText) findViewById(R.id.username);
-        email = (EditText) findViewById(R.id.email);
+        email = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         signup = (Button) findViewById(R.id.signup);
         firstName = (EditText) findViewById(R.id.firstName);
