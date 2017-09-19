@@ -1,9 +1,12 @@
 package radar.radar.Presenters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.view.View;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.HomeScreenActivity;
 import radar.radar.Models.Requests.SignUpRequest;
 import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Models.Responses.FriendsResponse;
@@ -32,6 +35,15 @@ public class FriendsPresenter {
 //        AuthService authService = new AuthService(authApi, (Context) friendsView);
 
         loadFriends();
+
+        friendsView.setFABOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent;
+                intent = new Intent((Context) friendsView, HomeScreenActivity.class);
+                friendsView.startActivityFromIntent(intent);
+            }
+        });
     }
 
     public void loadFriends() {

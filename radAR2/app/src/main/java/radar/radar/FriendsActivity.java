@@ -1,9 +1,12 @@
 package radar.radar;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -22,6 +25,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
     FriendsPresenter presenter;
     RecyclerView recyclerView;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +33,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         setContentView(R.layout.activity_friends);
 
         recyclerView = findViewById(R.id.friends_recyclerView);
+        fab = findViewById(R.id.fab);
 
         presenter = new FriendsPresenter(this, new Retrofit.Builder()
                                                                 .baseUrl("http://35.185.35.117/api/")
@@ -48,6 +53,16 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
 
+    }
+
+    @Override
+    public void setFABOnClickListener(View.OnClickListener onClickListener) {
+        fab.setOnClickListener(onClickListener);
+    }
+
+    @Override
+    public void startActivityFromIntent(Intent intent) {
+        startActivity(intent);
     }
 
 }
