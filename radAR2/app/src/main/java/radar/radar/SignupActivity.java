@@ -54,34 +54,39 @@ public class SignupActivity extends AppCompatActivity {
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SignUpRequest signUpRequest = new SignUpRequest(firstName.getText().toString(),
-                        lastName.getText().toString(), email.getText().toString(), username.getText().toString(),
-                        "", password.getText().toString(), "fakeDeviceID");
+                if (validateForm()) {
+                    SignUpRequest signUpRequest = new SignUpRequest(firstName.getText().toString(),
+                            lastName.getText().toString(), email.getText().toString(), username.getText().toString(),
+                            "", password.getText().toString(), "fakeDeviceID");
 
-                authService.signUp(signUpRequest).subscribe(new Observer<AuthResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                    authService.signUp(signUpRequest).subscribe(new Observer<AuthResponse>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(AuthResponse authResponse) {
-                        // Jump to home
-                        Intent intent = new Intent(SignupActivity.this, HomeScreenActivity.class );
+                        @Override
+                        public void onNext(AuthResponse authResponse) {
+                            // Jump to home
+                            Intent intent = new Intent(SignupActivity.this, HomeScreenActivity.class);
 
-                        startActivity(intent);
-                    }
+                            startActivity(intent);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please enter all fields.", Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -94,5 +99,19 @@ public class SignupActivity extends AppCompatActivity {
         signup = (Button) findViewById(R.id.signup);
         firstName = (EditText) findViewById(R.id.firstName);
         lastName = (EditText) findViewById(R.id.lastName);
+    }
+
+    /** Validation check to make sure that there is no empty things on the form */
+    public boolean validateForm() {
+        String username, email, password, firstName, lastName;
+        // Check to make sure that everything is filled
+
+        username = this.username.getText().toString().trim();
+        email = this.email.getText().toString().trim();
+        password = this.password.getText().toString().trim();
+        firstName = this.firstName.getText().toString().trim();
+        lastName = this.lastName.getText().toString().trim();
+
+        return !(username.isEmpty() || email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty());
     }
 }
