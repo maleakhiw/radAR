@@ -1,0 +1,608 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics-impl/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="50e35ae101a679c4c8ef3dda075b1df9d5d947d9">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-analytics-impl-9.8.0_f4aaa6ca0346a51fc04fe5e4538db6242d5a0963.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-fitness/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a7a04d6b7c01e569a285fa627cf64f5b05295906">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-fitness-9.8.0_f65e6be960e566b083f4957d6199cbf7e5c5de89.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="122ec9237acd8a57d974b9d529987f1ee6ca5aea">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-maps-9.8.0_773987b0b5f95335d62b8f64fbdd7c7f20ba21ae.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="15e59454416c6341bd3ed2533b585cd340682dd1">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-auth-9.8.0_cab344c2b1014cd9c4f2d7de7f445a600533d63c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-config/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="289cad663c288ce965463cb9ece8b35cc7de0fac">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-config-9.8.0_c38e6723689515860f2cafa2a22666c39e74cc40.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="09b462bbcb77650284bd6614f1a32f360ef369f8">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-media-compat-24.2.1_f91cb54fbf60c6e6b8f65911b15e46350ec197f9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-compat/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="0ecb4b595fa0f0f8018a149ace3ea6525624f94e">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-compat-24.2.1_ccb6efa9004753ab39b643a03af00913083ef5a0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-crash/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="b4671be3d1288bf4e5f527cd33e42909fbe4ecc6">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-crash-9.8.0_9ccb6e109eb90c0ea7a5af8d6bc04823933d21e6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="d5c731fc64c03dfe04d51134955b483551c35849">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-vector-drawable-24.2.1_3ab60e26f38e6f1cb358853b154648f7aa686ab8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="9c4c3bc902450c39ed54de170db4fb12aea20a35">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-utils-24.2.1_865b3b0c18f67a8cdd211fcc0a06a7da6f41e156.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-media-compat/24.2.1/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="fbf8da429efd5ad21e02e3e5ecaa1efc4167878d">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_de39f0acbd273d024c252bf4ed76834fb280a5ef.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-instantapps/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="00d358528c5a8731a6e19bca910cbb3fd755ee31">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-instantapps-9.8.0_ec9c4b786bf57d9c1718daccd5aa598162da31bc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth-module/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="3f8f779a22cbb4c4d0759467a4f1011bb5252970">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-auth-module-9.8.0_004dd2b9daf5081b7e4ef141e13aa44a87096bd5.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-auth-common/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="4438b1a7848a7c571122ba618aa1304514aabee6">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-auth-common-9.8.0_c40857b4c935a8bba94bcb81da08c65bde5434a4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tagmanager-api/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="266570862e5792ef3c51143a8b8593cf54fac68d">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-tagmanager-api-9.8.0_59bbc47f30c21816325fefbf2911d727d04ff642.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/jars/libs/internal_impl-24.0.0.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="b6763651ec29b4c95e7bbe63fc393ffcc8c4c2c5">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.0.0_dc3432ddf6d4995a201f07d7506c5742d708e466.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-nearby/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="c81df6bd515398ebe45089b0b16c55752a131f6a">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-nearby-9.8.0_f897650bac6b3c071f587c8681f25dc870632443.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/24.2.1/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="867dad63c33388ff8c7644b236579355036d075f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_de9e3710a50baf7d99b3d3a93b18c77685a247bf.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="20a3c4e355150c15c13dd58045d43ad0c717d916">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-safetynet-9.8.0_40bfb14521b966ac7e464125631ed5d24176bb2b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-places/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="679251204de40ace98776a6f4e3a649c27e3d89f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-places-9.8.0_75a2297c9c93a28202803a1254be6b05a36f6cd7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appinvite/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="e56f31b23ddb067f95f01255295167db7c798612">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-appinvite-9.8.0_4dee1cb7647e4d9fe06248ca3603e72025a00294.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="ca851be26ff89f5b32cc222cee98139fb3fac830">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-auth-9.8.0_064ad4b7b4e6087780ebc5dac1ed3ad742fa3e97.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-core-ui/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="e7f3132168957eefc46229fc32c3bd464642b71e">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-core-ui-24.2.1_a42291a1fd992e1bb5743a9635f3ffad1445a7f1.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-v4/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="d7c42c80f6509b9ea4db28ca7859ffae08ec5741">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-24.2.1_29b6c27ec58117148c4088942c6dcf9a3ae55f95.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="43b2dba6b5a0b14527961b75329d0b90025f15ea">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-24.2.1_587e0ac6400be07cdfd15b92fa84c9a5d6ca7bc2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-analytics/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="9ff04cc3470178a44512624036751a803418c2ca">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-analytics-9.8.0_d4cfa67cc62d86a9d3fb6e9b6867c5faa7cd6b90.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-clearcut/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="ee5304fd374e0b4ebf6b42d4037fbfb2c5336511">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-clearcut-9.8.0_22b982e60295bcc028b585198ff559a8acd801d2.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-compat/24.2.1/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="7e4389bd133359a2ff88623ff1e4ff93d6e6f780">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_a5fb5e479337f2e03b84eb6aa3275c14e7d37a9d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="74ac7cbcf0de4a88e59612dc3a9e3f9e71acb4ca">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-cast-9.8.0_2e7722c5e54ce45a033e55ebad2747c2a75fd866.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-messaging/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="5ffe8867f51cfc726e9fb21db1e5b6962ebf25a0">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-messaging-9.8.0_2dcb908cbf36c70b4a444a67d237b70c1ab08b98.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="0b8e087da59c0b062c33f49a335e59f907086da2">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-wearable-9.8.0_0a9e62da5c7dfd4220301574eaeb0ca907f0c335.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-storage/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="7fd91ec2730fdaa82906aad32a3f3d3e574bae56">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-storage-9.8.0_9c4688ba1825c80595eac3765ccb2a1b60abe0a4.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-fragment/24.2.1/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="5f64d657e838e8375135c0f6057a7ff8fab6a50e">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_85d6e3db06f61f82b8a1da3ee7f71bdd3d12ce1e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="2d3035050a075484cbf2e33f1ce1f779bae4d451">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-panorama-9.8.0_10b3a0d03379f0acfd78bda8a2cdc5d7abd69614.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-core-utils/24.2.1/jars/libs/internal_impl-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="935a969265b2a166b2d20415423f5f6e90fe16e0">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/internal_impl-24.2.1_d6ae273f0ef4ce0c05bf8156d0685addb6d29ccc.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="0b53c4b90654b67ee3892a8e2e7b819c083ab7a6">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-drive-9.8.0_09b6179c318dd14760e753bd5fa59bfa733fa669.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="9dae58326f6f6a515022468cce56dd04ec3b9fdb">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-gcm-9.8.0_651a6be90d7d853c8fa578e47ee7861cab26c8e7.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-identity/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="cef85cfc7df40e29fbea58844dd4c1e7d0b15542">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-identity-9.8.0_81b6c058d21150b70988a407abe3c092682c2201.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tagmanager/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a972970c8beddb69c198f61f3fc55f0606a7dfe3">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-tagmanager-9.8.0_6489302fe61bdeca741f66f43514e25b4137411a.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-storage-common/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="ec9104b53aee77dfcfd2fe1c4add23ff7c4df55f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-storage-common-9.8.0_440bfc2cf069b5765e546c6921c82230c3972e31.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-common/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="c61641e333fa88da21758bab8cc28ee16604b05f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-common-9.8.0_799867193a4fd2684b51c47b8de414ea89f3951d.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="7e92aadd0697922316d1395c1887a23aebec640a">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-base-9.8.0_16c196baac33eb5acf91b2ce0c55a23853d8363e.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-games/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="fbb3885c40e431cd2b0dc69c0cab2bf6d5da7b43">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-games-9.8.0_5109c48ae13f2270c64dea952862d7b7ecda1b40.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-iid/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="6b6f292b8b951dcf2ecf2b20853e3eabc7d65c48">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-iid-9.8.0_bf6b5fde17d6126f9f12616c468c1455f336f1b0.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="910c013c511f752c4bbe24c5f492f669f4a3ccc0">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-wallet-9.8.0_7754dcd79872a81163c8997cbbca05262930e055.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="16afe57c1d7f8165d107c7806ce7b0c71de87159">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-analytics-9.8.0_0936b1050e436966b7a5a1887d98307e36d7c156.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="3daa7a9c9009fd386872a84c177a76979bdcafd6">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-plus-9.8.0_9369c36f9caa701797dc847464abed0f0f774440.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Android/Sdk/extras/android/m2repository/com/android/support/support-annotations/24.2.1/support-annotations-24.2.1.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="8de3aafecbdf98a61db6427f008f2d515bcd2544">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/support-annotations-24.2.1_7bc53bed0de7635615bcce229ed1760b96eba52b.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="f2d240dd085626f03f759c41d628a0c8b63e491f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-ads-9.8.0_ce5b254b35fd99a8f93b376bb8e6054dfd32db8c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/support-fragment/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="b9a1ac78ad7ef3abedc4a4b30cd92bcacb939d1f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-support-fragment-24.2.1_58266a0946fad711a4f1e196322daeccbb5f1846.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="9f6d236bac26d02b410e4ee186ba517ace5ee661">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-basement-9.8.0_2bb3abf6d72493cd6a04910ea059bdf962aca13c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/palette-v7/24.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="734e80dffea7bd76c18ae256822a124c30d85850">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-palette-v7-24.0.0_56f6284993b4f01db8c92a48241a1e15f048b829.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="04bbbddf868aa02dd33f9e90d8f5d908c360f638">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-location-9.8.0_cfebf467eb503283edfefa44ed9f37188ee08ca9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/24.0.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="b327fbe2fad414bc38cf0ce8f7efe1a38f572837">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-mediarouter-v7-24.0.0_b52d31dced89ec40ba0b4ac779286140e5a6fff8.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/24.2.1/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="94bc1dfb84dcc8b6f6f8f7cc726d7b2dd39c1574">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.android.support-animated-vector-drawable-24.2.1_d9f4e7505bd3d33115963c5fbff54603fb0cf007.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-awareness/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a2537b11ae24b42172d34e2a613fc0b903c56158">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-awareness-9.8.0_d232e9251f8010cf860cf87a2f8b7f90568ae19c.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="85299bf1924dde0200109a58033c5ef84ecb6991">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-iid-9.8.0_1b599ef265f5ae4670ac0ea20758d93d16805483.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-database/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="03df48d3713661d66ad024b1e406259a4c26fcac">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-database-9.8.0_70c8fb0c3630957c2aacf24415ace8b2580898b9.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth-base/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a1ed98e01bd58976d80c062fd0ea2968a1ff68a1">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-auth-base-9.8.0_69ec23e214ead6308d6ba7f2f0f76ae1f9cb4161.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads-lite/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="e9b2cfdfd59b03643f1e240668275378b96615a8">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-ads-lite-9.8.0_573a6bb9938a7fdbda46a6c7796ee74325fe8b74.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-analytics-impl/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="190a642ba16d1421296a4d794606279b80039c59">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-analytics-impl-9.8.0_f283a6ac9e86c10137ff3e6fed789862fa3d05c6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="e3234cd25e23069abd48ecd2117bc0e8011bf45a">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-appindexing-9.8.0_fefa574fb3f70cfc7964d7f470b0287236c96a63.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="bf2e1838e4428616c1aa26edf43de72b5b99bf84">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-tasks-9.8.0_5606ca92bfdd61a01a4a46127c0f85dee3d41948.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gass/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="363a20f1d25336e827dd24020f2ecdc42d62638f">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-gass-9.8.0_a1ed5d527753e41ac96905a51009a3f469d04f46.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.firebase/firebase-database-connection/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="5f47ede9561595584dca71104baa0fecb36dda87">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.firebase-firebase-database-connection-9.8.0_76df0eb30208471e58a0dc1a8a8b7381951efe01.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-vision/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="a30aea7df545072ad3c06f56b2efc13e67222140">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-vision-9.8.0_8a4c626c659dcd7dd1b5540bf9dc4bda095c71d6.jar" />
+    </item>
+    <item
+        is-multidex="false"
+        jar="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast-framework/9.8.0/jars/classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="23.0.3"
+        sha1="055eed08c9cff50cac0db69c74c4d9ff7aef3d84">
+        <dex dex="/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-cast-framework-9.8.0_eabc59a6e69cf79a98dd30e2d419612291ed3f5a.jar" />
+    </item>
+
+</items>

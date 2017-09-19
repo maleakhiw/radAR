@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/res/merged/debug/layout-v21/place_autocomplete_fragment.xml",
+        "source": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-places/9.8.0/res/layout-v21/place_autocomplete_fragment.xml"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/res/merged/debug/layout-v21/place_autocomplete_fragment.xml",
+        "source": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-places/9.8.0/res/layout-v21/place_autocomplete_fragment.xml"
+    }
+]

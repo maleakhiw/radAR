@@ -1,0 +1,34 @@
+[
+    {
+        "merged": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_small_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_small_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_tall_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_tall_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_small_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_small_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_standard_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_standard_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_standard_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_standard_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_medium_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/map-samples-master/tutorials/MapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_medium_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_tall_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_tall_off_client.png"
+    },
+    {
+        "merged": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/res/merged/debug/drawable-tvdpi-v4/ic_plusone_medium_off_client.png",
+        "source": "/home/nightietime/Documents/Projects/oxygen-comp30022/radarMapWithMarker/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/9.8.0/res/drawable-tvdpi-v4/ic_plusone_medium_off_client.png"
+    }
+]
