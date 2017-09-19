@@ -72,7 +72,7 @@ function fibo(n) {
 app.use(function(req, res, next) {
   // give a little delay so the array has time to be updated
   let time = Date.now();
-  while (Date.now() - time < DELAY_BASE + fibo(lastRequests.length) + Math.random()*100) {
+  while (Date.now() - time < DELAY_BASE + 10*fibo(lastRequests.length)) {
     ;
   }
 
