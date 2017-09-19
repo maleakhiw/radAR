@@ -54,27 +54,27 @@ var REQ_TIME_THRES = 5000;
 var DELAY_BASE = 100;
 
 // Fibonacci delay
-function fibo(n) {
-  if (n==0) {
-    return 0; // special case: no entries in queue
-  }
-  if (n==1) {
-    return 5;
-  }
-  if (n==2) {
-    return 11;
-  }
-  else {
-    return fibo(n-1) + fibo(n-2);
-  }
-}
+// function fibo(n) {
+//   if (n==0) {
+//     return 0; // special case: no entries in queue
+//   }
+//   if (n==1) {
+//     return 5;
+//   }
+//   if (n==2) {
+//     return 11;
+//   }
+//   else {
+//     return fibo(n-1) + fibo(n-2);
+//   }
+// }
 
 app.use(function(req, res, next) {
   // give a little delay so the array has time to be updated
-  let time = Date.now();
-  while (Date.now() - time < DELAY_BASE + 10*fibo(lastRequests.length)) {
-    ;
-  }
+  // let time = Date.now();
+  // while (Date.now() - time < 10*fibo(lastRequests.length)) {
+  //   ;
+  // }
 
   // remove requests older than threshold
   lastRequests = lastRequests.filter((entry) => {
@@ -90,14 +90,18 @@ app.use(function(req, res, next) {
      isInArray = true;
    }
   });
+  console.log('isInArray', isInArray);
+
   lastRequests.push({
    reqBody: req.body,
    time: Date.now()
   });
 
   if (!isInArray) {
+    console.log('accepted');
     next(); // let the handlers handle it
   } else {
+    console.log('rejected');
     // block the request
   }
 
