@@ -55,6 +55,7 @@ app.use(function(req, res, next) {
   console.log(req.body);
    if (!lastRequest) {
      console.log('no last request')
+     lastRequest = req.body
      next()
    } else {
      console.log('isEqual', req.body, lastRequest.isEqual(req.body));
