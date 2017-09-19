@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const bodyParser = require('body-parser')
 const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
 const cors = require('cors')
+const _ = require('lodash');
 
 // multer
 const upload = multer({
@@ -52,11 +53,14 @@ var lastRequest;
 var lastRequestTime;
 var REQ_TIME_THRES = 200;
 app.use(function(req, res, next) {
-  console.log(req.body);
    if (!lastRequest) {
+     lastRequest = req.body;
+     lastRequestTime = Date.now();
      next()
    } else {
-     if (lastRequest.isEqual(req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
+     console.log('isEqual', req.body, _.isEqual(lastRequest, req.body));
+     console.log('TBR', (Date.now() - lastRequestTime));
+     if (_.isEqual(lastRequest, req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
        // too soon
      } else {
        lastRequest = req.body;
