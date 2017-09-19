@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">radAR</string>
     <string name="sign_up_header">Sign Up</string>
+    <string name="trackuser">Track this user</string>
 </resources>
