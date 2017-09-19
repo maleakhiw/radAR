@@ -152,7 +152,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/profile_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Profile"
@@ -171,10 +171,10 @@
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
-                android:layout_height="33dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -202,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="30dp"
                 android:orientation="vertical"
                 android:clickable="true"
                 app:layout_constraintEnd_toEndOf="parent"

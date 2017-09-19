@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import radar.radar.Models.Responses.User;
@@ -74,10 +75,11 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // For now try to just create toast
-                    //Toast.makeText(context, "Tapped", Toast.LENGTH_LONG).show();
+                    // From the displayed friend list send information
+                    User user = friends.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
+                    intent.putExtra("user", (Serializable) user);
                     context.startActivity(intent);
 
                 }
