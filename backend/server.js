@@ -51,7 +51,13 @@ app.use(function (error, req, res, next) {
 // handle rapid-fire duplicate requests
 var lastRequests = [];
 var REQ_TIME_THRES = 5000;
+var REQUEST_DELAY = 25;
 app.use(function(req, res, next) {
+  // give a little delay so the array has time to be updated
+  let time = Date.now();
+  while (Date.now() - time < REQUEST_DELAY) {
+    ;
+  }
 
   // remove requests older than threshold
   lastRequests = lastRequests.filter((entry) => {
