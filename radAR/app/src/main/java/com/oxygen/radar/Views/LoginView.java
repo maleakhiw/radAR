@@ -6,4 +6,5 @@ package com.oxygen.radar.Views;
 
 public interface LoginView {
 
+    void showTextToUser(String text);
 }

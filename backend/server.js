@@ -117,7 +117,7 @@ app.get("/api/auth/:username", svs.login)
 // friends
 app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)
-app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
+app.post("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
 // resources
