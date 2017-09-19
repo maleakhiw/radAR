@@ -162,7 +162,7 @@
         android:layout_height="48dp"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:padding="5dp, 5dp, 5dp, 5dp, 5dp"
+        android:padding="5dp"
         android:src="@drawable/ic_chat_white_48dp"
         app:layout_anchor="@+id/nestedScrollView"
         app:layout_anchorGravity="right|top"

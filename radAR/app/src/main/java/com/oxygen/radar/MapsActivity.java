@@ -48,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
         googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-                .title(R.string.unimelb));
+                .title(getString(R.string.unimelb)));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(melbourne_university));
     }
 }

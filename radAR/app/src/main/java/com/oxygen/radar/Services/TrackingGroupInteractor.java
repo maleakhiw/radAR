@@ -1,5 +1,7 @@
-package com.oxygen.radar.Models;
+package com.oxygen.radar.Services;
 
+
+import com.oxygen.radar.Models.GroupDetails;
 
 import io.reactivex.Observable;
 

@@ -1,8 +1,7 @@
-package com.oxygen.radar.Models;
+package com.oxygen.radar.Services;
 
-import com.oxygen.radar.BuildConfig;
-import com.oxygen.radar.Requests.RMSGetGroupInfoRequest;
-import com.oxygen.radar.Services.GroupManagementSystemApi;
+import com.oxygen.radar.Models.GroupDetails;
+import com.oxygen.radar.Models.Requests.RMSGetGroupInfoRequest;
 
 import io.reactivex.Observable;
 import retrofit2.Retrofit;
