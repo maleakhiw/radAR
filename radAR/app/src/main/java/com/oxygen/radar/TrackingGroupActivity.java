@@ -16,12 +16,12 @@ public class TrackingGroupActivity extends AppCompatActivity implements Tracking
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tracking_group);
+        setContentView(R.layout.activity_tracking_group_list);
 
         // use custom title bar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setCustomView(R.layout.tracking_group_titlebar);
+        actionBar.setCustomView(R.layout.tracking_group_details);
 
         presenter = new TrackingGroupPresenterImpl(this);
         presenter.loadGroupDetailsToView();
