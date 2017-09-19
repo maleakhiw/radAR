@@ -39,7 +39,6 @@ module.exports = class SVS {
   authenticate(req, res, next) {
     // TODO: check if in req.query, req.body or req.param
     let userID = req.query.userID || req.params.userID || req.body.userID
-    console.log('userID', userID)
     Metadata.findOne({ userID: userID }).exec()
 
     .then((metadata) => {
@@ -127,6 +126,8 @@ module.exports = class SVS {
         next();
     }
 
+    let user_mongoID, passwordHash_mongoID, metadata_mongoID
+
     if (errorKeys.length) {
         sendError()
     } else {
@@ -168,6 +169,7 @@ module.exports = class SVS {
       })
 
       .then((passwordHash) => {
+        passwordHash_mongoID = passwordHash._id
         // console.log(lastUserID)
         if (!passwordHash) {
           throw new Error('') // becomes internalError
@@ -190,6 +192,7 @@ module.exports = class SVS {
       })
 
       .then((user) => { // User successfully created, create Metadata
+        user_mongoID = user._id
           // console.log(user)
           token = generateToken(userID)
           let object = {
@@ -203,6 +206,7 @@ module.exports = class SVS {
       })
 
       .then((metadata) => {
+        metadata_mongoID = metadata._id
           // console.log(metadata)
           let response = {
               success: true,
@@ -215,6 +219,17 @@ module.exports = class SVS {
       })
 
       .catch((err) => { // one error handler for the chain of Promises
+        // revert all changes user_mongoID, passwordHash_mongoID, metadata_mongoID
+        if (user_mongoID) {
+          User.remove({_id: user_mongoID})
+        }
+        if (passwordHash_mongoID) {
+          PasswordHash.remove({_id: passwordHash_mongoID})
+        }
+        if (metadata_mongoID) {
+          Metadata.remove({_id: metadata_mongoID})
+        }
+
           if (err == 'Error: usernameTaken') {
             errorKeys.push('usernameTaken')
             sendError()
