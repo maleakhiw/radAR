@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import io.reactivex.Observer;
@@ -20,7 +21,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class LoginActivity extends AppCompatActivity {
     private EditText username;
     private EditText password;
-    private Button login;
+    private Button btn_login;
+    private TextView link_signup;
 
     private AuthService authService;  // service for making requests to our API
 
@@ -47,7 +49,18 @@ public class LoginActivity extends AppCompatActivity {
         // so we can mock the service instead of locking us to use the real service
         authService = new AuthService(authApi, this);
 
-        login.setOnClickListener(new View.OnClickListener() {
+        // Setup on click listener for link signup
+        link_signup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Go to the signup
+                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
+
+                startActivity(intent);
+            }
+        });
+
+        btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Login using a username and password
@@ -84,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
     public void setupUI() {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        login = (Button) findViewById(R.id.login);
+        btn_login = (Button) findViewById(R.id.btn_login);
+        link_signup = (TextView) findViewById(R.id.link_signup);
     }
 }
