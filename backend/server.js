@@ -58,7 +58,7 @@ app.use(function(req, res, next) {
    return (Date.now() - entry.time) < REQ_TIME_THRES;
   })
 
-  console.log(lastRequests);
+  console.log(lastRequests.length);
 
   // check if req.body is in array
   let isInArray = false;

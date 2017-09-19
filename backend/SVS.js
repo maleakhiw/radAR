@@ -67,7 +67,7 @@ module.exports = class SVS {
     })
 
     .catch((err) => {
-      console.log(err)
+      // console.log(err)
       if (err == 'Error: Missing Token') {
         res.status(401).json({
           success: false,
