@@ -3,6 +3,9 @@
  */
 
 module.exports.ONLINE_THRESHOLD_SEC = 60
+module.exports.SALT_ROUNDS = 10 // rounds of salting for password
+
+module.exports.secret = "topreisarubberdome"
 
 module.exports.metas = {  // route -> metadata
   "/": {
