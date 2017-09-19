@@ -47,6 +47,25 @@ app.use(function (error, req, res, next) {
   }
 });
 
+// handle rapid-fire duplicate requests
+var lastRequest;
+var lastRequestTime;
+var REQ_TIME_THRES = 200;
+app.use(function(req, res, next) {
+  console.log(req.body);
+   if (!lastRequest) {
+     next()
+   } else {
+     if (lastRequest.isEqual(req.body) && (Date.now() - lastRequestTime) < REQ_TIME_THRES) {
+       // too soon
+     } else {
+       lastRequest = req.body;
+       lastRequestTime = Date.now();
+       next()
+     }
+   }
+})
+
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
 const connection = mongoose.connect('mongodb://localhost/radarTest',
