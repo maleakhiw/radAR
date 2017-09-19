@@ -146,18 +146,19 @@ module.exports = class SVS {
         if (users.length) {
           throw Error('emailTaken')
         }
-        return LastUserID.findOneAndRemove({})
+        // return LastUserID.findOneAndRemove({})
+        return User.findOne().sort({userID: -1}).exec()
       })
 
 
-      .then((lastUserID) => {
+      .then((userRes) => {
         // console.log(lastUserID)
-        if (lastUserID) {
-            userID = lastUserID.userID + 1
+        if (userRes) {
+            userID = userRes.userID + 1
         } else {
             userID = 1
         }
-        return LastUserID.create({ userID: userID }) // Promise
+        return LastUserID.create({ userID: userID }) // TODO deprecate
       })
 
 
