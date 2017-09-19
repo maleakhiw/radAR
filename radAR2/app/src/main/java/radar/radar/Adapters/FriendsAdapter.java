@@ -7,15 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import radar.radar.Models.Responses.User;
 import radar.radar.R;
-
-/**
- * Created by kenneth on 19/9/17.
- */
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
@@ -70,6 +67,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             tvName = itemView.findViewById(R.id.row_friends_name);
             tvUsername = itemView.findViewById(R.id.row_friends_username);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
+
+            // Setup on click listener on the view
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // For now try to just create toast
+                    Toast.makeText(context, "Tapped", Toast.LENGTH_LONG).show();
+
+                    //TODO: create an intent that will go to profile page
+                }
+            });
         }
     }
 }
