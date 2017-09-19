@@ -89,7 +89,7 @@ module.exports = class SVS {
 
   }
 
-  signUp(req, res) {
+  signUp(req, res, next) {
     let firstName = req.body.firstName
     let lastName = req.body.lastName
     let email = req.body.email
@@ -124,6 +124,7 @@ module.exports = class SVS {
             errors: common.errorObjectBuilder(errorKeys)
         }
         res.json(response)
+        next();
     }
 
     if (errorKeys.length) {
@@ -213,6 +214,7 @@ module.exports = class SVS {
               userID: userID
           }
           res.json(response)
+          next();
       })
 
       .catch((err) => { // one error handler for the chain of Promises
