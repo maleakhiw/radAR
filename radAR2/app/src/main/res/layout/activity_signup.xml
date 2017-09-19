@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="radar.radar.MainActivity">
+    tools:context="radar.radar.SignupActivity">
 
     <EditText
         android:id="@+id/firstName"
