@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -65,7 +66,10 @@ public class SignupActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(AuthResponse authResponse) {
-                        // Jump to new activity
+                        // Jump to home
+                        Intent intent = new Intent(SignupActivity.this, HomeScreenActivity.class );
+
+                        startActivity(intent);
                     }
 
                     @Override
