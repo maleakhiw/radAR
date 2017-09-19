@@ -30,6 +30,7 @@ function getUserID(callback) {
 function signUpImpl(req, res) {
   this.busy_signUp = true;
   console.log("signUpImpl: set busy_signUp to true")
+  console.log(requests_queue)
   let firstName = req.body.firstName
   let lastName = req.body.lastName
   let email = req.body.email
@@ -176,6 +177,16 @@ function signUpImpl(req, res) {
 }
 
 var busy_signUp = false;
+var requests_queue = [];
+function sleep(time, callback, req, res) {
+  var stop = new Date().getTime();
+  while(new Date().getTime() < stop + time) {
+    ;
+  }
+  callback(req, res);
+}
+
+
 module.exports = class SVS {
 
   constructor(pUser, pMetadata, pLastUserID, pPasswordHash) {
@@ -295,11 +306,12 @@ module.exports = class SVS {
   // }
 
   signUp(req, res) {
+    requests_queue.push([req, res])
     while (1==1) {
       if (busy_signUp) {
-        setTimeout(() => {
-          console.log("waiting")
-        }, 1000);
+        // black for 100 ms
+        console.log("block");
+        sleep(100, signUpImpl, req, res);
       } else {
         console.log("calling signUpImpl")
         signUpImpl(req, res);
