@@ -2,10 +2,16 @@ package radar.radar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+
+import radar.radar.Adapters.FriendsAdapter;
+import radar.radar.Models.Responses.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Views.FriendsView;
 import retrofit2.Retrofit;
@@ -15,11 +21,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
     FriendsPresenter presenter;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+
+        recyclerView = findViewById(R.id.friends_recyclerView);
 
         presenter = new FriendsPresenter(this, new Retrofit.Builder()
                                                                 .baseUrl("http://35.185.35.117/api/")
@@ -31,6 +40,14 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
     @Override
     public void showToast(String toast) {
         Toast.makeText(this, toast, Toast.LENGTH_LONG);
+    }
+
+    @Override
+    public void bindAdapterToRecyclerView(ArrayList<User> friends) {
+        FriendsAdapter friendsAdapter = new FriendsAdapter(this, friends);
+        recyclerView.setAdapter(friendsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
+
     }
 
 }

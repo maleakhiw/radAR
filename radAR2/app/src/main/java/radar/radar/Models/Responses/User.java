@@ -6,6 +6,7 @@ package radar.radar.Models.Responses;
 
 public class User {
     public int userID;
+    public String username;
     public String firstName;
     public String lastName;
     public String profilePicture;

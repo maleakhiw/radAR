@@ -28,30 +28,8 @@ public class FriendsPresenter {
         this.friendsApi = retrofit.create(FriendsApi.class);
         this.friendsService = new FriendsService(friendsApi, (Context) friendsView);
 
-        AuthApi authApi = retrofit.create(AuthApi.class);
-        AuthService authService = new AuthService(authApi, (Context) friendsView);
-//        authService.login("manshar", "hunter2").subscribe(new Observer<AuthResponse>() {
-//            @Override
-//            public void onSubscribe(Disposable d) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(AuthResponse authResponse) {
-//                System.out.println(authResponse.token);
-//            }
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                System.out.println(e);
-//            }
-//
-//            @Override
-//            public void onComplete() {
-//
-//            }
-//        });
-//        System.out.println(AuthService.getToken((Context) friendsView));
+//        AuthApi authApi = retrofit.create(AuthApi.class);
+//        AuthService authService = new AuthService(authApi, (Context) friendsView);
 
         loadFriends();
     }
@@ -68,7 +46,7 @@ public class FriendsPresenter {
                 System.out.println(friendsResponse);
 
                 if (friendsResponse.success) {
-                    // load ArrayList to adapter
+                    friendsView.bindAdapterToRecyclerView(friendsResponse.friends);
                 }
             }
 
