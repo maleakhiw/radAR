@@ -41,9 +41,19 @@ public class LoginPresenter {
                                 .build();
         this.authService = new AuthService(retrofit.create(AuthApi.class), (Context) loginView);
 
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
         signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
-        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
-        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+//        signUp("Kenneth", "Aloysius", "rusli.kenneth@gmail.com", "krusli3", "testPassword");
+
 //        login("krusli", "testPassword");
 //        login("maleakhiw", "password");
 
