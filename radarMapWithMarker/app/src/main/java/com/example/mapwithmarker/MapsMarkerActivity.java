@@ -34,7 +34,7 @@ public class MapsMarkerActivity extends AppCompatActivity
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
      * we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user receives a prompt to install
-     * Play services inside the SupportMapFragment. The API invokes this method after the user has
+     * Play services inside the SupportMapFragment. The API invokes this metd after the user has
      * installed Google Play services and returned to the app.
      */
     @Override
