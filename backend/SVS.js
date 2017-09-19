@@ -158,11 +158,7 @@ module.exports = class SVS {
         } else {
             userID = 1
         }
-        return LastUserID.create({ userID: userID }) // TODO deprecate
-      })
 
-
-      .then((lastUserID) =>  {
         let hashed = hashSaltPasssword(password)
         // console.log(hashed)
         return PasswordHash.create({
