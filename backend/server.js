@@ -59,10 +59,10 @@ function fibo(n) {
     return 0; // special case: no entries in queue
   }
   if (n==1) {
-    return 1;
+    return 5;
   }
   if (n==2) {
-    return 2;
+    return 11;
   }
   else {
     return fibo(n-1) + fibo(n-2);
