@@ -32,7 +32,7 @@ public interface FriendsApi {
     Observable<FriendsResponse> getFriends(@Path(value="userID", encoded=true) int userID, @Header("token") String token);
 
     // respond to friend request
-    @DELETE("accounts/{userID}/friendRequests/{requestID}")
+    @POST("accounts/{userID}/friendRequests/{requestID}")
     Observable<Status> respondToFriendRequest(@Path(value = "userID", encoded = true) int userID, @Header("token") String token, @Path(value = "requestID", encoded = true) int requestID, @Body RespondToRequestRequest body);
 
     // search

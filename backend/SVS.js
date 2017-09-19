@@ -297,7 +297,7 @@ module.exports = class SVS {
       if (busy_signUp) {
         setTimeout(() => {
           console.log("waiting")
-        }, 100);
+        }, 1000);
       } else {
         console.log("calling signUpImpl")
         signUpImpl(req, res);
