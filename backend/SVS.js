@@ -30,7 +30,7 @@ function getUserID(callback) {
 function signUpImpl(req, res) {
   this.busy_signUp = true;
   console.log("signUpImpl: set busy_signUp to true")
-  console.log(requests_queue)
+  console.log(requests_queue.length)
   let firstName = req.body.firstName
   let lastName = req.body.lastName
   let email = req.body.email
