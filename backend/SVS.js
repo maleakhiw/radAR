@@ -1,4 +1,4 @@
-/**
+this.busy_signUp = false;/**
  * Server Validation System server-side component.
  * Handles user authentication, validation, sign up and login services.
  */
@@ -29,6 +29,7 @@ function getUserID(callback) {
 
 function signUpImpl(req, res) {
   this.busy_signUp = true;
+  console.log("signUpImpl: set busy_signUp to true")
   let firstName = req.body.firstName
   let lastName = req.body.lastName
   let email = req.body.email
@@ -64,6 +65,7 @@ function signUpImpl(req, res) {
       }
       res.json(response)
       this.busy_signUp = false;
+      console.log("signUpImpl: set busy_signUp to false")
   }
 
   if (errorKeys.length) {
@@ -154,10 +156,10 @@ function signUpImpl(req, res) {
         }
         res.json(response)
         this.busy_signUp = false;
+        console.log("signUpImpl: set busy_signUp to false")
     })
 
     .catch((err) => { // one error handler for the chain of Promises
-        this.busy_signUp = false;
         if (err == 'Error: usernameTaken') {
           errorKeys.push('usernameTaken')
           sendError()
