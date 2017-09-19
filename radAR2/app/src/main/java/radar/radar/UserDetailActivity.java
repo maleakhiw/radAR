@@ -28,6 +28,7 @@ public class UserDetailActivity extends AppCompatActivity {
         username.setText(user.username);
         userDetailsEmail.setText("test@example.com");
         userDetailsPhoneNumber.setText("0410254343");
+        userDetailsProfile.setText(user.profileDesc);
 
     }
 
