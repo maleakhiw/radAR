@@ -67,12 +67,12 @@ public class AuthService {
             public void onNext(AuthResponse authResponse) {
                 // save to shared prefs
                 prefs.edit().putString("radar_token", authResponse.token)
-                        .putInt("radar_userID", authResponse.userID).apply();
+                        .putInt("radar_userID", authResponse.userID).commit();
             }
 
             @Override
             public void onError(Throwable e) {
-
+                System.out.println(e);
             }
 
             @Override
@@ -104,8 +104,10 @@ public class AuthService {
             @Override
             public void onNext(AuthResponse authResponse) {
                 // save to shared prefs
-                prefs.edit().putString("radar_token", authResponse.token).apply();
-                prefs.edit().putInt("radar_userID", authResponse.userID).apply();
+                System.out.println(authResponse.token);
+                prefs.edit().putString("radar_token", authResponse.token)
+                        .putInt("radar_userID", authResponse.userID).commit();
+                System.out.println(prefs.getString("radar_token", null));
             }
 
             @Override
@@ -122,5 +124,8 @@ public class AuthService {
         return observable;
     }
 
+    public void signOut() {
+        prefs.edit().remove("radar_token").remove("radar_userID").commit();
+    }
 
 }
