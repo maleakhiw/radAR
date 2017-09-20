@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import io.reactivex.Observer;
@@ -19,12 +20,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class SignupActivity extends AppCompatActivity {
-    private EditText firstName;
-    private EditText lastName;
     private EditText email;
     private EditText username;
     private EditText password;
-    private Button signup;
+    private Button btn_signup;
+    private TextView link_login;
 
     private AuthService authService;  // service for making requests to our API
 
@@ -50,13 +50,23 @@ public class SignupActivity extends AppCompatActivity {
         // so we can mock the service instead of locking us to use the real service
         authService = new AuthService(authApi, this);
 
+        // Create on click listener for link login
+        link_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // When clicked go to login page
+                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
         // When the user sign up, we want to pass everything to the server and database
-        signup.setOnClickListener(new View.OnClickListener() {
+        btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (validateForm()) {
-                    SignUpRequest signUpRequest = new SignUpRequest(firstName.getText().toString(),
-                            lastName.getText().toString(), email.getText().toString(), username.getText().toString(),
+                    SignUpRequest signUpRequest = new SignUpRequest("",
+                            "", email.getText().toString(), username.getText().toString(),
                             "", password.getText().toString(), "fakeDeviceID");
 
                     authService.signUp(signUpRequest).subscribe(new Observer<AuthResponse>() {
@@ -94,24 +104,21 @@ public class SignupActivity extends AppCompatActivity {
     /** Setting up the User Interface */
     public void setupUI() {
         username = (EditText) findViewById(R.id.username);
-        email = (EditText) findViewById(R.id.email);
+        email = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
-        signup = (Button) findViewById(R.id.signup);
-        firstName = (EditText) findViewById(R.id.firstName);
-        lastName = (EditText) findViewById(R.id.lastName);
+        btn_signup = (Button) findViewById(R.id.btn_signup);
+        link_login = (TextView) findViewById(R.id.link_login);
     }
 
     /** Validation check to make sure that there is no empty things on the form */
     public boolean validateForm() {
-        String username, email, password, firstName, lastName;
+        String username, email, password;
         // Check to make sure that everything is filled
 
         username = this.username.getText().toString().trim();
         email = this.email.getText().toString().trim();
         password = this.password.getText().toString().trim();
-        firstName = this.firstName.getText().toString().trim();
-        lastName = this.lastName.getText().toString().trim();
 
-        return !(username.isEmpty() || email.isEmpty() || password.isEmpty() || firstName.isEmpty() || lastName.isEmpty());
+        return !(username.isEmpty() || email.isEmpty() || password.isEmpty());
     }
 }
