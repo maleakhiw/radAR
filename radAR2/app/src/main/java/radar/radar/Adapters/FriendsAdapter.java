@@ -8,12 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import radar.radar.Models.Responses.User;
+import radar.radar.Models.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 

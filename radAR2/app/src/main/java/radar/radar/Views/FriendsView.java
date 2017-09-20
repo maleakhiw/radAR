@@ -5,7 +5,7 @@ import android.view.View;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.Responses.User;
+import radar.radar.Models.User;
 
 /**
  * Created by kenneth on 19/9/17.
