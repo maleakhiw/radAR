@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import radar.radar.Adapters.FriendsAdapter;
 import radar.radar.Models.Responses.User;
 import radar.radar.Presenters.FriendsPresenter;
+import radar.radar.Services.FriendsApi;
 import radar.radar.Views.FriendsView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -34,13 +35,15 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
         recyclerView = findViewById(R.id.friends_recyclerView);
         fab = findViewById(R.id.fab);
+        
+        Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://35.185.35.117/api/")
+                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build();
+        FriendsApi friendsApi = retrofit.create(FriendsApi.class);
 
-        presenter = new FriendsPresenter(this, new Retrofit.Builder()
-                                                                .baseUrl("http://35.185.35.117/api/")
-                                                                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                                                                .addConverterFactory(GsonConverterFactory.create())
-                                                                .build());
-
+        presenter = new FriendsPresenter(this, friendsApi);
 
     }
 

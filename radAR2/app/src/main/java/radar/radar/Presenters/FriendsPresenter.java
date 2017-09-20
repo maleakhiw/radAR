@@ -21,9 +21,9 @@ public class FriendsPresenter {
     FriendsApi friendsApi;
     FriendsService friendsService;
 
-    public FriendsPresenter(FriendsView friendsView, Retrofit retrofit) {
+    public FriendsPresenter(FriendsView friendsView, FriendsApi friendsApi) {
         this.friendsView = friendsView;
-        this.friendsApi = retrofit.create(FriendsApi.class);
+        this.friendsApi = friendsApi;
         this.friendsService = new FriendsService(friendsApi, (Context) friendsView);
 
 //        AuthApi authApi = retrofit.create(AuthApi.class);
@@ -64,9 +64,9 @@ public class FriendsPresenter {
             public void onNext(FriendsResponse friendsResponse) {
                 System.out.println(friendsResponse);
                 if (friendsResponse.success) {
-
                     friendsView.bindAdapterToRecyclerView(friendsResponse.friends);
-
+                } else {
+                    friendsView.showToast("Error occurred");
                 }
             }
 
