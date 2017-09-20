@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import radar.radar.Models.Responses.User;
+import radar.radar.Models.User;
 
 public class UserDetailActivity extends AppCompatActivity {
     private TextView fullname;

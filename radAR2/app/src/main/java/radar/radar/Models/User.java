@@ -1,4 +1,4 @@
-package radar.radar.Models.Responses;
+package radar.radar.Models;
 
 import java.io.Serializable;
 

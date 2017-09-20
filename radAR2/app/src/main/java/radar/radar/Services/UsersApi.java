@@ -1,11 +1,14 @@
 package radar.radar.Services;
 
 
+import java.util.List;
+
 import io.reactivex.Observable;
 import radar.radar.Models.Requests.AddFriendRequest;
 import radar.radar.Models.Responses.AddFriendResponse;
 import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.FriendsResponse;
+import radar.radar.Models.Responses.OnlineStatusesResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
 import retrofit2.http.Body;
@@ -19,7 +22,7 @@ import retrofit2.http.Query;
  * Created by kenneth on 18/9/17.
  */
 
-public interface FriendsApi {
+public interface UsersApi {
     @POST("accounts/{userID}/friends")
     Observable<AddFriendResponse> addFriend(@Path(value = "userID", encoded = true) int userID, @Header("token") String token, @Body AddFriendRequest body);
 
@@ -37,4 +40,8 @@ public interface FriendsApi {
     // search
     @GET("users")
     Observable<UsersSearchResult> searchForUsers(@Query("userID") int userID, @Header("token") String token, @Query("query") String query, @Query("searchType") String searchType);
+
+    // online status
+    @GET("accounts/{userID}/usersOnlineStatuses")
+    Observable<OnlineStatusesResponse> getOnlineStatuses(@Path(value = "userID", encoded = true) int userID, @Query("userIDsToCheck[]") List<Integer> userIDsToCheck);
 }
