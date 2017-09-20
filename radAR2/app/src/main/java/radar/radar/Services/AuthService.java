@@ -124,5 +124,8 @@ public class AuthService {
         return observable;
     }
 
+    public void signOut() {
+        prefs.edit().remove("radar_token").remove("radar_userID").commit();
+    }
 
 }
