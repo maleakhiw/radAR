@@ -7,5 +7,9 @@ import java.util.ArrayList;
  */
 
 public class FriendsResponse extends Status {
+    public FriendsResponse(ArrayList<User> friends) {
+        this.friends = friends;
+    }
+
     public ArrayList<User> friends;
 }
