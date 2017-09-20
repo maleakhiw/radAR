@@ -9,14 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Models.Responses.User;
+import radar.radar.Models.User;
 import radar.radar.Presenters.FriendsPresenter;
-import radar.radar.Services.FriendsApi;
+import radar.radar.Services.UsersApi;
 import radar.radar.Views.FriendsView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -41,9 +39,9 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
-        FriendsApi friendsApi = retrofit.create(FriendsApi.class);
+        UsersApi usersApi = retrofit.create(UsersApi.class);
 
-        presenter = new FriendsPresenter(this, friendsApi);
+        presenter = new FriendsPresenter(this, usersApi);
 
     }
 

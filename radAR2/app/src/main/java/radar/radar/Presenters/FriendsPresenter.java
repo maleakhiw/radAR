@@ -3,33 +3,27 @@ package radar.radar.Presenters;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.HomeScreenActivity;
-import radar.radar.Models.Requests.SignUpRequest;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Models.Responses.FriendsResponse;
-import radar.radar.Models.Responses.User;
-import radar.radar.Services.AuthApi;
-import radar.radar.Services.AuthService;
-import radar.radar.Services.FriendsApi;
-import radar.radar.Services.FriendsService;
+import radar.radar.Models.User;
+import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
 import radar.radar.Views.FriendsView;
-import retrofit2.Retrofit;
 
 public class FriendsPresenter {
     FriendsView friendsView;
-    FriendsApi friendsApi;
-    FriendsService friendsService;
+    UsersApi usersApi;
+    UsersService usersService;
 
-    public FriendsPresenter(FriendsView friendsView, FriendsApi friendsApi) {
+    public FriendsPresenter(FriendsView friendsView, UsersApi usersApi) {
         this.friendsView = friendsView;
-        this.friendsApi = friendsApi;
-        this.friendsService = new FriendsService(friendsApi, (Context) friendsView);
+        this.usersApi = usersApi;
+        this.usersService = new UsersService(usersApi, (Context) friendsView);
 
 //        AuthApi authApi = retrofit.create(AuthApi.class);
 //        AuthService authService = new AuthService(authApi, (Context) friendsView);
@@ -59,7 +53,7 @@ public class FriendsPresenter {
     }
 
     public void loadFriends() {
-        friendsService.getFriends().subscribe(new Observer<FriendsResponse>() {
+        usersService.getFriends().subscribe(new Observer<FriendsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 

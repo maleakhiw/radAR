@@ -17,15 +17,15 @@ import radar.radar.Models.Responses.UsersSearchResult;
  * Created by kenneth on 18/9/17.
  */
 
-public class FriendsService {
-    FriendsApi friendsApi;
+public class UsersService {
+    UsersApi usersApi;
     Context context;
     int userID;
     String token;
 
-    public FriendsService(FriendsApi friendsApi, Context context) {
+    public UsersService(UsersApi usersApi, Context context) {
         this.context = context;
-        this.friendsApi = friendsApi;
+        this.usersApi = usersApi;
         userID = AuthService.getUserID(context);
         token = AuthService.getToken(context);
     }
@@ -33,33 +33,33 @@ public class FriendsService {
     public Observable<FriendsResponse> getFriends() {
         // get userID and token from AuthService
         // TODO check if userID 0, if 0 return an Observable which only emits an error (which should boot the user to the Login screen in the Presenter)
-        Observable<FriendsResponse> observable = friendsApi.getFriends(userID, token)
+        Observable<FriendsResponse> observable = usersApi.getFriends(userID, token)
                                                     .subscribeOn(Schedulers.io())
                                                     .observeOn(AndroidSchedulers.mainThread());
         return observable;
     }
 
     public Observable<AddFriendResponse> addFriend(int invitedUserID) {
-        Observable<AddFriendResponse> observable = friendsApi.addFriend(userID, token, new AddFriendRequest(invitedUserID))
+        Observable<AddFriendResponse> observable = usersApi.addFriend(userID, token, new AddFriendRequest(invitedUserID))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread());
         return observable;
     }
 
     public Observable<FriendRequestsResponse> getFriendRequests() {
-        return friendsApi.getFriendRequests(userID, token)
+        return usersApi.getFriendRequests(userID, token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Status> respondToFriendRequest(int requestID, String action) {
-        return friendsApi.respondToFriendRequest(userID, token, requestID, new RespondToRequestRequest(action))
+        return usersApi.respondToFriendRequest(userID, token, requestID, new RespondToRequestRequest(action))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<UsersSearchResult> searchForUsers(String query, String searchType) {
-        return friendsApi.searchForUsers(userID, token, query, searchType)
+        return usersApi.searchForUsers(userID, token, query, searchType)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

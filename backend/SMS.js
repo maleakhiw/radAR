@@ -19,16 +19,15 @@ let LastChatID
 
 module.exports = class SMS {
   constructor(pChat, pMessage, pUser, pLastRequestID, pLastChatID, pMetadata, pLastUserID, pPasswordHash) {
-    Chat = pChat
-    Message = pMessage
-    User = pUser
-    LastChatID = pLastChatID
-    svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
+      Chat = pChat
+      Message = pMessage
+      User = pUser
+      LastChatID = pLastChatID
+      svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
   }
 
   newChat(req, res) {
-    let callback = (req, res) => {
-      let userID = req.body.userID
+      let userID = req.params.userID
       let participantUserIDs = req.body.participantUserIDs
       let name = req.body.name
 
@@ -55,6 +54,7 @@ module.exports = class SMS {
 
       let filteredUserIDs
       let chatID
+      let chat
 
       User.find( { userID: { $in: participantUserIDs } } ).exec()
 
@@ -80,16 +80,19 @@ module.exports = class SMS {
         })
       })
 
-      .then((lastChatID) => Chat.create({
-        name: name,
-        chatID: lastChatID.chatID,
-        members: filteredUserIDs,
-        admins: [userID]
-      }))
+      .then((lastChatID) => { // TODO remove lastChatID collection
+        chat = {
+          name: name,
+          chatID: lastChatID.chatID,
+          members: filteredUserIDs,
+          admins: [userID]
+        }
+        Chat.create(chat)
+      })
 
       .then((chat) => User.findOne({ userID: userID }))
 
-      .then((user) => {
+      .then((user) => { // add the user to the chat
         user.chats.push(chatID)
         return user.save()
       })
@@ -98,7 +101,7 @@ module.exports = class SMS {
         res.json({
           success: true,
           errors: [],
-          chatID: chatID
+          chat: chat
         })
       })
 
@@ -115,13 +118,10 @@ module.exports = class SMS {
         return
       })
 
-    }
 
-    svs.validateRequest(req, res, callback)
   }
 
   getChatsForUser(req, res) {
-    let callback = (req, res) => {
       let userID = req.params.userID
 
       User.findOne({ userID: userID }).exec()
@@ -143,13 +143,10 @@ module.exports = class SMS {
           errors: []
         })
       })
-    }
 
-    svs.validateRequest(req, res, callback)
   }
 
   getChat(req, res) {
-    let callback = (req, res) => {
       let userID = req.params.userID
       let chatID = req.params.chatID
 
@@ -158,6 +155,7 @@ module.exports = class SMS {
       .then((chat) => {
         chatObj = {
           name: chat.name,
+          chatID: chatID,
           admins: chat.admins,
           members: chat.members
         }
@@ -176,14 +174,11 @@ module.exports = class SMS {
           })
         }
       })
-    }
 
-    svs.validateRequest(req, res, callback)
 
   }
 
   getMessages(req, res) {
-    let callback = (req, res) => {
       let chatID = parseInt(req.query.chatID) || parseInt(req.params.chatID)
       let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
 
@@ -238,13 +233,10 @@ module.exports = class SMS {
         // if exists, check if member
           // if member, return messages (for now return everything.)
           // otherwise
-    }
 
-    svs.validateRequest(req, res, callback)
   }
 
   sendMessage(req, res) {
-    let callback = (req, res) => {
       console.log(req.body)
       let from = req.body.userID
       let chatID = parseInt(req.params.chatID)
@@ -314,9 +306,7 @@ module.exports = class SMS {
           sentMessage: null
         })
       })
-    }
 
-    svs.validateRequest(req, res, callback)
   }
 
 }

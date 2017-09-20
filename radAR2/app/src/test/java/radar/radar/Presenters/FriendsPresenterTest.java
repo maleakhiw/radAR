@@ -7,7 +7,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import java.net.SocketTimeoutException;
@@ -18,21 +17,16 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Models.Requests.SignUpRequest;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Models.Responses.FriendsResponse;
-import radar.radar.Models.Responses.User;
+import radar.radar.Models.User;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
-import radar.radar.Services.FriendsApi;
+import radar.radar.Services.UsersApi;
 import radar.radar.Views.FriendsView;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.times;
 
 /**
  * Created by kenneth on 20/9/17.
@@ -106,7 +100,7 @@ public class FriendsPresenterTest {
 
     @Test
     public void loadFriends() throws Exception {
-        FriendsApi friendsApi = Mockito.mock(FriendsApi.class);
+        UsersApi usersApi = Mockito.mock(UsersApi.class);
 
         // mock returned data, simulate success scenario
         ArrayList<User> friends = new ArrayList<>();
@@ -115,16 +109,16 @@ public class FriendsPresenterTest {
         FriendsResponse friendsResponse = new FriendsResponse(friends);
         friendsResponse.success = true;
 
-        Mockito.when(friendsApi.getFriends(anyInt(), anyString()))
+        Mockito.when(usersApi.getFriends(anyInt(), anyString()))
                 .thenReturn(Observable.just(friendsResponse));
-        presenter = new FriendsPresenter(friendsView, friendsApi);
+        presenter = new FriendsPresenter(friendsView, usersApi);
         Mockito.verify(friendsView).bindAdapterToRecyclerView(any());
     }
 
     @Test
     public void loadFriendsError() throws Exception {
         // simulate failure scenario
-        FriendsApi friendsApi = Mockito.mock(FriendsApi.class);
+        UsersApi usersApi = Mockito.mock(UsersApi.class);
 
         // mock returned data, simulate failure scenario
         ArrayList<User> friends = new ArrayList<>();
@@ -133,9 +127,9 @@ public class FriendsPresenterTest {
 
         Observable<FriendsResponse> throwsError = Observable.just(friendsResponse)
                 .map(friendsResponse1 -> { throw new SocketTimeoutException(); });
-        Mockito.when(friendsApi.getFriends(anyInt(), anyString()))
+        Mockito.when(usersApi.getFriends(anyInt(), anyString()))
                 .thenReturn(throwsError);
-        presenter = new FriendsPresenter(friendsView, friendsApi);
+        presenter = new FriendsPresenter(friendsView, usersApi);
         Mockito.verify(friendsView).showToast(anyString());
     }
 
