@@ -1,21 +1,21 @@
 package radar.radar.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import radar.radar.Models.Responses.User;
 import radar.radar.R;
-
-/**
- * Created by kenneth on 19/9/17.
- */
+import radar.radar.UserDetailActivity;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
 
@@ -70,6 +70,20 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
             tvName = itemView.findViewById(R.id.row_friends_name);
             tvUsername = itemView.findViewById(R.id.row_friends_username);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
+
+            // Setup on click listener on the view
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // From the displayed friend list send information
+                    User user = friends.get(getAdapterPosition());
+
+                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    intent.putExtra("user", (Serializable) user);
+                    context.startActivity(intent);
+
+                }
+            });
         }
     }
 }

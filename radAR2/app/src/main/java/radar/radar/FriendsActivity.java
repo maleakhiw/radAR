@@ -35,7 +35,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
         recyclerView = findViewById(R.id.friends_recyclerView);
         fab = findViewById(R.id.fab);
-
+        
         Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("http://35.185.35.117/api/")
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -44,6 +44,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         FriendsApi friendsApi = retrofit.create(FriendsApi.class);
 
         presenter = new FriendsPresenter(this, friendsApi);
+
     }
 
     @Override
@@ -56,6 +57,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         FriendsAdapter friendsAdapter = new FriendsAdapter(this, friends);
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
+        friendsAdapter.notifyDataSetChanged();
 
     }
 

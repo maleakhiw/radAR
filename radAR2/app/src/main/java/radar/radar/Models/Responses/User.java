@@ -1,10 +1,8 @@
 package radar.radar.Models.Responses;
 
-/**
- * Created by kenneth on 18/9/17.
- */
+import java.io.Serializable;
 
-public class User {
+public class User implements Serializable{
     public int userID;
     public String username;
     public String firstName;
@@ -21,4 +19,14 @@ public class User {
     public String lastName;
     public String profilePicture;
     public String profileDesc;
+
+    public User(int userID, String username, String firstName, String lastName, String profileDesc) {
+        this.userID = userID;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profilePicture = "";
+        this.profileDesc = profileDesc;
+    }
+
 }
