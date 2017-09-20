@@ -54,14 +54,12 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 } else if (id == R.id.nav_chats) {
                     //TODO: Go to chats
                 } else if (id == R.id.nav_friends) {
-                    uncheckAllItems();
 
                     // launch Friends activity
                     Intent intent = new Intent(activity, FriendsActivity.class);
                     activity.startActivity(intent);
 
                 } else if (id == R.id.nav_logout) {
-                    uncheckAllItems();  // unchecking immediately might be jarring TODO
 
                     // launch Login activity
                     Intent intent = new Intent(activity, LoginActivity.class);
