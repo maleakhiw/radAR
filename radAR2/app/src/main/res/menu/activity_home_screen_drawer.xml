@@ -5,33 +5,34 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_maps"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Map View" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_chats"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Chats" />
+        <item
+            android:id="@+id/nav_tracking_groups"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Tracking Groups" />
+
+        <item
+            android:id="@+id/nav_friends"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Friends" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Options">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="Settings" />
             <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_exit_to_app_black_48dp"
+                android:title="Logout" />
         </menu>
     </item>
 
