@@ -9,7 +9,7 @@
     tools:openDrawer="start">
 
     <include
-        layout="@layout/app_bar_home_screen"
+        layout="@layout/app_bar_chats_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_home_screen"
+        app:headerLayout="@layout/nav_header_chats_list"
         app:menu="@menu/drawer_common" />
 
 </android.support.v4.widget.DrawerLayout>

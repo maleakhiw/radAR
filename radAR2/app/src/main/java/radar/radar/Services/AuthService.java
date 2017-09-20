@@ -124,7 +124,8 @@ public class AuthService {
         return observable;
     }
 
-    public void signOut() {
+    public static void signOut(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
         prefs.edit().remove("radar_token").remove("radar_userID").commit();
     }
 

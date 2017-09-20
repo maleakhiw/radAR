@@ -139,5 +139,6 @@
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_drawer_home">DrawerHomeActivity</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
+    <string name="title_activity_chats_list">ChatsListActivity</string>
 
 </resources>

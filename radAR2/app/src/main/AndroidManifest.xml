@@ -12,20 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".SignupActivity" />
-
-        <activity android:name=".HomeScreenActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".FriendsActivity"/>
-        <activity android:name=".LoginActivity"/>
+        <activity
+            android:name=".HomeScreenActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".FriendsActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
-        <activity android:name=".LaunchActivity"
+        <activity
+            android:name=".LaunchActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
-        </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ChatsListActivity"
+            android:label="@string/title_activity_chats_list"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
