@@ -3,19 +3,14 @@ package radar.radar.Presenters;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.HomeScreenActivity;
-import radar.radar.Models.Requests.SignUpRequest;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.User;
-import radar.radar.Services.AuthApi;
-import radar.radar.Services.AuthService;
 import radar.radar.Services.FriendsApi;
 import radar.radar.Services.FriendsService;
 import radar.radar.Views.FriendsView;
