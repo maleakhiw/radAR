@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class SignupActivity extends AppCompatActivity {
     private EditText password;
     private Button btn_signup;
     private TextView link_login;
+    private ProgressDialog mProgress; // for loading animation
 
     private AuthService authService;  // service for making requests to our API
 
@@ -46,8 +48,9 @@ public class SignupActivity extends AppCompatActivity {
         // make a new AuthApi using our current Retrofit *instance*
         AuthApi authApi = retrofit.create(AuthApi.class);
 
-        // get an instance of the service. Ideally we want to use a Factory or use DI (dependency injection) to a class as a dependency
-        // so we can mock the service instead of locking us to use the real service
+        // get an instance of the service. Ideally we want to use a Factory or use DI
+        // (dependency injection) to a class as a dependency so we can mock the service instead of
+        // locking us to use the real service
         authService = new AuthService(authApi, this);
 
         // Create on click listener for link login
@@ -57,6 +60,7 @@ public class SignupActivity extends AppCompatActivity {
                 // When clicked go to login page
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -64,6 +68,8 @@ public class SignupActivity extends AppCompatActivity {
         btn_signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mProgress.setMessage("Signing Up...");
+                mProgress.show();
                 if (validateForm()) {
                     SignUpRequest signUpRequest = new SignUpRequest("",
                             "", email.getText().toString(), username.getText().toString(),
@@ -78,14 +84,18 @@ public class SignupActivity extends AppCompatActivity {
                         @Override
                         public void onNext(AuthResponse authResponse) {
                             // Jump to home
-                            Intent intent = new Intent(SignupActivity.this, HomeScreenActivity.class);
-
+                            mProgress.dismiss();
+                            Intent intent = new Intent(SignupActivity.this,
+                                    HomeScreenActivity.class);
                             startActivity(intent);
+                            finish();
                         }
 
                         @Override
                         public void onError(Throwable e) {
-                            Toast.makeText(getApplicationContext(), "Error occurred", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Sign Up failed.",
+                                    Toast.LENGTH_LONG).show();
+                            mProgress.dismiss();
                         }
 
                         @Override
@@ -95,7 +105,8 @@ public class SignupActivity extends AppCompatActivity {
                     });
                 }
                 else {
-                    Toast.makeText(getApplicationContext(), "Please enter all fields.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Please enter all fields.",
+                            Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -108,9 +119,11 @@ public class SignupActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         btn_signup = (Button) findViewById(R.id.btn_signup);
         link_login = (TextView) findViewById(R.id.link_login);
+        mProgress = new ProgressDialog(SignupActivity.this);
     }
 
     /** Validation check to make sure that there is no empty things on the form */
+    // TODO: Real validation on the client side
     public boolean validateForm() {
         String username, email, password;
         // Check to make sure that everything is filled

@@ -14,8 +14,6 @@ public class LaunchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_launch);
 
         String token = AuthService.getToken(this);
-        System.out.println("HELLO");
-        System.out.println(token);
         Intent intent;
         if (token != null) {
             intent = new Intent(this, HomeScreenActivity.class);
@@ -23,6 +21,7 @@ public class LaunchActivity extends AppCompatActivity {
             intent = new Intent(this, LoginActivity.class);
         }
         this.startActivity(intent);
+        finish();
 
     }
 }
