@@ -7,3 +7,4 @@
 - **PetBio**: sample file for intent
 - **MusicBox**: working playlist Application for sound in RADAR
 - **VolleyParsing**: HTTP Request method using volley
+- **Retrofit**: sample command and introduction to creating request and handling response using Retrofit library that will be used in RADAR
