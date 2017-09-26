@@ -228,5 +228,9 @@ module.exports.errors = {
   selfInviteError: {
     code: 89,
     reason: 'userID and invitedUserID cannot be the same.'
+  },
+  invitedUserIDAlreadyAdded: {
+    code: 90,
+    reason: 'The user you are trying to add is already in your friends list.'
   }
 }

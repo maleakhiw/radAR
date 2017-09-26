@@ -13,11 +13,71 @@ let svs;
 const isNumber = common.isNumber
 const isArray = common.isArray
 
+const isValidUser = common.isValidUser;
+const sendUnauthorizedError = common.sendUnauthorizedError;
+const sendInternalError = common.sendInternalError;
+
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 const ONLINE_THRESHOLD_SEC = consts.ONLINE_THRESHOLD_SEC
 const getPublicUserInfo = common.getPublicUserInfo
+const sendError = common.sendError
 
-let Metadata, User, Request, LastRequestID
+let User, Request, LastRequestID
+
+
+/**
+ * Validates a request to add a friend
+ * @param req Express request object
+ * @return errorKeys errors to be sent using sendError
+ */
+function validateAddFriend(req) {
+  let userID = req.params.userID;
+  let invitedUserID = req.body.invitedUserID;
+
+  let errorKeys = [];
+  if (!invitedUserID) errorKeys.push('missingInvitedUserID');
+
+  if (userID && invitedUserID && userID == invitedUserID) {
+    errorKeys.push('selfInviteError');
+  }
+
+  return errorKeys;
+
+}
+
+var checkIfAlreadyFriends = (userID, invitedUserID) => new Promise((resolve, reject) => {
+  User.findOne({userID: userID}).then((user) => {
+    if (user.friends.includes(invitedUserID)) {
+      reject('invitedUserIDAlreadyAdded');
+    } else {
+      resolve();
+    }
+  })
+})
+
+var checkIfRequestAlreadySent = (userID, invitedUserID) => new Promise((resolve, reject) => {
+  Request.findOne({$and: [
+    {from: userID},
+    {to: invitedUserID}
+  ]}).then((request) => {
+    if (request) {
+      reject('friendRequestAlreadyExists');
+    } else {
+      resolve();
+    }
+  })
+})
+
+var getRequestIDForNewRequest = () => new Promise((resolve, reject) => {
+  Request.findOne().sort({requestID: -1}).exec()
+  .then((request) => {
+    if (request) {
+      resolve(request.requestID + 1);
+    } else {
+      resolve(1);
+    }
+  })
+})
 
 module.exports = class UMS {
   constructor(pUser, pRequest) {
@@ -69,30 +129,30 @@ module.exports = class UMS {
         // console.log(friends)
         userIDsToCheck = userIDsToCheck.filter((userID) => friends.includes(userID))
         // console.log(userIDsToCheck)
-        return Metadata.find( { userID : { $in: userIDsToCheck } } )
+        return User.find( { userID : { $in: userIDsToCheck } } )
       })
 
-      .then((metadatas) => {
+      .then((users) => {
         // filter off the users who have not been online
-        metadatas.map((metadata) => {
-          console.log((Date.now() - metadata.lastSeen.getTime())/1000)
+        users.map((metadata) => {
+          console.log((Date.now() - User.lastSeen.getTime())/1000)
         })
-        metadatas = metadatas.filter((metadata) => (Date.now() - metadata.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
+        users = users.filter((metadata) => (Date.now() - User.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
-        onlineUsers = metadatas.map((metadata) => metadata.userID)
+        onlineUsers = users.map((metadata) => User.userID)
 
-        // console.log('metadatas_filtered', metadatas)
+        // console.log('users_filtered', users)
 
-        let metadatasPromise = metadatas.map((metadata) => new Promise((resolve, reject) => {
+        let usersPromise = users.map((metadata) => new Promise((resolve, reject) => {
           let firstName = null
           let lastName = null
           let profilePicture = null
 
-          User.findOne({ userID: metadata.userID }).exec()
+          User.findOne({ userID: User.userID }).exec()
           .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
         }))
 
-        return Promise.all(metadatasPromise) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
+        return Promise.all(usersPromise) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
       })
 
       .then((userInfos) => {
@@ -125,104 +185,66 @@ module.exports = class UMS {
     let userID = req.params.userID  // TODO check for missing userID
     let invitedUserID = req.body.invitedUserID
 
-    let errorKeys = []
-    function sendError() {  // assumption: variables are in closure
-      let response = {
-        success: false,
-        errors: common.errorObjectBuilder(errorKeys)
-      }
-      res.json(response)
-    }
-
-    if (!invitedUserID) errorKeys.push('missingInvitedUserID')
-
-    if (userID && invitedUserID && userID == invitedUserID) {
-      errorKeys.push('selfInviteError')
-    }
+    let errorKeys = validateAddFriend(req);
 
     // TODO: should not be able to send request if already friends
 
     if (errorKeys.length) {
-      sendError()
-    } else {
-      let requestID = null
-
-      User.find({
-        userID: invitedUserID
-      }).exec()
-      .then((users) => {
-        if (!users.length) {
-          throw new Error('invalidUserID')
-        } else {
-          return Request.find({
-            from: userID,
-            to: invitedUserID,
-            responded: false
-          })
-        }
-      })
-
-      .then((requests) => {
-        if (requests.length) {
-          return new Promise((resolve, reject) => {
-            reject('Request already exists')
-          })
-        } else {
-          return LastRequestID.findOneAndRemove({})
-        }
-
-      })
-
-      .then((lastRequestID) => {
-        // console.log(lastRequestID)
-        if (lastRequestID) {
-          requestID = lastRequestID.requestID + 1
-        } else {
-          requestID = 1
-        }
-        return LastRequestID.create({ requestID: requestID })
-      })
-
-      .then((lastRequestID) => {
-        // console.log(lastRequestID)
-        let request = {
-          requestID: requestID,
-          from: userID,
-          to: invitedUserID,
-          for: "friend",
-          responded: false
-        }
-        // console.log(request)
-
-        // TODO: check if a request already exists for this!
-        // TODO: add error message
-        return Request.create(request)
-      })
-
-      .then((request) => {
-        // console.log('create', request)
-        let response = {
-          success: true,
-          error: [],
-          requestID: requestID
-        }
-        res.json(response)
-      })
-
-      .catch((err) => {
-        // console.log(err)
-        if (err == 'Request already exists') {
-          errorKeys.push('friendRequestAlreadyExists')
-        } else if (err == 'Error: invalidUserID') {
-          errorKeys.push('invalidUserID')
-        } else {
-          errorKeys.push('internalError')
-        }
-        sendError()
-      })
+      sendError(res, errorKeys);
+      return;
     }
 
+    /*
+    - find if invited userID exists -> if not, throw 'invalidUserID'
+    - find if a user already has the invited user in his/her friends list
+    - find if an existing friend request already exists
+    - create a new request
+    */
+    let requestID;
+
+    isValidUser(invitedUserID)
+    .then(() => {
+      return checkIfAlreadyFriends(userID, invitedUserID);
+    })
+    .then(() => {
+      return checkIfRequestAlreadySent(userID, invitedUserID);
+    })
+    .then(() => {
+      return getRequestIDForNewRequest();
+    })
+    .then((requestIDRes) => {
+      requestID = requestIDRes;
+      return Request.create({
+        requestID: requestID,
+        from: userID,
+        to: invitedUserID,
+        for: "friend",
+        responded: false
+      })
+    })
+    .then((request) => {
+      // request successfully created
+      let response = {
+        success: true,
+        error: [],
+        requestID: requestID
+      }
+      res.json(response)
+    })
+    .catch((err) => {
+      if (err == 'invalidUserID') {
+        sendError(res, ['invalidUserID']);
+      } else if (err == 'invitedUserIDAlreadyAdded') {
+        sendError(res, ['invitedUserIDAlreadyAdded']);
+      } else if (err == 'friendRequestAlreadyExists') {
+        sendError(res, ['friendRequestAlreadyExists']);
+      } else {
+        console.log(err);
+        sendInternalError(res);
+      }
+    })
   }
+
 
   getFriendRequests(req, res) {
     let userID = req.params.userID  // TODO check for missing userID
@@ -304,6 +326,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
+          console.log(err);
           errorKeys.push('internalError')
           sendError()
         })
@@ -320,6 +343,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
+          console.log(err);
           errorKeys.push('internalError')
           sendError()
         })

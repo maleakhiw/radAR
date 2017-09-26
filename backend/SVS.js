@@ -11,6 +11,8 @@ const bcrypt = require('bcrypt')
 
 let User
 
+var sendError = common.sendError;
+
 function generateToken(userID) {
   return randomstring.generate(64) // TODO MOVE TO consts
 }
@@ -28,9 +30,10 @@ const isString = common.isString
 const isValidEmail = common.isValidEmail
 
 // functions to be unit tested
+// TODO use isValidUser from common.js
 var isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
-    resolve(false);
+    reject('missingUserID');
   }
 
   User.findOne({ userID: userID }).exec()
@@ -44,14 +47,14 @@ var isValidUser = (userID) => new Promise((resolve, reject) => {
   })
 })
 
-var validateToken = (token) => new Promise((resolve, reject) => {
+var validateToken = (token, userID) => new Promise((resolve, reject) => {
   User.findOne({ userID: userID }).exec()
 
   .then((user) => {
     if (!user) {
       resolve(false);
     } else {
-      if (!user.activeTokens.includes(authorizationToken)) {
+      if (!user.activeTokens.includes(token)) {
         resolve(false);
       }
     }
@@ -59,19 +62,8 @@ var validateToken = (token) => new Promise((resolve, reject) => {
   })
 })
 
-function sendUnauthorizedError(res, errorKeys) {
-  res.status(401).json({
-    success: false,
-    errors: common.errorObjectBuilder(errorKeys)
-  });
-}
-
-function sendInternalError(res) {
-  res.status(500).json({
-    success: false,
-    errors: common.errorObjectBuilder(['internalError'])
-  });
-}
+const sendUnauthorizedError = common.sendUnauthorizedError;
+const sendInternalError = common.sendInternalError;
 
 // helper functions for signUp
 
@@ -105,14 +97,6 @@ function validateSignUpRequest(obj) {
   if (!isString(deviceID)) errorKeys.push('invalidDeviceID');
 
   return errorKeys;
-}
-
-function sendError(res, errorKeys) {
-    let response = {
-        success: false,
-        errors: common.errorObjectBuilder(errorKeys)
-    }
-    res.json(response)
 }
 
 var isUsernameUnique = (username) => new Promise((resolve, reject) => {
@@ -209,15 +193,16 @@ module.exports = class SVS {
    */
   authenticate(req, res, next) {
     let userID = req.query.userID || req.params.userID || req.body.userID;
-    let authorizationToken = req.get('token')
+    let token = req.get('token')
 
-    if (!authorizationToken) {
+    if (!token) {
       sendUnauthorizedError(res, ['missingToken']);
       return;
     }
 
+
     isValidUser(userID).then((isValid) => {
-      validateToken(authorizationToken).then((isValid) => {
+      validateToken(token, userID).then((isValid) => {
         if (isValid) {
           next();
         } else {
@@ -228,6 +213,8 @@ module.exports = class SVS {
     .catch((err) => {
       if (err == 'invalidUserID') {
         sendError(res, ['invalidUserID']);
+      } else if (err == 'missingUserID') {
+        sendError(res, ['missingUserID']);
       } else {
         sendInternalError(res)
       }
