@@ -1,9 +1,6 @@
 let mongoose = require('mongoose')
 
 const User = require('../models/user')
-const Metadata = require('../models/metadata')
-const LastUserID = require('../models/lastUserID')
-const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -29,15 +26,6 @@ describe('SVS', () => {
     })
 
     User.remove({}).exec()
-    .then(() => {
-      return Metadata.remove({})
-    })
-    .then(() => {
-      return LastUserID.remove({})
-    })
-    .then(() => {
-      return PasswordHash.remove({})
-    })
     .then(() => {
       done()
     })

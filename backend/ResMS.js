@@ -16,9 +16,9 @@ let Resource
 // const connection = module.parent.exports.connection
 
 module.exports = class ResMS {
-  constructor(pResource, pUser, pMetadata, pLastUserID, pPasswordHash) {
-    Resource = pResource
-    svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
+  constructor(pResource, pUser) {
+    Resource = pResource;
+    svs = new SVS(pUser);
   }
 
   uploadResource(req, res) {

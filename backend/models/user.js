@@ -13,7 +13,11 @@ const userSchema = new Schema({
   friends: [Number],
   groups: [Number],
   chats: [Number],
-  signUpDate: Date
+  signUpDate: Date,
+  lastSeen: Date,
+  deviceIDs: [String],
+  activeTokens: [String],
+  passwordHash: String
 })
 userSchema.plugin(uniqueValidator);
 

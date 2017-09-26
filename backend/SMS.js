@@ -18,12 +18,11 @@ let User
 let LastChatID
 
 module.exports = class SMS {
-  constructor(pChat, pMessage, pUser, pLastRequestID, pLastChatID, pMetadata, pLastUserID, pPasswordHash) {
+  constructor(pChat, pMessage, pUser) {
       Chat = pChat
       Message = pMessage
       User = pUser
-      LastChatID = pLastChatID
-      svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
+      svs = new SVS(pUser)
   }
 
   newChat(req, res) {

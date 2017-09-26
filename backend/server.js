@@ -18,11 +18,6 @@ const User = require('./models/user')
 const Request = require('./models/request')
 const Message = require('./models/message')
 const Resource = require('./models/resource')
-const Metadata = require('./models/metadata')
-const LastChatID = require('./models/lastChatID')
-const LastUserID = require('./models/lastUserID')
-const PasswordHash = require('./models/passwordHash')
-const LastRequestID = require('./models/lastRequestID')
 
 const app = express()
 app.use(bodyParser.json())
@@ -69,43 +64,43 @@ var DELAY_BASE = 100;
 //   }
 // }
 
-app.use(function(req, res, next) {
-  // give a little delay so the array has time to be updated
-  // let time = Date.now();
-  // while (Date.now() - time < 10*fibo(lastRequests.length)) {
-  //   ;
-  // }
-
-  // remove requests older than threshold
-  lastRequests = lastRequests.filter((entry) => {
-   return (Date.now() - entry.time) < REQ_TIME_THRES;
-  })
-
-  console.log(lastRequests.length);
-
-  // check if req.body is in array
-  let isInArray = false;
-  lastRequests.map((entry) => {
-   if (_.isEqual(entry.reqBody, req.body)) {
-     isInArray = true;
-   }
-  });
-  console.log('isInArray', isInArray);
-
-  lastRequests.push({
-   reqBody: req.body,
-   time: Date.now()
-  });
-
-  if (!isInArray) {
-    console.log('accepted');
-    next(); // let the handlers handle it
-  } else {
-    console.log('rejected');
-    // block the request
-  }
-
-})
+// app.use(function(req, res, next) {
+//   // give a little delay so the array has time to be updated
+//   // let time = Date.now();
+//   // while (Date.now() - time < 10*fibo(lastRequests.length)) {
+//   //   ;
+//   // }
+//
+//   // remove requests older than threshold
+//   lastRequests = lastRequests.filter((entry) => {
+//    return (Date.now() - entry.time) < REQ_TIME_THRES;
+//   })
+//
+//   console.log(lastRequests.length);
+//
+//   // check if req.body is in array
+//   let isInArray = false;
+//   lastRequests.map((entry) => {
+//    if (_.isEqual(entry.reqBody, req.body)) {
+//      isInArray = true;
+//    }
+//   });
+//   console.log('isInArray', isInArray);
+//
+//   lastRequests.push({
+//    reqBody: req.body,
+//    time: Date.now()
+//   });
+//
+//   if (!isInArray) {
+//     console.log('accepted');
+//     next(); // let the handlers handle it
+//   } else {
+//     console.log('rejected');
+//     // block the request
+//   }
+//
+// })
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
@@ -122,20 +117,20 @@ module.exports.connection = connection
 
 // Systems
 const UMS = require('./UMS')
-const ums = new UMS(Metadata, User, Request, LastRequestID, PasswordHash)
+const ums = new UMS(User, Request)
 // const svs = require('./SVS')
 const SVS = require('./SVS')
-const svs = new SVS(User, Metadata, LastUserID, PasswordHash)
+const svs = new SVS(User)
 const authenticate = svs.authenticate
 
 const gms = require('./GMS')
 
 const SMS = require('./SMS')
-const sms = new SMS(Chat, Message, User, LastRequestID, LastChatID, Metadata, LastUserID, PasswordHash)
+const sms = new SMS(Chat, Message, User)
 
 
 const ResMS = require('./ResMS')
-const resms = new ResMS(Resource, User, Metadata, LastUserID, PasswordHash)
+const resms = new ResMS(Resource, User)
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
