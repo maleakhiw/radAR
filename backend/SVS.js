@@ -247,7 +247,7 @@ module.exports = class SVS {
     // check if username and email not taken
     isUsernameUnique(username).then((isUnique) => {
       if (!isUnique) {
-        sendError(res, ['usernameTaken']);
+        throw 'usernameTaken';
       } else {
         return isEmailUnique(email);
       }
@@ -255,7 +255,7 @@ module.exports = class SVS {
 
     .then((isUnique) => {
       if (!isUnique) {
-        sendError(res, ['emailTaken']);
+        throw 'emailTaken';
       } else {
         return getUserIDForNewUser()
       }
@@ -292,8 +292,14 @@ module.exports = class SVS {
     })
 
     .catch((err) => {
-      console.log(err);
-      sendInternalError(res);
+      if (err == 'usernameTaken') {
+        sendError(res, ['usernameTaken']);
+      } else if (err == 'emailTaken') {
+        sendError(res, ['emailTaken']);
+      } else {
+        console.log(err);
+        sendInternalError(res);
+      }
     })
 
 
