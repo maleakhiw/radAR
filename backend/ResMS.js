@@ -41,7 +41,7 @@ module.exports = class ResMS {
       filename: file.originalname,
       mimetype: file.mimetype,
       owners: [userID],
-      chatID: null,
+      groupID: null,
       groupID: null
     })
     .then((resource) => {
@@ -72,7 +72,7 @@ module.exports = class ResMS {
         let file = resource[0]
         // do checks - if unauthorised, send 401 unauthorised
 
-        // TODO: Chats and Groups
+        // TODO: Groups and Groups
         if (file.owners.includes(userID)) {
           res.setHeader('Content-Type', file.mimetype)
           res.sendFile('uploads/' + fileID, { root: __dirname })

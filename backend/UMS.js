@@ -86,6 +86,7 @@ module.exports = class UMS {
     svs = new SVS(User)
   }
 
+  // TODO write integration test for isOnline
   isOnline(req, res) {
     let userID = req.params.userID
     let userIDsToCheck = req.query.userIDsToCheck
@@ -245,7 +246,6 @@ module.exports = class UMS {
     })
   }
 
-
   getFriendRequests(req, res) {
     let userID = req.params.userID  // TODO check for missing userID
     let errorKeys = []
@@ -259,6 +259,7 @@ module.exports = class UMS {
 
     Request.find({ to: userID, responded: false }).exec()
     .then((requests) => {
+
       let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
         User.findOne({ userID: request.from }).exec()
         .then((user) => {
@@ -274,11 +275,11 @@ module.exports = class UMS {
         }) // Promise for the public user data
         .catch((err) => console.log(err)) // TODO: send fail
       }))
+
       return Promise.all(requestsPromise)
     })
 
     .then((requestsDetails) => {
-      // console.log(requestsDetails)
       let response = {
         success: true,
         errors: [],
@@ -292,6 +293,7 @@ module.exports = class UMS {
       errorKeys.push('internalError')
       sendError()
     })
+
   }
 
   getInformation(req, res) {
@@ -355,7 +357,6 @@ module.exports = class UMS {
 
   respondToRequest(req, res) {
     let userID = req.params.userID
-    // let requestID = req.body.requestID
     let requestID = req.params.requestID
     let action = req.body.action
     let errorKeys = []
@@ -371,73 +372,80 @@ module.exports = class UMS {
     if (!requestID) {
       errorKeys.push('missingRequestID')
       sendError()
-    } else {
-      Request.findOne({
-        requestID: requestID,
-        to: userID,
-        responded: false
-      }).exec()
+      return;
+    }
 
-      .then((request) => {
-        if (!request) {
-          throw new Error('invalidRequestID')
-        } else {
-          if (action == 'accept' || action == 'decline') {
-            // update request
-            request.responded = true
-            request.save()
+    Request.findOne({
+      requestID: requestID,
+      to: userID,
+      responded: false
+    }).exec()
 
-            if (action == 'accept') {
-              let from = request.from
-              let to = request.to
-              let usersToUpdate = [from, to]
-              User.find({ userID: { $in: usersToUpdate } }).exec()
-              .then((users) => {
-                users.map((user) => {
-                  if (user.userID == from) {
-                    user.friends.push(to)
-                  } else {
-                    user.friends.push(from)
-                  }
-                  user.save()
+    .then((request) => {
+      if (!request) {
+        throw new Error('invalidRequestID')
+      } else {
+        if (action == 'accept' || action == 'decline') {
+          // update request
+          request.responded = true
+          request.save()
 
-                  let response = {
-                    success: true,
-                    error: []
-                  }
-                  res.json(response)
+          if (action == 'accept') {
+            let from = request.from
+            let to = request.to
+            let usersToUpdate = [from, to]
 
-                })
+            User.find({ userID: { $in: usersToUpdate } }).exec()
+            .then((users) => {
+              users.map((user) => {
+                if (user.userID == from) {
+                  user.friends.push(to)
+                } else {
+                  user.friends.push(from)
+                }
+                user.save() // TODO use Promise.all to validate
               })
 
-            } else {
               let response = {
                 success: true,
                 error: []
               }
               res.json(response)
-            }
-          }
-          else {
-            throw new Error('invalidAction')
-          }
-        }
-      })
+            })
 
-      .catch((err) => {
-        if (err == 'Error: invalidAction') {
-          errorKeys.push('invalidAction')
-        } else if (err == 'Error: invalidRequestID') {
-          errorKeys.push('invalidRequestID')
+          }
+
+          // decline friend request
+          else {
+            let response = {
+              success: true,
+              error: []
+            }
+
+            res.json(response)
+          }
+
         } else {
-          console.log(err)
-          errorKeys.push('internalError')
+          throw new Error('invalidAction')
         }
-        sendError()
-      })
-    }
+      }
+    })
+
+    .catch((err) => {
+      if (err == 'Error: invalidAction') {
+        errorKeys.push('invalidAction')
+      } else if (err == 'Error: invalidRequestID') {
+        errorKeys.push('invalidRequestID')
+      } else {
+        console.log(err)
+        errorKeys.push('internalError')
+      }
+      sendError()
+    })
+
 
   }
+
 
 
   getFriends(req, res) {

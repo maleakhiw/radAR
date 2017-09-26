@@ -165,15 +165,15 @@ module.exports.errors = {
     code: 27,
     reason: "Invalid params: participantUserIDs."
   },
-  invalidChatID: {
+  invalidGroupID: {
     code: 28,
     reason: "Invalid param: chatID."
   },
-  unauthorisedChat: {
+  unauthorisedGroup: {
     code: 29,
     reason: "You do not have access to this chat."
   },
-  missingChatID: {
+  missingGroupID: {
     code: 30,
     reason: "Missing param: chatID."
   },

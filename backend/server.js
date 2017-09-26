@@ -13,7 +13,7 @@ const upload = multer({
 })
 
 // data models
-const Chat = require('./models/chat')
+const Group = require('./models/group')
 const User = require('./models/user')
 const Request = require('./models/request')
 const Message = require('./models/message')
@@ -123,10 +123,8 @@ const SVS = require('./SVS')
 const svs = new SVS(User)
 const authenticate = svs.authenticate
 
-const gms = require('./GMS')
-
 const SMS = require('./SMS')
-const sms = new SMS(Chat, Message, User)
+const sms = new SMS(Group, Message, User)
 
 
 const ResMS = require('./ResMS')
@@ -180,11 +178,11 @@ app.post("/api/accounts/:userID/resources", authenticate, upload.single('file'),
 app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getResource)
 
 // chats
-app.get("/api/accounts/:userID/chats", authenticate, sms.getChatsForUser)
-// NOTE: mirrors chats object below
-app.post("/api/accounts/:userID/chats", authenticate, sms.newChat)
-app.get("/api/accounts/:userID/chats/:chatID", authenticate, sms.getChat)
-app.get("/api/accounts/:userID/chats/:chatID/messages", authenticate, sms.getMessages)
+app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
+// NOTE: mirrors groups object below
+app.post("/api/accounts/:userID/chats", authenticate, sms.newGroup)
+app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
+app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
@@ -194,26 +192,26 @@ app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 app.get("/api/users", authenticate, ums.search) // get all users (only if query specified)
 app.get("/api/users/:userID", authenticate, ums.getInformation)
 
-// object: chats
-app.get("/api/chats", (req, res) => {
-  // TODO: let obj = get all chats
+// object: groups
+app.get("/api/groups", (req, res) => {
+  // TODO: let obj = get all groups
   let obj = {}
-  res.json(addMetas(obj, "/api/chats"))
+  res.json(addMetas(obj, "/api/groups"))
 })
 
-// chats
-app.post("/api/chats", authenticate, sms.newChat)
-app.get("/api/chats/:chatID", authenticate, sms.getChat)
-app.post("/api/chats/:chatID/messages", authenticate, sms.sendMessage)
-app.get("/api/chats/:chatID/messages", authenticate, sms.getMessages)
+// groups
+app.post("/api/groups", authenticate, sms.newGroup)
+app.get("/api/groups/:groupID", authenticate, sms.getGroup)
+app.post("/api/groups/:groupID/messages", authenticate, sms.sendMessage)
+app.get("/api/groups/:groupID/messages", authenticate, sms.getMessages)
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token
 app.get("/api/groups", (req, res) => {
   res.json(addMetas({}, "/api/groups"))
 })
-app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
-app.post("/api/groups", authenticate, gms.newGroup)
+// app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
+// app.post("/api/groups", authenticate, gms.newGroup)
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")

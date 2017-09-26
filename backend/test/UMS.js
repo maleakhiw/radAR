@@ -123,7 +123,7 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/accounts/:userID/friends', () => {
+  describe('POST /api/accounts/:userID/friends', () => {
     it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {
       chai.request(server)
       .post('/api/accounts/1/friends')
@@ -143,15 +143,12 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/accounts/:userID/friendRequests and DELETE /api/accounts/:userID/friendRequests/:requestID', () => {
+  describe('GET /api/accounts/:userID/friendRequests and POST /api/accounts/:userID/friendRequests/:requestID', () => {
     it('user2 should receive a friend request from user1', (done) => {
       chai.request(server)
       .get('/api/accounts/2/friendRequests')
       .set('token', user2token)
-      .query({
-      })
       .end((err, res) => {
-        console.log(res.body)
         res.should.have.status(200)
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
@@ -179,100 +176,100 @@ describe('UMS', () => {
     })
 
   })
-
-  describe('GET /api/accounts/:userID/friends', () => {
-    it("user1 should have user2 in user1's friends list", (done) => {
-      chai.request(server)
-      .get('/api/accounts/1/friends')
-      .set('token', user1token)
-      .end((err, res) => {
-        res.should.have.status(200)
-        expect(res).to.be.json
-        expect(res.body.success).to.equal(true)
-
-        expect(res.body.friends.map((entry) => entry.userID)).contains(2)
-
-        done()
-
-      })
-    })
-
-  })
-
-  describe('GET /api/users/ (search for users)', () => {
-    it("search by name (query: user, existing users: User1 and User2)", (done) => {
-      chai.request(server)
-      .get('/api/users/')
-      .set('token', user1token)
-      .query({
-        userID: 1,
-        query: "user",
-        searchType: "name"
-      })
-      .end((err, res) => {
-        res.should.have.status(200)
-        expect(res).to.be.json
-        expect(res.body.success).to.equal(true)
-
-        expect(res.body.results.map((entry) => entry.userID)).includes(1, 2)
-
-        done()
-      })
-    })
-
-    it("search by email (query: user, existing users: User1 and User2)", (done) => {
-      chai.request(server)
-      .get('/api/users')
-      .set('token', user1token)
-      .query({
-        userID: 1,  // TODO move userID to header
-        query: "email1@example.com",
-        searchType: "email"
-      })
-      .end((err, res) => {
-        res.should.have.status(200)
-        expect(res).to.be.json
-
-        expect(res.body.results.map((entry) => entry.userID)).includes(1)
-        done()
-      })
-    })
-
-    it("search by email and get no results", (done) => {
-      chai.request(server)
-      .get('/api/users')
-      .query({
-        userID: 1,
-        query: "email@example.com",
-        searchType: "email"
-      })
-      .set('token', user1token)
-      .end((err, res) => {
-        res.should.have.status(200)
-        expect(res).to.be.json
-
-        expect(res.body.results.map((entry) => entry.userID).length).to.equal(0)
-        done()
-      })
-    })
-
-    it("search by username and get one result (user1)", (done) => {
-      chai.request(server)
-      .get('/api/users')
-      .query({
-        userID: 1,
-        query: "user1",
-        searchType: "username"
-      })
-      .set('token', user1token)
-      .end((err, res) => {
-        res.should.have.status(200)
-        expect(res).to.be.json
-
-        expect(res.body.results.map((entry) => entry.userID).length).to.equal(1)
-        done()
-      })
-    })
-  })
+  //
+  // describe('GET /api/accounts/:userID/friends', () => {
+  //   it("user1 should have user2 in user1's friends list", (done) => {
+  //     chai.request(server)
+  //     .get('/api/accounts/1/friends')
+  //     .set('token', user1token)
+  //     .end((err, res) => {
+  //       res.should.have.status(200)
+  //       expect(res).to.be.json
+  //       expect(res.body.success).to.equal(true)
+  //
+  //       expect(res.body.friends.map((entry) => entry.userID)).contains(2)
+  //
+  //       done()
+  //
+  //     })
+  //   })
+  //
+  // })
+  //
+  // describe('GET /api/users/ (search for users)', () => {
+  //   it("search by name (query: user, existing users: User1 and User2)", (done) => {
+  //     chai.request(server)
+  //     .get('/api/users/')
+  //     .set('token', user1token)
+  //     .query({
+  //       userID: 1,
+  //       query: "user",
+  //       searchType: "name"
+  //     })
+  //     .end((err, res) => {
+  //       res.should.have.status(200)
+  //       expect(res).to.be.json
+  //       expect(res.body.success).to.equal(true)
+  //
+  //       expect(res.body.results.map((entry) => entry.userID)).includes(1, 2)
+  //
+  //       done()
+  //     })
+  //   })
+  //
+  //   it("search by email (query: user, existing users: User1 and User2)", (done) => {
+  //     chai.request(server)
+  //     .get('/api/users')
+  //     .set('token', user1token)
+  //     .query({
+  //       userID: 1,  // TODO move userID to header
+  //       query: "email1@example.com",
+  //       searchType: "email"
+  //     })
+  //     .end((err, res) => {
+  //       res.should.have.status(200)
+  //       expect(res).to.be.json
+  //
+  //       expect(res.body.results.map((entry) => entry.userID)).includes(1)
+  //       done()
+  //     })
+  //   })
+  //
+  //   it("search by email and get no results", (done) => {
+  //     chai.request(server)
+  //     .get('/api/users')
+  //     .query({
+  //       userID: 1,
+  //       query: "email@example.com",
+  //       searchType: "email"
+  //     })
+  //     .set('token', user1token)
+  //     .end((err, res) => {
+  //       res.should.have.status(200)
+  //       expect(res).to.be.json
+  //
+  //       expect(res.body.results.map((entry) => entry.userID).length).to.equal(0)
+  //       done()
+  //     })
+  //   })
+  //
+  //   it("search by username and get one result (user1)", (done) => {
+  //     chai.request(server)
+  //     .get('/api/users')
+  //     .query({
+  //       userID: 1,
+  //       query: "user1",
+  //       searchType: "username"
+  //     })
+  //     .set('token', user1token)
+  //     .end((err, res) => {
+  //       res.should.have.status(200)
+  //       expect(res).to.be.json
+  //
+  //       expect(res.body.results.map((entry) => entry.userID).length).to.equal(1)
+  //       done()
+  //     })
+  //   })
+  // })
 
 })

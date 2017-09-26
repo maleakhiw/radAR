@@ -8,7 +8,8 @@ const requestSchema = new Schema({
   from: Number,
   to: Number,
   for: String,  // "friend" or "tracking"
-  responded: Boolean
+  responded: Boolean,
+  timeSent: {type: Date, default: Date.now}
 })
 requestSchema.plugin(uniqueValidator);
 

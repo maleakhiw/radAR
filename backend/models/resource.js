@@ -6,7 +6,7 @@ const resourceSchema = new Schema({
   filename: String,
   mimetype: String,
   owners: [Number],
-  chatID: Number,
+  groupID: Number,
   groupID: Number
 })
 
