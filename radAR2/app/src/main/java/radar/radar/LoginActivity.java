@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.OkHttpClient;
 import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
@@ -38,10 +39,13 @@ public class LoginActivity extends AppCompatActivity {
         // Setup UI
         setupUI();
 
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().retryOnConnectionFailure(false).build();
+
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://35.185.35.117/api/")
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
