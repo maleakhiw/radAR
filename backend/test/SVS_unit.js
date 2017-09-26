@@ -1,7 +1,7 @@
 // let chai = require('chai')
 // let should = chai.should()
 // let expect = chai.expect
-// let assert = chai.assert //TODO
+// let assert = chai.assert
 //
 // const sinon = require('sinon')
 //

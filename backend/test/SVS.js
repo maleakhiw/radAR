@@ -104,7 +104,6 @@ describe('SVS', () => {
           password: "hunter2"
         })
         .end((err, res) => {
-          console.log(res.body)
           res.should.have.status(200)
           expect(res).to.be.json
           expect(res.body.success).to.equal(true)

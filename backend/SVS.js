@@ -9,7 +9,7 @@ const consts = require('./consts')
 const randomstring = require('randomstring')
 const bcrypt = require('bcrypt')
 
-let User, Metadata, LastUserID, PasswordHash
+let User
 
 function generateToken(userID) {
   return randomstring.generate(64) // TODO MOVE TO consts
@@ -20,12 +20,12 @@ function hashSaltPassword(password) { // hashes and salts a plaintext password
   return bcrypt.hashSync(password, consts.SALT_ROUNDS)
 }
 
+function validatePassword(password, hash) {
+  return bcrypt.compareSync(password, hash);
+}
+
 const isString = common.isString
 const isValidEmail = common.isValidEmail
-
-function getUserID(callback) {
-    LastUserID.findOneAndRemove({}, callback)
-}
 
 // functions to be unit tested
 var isValidUser = (userID) => new Promise((resolve, reject) => {
@@ -37,9 +37,9 @@ var isValidUser = (userID) => new Promise((resolve, reject) => {
 
   .then((user) => {
     if (!user) {
-      resolve(false);
+      reject('invalidUserID');
     } else {
-      resolve(true);
+      resolve();
     }
   })
 })
@@ -163,8 +163,6 @@ var validateCredentials = (username, password) => new Promise((resolve, reject) 
   let token;
   let userID;
 
-  console.log("@validateCredentials")
-
   User.findOne({ username: username }).exec()
   .then((user) => {
     if (!user) {
@@ -172,7 +170,7 @@ var validateCredentials = (username, password) => new Promise((resolve, reject) 
     } else {
       // check if password is valid
       let passwordHash = user.passwordHash;
-      let success = bcrypt.compareSync(password, passwordHash);
+      let success = validatePassword(password, passwordHash);
 
       if (success) {
         userID = user.userID;
@@ -197,6 +195,11 @@ module.exports = class SVS {
 
   constructor(pUser) {
     User = pUser
+    // TODO private functions should not be exposed in production environment
+    this.generateToken = generateToken;
+    this.hashSaltPassword = hashSaltPassword;
+    this.validatePassword = validatePassword;
+    this.isValidUser = isValidUser;
   }
 
   /**
@@ -209,23 +212,26 @@ module.exports = class SVS {
     let authorizationToken = req.get('token')
 
     if (!authorizationToken) {
-      sendUnauthorizedError(res, ['missingToken'])
+      sendUnauthorizedError(res, ['missingToken']);
+      return;
     }
 
     isValidUser(userID).then((isValid) => {
-      if (isValid) {
-        validateToken(authorizationToken).then((isValid) => {
-          if (isValid) {
-            next();
-          } else {
-            sendUnauthorizedError(res, ['invalidToken']);
-          }
-        });
-      } else {  // invalid userID, do not pass request to route handlers
-        sendUnauthorizedError(res, ['invalidUserID']);
+      validateToken(authorizationToken).then((isValid) => {
+        if (isValid) {
+          next();
+        } else {
+          sendUnauthorizedError(res, ['invalidToken']);
+        }
+      });
+    })
+    .catch((err) => {
+      if (err == 'invalidUserID') {
+        sendError(res, ['invalidUserID']);
+      } else {
+        sendInternalError(res)
       }
     })
-    .catch((err) => sendInternalError(res))
   }
 
   /**
@@ -321,13 +327,8 @@ module.exports = class SVS {
 
     validateCredentials(username, password)
     .then((obj) => {
-      console.log('@validateCredentials')
       let token = obj.token;
       let userID = obj.userID;
-
-      console.log(token, userID);
-
-
       res.json({
         success: true,
         errors: [],
