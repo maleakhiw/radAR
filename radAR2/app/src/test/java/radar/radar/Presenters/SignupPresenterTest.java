@@ -7,14 +7,22 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 
+import java.net.SocketTimeoutException;
+import java.util.ArrayList;
+
+import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import radar.radar.Models.Requests.SignUpRequest;
+import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Services.AuthService;
 import radar.radar.Views.SignupView;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -95,13 +103,54 @@ public class SignupPresenterTest {
 
     @Test
     public void processSignup_Success() throws Exception {
-        // Set up the signupview mock
+        // Set up the signupview mock and signup presenter
         SignupView signupView = Mockito.mock(SignupView.class);
-        
+        AuthService authService = Mockito.mock(AuthService.class);
+
+        SignupPresenter presenterToBeSpiedOn = new SignupPresenter(signupView, authService);
+        SignupPresenter presenter = Mockito.spy(presenterToBeSpiedOn);
+
+        // NOTE https://stackoverflow.com/a/11620196 - Mockito calls presenter.validateForm()
+        // which fails due to a NullPointerException.
+
+        // Mockito documentation also suggests using doReturn().when() syntax instead of
+        // when().thenReturn() - safer for spies
+        Mockito.doReturn(true).when(presenter).validateForm();
+
+        // return an actual response! This is a success, not a failure
+        Observable<AuthResponse> authResponseObservable = Observable.just(new AuthResponse(true, new ArrayList<>(), "fakeToken", 42));
+        Mockito.when(authService.signUp(any(SignUpRequest.class))).thenReturn(authResponseObservable);
+        presenter.processSignup();
+
+        // Check whether it is properly called
+        Mockito.verify(signupView).dismissProgressBar();
+        Mockito.verify(signupView).startHomeScreenActivity();
+        Mockito.verify(signupView).finishActivity();
     }
 
     @Test
     public void processSignup_Failed() throws Exception {
+        // Set up the signupview mock and signup presenter
+        SignupView signupView = Mockito.mock(SignupView.class);
+        AuthService authService = Mockito.mock(AuthService.class);
+
+        SignupPresenter presenterToBeSpiedOn = new SignupPresenter(signupView, authService);
+        SignupPresenter presenter = Mockito.spy(presenterToBeSpiedOn);
+
+        Mockito.doReturn(true).when(presenter).validateForm();
+
+        // pretend a SocketTimeoutException occurred
+        Observable<AuthResponse> authResponseObservable = Observable.just(new AuthResponse(true, new ArrayList<>(), "fakeToken", 42))
+                .map(authResponse -> {
+                    throw new SocketTimeoutException("fake socket timeout exception");
+                });
+        Mockito.when(authService.signUp(any(SignUpRequest.class))).thenReturn(authResponseObservable);
+        presenter.processSignup();
+
+        // Check whether it is properly called
+        Mockito.verify(signupView).showToastLong(anyString());
+        Mockito.verify(signupView).dismissProgressBar();
+
     }
 
 }

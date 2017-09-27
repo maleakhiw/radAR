@@ -59,7 +59,7 @@ public class SignupPresenter {
                     // Jump to home
                     signupView.dismissProgressBar();
                     signupView.startHomeScreenActivity();
-                    signupView.dismissProgressBar();
+                    signupView.finishActivity();
                 }
 
                 @Override
