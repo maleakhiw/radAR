@@ -3,6 +3,11 @@
  * Provides groups' information and group management services.
  */
 
+// logging framework
+const winston = require('winston');
+winston.add(winston.transports.File, { filename: '../logs/PositioningSystem.log' });
+winston.level = 'debug';  // TODO use environment variable
+
 const common = require('../common')
 const svs = require('./controllers/SVS')
 
@@ -59,7 +64,7 @@ module.exports.newGroup = (req, res) => {
     if (!name) errorKeys.push('missingGroupName')
     // description can be empty
     if (errorKeys.length) {
-      console.log('early error')
+      winston.debug('early error')
       sendError()
       return
     }

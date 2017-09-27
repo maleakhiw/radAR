@@ -2,6 +2,12 @@
  * Group Management System server-side component.
  * Provides groups' information and group management services.
  */
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
+
 var fs = require('fs')
 
 var path = require('path')
@@ -51,7 +57,7 @@ module.exports = class ResMS {
       })
     })
     .catch((err) => {
-      console.log(err)
+      winston.error(err)
       res.json({
         success: false,
         error: [common.errorObjectBuilder(['internalError'])]

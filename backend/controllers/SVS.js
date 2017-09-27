@@ -9,6 +9,11 @@ const consts = require('../consts')
 const randomstring = require('randomstring')
 const bcrypt = require('bcrypt')
 
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
+
 let User
 
 var sendError = common.sendError;
@@ -192,6 +197,7 @@ module.exports = class SVS {
    * middleware down the line.
    */
   authenticate(req, res, next) {
+    // handles requester's userID embedded for all kinds of requests (GET, POST, DELETE, PUT, ...)
     let userID = req.query.userID || req.params.userID || req.body.userID;
     let token = req.get('token')
 
@@ -297,7 +303,7 @@ module.exports = class SVS {
       } else if (err == 'emailTaken') {
         sendError(res, ['emailTaken']);
       } else {
-        console.log(err);
+        winston.error(err);
         sendInternalError(res);
       }
     })

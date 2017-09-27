@@ -5,7 +5,7 @@
 //
 // const sinon = require('sinon')
 //
-// let SVS = require('../SVS') // our SUT: system under test
+// let SVS = require('../controllers/SVS') // our SUT: system under test
 //
 // const User = require('../models/user')
 // const Request = require('../models/request')

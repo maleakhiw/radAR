@@ -232,5 +232,37 @@ module.exports.errors = {
   invitedUserIDAlreadyAdded: {
     code: 90,
     reason: 'The user you are trying to add is already in your friends list.'
+  },
+  missingLat: {
+    code: 91,
+    reason: "Missing param: lat."
+  },
+  missingLon: {
+    code: 92,
+    reason: "Missing param: lon."
+  },
+  missingAccuracy: {
+    code: 93,
+    reason: "Missing param: accuracy."
+  },
+  missingHeading: {
+    code: 94,
+    reason: "Missing param: heading."
+  },
+  invalidLat: {
+    code: 95,
+    reason: "Invalid param: lat."
+  },
+  invalidLon: {
+    code: 96,
+    reason: "Invalid param: lon."
+  },
+  invalidAccuracy: {
+    code: 97,
+    reason: "Invalid param: accuracy."
+  },
+  invalidHeading: {
+    code: 98,
+    reason: "Invalid param: heading."
   }
 }
