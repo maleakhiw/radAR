@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import radar.radar.Adapters.FriendsAdapter;
 import radar.radar.Models.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
 import radar.radar.Views.FriendsView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -40,14 +42,29 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
         UsersApi usersApi = retrofit.create(UsersApi.class);
+        UsersService usersService = new UsersService(usersApi, this);
 
-        presenter = new FriendsPresenter(this, usersApi);
+        presenter = new FriendsPresenter(this, usersService);
+        presenter.loadFriends();
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               presenter.respondToFABClick();
+            }
+        });
 
     }
 
     @Override
     public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_LONG);
+        Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void launchHomeScreenActivity() {
+        Intent intent = new Intent(this, HomeScreenActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -57,16 +74,6 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
         friendsAdapter.notifyDataSetChanged();
 
-    }
-
-    @Override
-    public void setFABOnClickListener(View.OnClickListener onClickListener) {
-        fab.setOnClickListener(onClickListener);
-    }
-
-    @Override
-    public void startActivityFromIntent(Intent intent) {
-        startActivity(intent);
     }
 
 }
