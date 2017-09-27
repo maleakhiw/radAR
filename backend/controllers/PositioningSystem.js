@@ -45,11 +45,19 @@ function validateUpdateLocationReq(req) {
   if (accuracy == null) errorKeys.push('missingAccuracy');
   if (heading == null) errorKeys.push('missingHeading');
 
+  if (errorKeys.length) {
+    return errorKeys;
+  }
+
   // check data types
   if (!isNumber(lat)) errorKeys.push('invalidLat');
   if (!isNumber(lon)) errorKeys.push('invalidLon');
   if (!isNumber(accuracy)) errorKeys.push('invalidAccuracy');
   if (!isNumber(heading)) errorKeys.push('invalidHeading');
+
+  if (errorKeys.length) {
+    return errorKeys;
+  }
 
   if (!isValidLatOrLon(lat)) errorKeys.push('invalidLat');
   if (!isValidLatOrLon(lon)) errorKeys.push('invalidLon');
@@ -64,11 +72,12 @@ function validateUpdateLocationReq(req) {
  */
 var isValidGetLocationReq = (req) => new Promise((resolve, reject) => {
   // let userID = req.query.userID;  // pre-validated by authentication middleware
-  let queryUserID = req.params.queryUserID;
+  let queryUserID = parseInt(req.params.queryUserID);
   if (!queryUserID) {
     reject('missingQueryUserID');
   }
   if (!isNumber(queryUserID)) {
+    winston.debug('Invalid query user ID - not a number');
     reject('invalidQueryUserID');
   }
 
@@ -120,6 +129,7 @@ module.exports = class PositioningSystem {
     }
 
     LocationModel.create({
+      userID: userID,
       lat: lat,
       lon: lon,
       heading: heading,
@@ -134,6 +144,8 @@ module.exports = class PositioningSystem {
 
   }
 
+  // TODO: make route that can return location of multiple users
+  // TODO (global): make sure all routes can handle accidental arrays in GET requests
   getLocation(req, res) {
     // GET {serverURL}/api/users/:queryUserID/location
     /* Request params (key: value)
@@ -142,19 +154,38 @@ module.exports = class PositioningSystem {
       Request params (in URI/URL)
       queryUserID: the userID of the user whose location we are getting
     */
+    let queryUserID = parseInt(req.params.queryUserID);
+
     isValidGetLocationReq(req)
     .then(() => {
-
+      // get latest location. TODO refactor to individual function for testability
+      // (SRP - single responsibility principle)
+      return LocationModel.findOne({ userID: queryUserID }).sort({ timeUpdated: -1 });
+    })
+    .then((location) => {
+      if (!location) {
+        sendError(res, ['locationUnavailable']);
+      } else {
+        res.json({
+          success: true,
+          errors: [],
+          lat: location.lat,
+          lon: location.lon,
+          heading: location.heading,
+          accuracy: location.accuracy,
+          timeUpdated: location.timeUpdated
+        });
+      }
     })
     .catch((err) => {
       winston.debug(err);
       if (err == 'missingQueryUserID') {
         sendError(res, ['missingQueryUserID']);
-      }
-      if (err == 'invalidQueryUserID') {
+      } else if (err == 'invalidQueryUserID') {
         sendError(res, ['invalidQueryUserID']);
+      } else {
+        sendInternalError(res);
       }
-      sendInternalError(res);
     })
 
 

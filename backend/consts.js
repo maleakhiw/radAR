@@ -264,5 +264,17 @@ module.exports.errors = {
   invalidHeading: {
     code: 98,
     reason: "Invalid param: heading."
+  },
+  locationUnavailable: {
+    code: 99,
+    reason: "Location data for the requested user is unavailable. User might not have updated location at all, or set privacy settings to limit location sharing."
+  },
+  missingQueryUserID: {
+    code: 100,
+    reason: "Missing param: queryUserID"
+  },
+  invalidQueryUserID: {
+    code: 101,
+    reason: "Invalid param: queryUserID. Requested queryUserID probably does not exist on the system."
   }
 }

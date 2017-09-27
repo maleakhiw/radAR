@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
 const locationSchema = new Schema({
+  userID: Number,
   lat: Number,
   lon: Number,
   heading: Number, // in degrees
