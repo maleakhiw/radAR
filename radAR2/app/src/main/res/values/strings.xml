@@ -136,7 +136,7 @@
     <string name="melbourne_university_lat">-37.7963689</string>
     <string name="melbourne_university_lng">144.9611738</string>
     <string name="unimelb">Melbourne University</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_maps">radAR Map</string>
     <string name="title_activity_drawer_home">DrawerHomeActivity</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
     <string name="title_activity_chats_list">ChatsListActivity</string>
