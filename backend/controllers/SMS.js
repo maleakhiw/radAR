@@ -3,10 +3,15 @@
  * Provides Messaging services for RadAR.
  */
 
-const common = require('./common')
+const common = require('../common')
 const addMetas = common.addMetas
 const isArray = common.isArray
 const unique = common.unique
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
 
 const SVS = require('./SVS')
 let svs;
@@ -105,7 +110,7 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         if (err == 'Error: invalidParticipantUserIDs') {
           errorKeys.push('invalidParticipantUserIDs')
           sendError()
@@ -136,7 +141,7 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.json({
           success: false,
           errors: []
@@ -222,7 +227,7 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.send({
           success: false,
           errors: common.errorObjectBuilder(['internalError'])
@@ -236,12 +241,12 @@ module.exports = class SMS {
   }
 
   sendMessage(req, res) {
-      console.log(req.body)
+      winston.debug(req.body)
       let from = req.body.userID
       let groupID = parseInt(req.params.groupID)
       let message = req.body.message
 
-      console.log(from, groupID, message)
+      winston.debug(from, groupID, message)
 
       errorKeys = []
       if (!groupID) errorKeys.push('missingGroupID')
@@ -298,7 +303,7 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.json({
           success: false,
           errors: common.errorObjectBuilder(['internalError']),

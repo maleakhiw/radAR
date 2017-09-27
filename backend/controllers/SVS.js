@@ -3,11 +3,16 @@
  * Handles user authentication, validation, sign up and login services.
  */
 
-const common = require('./common')
-const consts = require('./consts')
+const common = require('../common')
+const consts = require('../consts')
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 const randomstring = require('randomstring')
 const bcrypt = require('bcrypt')
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
 
 let User
 
@@ -15,6 +20,21 @@ var sendError = common.sendError;
 
 function generateToken(userID) {
   return randomstring.generate(64) // TODO MOVE TO consts
+}
+
+function updateLastSeen(userID) {
+  User.findOne({userID: userID}).exec()
+  .then((user) => {
+    if (user) {
+      user.lastSeen = Date.now();
+      user.save();
+    } else {
+      winston.debug('updateLastSeen: invalid userID');
+    }
+  })
+  .catch((err) => {
+    winston.error(err);
+  })
 }
 
 function hashSaltPassword(password) { // hashes and salts a plaintext password
@@ -192,6 +212,7 @@ module.exports = class SVS {
    * middleware down the line.
    */
   authenticate(req, res, next) {
+    // handles requester's userID embedded for all kinds of requests (GET, POST, DELETE, PUT, ...)
     let userID = req.query.userID || req.params.userID || req.body.userID;
     let token = req.get('token')
 
@@ -202,6 +223,8 @@ module.exports = class SVS {
 
 
     isValidUser(userID).then((isValid) => {
+      updateLastSeen(userID);
+
       validateToken(token, userID).then((isValid) => {
         if (isValid) {
           next();
@@ -297,7 +320,7 @@ module.exports = class SVS {
       } else if (err == 'emailTaken') {
         sendError(res, ['emailTaken']);
       } else {
-        console.log(err);
+        winston.error(err);
         sendInternalError(res);
       }
     })

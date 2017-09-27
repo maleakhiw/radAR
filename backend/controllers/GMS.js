@@ -3,11 +3,16 @@
  * Provides groups' information and group management services.
  */
 
-const common = require('./common')
-const svs = require('./SVS')
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
+
+const common = require('../common')
+const svs = require('./controllers/SVS')
 
 // data models
-const Group = require('./models/group')
+const Group = require('../models/group')
 
 // NOTE: for iteration 2
 module.exports.getGroupInfo = function(req, res) {
@@ -59,7 +64,7 @@ module.exports.newGroup = (req, res) => {
     if (!name) errorKeys.push('missingGroupName')
     // description can be empty
     if (errorKeys.length) {
-      console.log('early error')
+      winston.debug('early error')
       sendError()
       return
     }

@@ -4,7 +4,7 @@ const should = chai.should();
 const expect = chai.expect;
 const assert = chai.assert;
 
-const SVS = require('../SVS');
+const SVS = require('../controllers/SVS');
 var svs;
 
 const User = require('../models/user');
