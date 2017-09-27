@@ -1,0 +1,19 @@
+{"level":"debug","message":"@updateLastSeen","timestamp":"2017-09-27T00:37:28.518Z"}
+{"message":"Cannot read property 'getTime' of undefined","stack":"TypeError: Cannot read property 'getTime' of undefined\n    at users.map (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/UMS.js:144:52)\n    at Array.map (<anonymous>)\n    at User.findOne.exec.then.then (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/UMS.js:143:15)\n    at <anonymous>\n    at process._tickCallback (internal/process/next_tick.js:188:7)","level":"error","timestamp":"2017-09-27T00:38:21.929Z"}
+{"level":"debug","message":"105.221","timestamp":"2017-09-27T00:39:13.745Z"}
+{"message":"Cannot read property 'getTime' of undefined","stack":"TypeError: Cannot read property 'getTime' of undefined\n    at users.filter (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/UMS.js:146:67)\n    at Array.filter (<anonymous>)\n    at User.findOne.exec.then.then (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/UMS.js:146:23)\n    at <anonymous>\n    at process._tickCallback (internal/process/next_tick.js:188:7)","level":"error","timestamp":"2017-09-27T00:39:13.746Z"}
+{"level":"debug","message":"116.988","timestamp":"2017-09-27T00:39:25.513Z"}
+{"message":"onlineStatus is not defined","stack":"ReferenceError: onlineStatus is not defined\n    at User.findOne.exec.then.then.then (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/UMS.js:166:22)\n    at <anonymous>\n    at process._tickCallback (internal/process/next_tick.js:188:7)","level":"error","timestamp":"2017-09-27T00:39:25.514Z"}
+{"level":"debug","message":"135.831","timestamp":"2017-09-27T00:39:44.355Z"}
+{"level":"debug","message":"1.83","timestamp":"2017-09-27T00:40:05.734Z"}
+{"level":"debug","message":"47.53","timestamp":"2017-09-27T00:40:51.434Z"}
+{"level":"debug","message":"51.931","timestamp":"2017-09-27T00:40:55.832Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:50:26.130Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:51:51.302Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:52:04.544Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:52:26.583Z"}
+{"level":"debug","message":"Invalid query user ID - not a number","timestamp":"2017-09-27T00:52:55.843Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:52:55.845Z"}
+{"level":"debug","message":"Invalid query user ID - not a number","timestamp":"2017-09-27T00:53:03.358Z"}
+{"level":"debug","message":"invalidQueryUserID","timestamp":"2017-09-27T00:53:03.360Z"}
+{"message":"userID is not defined","stack":"ReferenceError: userID is not defined\n    at isValidGetLocationReq.then (/Users/kenneth/Desktop/Dev/oxygen/backend/controllers/PositioningSystem.js:161:46)\n    at <anonymous>\n    at process._tickCallback (internal/process/next_tick.js:188:7)","level":"debug","timestamp":"2017-09-27T00:53:21.712Z"}
