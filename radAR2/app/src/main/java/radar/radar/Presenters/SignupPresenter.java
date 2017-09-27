@@ -35,6 +35,7 @@ public class SignupPresenter {
         email = signupView.getEmailText().trim();
         password = signupView.getPassword().trim();
 
+
         return !(username.isEmpty() || email.isEmpty() || password.isEmpty());
     }
 

@@ -65,9 +65,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
             @Override
             public void onClick(View view) {
                 // When clicked go to login page
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+                startLoginActivity();
             }
         });
 
