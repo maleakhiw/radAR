@@ -22,6 +22,21 @@ function generateToken(userID) {
   return randomstring.generate(64) // TODO MOVE TO consts
 }
 
+function updateLastSeen(userID) {
+  User.findOne({userID: userID}).exec()
+  .then((user) => {
+    if (user) {
+      user.lastSeen = Date.now();
+      user.save();
+    } else {
+      winston.debug('updateLastSeen: invalid userID');
+    }
+  })
+  .catch((err) => {
+    winston.error(err);
+  })
+}
+
 function hashSaltPassword(password) { // hashes and salts a plaintext password
   // TODO: defensive (check for empty passwords?) or assume already done externally?
   return bcrypt.hashSync(password, consts.SALT_ROUNDS)
@@ -208,6 +223,8 @@ module.exports = class SVS {
 
 
     isValidUser(userID).then((isValid) => {
+      updateLastSeen(userID);
+
       validateToken(token, userID).then((isValid) => {
         if (isValid) {
           next();

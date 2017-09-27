@@ -5,7 +5,7 @@
 
 // logging framework
 const winston = require('winston');
-winston.add(winston.transports.File, { filename: '../logs/PositioningSystem.log' });
+
 winston.level = 'debug';  // TODO use environment variable
 
 const common = require('../common')

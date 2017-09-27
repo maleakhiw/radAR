@@ -91,7 +91,7 @@ module.exports = class UMS {
     svs = new SVS(User)
   }
 
-  // TODO write integration test for isOnline
+  // TODO refactor, write unit tests for isOnline
   isOnline(req, res) {
     let userID = req.params.userID
     let userIDsToCheck = req.query.userIDsToCheck
@@ -140,21 +140,21 @@ module.exports = class UMS {
 
       .then((users) => {
         // filter off the users who have not been online
-        users.map((metadata) => {
-          winston.debug((Date.now() - User.lastSeen.getTime())/1000)
+        users.map((user) => {
+          winston.debug((Date.now() - user.lastSeen.getTime())/1000)
         })
-        users = users.filter((metadata) => (Date.now() - User.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
+        users = users.filter((user) => (Date.now() - user.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
-        onlineUsers = users.map((metadata) => User.userID)
+        onlineUsers = users.map((user) => user.userID)
 
         // winston.debug('users_filtered', users)
 
-        let usersPromise = users.map((metadata) => new Promise((resolve, reject) => {
+        let usersPromise = users.map((user) => new Promise((resolve, reject) => {
           let firstName = null
           let lastName = null
           let profilePicture = null
 
-          User.findOne({ userID: User.userID }).exec()
+          User.findOne({ userID: user.userID }).exec()
           .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
         }))
 
@@ -163,7 +163,7 @@ module.exports = class UMS {
 
       .then((userInfos) => {
         // winston.debug('userInfos', userInfos)
-        onlineStatus = {}
+        let onlineStatus = {}
         // winston.debug('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
           onlineStatus[userID] = onlineUsers.includes(userID)
