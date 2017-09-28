@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     tools:context="radar.radar.SearchResultActivity"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    tools:layout_editor_absoluteY="81dp">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchRecyclerView"
@@ -28,35 +26,20 @@
 
     <EditText
         android:id="@+id/search_bar"
-        android:layout_width="250dp"
-        android:layout_height="42dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:backgroundTint="@color/colorAccent"
         android:ems="10"
         android:hint="Search User.."
-        android:backgroundTint="@color/colorAccent"
         android:inputType="textPersonName"
         android:selectAllOnFocus="false"
         android:singleLine="false"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <Button
-        android:id="@+id/search"
-        android:layout_width="80dp"
-        android:layout_height="38dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorSuperAppBar"
-        android:text="Search"
-        android:textColor="@color/cardview_light_background"
-        app:layout_constraintBottom_toTopOf="@+id/searchRecyclerView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/search_bar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
 </android.support.constraint.ConstraintLayout>

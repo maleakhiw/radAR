@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,7 +32,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private EditText query;
-    private Button search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,6 @@ public class SearchResultActivity extends AppCompatActivity {
         // Instantiate recyclerview and query edit view
         recyclerView = findViewById(R.id.searchRecyclerView);
         query = findViewById(R.id.search_bar);
-        search = findViewById(R.id.search);
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -52,11 +52,16 @@ public class SearchResultActivity extends AppCompatActivity {
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(usersApi, this);
 
-        search.setOnClickListener(new View.OnClickListener() {
+        // When edit text is entered do search
+        query.setOnKeyListener(new View.OnKeyListener() {
             @Override
-            public void onClick(View view) {
-                // If clicked do search
-                doSearch(query.getText().toString());
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+                    // if entered do search
+                    doSearch(query.getText().toString());
+                    return true;
+                }
+                return false;
             }
         });
 
