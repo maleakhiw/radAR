@@ -7,6 +7,11 @@ const multer = require('multer')  // for multipart/form-data, https://github.com
 const cors = require('cors')
 const _ = require('lodash');
 
+// logging framework
+const winston = require('winston');
+winston.add(winston.transports.File, { filename: 'server.log' });
+winston.level = 'debug';  // TODO use environment variable
+
 // multer
 const upload = multer({
   dest: 'uploads/'  // automatically gives unique filename
@@ -18,6 +23,7 @@ const User = require('./models/user')
 const Request = require('./models/request')
 const Message = require('./models/message')
 const Resource = require('./models/resource')
+const LocationModel = require('./models/location');
 
 const app = express()
 app.use(bodyParser.json())
@@ -110,25 +116,27 @@ const connection = mongoose.connect('mongodb://localhost/radarTest',
     // if (!err) console.log('Connected to mongoDB')
     // else console.log('Failed to connect to mongoDB')
     if (err) {
-      console.log(err)
+      winston.error(err)
     }
 })
 module.exports.connection = connection
 
 // Systems
-const UMS = require('./UMS')
+const UMS = require('./controllers/UMS')
 const ums = new UMS(User, Request)
-// const svs = require('./SVS')
-const SVS = require('./SVS')
+// const svs = require('./controllers/SVS')
+const SVS = require('./controllers/SVS')
 const svs = new SVS(User)
 const authenticate = svs.authenticate
 
-const SMS = require('./SMS')
+const SMS = require('./controllers/SMS')
 const sms = new SMS(Group, Message, User)
 
-
-const ResMS = require('./ResMS')
+const ResMS = require('./controllers/ResMS')
 const resms = new ResMS(Resource, User)
+
+const PositioningSystem = require('./controllers/PositioningSystem');
+const positioningSystem = new PositioningSystem(LocationModel, User);
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
@@ -187,10 +195,13 @@ app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMe
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 
+// locations
+app.post("/api/accounts/:userID/location", authenticate, positioningSystem.updateLocation);
+
 // object: users
 // users
-app.get("/api/users", authenticate, ums.search) // get all users (only if query specified)
-app.get("/api/users/:userID", authenticate, ums.getInformation)
+app.get("/api/users", ums.search) // get all users (only if query specified)
+app.get("/api/users/:userID", ums.getInformation)
 
 // object: groups
 app.get("/api/groups", (req, res) => {
@@ -204,6 +215,9 @@ app.post("/api/groups", authenticate, sms.newGroup)
 app.get("/api/groups/:groupID", authenticate, sms.getGroup)
 app.post("/api/groups/:groupID/messages", authenticate, sms.sendMessage)
 app.get("/api/groups/:groupID/messages", authenticate, sms.getMessages)
+
+// object: locations
+app.get("/api/users/:queryUserID/location", authenticate, positioningSystem.getLocation);
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token

@@ -24,7 +24,7 @@ const groupSchema = new Schema({
   admins: [Number],
   footprints: [footprintSchema],
   meetingPoint: [meetingPointSchema],
-  isTrackingGroup: Boolean
+  isTrackingGroup: Boolean  // true if the Group is a Tracking Group, false if the Group is just a Chat
 })
 
 groupSchema.plugin(uniqueValidator);

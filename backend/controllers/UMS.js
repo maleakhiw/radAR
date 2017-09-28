@@ -4,8 +4,8 @@
  * Also provides information/data on users.
  */
 
-const common = require('./common')
-const consts = require('./consts')
+const common = require('../common')
+const consts = require('../consts')
 
 const SVS = require('./SVS')
 let svs;
@@ -16,6 +16,11 @@ const isArray = common.isArray
 const isValidUser = common.isValidUser;
 const sendUnauthorizedError = common.sendUnauthorizedError;
 const sendInternalError = common.sendInternalError;
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
 
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 const ONLINE_THRESHOLD_SEC = consts.ONLINE_THRESHOLD_SEC
@@ -86,7 +91,7 @@ module.exports = class UMS {
     svs = new SVS(User)
   }
 
-  // TODO write integration test for isOnline
+  // TODO refactor, write unit tests for isOnline
   isOnline(req, res) {
     let userID = req.params.userID
     let userIDsToCheck = req.query.userIDsToCheck
@@ -122,34 +127,34 @@ module.exports = class UMS {
 
       .then((user) => {
         let friends = user.friends
-        // console.log(user)
+        // winston.debug(user)
         if (!friends) { // if undefined
           friends = []
         }
 
-        // console.log(friends)
+        // winston.debug(friends)
         userIDsToCheck = userIDsToCheck.filter((userID) => friends.includes(userID))
-        // console.log(userIDsToCheck)
+        // winston.debug(userIDsToCheck)
         return User.find( { userID : { $in: userIDsToCheck } } )
       })
 
       .then((users) => {
         // filter off the users who have not been online
-        users.map((metadata) => {
-          console.log((Date.now() - User.lastSeen.getTime())/1000)
+        users.map((user) => {
+          winston.debug((Date.now() - user.lastSeen.getTime())/1000)
         })
-        users = users.filter((metadata) => (Date.now() - User.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
+        users = users.filter((user) => (Date.now() - user.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
-        onlineUsers = users.map((metadata) => User.userID)
+        onlineUsers = users.map((user) => user.userID)
 
-        // console.log('users_filtered', users)
+        // winston.debug('users_filtered', users)
 
-        let usersPromise = users.map((metadata) => new Promise((resolve, reject) => {
+        let usersPromise = users.map((user) => new Promise((resolve, reject) => {
           let firstName = null
           let lastName = null
           let profilePicture = null
 
-          User.findOne({ userID: User.userID }).exec()
+          User.findOne({ userID: user.userID }).exec()
           .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
         }))
 
@@ -157,9 +162,9 @@ module.exports = class UMS {
       })
 
       .then((userInfos) => {
-        // console.log('userInfos', userInfos)
-        onlineStatus = {}
-        // console.log('onlineUsers', onlineUsers)
+        // winston.debug('userInfos', userInfos)
+        let onlineStatus = {}
+        // winston.debug('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
           onlineStatus[userID] = onlineUsers.includes(userID)
         })
@@ -175,7 +180,7 @@ module.exports = class UMS {
 
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
       })
 
     }
@@ -240,7 +245,7 @@ module.exports = class UMS {
       } else if (err == 'friendRequestAlreadyExists') {
         sendError(res, ['friendRequestAlreadyExists']);
       } else {
-        console.log(err);
+        winston.error(err);
         sendInternalError(res);
       }
     })
@@ -273,7 +278,7 @@ module.exports = class UMS {
           }
           resolve(resolved)
         }) // Promise for the public user data
-        .catch((err) => console.log(err)) // TODO: send fail
+        .catch((err) => winston.error(err)) // TODO: send fail
       }))
 
       return Promise.all(requestsPromise)
@@ -289,7 +294,7 @@ module.exports = class UMS {
     })
 
     .catch((err) => {
-      console.log(err)
+      winston.error(err)
       errorKeys.push('internalError')
       sendError()
     })
@@ -297,7 +302,7 @@ module.exports = class UMS {
   }
 
   getInformation(req, res) {
-    let queryUserID = req.body.queryUserID
+    let queryUserID = req.params.userID
     let username = req.body.username
 
     let errorKeys = []
@@ -309,7 +314,7 @@ module.exports = class UMS {
       res.json(response)
     }
 
-    console.log(req.body)
+    winston.debug(req.body)
 
     if (!username && !queryUserID) {
       errorKeys.push('missingUserIDOrUsername')
@@ -318,7 +323,7 @@ module.exports = class UMS {
       if (username) {
         User.findOne( { username: username } ).exec()
         .then((user) => {
-          // console.log(user)
+          // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -328,14 +333,14 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
-          console.log(err);
+          winston.error(err);
           errorKeys.push('internalError')
           sendError()
         })
       } else {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
-          // console.log(user)
+          // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -345,7 +350,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
-          console.log(err);
+          winston.error(err);
           errorKeys.push('internalError')
           sendError()
         })
@@ -437,7 +442,7 @@ module.exports = class UMS {
       } else if (err == 'Error: invalidRequestID') {
         errorKeys.push('invalidRequestID')
       } else {
-        console.log(err)
+        winston.error(err)
         errorKeys.push('internalError')
       }
       sendError()
@@ -468,7 +473,7 @@ module.exports = class UMS {
 
     User.findOne({ userID: userID }).exec()
     .then((user) => {
-      // console.log(user)
+      // winston.debug(user)
       if (!user) {
         throw new Error('invalidUserID') // should not happen
       }
@@ -478,9 +483,9 @@ module.exports = class UMS {
     })
 
     .then((users) => {  // friends
-      // console.log('users', users)
+      // winston.debug('users', users)
       friends = users.map((user) => getPublicUserInfo(user))
-      // console.log('friends', friends)
+      // winston.debug('friends', friends)
 
       let response = {
         success: true,
@@ -496,7 +501,7 @@ module.exports = class UMS {
         sendError()
         return
       }
-      console.log(err)
+      winston.error(err)
       errorKeys.push('internalError')
       sendError()
     })
@@ -520,7 +525,7 @@ module.exports = class UMS {
     if (!searchType) errorKeys.push('missingSearchType')
 
     if (errorKeys.length) {
-      response = {
+      let response = {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
@@ -528,7 +533,7 @@ module.exports = class UMS {
     } else {
       if (searchType == 'name') {
         let regexQuery = new RegExp(query, "i") // case-insensitive matching
-        // console.log(regexQuery)
+        // winston.debug(regexQuery)
         User.find({ $or:
           [
             { firstName: regexQuery },
@@ -537,7 +542,7 @@ module.exports = class UMS {
         }).exec()
 
         .then((users) => {
-          // console.log(users)
+          // winston.debug(users)
           if (users.length) {
             users = users.map(getPublicUserInfo)
           }
@@ -550,7 +555,7 @@ module.exports = class UMS {
         })
 
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })
@@ -572,7 +577,7 @@ module.exports = class UMS {
         })
 
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })
@@ -589,7 +594,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })
