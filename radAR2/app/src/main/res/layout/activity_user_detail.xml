@@ -228,8 +228,20 @@
         </android.support.constraint.ConstraintLayout>
 
 
-
     </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="45dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:padding="5dp"
+        android:src="@drawable/ic_add_black_24dp"
+        app:layout_anchor="@+id/appbar"
+        app:layout_anchorGravity="right|top"
+        tools:layout_editor_absoluteX="299dp"
+        tools:layout_editor_absoluteY="166dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_message"

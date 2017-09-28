@@ -10,19 +10,21 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/searchRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="431dp"
+        android:layout_width="358dp"
+        android:layout_height="419dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="19dp"
-        tools:layout_editor_absoluteY="72dp" />
+        tools:layout_editor_absoluteX="9dp"
+        tools:layout_editor_absoluteY="-37dp">
+
+    </android.support.v7.widget.RecyclerView>
 
     <EditText
         android:id="@+id/search_bar"
@@ -38,6 +40,7 @@
         android:selectAllOnFocus="false"
         android:singleLine="false"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
