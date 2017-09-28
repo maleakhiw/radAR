@@ -126,6 +126,8 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                 // If success
                 if (status.success) {
                     Toast.makeText(context, "Successfully process friend request", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(context, FriendRequestActivity.class);
+                    context.startActivity(intent);
                 }
                 else {
                     Toast.makeText(context, "Failure process friend request", Toast.LENGTH_LONG).show();

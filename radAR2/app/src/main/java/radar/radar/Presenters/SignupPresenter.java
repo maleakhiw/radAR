@@ -1,6 +1,7 @@
 package radar.radar.Presenters;
 
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import io.reactivex.Observer;
@@ -44,9 +45,9 @@ public class SignupPresenter {
         signupView.setProgressBarMessage("Signing Up...");
         signupView.showProgressBar();
         if (validateForm()) {
-            SignUpRequest signUpRequest = new SignUpRequest("",
-                    "", signupView.getEmailText(), signupView.getUsernameText(),
-                    "", signupView.getPassword(), "fakeDeviceID");
+            SignUpRequest signUpRequest = new SignUpRequest("dragon",
+                    "ball", signupView.getEmailText(), signupView.getUsernameText(),
+                    "dra", signupView.getPassword(), "fakeDeviceID");
 
             authService.signUp(signUpRequest).subscribe(new Observer<AuthResponse>() {
                 @Override
@@ -59,8 +60,9 @@ public class SignupPresenter {
                     // Jump to home
                     signupView.dismissProgressBar();
                     if (authResponse.success) {
-                    signupView.startHomeScreenActivity();
-                    signupView.finishActivity();}
+                        signupView.startHomeScreenActivity();
+                        signupView.finishActivity();
+                    }
                 }
 
                 @Override
