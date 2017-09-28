@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="radar.radar">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature
@@ -30,8 +31,11 @@
         <activity
             android:name=".LaunchActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
-            <!--TODO set back to launch activity-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".ChatsListActivity"
@@ -49,13 +53,7 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"></activity>
 
-        <activity android:name=".ARActivity2">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".ARActivity2"></activity>
     </application>
 
 </manifest>

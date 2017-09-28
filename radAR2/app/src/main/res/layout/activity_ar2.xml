@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context="radar.radar.ARActivity2">
 
+    <TextureView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/AR2_texture_view"/>
+
     <RelativeLayout
         android:layout_height="match_parent"
         android:layout_width="match_parent"
