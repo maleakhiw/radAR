@@ -17,10 +17,11 @@ public class FriendsPresenter {
         this.usersService = usersService;
 
         loadFriends();
+
     }
 
     public void respondToFABClick() {
-        friendsView.launchHomeScreenActivity();
+        friendsView.launchSearchFriendsActivity();
     }
 
     public void loadFriends() {

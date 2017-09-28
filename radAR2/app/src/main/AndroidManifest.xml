@@ -24,7 +24,9 @@
         <activity
             android:name=".HomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity android:name=".FriendsActivity" />
+
         <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
         <activity
@@ -36,6 +38,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SearchResultActivity" />
         <activity
             android:name=".ChatsListActivity"
             android:label="@string/title_activity_chats_list"
@@ -50,9 +53,7 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
-
+            android:label="@string/title_activity_maps"></activity>
     </application>
 
 </manifest>

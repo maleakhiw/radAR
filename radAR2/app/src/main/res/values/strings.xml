@@ -140,5 +140,7 @@
     <string name="title_activity_drawer_home">DrawerHomeActivity</string>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
     <string name="title_activity_chats_list">ChatsListActivity</string>
+    <string name="app_label">Radar</string>
+    <string name="search_hint">Search for user..</string>
 
 </resources>
