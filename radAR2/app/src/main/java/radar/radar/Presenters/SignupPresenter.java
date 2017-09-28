@@ -58,8 +58,9 @@ public class SignupPresenter {
                 public void onNext(AuthResponse authResponse) {
                     // Jump to home
                     signupView.dismissProgressBar();
+                    if (authResponse.success) {
                     signupView.startHomeScreenActivity();
-                    signupView.finishActivity();
+                    signupView.finishActivity();}
                 }
 
                 @Override
