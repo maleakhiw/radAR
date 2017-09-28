@@ -78,7 +78,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     User user = friends.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
-                    intent.putExtra("user", (Serializable) user);
+                    intent.putExtra("user", user);
                     context.startActivity(intent);
 
                 }
