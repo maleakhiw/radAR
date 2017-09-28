@@ -98,9 +98,13 @@ public class UserDetailActivity extends AppCompatActivity {
 
             @Override
             public void onNext(AddFriendResponse addFriendResponse) {
-                // If add friend successful, show alert dialogue to user to show that user has been added
-                Toast.makeText(getApplicationContext(), "User have been added successfully. Please wait for confirmation.", Toast.LENGTH_LONG).show();
-
+                if (addFriendResponse.success) {
+                    // If add friend successful, show alert dialogue to user to show that user has been added
+                    Toast.makeText(getApplicationContext(), "User have been added successfully. Please wait for confirmation.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Fail to add. Please wait for confirmation", Toast.LENGTH_LONG).show();
+                }
             }
 
             @Override
