@@ -7,6 +7,10 @@ import radar.radar.Models.UserLocation;
  */
 
 public interface ARView {
+    void removeAnnotation(int userID);
+
+    void getAnnotation(int userID);
+
     void inflateARAnnotation(UserLocation userLocation);
 
     void setAnnotationPadding(int userID, int paddingLeft, int paddingTop);

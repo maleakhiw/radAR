@@ -58,8 +58,100 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     ARPresenter presenter;
 
-    // camera code adapted from https://willowtreeapps.com/ideas/camera2-and-you-leveraging-android-lollipops-new-camera/
+    TextureView previewView;
+    Surface mSurface;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ar2);
+
+        mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
+        inflater = getLayoutInflater();
+        arAnnotations = new HashMap<>();
+
+        presenter = new ARPresenter(this);
+
+        presenter.loadData();
+
+        // stub: poll for data from server
+//        ObservableInterval.
+
+        previewView = findViewById(R.id.AR2_texture_view);
+
+        setupCameraPrewiew();
+
+    }
+
+    // called when permissions request completed (event from Activity)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == REQUEST_FOR_CAMERA) {
+            // if request is cancelled, the result arrays are empty
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted!
+                setupCameraPrewiew();
+
+            } else {
+                // permission denied!
+                // TODO show TextView in activity, say that permission was not granted
+            }
+        }
+    }
+
+    @Override
+    public void removeAnnotation(int userID) {
+        arAnnotations.remove(userID);
+    }
+
+    @Override
+    public void getAnnotation(int userID) {
+        arAnnotations.get(userID);
+    }
+
+    /**
+     * Adds an annotation onscreen based on a UserLocation object.
+     * @param userLocation location details of a user
+     */
+    @Override
+    public void inflateARAnnotation(UserLocation userLocation) {
+        int userID = userLocation.getUserID();
+
+        // inflate a new layout
+        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.ar_annotation, null);
+        System.out.println(layout);
+
+        // add the layout to the view
+        mainRelativeLayout.addView(layout);
+
+        ARAnnotation arAnnotation = new ARAnnotation(userLocation, layout);
+
+        // put it in the HashMap of annotations
+        arAnnotations.put(userID, arAnnotation);
+
+        // TODO unimplemented: calculate onscreen offsets from center using azimuth
+    }
+
+    /**
+     * Moves the on-screen position of an AR annotation for a user.
+     * @param userID user (key for the Map of ARAnnotations)
+     * @param paddingLeft padding from the left of the parent layout
+     * @param paddingTop padding from the top of the parent layout
+     */
+    @Override
+    public void setAnnotationPadding(int userID, int paddingLeft, int paddingTop) {
+        ARAnnotation annotation = arAnnotations.get(userID);
+        if (annotation != null) {
+            LinearLayout layout = annotation.getLayout();
+//            LinearLayout.LayoutParams layoutParam = new LinearLayout.LayoutParams(this);
+            layout.setPadding(paddingLeft, paddingTop, 0, 0);
+        } else {
+            // TODO throw exception?
+            Log.w("setLayoutPadding", "invalid key");
+        }
+    }
+
+    // camera code adapted from https://willowtreeapps.com/ideas/camera2-and-you-leveraging-android-lollipops-new-camera/
     int REQUEST_FOR_CAMERA = 1;
 
     Observable<Surface> getSurfaceFromTextureView(TextureView previewView) {
@@ -139,76 +231,52 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     }
 
     Observable<Boolean> createCaptureSession(@NonNull Surface previewSurface, @NonNull CameraDevice cameraDevice) {
-       return Observable.create(observableEmitter -> {
-           // create a new CaptureSession
-           List<Surface> surfaces = Arrays.asList(previewSurface); // NOTE if we have other surfaces, include them too
-           cameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
-               @Override
-               public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                   // we now have a capture session
+        return Observable.create(observableEmitter -> {
+            // create a new CaptureSession
+            List<Surface> surfaces = Arrays.asList(previewSurface); // NOTE if we have other surfaces, include them too
+            cameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
+                    // we now have a capture session
 
-                   // now we have full control over image capture
-                   CaptureRequest request;
-                   try {
-                       CaptureRequest.Builder request2 = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-                       request2.addTarget(previewSurface);
-                       request = request2.build();
+                    // now we have full control over image capture
+                    CaptureRequest request;
+                    try {
+                        CaptureRequest.Builder request2 = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+                        request2.addTarget(previewSurface);
+                        request = request2.build();
 
-                       List<CaptureRequest> requestList = new ArrayList<>();
-                       requestList.add(request);
+                        List<CaptureRequest> requestList = new ArrayList<>();
+                        requestList.add(request);
 
-                       // set capture options here
+                        // set capture options here
 
-                       // set the session to continuously get data from the camera
-                       cameraCaptureSession.setRepeatingBurst(requestList, new CameraCaptureSession.CaptureCallback() {
-                           @Override
-                           public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-                               super.onCaptureCompleted(session, request, result);
-                           }
-                       }, new Handler(message -> false));
+                        // set the session to continuously get data from the camera
+                        cameraCaptureSession.setRepeatingBurst(requestList, new CameraCaptureSession.CaptureCallback() {
+                            @Override
+                            public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                                super.onCaptureCompleted(session, request, result);
+                            }
+                        }, new Handler(message -> false));
 
-                       observableEmitter.onNext(true);
-                   } catch (CameraAccessException e) {
-                       observableEmitter.onError(e);
-                   }
+                        observableEmitter.onNext(true);
+                    } catch (CameraAccessException e) {
+                        observableEmitter.onError(e);
+                    }
 
-               }
+                }
 
-               @Override
-               public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
 
-               }
-           }, new Handler(message -> {
-               // TODO log
-               return false;
-           }));
-       });
+                }
+            }, new Handler(message -> {
+                // TODO log
+                return false;
+            }));
+        });
     }
 
-    TextureView previewView;
-    Surface mSurface;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ar2);
-
-        mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
-        inflater = getLayoutInflater();
-        arAnnotations = new HashMap<>();
-
-        presenter = new ARPresenter(this);
-
-        presenter.loadData();
-
-        // stub: poll for data from server
-//        ObservableInterval.
-
-        previewView = findViewById(R.id.AR2_texture_view);
-
-        setupCameraPrewiew();
-
-    }
 
     void setupCameraPrewiew() {
         // Using Camera2 as a camera preview API
@@ -259,63 +327,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
 
 
-    // called when permissions request completed (event from Activity)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        if (requestCode == REQUEST_FOR_CAMERA) {
-            // if request is cancelled, the result arrays are empty
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted!
-                setupCameraPrewiew();
 
-            } else {
-                // permission denied!
-                // TODO show TextView in activity, say that permission was not granted
-            }
-        }
-    }
-
-    /**
-     * Adds an annotation onscreen based on a UserLocation object.
-     * @param userLocation location details of a user
-     */
-    @Override
-    public void inflateARAnnotation(UserLocation userLocation) {
-        int userID = userLocation.getUserID();
-
-        // inflate a new layout
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.ar_annotation, null);
-        System.out.println(layout);
-
-        // add the layout to the view
-        mainRelativeLayout.addView(layout);
-
-        ARAnnotation arAnnotation = new ARAnnotation(userLocation, layout);
-
-        // put it in the HashMap of annotations
-        arAnnotations.put(userID, arAnnotation);
-
-        // TODO unimplemented: calculate onscreen offsets from center using azimuth
-    }
-
-    /**
-     * Moves the on-screen position of an AR annotation for a user.
-     * @param userID user (key for the Map of ARAnnotations)
-     * @param paddingLeft padding from the left of the parent layout
-     * @param paddingTop padding from the top of the parent layout
-     */
-    @Override
-    public void setAnnotationPadding(int userID, int paddingLeft, int paddingTop) {
-        ARAnnotation annotation = arAnnotations.get(userID);
-        if (annotation != null) {
-            LinearLayout layout = annotation.getLayout();
-//            LinearLayout.LayoutParams layoutParam = new LinearLayout.LayoutParams(this);
-            layout.setPadding(paddingLeft, paddingTop, 0, 0);
-        } else {
-            // TODO throw exception?
-            Log.w("setLayoutPadding", "invalid key");
-        }
-    }
 
 
 }

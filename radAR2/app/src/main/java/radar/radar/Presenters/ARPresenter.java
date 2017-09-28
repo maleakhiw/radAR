@@ -29,5 +29,7 @@ public class ARPresenter {
 
         arView.setAnnotationPadding(2, 200, 16);
 
+        // to remove an annotation, call ARView.removeAnnotationById
+
     }
 }
