@@ -32,6 +32,7 @@ public class SearchResultActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private EditText query;
+    private Button pending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class SearchResultActivity extends AppCompatActivity {
         // Instantiate recyclerview and query edit view
         recyclerView = findViewById(R.id.searchRecyclerView);
         query = findViewById(R.id.search_bar);
+        pending = findViewById(R.id.pending);
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -62,6 +64,15 @@ public class SearchResultActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+
+        // If pending button is clicked, go to a new activity displaying pending friend request
+        pending.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SearchResultActivity.this, FriendRequestActivity.class);
+                startActivity(intent);
             }
         });
 
