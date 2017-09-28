@@ -7,22 +7,23 @@ const multer = require('multer')  // for multipart/form-data, https://github.com
 const cors = require('cors')
 const _ = require('lodash');
 
+// logging framework
+const winston = require('winston');
+winston.add(winston.transports.File, { filename: 'server.log' });
+winston.level = 'debug';  // TODO use environment variable
+
 // multer
 const upload = multer({
   dest: 'uploads/'  // automatically gives unique filename
 })
 
 // data models
-const Chat = require('./models/chat')
+const Group = require('./models/group')
 const User = require('./models/user')
 const Request = require('./models/request')
 const Message = require('./models/message')
 const Resource = require('./models/resource')
-const Metadata = require('./models/metadata')
-const LastChatID = require('./models/lastChatID')
-const LastUserID = require('./models/lastUserID')
-const PasswordHash = require('./models/passwordHash')
-const LastRequestID = require('./models/lastRequestID')
+const LocationModel = require('./models/location');
 
 const app = express()
 app.use(bodyParser.json())
@@ -69,43 +70,43 @@ var DELAY_BASE = 100;
 //   }
 // }
 
-app.use(function(req, res, next) {
-  // give a little delay so the array has time to be updated
-  // let time = Date.now();
-  // while (Date.now() - time < 10*fibo(lastRequests.length)) {
-  //   ;
-  // }
-
-  // remove requests older than threshold
-  lastRequests = lastRequests.filter((entry) => {
-   return (Date.now() - entry.time) < REQ_TIME_THRES;
-  })
-
-  console.log(lastRequests.length);
-
-  // check if req.body is in array
-  let isInArray = false;
-  lastRequests.map((entry) => {
-   if (_.isEqual(entry.reqBody, req.body)) {
-     isInArray = true;
-   }
-  });
-  console.log('isInArray', isInArray);
-
-  lastRequests.push({
-   reqBody: req.body,
-   time: Date.now()
-  });
-
-  if (!isInArray) {
-    console.log('accepted');
-    next(); // let the handlers handle it
-  } else {
-    console.log('rejected');
-    // block the request
-  }
-
-})
+// app.use(function(req, res, next) {
+//   // give a little delay so the array has time to be updated
+//   // let time = Date.now();
+//   // while (Date.now() - time < 10*fibo(lastRequests.length)) {
+//   //   ;
+//   // }
+//
+//   // remove requests older than threshold
+//   lastRequests = lastRequests.filter((entry) => {
+//    return (Date.now() - entry.time) < REQ_TIME_THRES;
+//   })
+//
+//   console.log(lastRequests.length);
+//
+//   // check if req.body is in array
+//   let isInArray = false;
+//   lastRequests.map((entry) => {
+//    if (_.isEqual(entry.reqBody, req.body)) {
+//      isInArray = true;
+//    }
+//   });
+//   console.log('isInArray', isInArray);
+//
+//   lastRequests.push({
+//    reqBody: req.body,
+//    time: Date.now()
+//   });
+//
+//   if (!isInArray) {
+//     console.log('accepted');
+//     next(); // let the handlers handle it
+//   } else {
+//     console.log('rejected');
+//     // block the request
+//   }
+//
+// })
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
@@ -115,27 +116,27 @@ const connection = mongoose.connect('mongodb://localhost/radarTest',
     // if (!err) console.log('Connected to mongoDB')
     // else console.log('Failed to connect to mongoDB')
     if (err) {
-      console.log(err)
+      winston.error(err)
     }
 })
 module.exports.connection = connection
 
 // Systems
-const UMS = require('./UMS')
-const ums = new UMS(Metadata, User, Request, LastRequestID, PasswordHash)
-// const svs = require('./SVS')
-const SVS = require('./SVS')
-const svs = new SVS(User, Metadata, LastUserID, PasswordHash)
+const UMS = require('./controllers/UMS')
+const ums = new UMS(User, Request)
+// const svs = require('./controllers/SVS')
+const SVS = require('./controllers/SVS')
+const svs = new SVS(User)
 const authenticate = svs.authenticate
 
-const gms = require('./GMS')
+const SMS = require('./controllers/SMS')
+const sms = new SMS(Group, Message, User)
 
-const SMS = require('./SMS')
-const sms = new SMS(Chat, Message, User, LastRequestID, LastChatID, Metadata, LastUserID, PasswordHash)
+const ResMS = require('./controllers/ResMS')
+const resms = new ResMS(Resource, User)
 
-
-const ResMS = require('./ResMS')
-const resms = new ResMS(Resource, User, Metadata, LastUserID, PasswordHash)
+const PositioningSystem = require('./controllers/PositioningSystem');
+const positioningSystem = new PositioningSystem(LocationModel, User);
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
@@ -185,40 +186,46 @@ app.post("/api/accounts/:userID/resources", authenticate, upload.single('file'),
 app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getResource)
 
 // chats
-app.get("/api/accounts/:userID/chats", authenticate, sms.getChatsForUser)
-// NOTE: mirrors chats object below
-app.post("/api/accounts/:userID/chats", authenticate, sms.newChat)
-app.get("/api/accounts/:userID/chats/:chatID", authenticate, sms.getChat)
-app.get("/api/accounts/:userID/chats/:chatID/messages", authenticate, sms.getMessages)
+app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
+// NOTE: mirrors groups object below
+app.post("/api/accounts/:userID/chats", authenticate, sms.newGroup)
+app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
+app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 
+// locations
+app.post("/api/accounts/:userID/location", authenticate, positioningSystem.updateLocation);
+
 // object: users
 // users
-app.get("/api/users", authenticate, ums.search) // get all users (only if query specified)
-app.get("/api/users/:userID", authenticate, ums.getInformation)
+app.get("/api/users", ums.search) // get all users (only if query specified)
+app.get("/api/users/:userID", ums.getInformation)
 
-// object: chats
-app.get("/api/chats", (req, res) => {
-  // TODO: let obj = get all chats
+// object: groups
+app.get("/api/groups", (req, res) => {
+  // TODO: let obj = get all groups
   let obj = {}
-  res.json(addMetas(obj, "/api/chats"))
+  res.json(addMetas(obj, "/api/groups"))
 })
 
-// chats
-app.post("/api/chats", authenticate, sms.newChat)
-app.get("/api/chats/:chatID", authenticate, sms.getChat)
-app.post("/api/chats/:chatID/messages", authenticate, sms.sendMessage)
-app.get("/api/chats/:chatID/messages", authenticate, sms.getMessages)
+// groups
+app.post("/api/groups", authenticate, sms.newGroup)
+app.get("/api/groups/:groupID", authenticate, sms.getGroup)
+app.post("/api/groups/:groupID/messages", authenticate, sms.sendMessage)
+app.get("/api/groups/:groupID/messages", authenticate, sms.getMessages)
+
+// object: locations
+app.get("/api/users/:queryUserID/location", authenticate, positioningSystem.getLocation);
 
 // object: groups
 // app.get("/api/groups", gms.getAllGroups)  // TODO: extend below function - requires username, token
 app.get("/api/groups", (req, res) => {
   res.json(addMetas({}, "/api/groups"))
 })
-app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
-app.post("/api/groups", authenticate, gms.newGroup)
+// app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
+// app.post("/api/groups", authenticate, gms.newGroup)
 
 app.listen(3000, function(req, res) {
   // console.log("Listening at port 3000.")

@@ -4,8 +4,8 @@
  * Also provides information/data on users.
  */
 
-const common = require('./common')
-const consts = require('./consts')
+const common = require('../common')
+const consts = require('../consts')
 
 const SVS = require('./SVS')
 let svs;
@@ -13,21 +13,85 @@ let svs;
 const isNumber = common.isNumber
 const isArray = common.isArray
 
+const isValidUser = common.isValidUser;
+const sendUnauthorizedError = common.sendUnauthorizedError;
+const sendInternalError = common.sendInternalError;
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
+
 // const mongoose = module.parent.exports.mongoose   // import from index.js
 const ONLINE_THRESHOLD_SEC = consts.ONLINE_THRESHOLD_SEC
 const getPublicUserInfo = common.getPublicUserInfo
+const sendError = common.sendError
 
-let Metadata, User, Request, LastRequestID
+let User, Request, LastRequestID
 
-module.exports = class UMS {
-  constructor(pMetadata, pUser, pRequest, pLastRequestID, pLastUserID, pPasswordHash) {
-    Metadata = pMetadata
-    User = pUser
-    Request = pRequest
-    LastRequestID = pLastRequestID
-    svs = new SVS(User, Metadata, pLastUserID, pPasswordHash)
+
+/**
+ * Validates a request to add a friend
+ * @param req Express request object
+ * @return errorKeys errors to be sent using sendError
+ */
+function validateAddFriend(req) {
+  let userID = req.params.userID;
+  let invitedUserID = req.body.invitedUserID;
+
+  let errorKeys = [];
+  if (!invitedUserID) errorKeys.push('missingInvitedUserID');
+
+  if (userID && invitedUserID && userID == invitedUserID) {
+    errorKeys.push('selfInviteError');
   }
 
+  return errorKeys;
+
+}
+
+var checkIfAlreadyFriends = (userID, invitedUserID) => new Promise((resolve, reject) => {
+  User.findOne({userID: userID}).then((user) => {
+    if (user.friends.includes(invitedUserID)) {
+      reject('invitedUserIDAlreadyAdded');
+    } else {
+      resolve();
+    }
+  })
+})
+
+var checkIfRequestAlreadySent = (userID, invitedUserID) => new Promise((resolve, reject) => {
+  Request.findOne({$and: [
+    {from: userID},
+    {to: invitedUserID}
+  ]}).then((request) => {
+    if (request) {
+      reject('friendRequestAlreadyExists');
+    } else {
+      resolve();
+    }
+  })
+})
+
+var getRequestIDForNewRequest = () => new Promise((resolve, reject) => {
+  Request.findOne().sort({requestID: -1}).exec()
+  .then((request) => {
+    if (request) {
+      resolve(request.requestID + 1);
+    } else {
+      resolve(1);
+    }
+  })
+})
+
+module.exports = class UMS {
+  constructor(pUser, pRequest) {
+    User = pUser
+    Request = pRequest
+    svs = new SVS(User)
+  }
+
+  // TODO refactor, write unit tests for isOnline
   isOnline(req, res) {
     let userID = req.params.userID
     let userIDsToCheck = req.query.userIDsToCheck
@@ -63,44 +127,44 @@ module.exports = class UMS {
 
       .then((user) => {
         let friends = user.friends
-        // console.log(user)
+        // winston.debug(user)
         if (!friends) { // if undefined
           friends = []
         }
 
-        // console.log(friends)
+        // winston.debug(friends)
         userIDsToCheck = userIDsToCheck.filter((userID) => friends.includes(userID))
-        // console.log(userIDsToCheck)
-        return Metadata.find( { userID : { $in: userIDsToCheck } } )
+        // winston.debug(userIDsToCheck)
+        return User.find( { userID : { $in: userIDsToCheck } } )
       })
 
-      .then((metadatas) => {
+      .then((users) => {
         // filter off the users who have not been online
-        metadatas.map((metadata) => {
-          console.log((Date.now() - metadata.lastSeen.getTime())/1000)
+        users.map((user) => {
+          winston.debug((Date.now() - user.lastSeen.getTime())/1000)
         })
-        metadatas = metadatas.filter((metadata) => (Date.now() - metadata.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
+        users = users.filter((user) => (Date.now() - user.lastSeen.getTime())/1000 < ONLINE_THRESHOLD_SEC)
 
-        onlineUsers = metadatas.map((metadata) => metadata.userID)
+        onlineUsers = users.map((user) => user.userID)
 
-        // console.log('metadatas_filtered', metadatas)
+        // winston.debug('users_filtered', users)
 
-        let metadatasPromise = metadatas.map((metadata) => new Promise((resolve, reject) => {
+        let usersPromise = users.map((user) => new Promise((resolve, reject) => {
           let firstName = null
           let lastName = null
           let profilePicture = null
 
-          User.findOne({ userID: metadata.userID }).exec()
+          User.findOne({ userID: user.userID }).exec()
           .then((user) => resolve(getPublicUserInfo(user))) // Promise for the public user data
         }))
 
-        return Promise.all(metadatasPromise) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
+        return Promise.all(usersPromise) // this Promise is fulfilled when all the promises in the iterable (list) are fulfilled
       })
 
       .then((userInfos) => {
-        // console.log('userInfos', userInfos)
-        onlineStatus = {}
-        // console.log('onlineUsers', onlineUsers)
+        // winston.debug('userInfos', userInfos)
+        let onlineStatus = {}
+        // winston.debug('onlineUsers', onlineUsers)
         userIDsToCheck.map((userID) => {
           onlineStatus[userID] = onlineUsers.includes(userID)
         })
@@ -116,7 +180,7 @@ module.exports = class UMS {
 
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
       })
 
     }
@@ -127,103 +191,64 @@ module.exports = class UMS {
     let userID = req.params.userID  // TODO check for missing userID
     let invitedUserID = req.body.invitedUserID
 
-    let errorKeys = []
-    function sendError() {  // assumption: variables are in closure
-      let response = {
-        success: false,
-        errors: common.errorObjectBuilder(errorKeys)
-      }
-      res.json(response)
-    }
-
-    if (!invitedUserID) errorKeys.push('missingInvitedUserID')
-
-    if (userID && invitedUserID && userID == invitedUserID) {
-      errorKeys.push('selfInviteError')
-    }
+    let errorKeys = validateAddFriend(req);
 
     // TODO: should not be able to send request if already friends
 
     if (errorKeys.length) {
-      sendError()
-    } else {
-      let requestID = null
-
-      User.find({
-        userID: invitedUserID
-      }).exec()
-      .then((users) => {
-        if (!users.length) {
-          throw new Error('invalidUserID')
-        } else {
-          return Request.find({
-            from: userID,
-            to: invitedUserID,
-            responded: false
-          })
-        }
-      })
-
-      .then((requests) => {
-        if (requests.length) {
-          return new Promise((resolve, reject) => {
-            reject('Request already exists')
-          })
-        } else {
-          return LastRequestID.findOneAndRemove({})
-        }
-
-      })
-
-      .then((lastRequestID) => {
-        // console.log(lastRequestID)
-        if (lastRequestID) {
-          requestID = lastRequestID.requestID + 1
-        } else {
-          requestID = 1
-        }
-        return LastRequestID.create({ requestID: requestID })
-      })
-
-      .then((lastRequestID) => {
-        // console.log(lastRequestID)
-        let request = {
-          requestID: requestID,
-          from: userID,
-          to: invitedUserID,
-          for: "friend",
-          responded: false
-        }
-        // console.log(request)
-
-        // TODO: check if a request already exists for this!
-        // TODO: add error message
-        return Request.create(request)
-      })
-
-      .then((request) => {
-        // console.log('create', request)
-        let response = {
-          success: true,
-          error: [],
-          requestID: requestID
-        }
-        res.json(response)
-      })
-
-      .catch((err) => {
-        // console.log(err)
-        if (err == 'Request already exists') {
-          errorKeys.push('friendRequestAlreadyExists')
-        } else if (err == 'Error: invalidUserID') {
-          errorKeys.push('invalidUserID')
-        } else {
-          errorKeys.push('internalError')
-        }
-        sendError()
-      })
+      sendError(res, errorKeys);
+      return;
     }
 
+    /*
+    - find if invited userID exists -> if not, throw 'invalidUserID'
+    - find if a user already has the invited user in his/her friends list
+    - find if an existing friend request already exists
+    - create a new request
+    */
+    let requestID;
+
+    isValidUser(invitedUserID)
+    .then(() => {
+      return checkIfAlreadyFriends(userID, invitedUserID);
+    })
+    .then(() => {
+      return checkIfRequestAlreadySent(userID, invitedUserID);
+    })
+    .then(() => {
+      return getRequestIDForNewRequest();
+    })
+    .then((requestIDRes) => {
+      requestID = requestIDRes;
+      return Request.create({
+        requestID: requestID,
+        from: userID,
+        to: invitedUserID,
+        for: "friend",
+        responded: false
+      })
+    })
+    .then((request) => {
+      // request successfully created
+      let response = {
+        success: true,
+        error: [],
+        requestID: requestID
+      }
+      res.json(response)
+    })
+    .catch((err) => {
+      if (err == 'invalidUserID') {
+        sendError(res, ['invalidUserID']);
+      } else if (err == 'invitedUserIDAlreadyAdded') {
+        sendError(res, ['invitedUserIDAlreadyAdded']);
+      } else if (err == 'friendRequestAlreadyExists') {
+        sendError(res, ['friendRequestAlreadyExists']);
+      } else {
+        winston.error(err);
+        sendInternalError(res);
+      }
+    })
   }
 
   getFriendRequests(req, res) {
@@ -239,6 +264,7 @@ module.exports = class UMS {
 
     Request.find({ to: userID, responded: false }).exec()
     .then((requests) => {
+
       let requestsPromise = requests.map((request) => new Promise((resolve, reject) => {
         User.findOne({ userID: request.from }).exec()
         .then((user) => {
@@ -252,13 +278,13 @@ module.exports = class UMS {
           }
           resolve(resolved)
         }) // Promise for the public user data
-        .catch((err) => console.log(err)) // TODO: send fail
+        .catch((err) => winston.error(err)) // TODO: send fail
       }))
+
       return Promise.all(requestsPromise)
     })
 
     .then((requestsDetails) => {
-      // console.log(requestsDetails)
       let response = {
         success: true,
         errors: [],
@@ -268,14 +294,15 @@ module.exports = class UMS {
     })
 
     .catch((err) => {
-      console.log(err)
+      winston.error(err)
       errorKeys.push('internalError')
       sendError()
     })
+
   }
 
   getInformation(req, res) {
-    let queryUserID = req.body.queryUserID
+    let queryUserID = req.params.userID
     let username = req.body.username
 
     let errorKeys = []
@@ -287,7 +314,7 @@ module.exports = class UMS {
       res.json(response)
     }
 
-    console.log(req.body)
+    winston.debug(req.body)
 
     if (!username && !queryUserID) {
       errorKeys.push('missingUserIDOrUsername')
@@ -296,7 +323,7 @@ module.exports = class UMS {
       if (username) {
         User.findOne( { username: username } ).exec()
         .then((user) => {
-          // console.log(user)
+          // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -306,13 +333,14 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
+          winston.error(err);
           errorKeys.push('internalError')
           sendError()
         })
       } else {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
-          // console.log(user)
+          // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
           let response = {
             success: true,
@@ -322,6 +350,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
+          winston.error(err);
           errorKeys.push('internalError')
           sendError()
         })
@@ -333,7 +362,6 @@ module.exports = class UMS {
 
   respondToRequest(req, res) {
     let userID = req.params.userID
-    // let requestID = req.body.requestID
     let requestID = req.params.requestID
     let action = req.body.action
     let errorKeys = []
@@ -349,73 +377,80 @@ module.exports = class UMS {
     if (!requestID) {
       errorKeys.push('missingRequestID')
       sendError()
-    } else {
-      Request.findOne({
-        requestID: requestID,
-        to: userID,
-        responded: false
-      }).exec()
+      return;
+    }
 
-      .then((request) => {
-        if (!request) {
-          throw new Error('invalidRequestID')
-        } else {
-          if (action == 'accept' || action == 'decline') {
-            // update request
-            request.responded = true
-            request.save()
+    Request.findOne({
+      requestID: requestID,
+      to: userID,
+      responded: false
+    }).exec()
 
-            if (action == 'accept') {
-              let from = request.from
-              let to = request.to
-              let usersToUpdate = [from, to]
-              User.find({ userID: { $in: usersToUpdate } }).exec()
-              .then((users) => {
-                users.map((user) => {
-                  if (user.userID == from) {
-                    user.friends.push(to)
-                  } else {
-                    user.friends.push(from)
-                  }
-                  user.save()
+    .then((request) => {
+      if (!request) {
+        throw new Error('invalidRequestID')
+      } else {
+        if (action == 'accept' || action == 'decline') {
+          // update request
+          request.responded = true
+          request.save()
 
-                  let response = {
-                    success: true,
-                    error: []
-                  }
-                  res.json(response)
+          if (action == 'accept') {
+            let from = request.from
+            let to = request.to
+            let usersToUpdate = [from, to]
 
-                })
+            User.find({ userID: { $in: usersToUpdate } }).exec()
+            .then((users) => {
+              users.map((user) => {
+                if (user.userID == from) {
+                  user.friends.push(to)
+                } else {
+                  user.friends.push(from)
+                }
+                user.save() // TODO use Promise.all to validate
               })
 
-            } else {
               let response = {
                 success: true,
                 error: []
               }
               res.json(response)
-            }
-          }
-          else {
-            throw new Error('invalidAction')
-          }
-        }
-      })
+            })
 
-      .catch((err) => {
-        if (err == 'Error: invalidAction') {
-          errorKeys.push('invalidAction')
-        } else if (err == 'Error: invalidRequestID') {
-          errorKeys.push('invalidRequestID')
+          }
+
+          // decline friend request
+          else {
+            let response = {
+              success: true,
+              error: []
+            }
+
+            res.json(response)
+          }
+
         } else {
-          console.log(err)
-          errorKeys.push('internalError')
+          throw new Error('invalidAction')
         }
-        sendError()
-      })
-    }
+      }
+    })
+
+    .catch((err) => {
+      if (err == 'Error: invalidAction') {
+        errorKeys.push('invalidAction')
+      } else if (err == 'Error: invalidRequestID') {
+        errorKeys.push('invalidRequestID')
+      } else {
+        winston.error(err)
+        errorKeys.push('internalError')
+      }
+      sendError()
+    })
+
 
   }
+
 
 
   getFriends(req, res) {
@@ -438,7 +473,7 @@ module.exports = class UMS {
 
     User.findOne({ userID: userID }).exec()
     .then((user) => {
-      // console.log(user)
+      // winston.debug(user)
       if (!user) {
         throw new Error('invalidUserID') // should not happen
       }
@@ -448,9 +483,9 @@ module.exports = class UMS {
     })
 
     .then((users) => {  // friends
-      // console.log('users', users)
+      // winston.debug('users', users)
       friends = users.map((user) => getPublicUserInfo(user))
-      // console.log('friends', friends)
+      // winston.debug('friends', friends)
 
       let response = {
         success: true,
@@ -466,7 +501,7 @@ module.exports = class UMS {
         sendError()
         return
       }
-      console.log(err)
+      winston.error(err)
       errorKeys.push('internalError')
       sendError()
     })
@@ -490,7 +525,7 @@ module.exports = class UMS {
     if (!searchType) errorKeys.push('missingSearchType')
 
     if (errorKeys.length) {
-      response = {
+      let response = {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }
@@ -498,7 +533,7 @@ module.exports = class UMS {
     } else {
       if (searchType == 'name') {
         let regexQuery = new RegExp(query, "i") // case-insensitive matching
-        // console.log(regexQuery)
+        // winston.debug(regexQuery)
         User.find({ $or:
           [
             { firstName: regexQuery },
@@ -507,7 +542,7 @@ module.exports = class UMS {
         }).exec()
 
         .then((users) => {
-          // console.log(users)
+          // winston.debug(users)
           if (users.length) {
             users = users.map(getPublicUserInfo)
           }
@@ -520,7 +555,7 @@ module.exports = class UMS {
         })
 
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })
@@ -542,7 +577,7 @@ module.exports = class UMS {
         })
 
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })
@@ -559,7 +594,7 @@ module.exports = class UMS {
           res.json(response)
         })
         .catch((err) => {
-          console.log(err)
+          winston.error(err)
           errorKeys.push('dbError')
           sendError()
         })

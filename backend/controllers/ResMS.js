@@ -2,23 +2,28 @@
  * Group Management System server-side component.
  * Provides groups' information and group management services.
  */
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
+
 var fs = require('fs')
 
-const mongoose = require('mongoose')
-const common = require('./common')
+var path = require('path')
+
+const common = require('../common')
 
 // TODO
 const SVS = require('./SVS')
 let svs;
 
-let Resource
-
-// const connection = module.parent.exports.connection
+let Resource;
 
 module.exports = class ResMS {
-  constructor(pResource, pUser, pMetadata, pLastUserID, pPasswordHash) {
-    Resource = pResource
-    svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
+  constructor(pResource, pUser) {
+    Resource = pResource;
+    svs = new SVS(pUser);
   }
 
   uploadResource(req, res) {
@@ -31,7 +36,7 @@ module.exports = class ResMS {
         success: false,
         error: [common.errorObjectBuilder(['missingFile'])]
       })
-      return
+      return;
     }
 
     let fileID = file.filename
@@ -41,7 +46,7 @@ module.exports = class ResMS {
       filename: file.originalname,
       mimetype: file.mimetype,
       owners: [userID],
-      chatID: null,
+      groupID: null,
       groupID: null
     })
     .then((resource) => {
@@ -52,7 +57,7 @@ module.exports = class ResMS {
       })
     })
     .catch((err) => {
-      console.log(err)
+      winston.error(err)
       res.json({
         success: false,
         error: [common.errorObjectBuilder(['internalError'])]
@@ -72,10 +77,10 @@ module.exports = class ResMS {
         let file = resource[0]
         // do checks - if unauthorised, send 401 unauthorised
 
-        // TODO: Chats and Groups
+        // TODO: Groups and Groups
         if (file.owners.includes(userID)) {
           res.setHeader('Content-Type', file.mimetype)
-          res.sendFile('uploads/' + fileID, { root: __dirname })
+          res.sendFile(fileID, { root: path.join(__dirname, '../uploads') })
         } else {
           res.sendStatus(401)
         }
