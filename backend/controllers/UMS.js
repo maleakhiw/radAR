@@ -525,7 +525,8 @@ module.exports = class UMS {
     if (!searchType) errorKeys.push('missingSearchType')
 
     if (errorKeys.length) {
-      response = {
+
+      let response = {
         success: false,
         errors: common.errorObjectBuilder(errorKeys)
       }

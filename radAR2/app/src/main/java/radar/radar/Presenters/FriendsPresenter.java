@@ -15,13 +15,13 @@ public class FriendsPresenter {
     public FriendsPresenter(FriendsView friendsView, UsersService usersService) {
         this.friendsView = friendsView;
         this.usersService = usersService;
-
         loadFriends();
 
     }
 
     public void respondToFABClick() {
         friendsView.launchSearchFriendsActivity();
+
     }
 
     public void loadFriends() {

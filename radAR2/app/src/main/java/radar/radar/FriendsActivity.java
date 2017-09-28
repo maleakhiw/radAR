@@ -93,4 +93,5 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         friendsAdapter.notifyDataSetChanged();
 
     }
+
 }
