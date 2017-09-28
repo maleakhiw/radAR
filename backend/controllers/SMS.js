@@ -3,30 +3,34 @@
  * Provides Messaging services for RadAR.
  */
 
-const common = require('./common')
+const common = require('../common')
 const addMetas = common.addMetas
 const isArray = common.isArray
 const unique = common.unique
+
+// logging framework
+const winston = require('winston');
+
+winston.level = 'debug';  // TODO use environment variable
 
 const SVS = require('./SVS')
 let svs;
 
 // data models
-let Chat
+let Group
 let Message
 let User
-let LastChatID
+let LastGroupID
 
 module.exports = class SMS {
-  constructor(pChat, pMessage, pUser, pLastRequestID, pLastChatID, pMetadata, pLastUserID, pPasswordHash) {
-      Chat = pChat
+  constructor(pGroup, pMessage, pUser) {
+      Group = pGroup
       Message = pMessage
       User = pUser
-      LastChatID = pLastChatID
-      svs = new SVS(pUser, pMetadata, pLastUserID, pPasswordHash)
+      svs = new SVS(pUser)
   }
 
-  newChat(req, res) {
+  newGroup(req, res) {
       let userID = req.params.userID
       let participantUserIDs = req.body.participantUserIDs
       let name = req.body.name
@@ -53,8 +57,8 @@ module.exports = class SMS {
       participantUserIDs = unique(participantUserIDs) // filter to only unique userIDs
 
       let filteredUserIDs
-      let chatID
-      let chat
+      let groupID
+      let group
 
       User.find( { userID: { $in: participantUserIDs } } ).exec()
 
@@ -65,35 +69,35 @@ module.exports = class SMS {
           throw new Error('invalidParticipantUserIDs')
         }
 
-        return LastChatID.findOneAndRemove({})
+        return LastGroupID.findOneAndRemove({})
       })
 
-      .then((lastChatID) => {
-        if (lastChatID) {
-          chatID = lastChatID.chatID + 1
+      .then((lastGroupID) => {
+        if (lastGroupID) {
+          groupID = lastGroupID.groupID + 1
         } else {
-          chatID = 1
+          groupID = 1
         }
 
-        return LastChatID.create({ // update the value in the system
-          chatID: chatID
+        return LastGroupID.create({ // update the value in the system
+          groupID: groupID
         })
       })
 
-      .then((lastChatID) => { // TODO remove lastChatID collection
-        chat = {
+      .then((lastGroupID) => { // TODO remove lastGroupID collection
+        group = {
           name: name,
-          chatID: lastChatID.chatID,
+          groupID: lastGroupID.groupID,
           members: filteredUserIDs,
           admins: [userID]
         }
-        Chat.create(chat)
+        Group.create(group)
       })
 
-      .then((chat) => User.findOne({ userID: userID }))
+      .then((group) => User.findOne({ userID: userID }))
 
-      .then((user) => { // add the user to the chat
-        user.chats.push(chatID)
+      .then((user) => { // add the user to the group
+        user.groups.push(groupID)
         return user.save()
       })
 
@@ -101,12 +105,12 @@ module.exports = class SMS {
         res.json({
           success: true,
           errors: [],
-          chat: chat
+          group: group
         })
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         if (err == 'Error: invalidParticipantUserIDs') {
           errorKeys.push('invalidParticipantUserIDs')
           sendError()
@@ -121,7 +125,7 @@ module.exports = class SMS {
 
   }
 
-  getChatsForUser(req, res) {
+  getGroupsForUser(req, res) {
       let userID = req.params.userID
 
       User.findOne({ userID: userID }).exec()
@@ -130,14 +134,14 @@ module.exports = class SMS {
         response = {
           success: true,
           errors: [],
-          chats: user.chats
+          groups: user.groups
         }
-        res.json(addMetas(response, "/api/accounts/:userID/chats"))
+        res.json(addMetas(response, "/api/accounts/:userID/groups"))
 
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.json({
           success: false,
           errors: []
@@ -146,31 +150,31 @@ module.exports = class SMS {
 
   }
 
-  getChat(req, res) {
+  getGroup(req, res) {
       let userID = req.params.userID
-      let chatID = req.params.chatID
+      let groupID = req.params.groupID
 
-      Chat.findOne({ chatID: chatID }).exec()
+      Group.findOne({ groupID: groupID }).exec()
 
-      .then((chat) => {
-        chatObj = {
-          name: chat.name,
-          chatID: chatID,
-          admins: chat.admins,
-          members: chat.members
+      .then((group) => {
+        groupObj = {
+          name: group.name,
+          groupID: groupID,
+          admins: group.admins,
+          members: group.members
         }
 
-        if (chat) {
+        if (group) {
           res.json({
             success: true,
             errors: [],
-            chat: chatObj
+            group: groupObj
           })
         } else {
-          // chat does not exist
+          // group does not exist
           res.status(404).json({
             success: false,
-            error: common.errorObjectBuilder(['invalidChatID'])
+            error: common.errorObjectBuilder(['invalidGroupID'])
           })
         }
       })
@@ -179,29 +183,29 @@ module.exports = class SMS {
   }
 
   getMessages(req, res) {
-      let chatID = parseInt(req.query.chatID) || parseInt(req.params.chatID)
+      let groupID = parseInt(req.query.groupID) || parseInt(req.params.groupID)
       let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
 
-      Chat.findOne({ chatID: chatID }).exec()
+      Group.findOne({ groupID: groupID }).exec()
 
-      .then((chat) => {
-        if (!chat) {
+      .then((group) => {
+        if (!group) {
           res.json({
             success: false,
-            errors: common.errorObjectBuilder(['invalidChatID'])
+            errors: common.errorObjectBuilder(['invalidGroupID'])
           })
           return
         }
 
-        if (!chat.members.includes(userID)) {
+        if (!group.members.includes(userID)) {
           res.status(401).json({
             success: false,
-            errors: common.errorObjectBuilder(['unauthorisedChat'])
+            errors: common.errorObjectBuilder(['unauthorisedGroup'])
           })
           return
         }
 
-        return Message.find({chatID: chatID})
+        return Message.find({groupID: groupID})
       })
 
       .then((messages) => {
@@ -223,13 +227,13 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.send({
           success: false,
           errors: common.errorObjectBuilder(['internalError'])
         })
       })
-      // check Chat if exists
+      // check Group if exists
         // if exists, check if member
           // if member, return messages (for now return everything.)
           // otherwise
@@ -237,15 +241,15 @@ module.exports = class SMS {
   }
 
   sendMessage(req, res) {
-      console.log(req.body)
+      winston.debug(req.body)
       let from = req.body.userID
-      let chatID = parseInt(req.params.chatID)
+      let groupID = parseInt(req.params.groupID)
       let message = req.body.message
 
-      console.log(from, chatID, message)
+      winston.debug(from, groupID, message)
 
       errorKeys = []
-      if (!chatID) errorKeys.push('missingChatID')
+      if (!groupID) errorKeys.push('missingGroupID')
       if (!message) errorKeys.push('missingMessage')
       if (errorKeys.length) {
         res.json({
@@ -258,28 +262,28 @@ module.exports = class SMS {
 
       let sentMessage
 
-      // check if chatID exists
-      Chat.find({ chatID: chatID }).exec()
+      // check if groupID exists
+      Group.find({ groupID: groupID }).exec()
 
-      .then((chats) => {
-        if (!chats.length) {
+      .then((groups) => {
+        if (!groups.length) {
           res.json({
             success: false,
-            errors: common.errorObjectBuilder(['invalidChatID']),
+            errors: common.errorObjectBuilder(['invalidGroupID']),
             sentMessage: null
           })
           return
-        } else if (!chats[0].members.includes(from)) {  // not a member of the chat
+        } else if (!groups[0].members.includes(from)) {  // not a member of the group
           res.json({
             success: false,
-            errors: common.errorObjectBuilder(['unauthorisedChat']),
+            errors: common.errorObjectBuilder(['unauthorisedGroup']),
             sentMessage: null
           })
           return
         } else {
           sentMessage = {
             from: from,
-            chatID: chatID,
+            groupID: groupID,
             time: Date.now(),
             contentType: "text",
             text: message,
@@ -299,7 +303,7 @@ module.exports = class SMS {
       })
 
       .catch((err) => {
-        console.log(err)
+        winston.error(err)
         res.json({
           success: false,
           errors: common.errorObjectBuilder(['internalError']),

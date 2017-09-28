@@ -4,7 +4,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 
 const messageSchema = new Schema({
   from: Number,
-  chatID: Number,
+  groupID: Number,
   time: Date,
   contentType: String,  // message, file
     // TODO: images can be compressed (later)

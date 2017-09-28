@@ -1,10 +1,49 @@
 const errorValues = require('./consts').errors
 const metas = require('./consts').metas
+const User = require('./models/user') // TODO refactor so User is plug and play
+
+module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
+  if (!userID) {  // if no userID specified
+    reject('missingUserID');
+  }
+
+  User.findOne({ userID: userID }).exec()
+
+  .then((user) => {
+    if (!user) {
+      reject('invalidUserID');
+    } else {
+      resolve();
+    }
+  })
+})
+
+module.exports.sendUnauthorizedError = (res, errorKeys) => {
+  res.status(401).json({
+    success: false,
+    errors: module.exports.errorObjectBuilder(errorKeys)
+  });
+}
+
+module.exports.sendInternalError = (res) => {
+  res.status(500).json({
+    success: false,
+    errors: module.exports.errorObjectBuilder(['internalError'])
+  });
+}
 
 module.exports.addMetas = (obj, key) => {
   // console.log(obj, key)
   obj.resources = metas[key].resources
   return obj
+}
+
+module.exports.sendError = (res, errorKeys) => {
+    let response = {
+        success: false,
+        errors: module.exports.errorObjectBuilder(errorKeys)
+    }
+    res.json(response)
 }
 
 module.exports.unique = (a) => {

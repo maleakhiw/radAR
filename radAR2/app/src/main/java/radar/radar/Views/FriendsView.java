@@ -14,9 +14,8 @@ import radar.radar.Models.User;
 public interface FriendsView {
     void showToast(String toast);
 
+    void launchHomeScreenActivity();
+
     void bindAdapterToRecyclerView(ArrayList<User> friends);
 
-    void setFABOnClickListener(View.OnClickListener onClickListener);
-
-    void startActivityFromIntent(Intent intent);
 }
