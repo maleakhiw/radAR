@@ -16,5 +16,5 @@ public interface ARView {
     // add more setters for other attributes of an annotation ltaer
     void setAnnotationMainText(int userID, String text);
 
-    void setAnnotationPadding(int userID, int paddingLeft, int paddingTop);
+    void setAnnotationMargins(int userID, int paddingLeft, int paddingTop);
 }

@@ -1,4 +1,4 @@
-package radar.radar.Views;
+package radar.radar;
 
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;

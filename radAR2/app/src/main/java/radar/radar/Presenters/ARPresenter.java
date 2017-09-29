@@ -4,7 +4,6 @@ package radar.radar.Presenters;
 
 import java.util.Date;
 
-import radar.radar.ARActivity2;
 import radar.radar.Models.UserLocation;
 import radar.radar.Views.ARView;
 
@@ -27,8 +26,9 @@ public class ARPresenter {
         arView.inflateARAnnotation(userLocation1);
         arView.inflateARAnnotation(userLocation2);
 
-        arView.setAnnotationPadding(2, 200, 16);
+        arView.setAnnotationMargins(2, 200, 16);
 
+        arView.setAnnotationMainText(1, "Text1");
         arView.setAnnotationMainText(2, "I can now change the text");
 
         // to remove an annotation, call ARView.removeAnnotationById
