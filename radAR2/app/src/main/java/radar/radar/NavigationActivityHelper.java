@@ -73,7 +73,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                     // TODO - Define settings
 
                 } else if (id == R.id.nav_tracking_groups) {
-                    Intent intent = new Intent(activity, GroupsActivity.class);
+                    Intent intent = new Intent(activity, GroupActivity.class);
                     activity.startActivity(intent);
 
                 }

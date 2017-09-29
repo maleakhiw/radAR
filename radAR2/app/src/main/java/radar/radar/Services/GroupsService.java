@@ -25,6 +25,7 @@ public class GroupsService {
     }
 
     public Observable<GroupsResponse> newGroup(String name, ArrayList<Integer> participantUserIDs) {
+        System.out.println("newGroup");
         NewGroupBody newGroupBody = new NewGroupBody(name, participantUserIDs);
         return groupsApi.newGroup(userID, newGroupBody, token)
                         .subscribeOn(Schedulers.io())

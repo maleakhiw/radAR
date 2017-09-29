@@ -52,7 +52,7 @@ public class LocationService {
      */
 
     public Observable<GetLocationResponse> getLocation(int queryUserID) {
-        Observable<GetLocationResponse> observable = locationApi.getLocation(queryUserID, token)
+        Observable<GetLocationResponse> observable = locationApi.getLocation(queryUserID, userID, token)
                                                         .subscribeOn(Schedulers.io())
                                                         .observeOn(AndroidSchedulers.mainThread());
 
