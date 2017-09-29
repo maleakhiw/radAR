@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import radar.radar.Models.Requests.SignUpRequest;
 import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Presenters.SignupPresenter;
@@ -41,6 +43,12 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
 
         // Setup UI
         setupUI();
+
+//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+//        OkHttpClient client = new OkHttpClient.Builder()
+//                .addInterceptor(logging)
+//                .build();
 
         // get a Retrofit instance (this is also called the Builder pattern)
         Retrofit retrofit = new Retrofit.Builder()

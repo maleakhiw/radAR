@@ -3,6 +3,8 @@ package radar.radar.Services;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import radar.radar.Models.Requests.SignUpRequest;
 import radar.radar.Models.Responses.AuthResponse;
 
@@ -57,30 +59,38 @@ public class AuthService {
         Observable<AuthResponse> observable = authApi.signUp(body)
                                                     .subscribeOn(Schedulers.io())
                                                     .observeOn(AndroidSchedulers.mainThread());
-        observable.subscribe(new Observer<AuthResponse>() {
+
+        Observable<AuthResponse> newObservable = Observable.create(new ObservableOnSubscribe<AuthResponse>() {
             @Override
-            public void onSubscribe(Disposable d) {
+            public void subscribe(ObservableEmitter<AuthResponse> emitter) throws Exception {
+                observable.subscribe(new Observer<AuthResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(AuthResponse authResponse) {
-                // save to shared prefs
-                prefs.edit().putString("radar_token", authResponse.token)
-                        .putInt("radar_userID", authResponse.userID).commit();
-            }
+                    @Override
+                    public void onNext(AuthResponse authResponse) {
+                        prefs.edit().putString("radar_token", authResponse.token)
+                                .putInt("radar_userID", authResponse.userID).apply();
+                        emitter.onNext(authResponse);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                System.out.println(e);
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        emitter.onError(e);
+                    }
 
-            @Override
-            public void onComplete() {
+                    @Override
+                    public void onComplete() {
+                        emitter.onComplete();
 
+                    }
+                });
             }
         });
-        return observable;
+
+        return newObservable;
 
     }
 
@@ -95,38 +105,43 @@ public class AuthService {
         Observable<AuthResponse> observable = authApi.login(username, password)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
-        observable.subscribe(new Observer<AuthResponse>() {
+
+        Observable<AuthResponse> newObservable = Observable.create(new ObservableOnSubscribe<AuthResponse>() {
             @Override
-            public void onSubscribe(Disposable d) {
+            public void subscribe(ObservableEmitter<AuthResponse> emitter) throws Exception {
+                observable.subscribe(new Observer<AuthResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-            }
+                    }
 
-            @Override
-            public void onNext(AuthResponse authResponse) {
-                // save to shared prefs
-                System.out.println(authResponse.token);
-                prefs.edit().putString("radar_token", authResponse.token)
-                        .putInt("radar_userID", authResponse.userID).commit();
-                System.out.println(prefs.getString("radar_token", null));
-            }
+                    @Override
+                    public void onNext(AuthResponse authResponse) {
+                        prefs.edit().putString("radar_token", authResponse.token)
+                                .putInt("radar_userID", authResponse.userID).apply();
+                        emitter.onNext(authResponse);
+                    }
 
-            @Override
-            public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
+                        emitter.onError(e);
+                    }
 
-            }
+                    @Override
+                    public void onComplete() {
+                        emitter.onComplete();
 
-            @Override
-            public void onComplete() {
-
+                    }
+                });
             }
         });
 
-        return observable;
+        return newObservable;
     }
 
     public static void signOut(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
-        prefs.edit().remove("radar_token").remove("radar_userID").commit();
+        prefs.edit().remove("radar_token").remove("radar_userID").apply();
     }
 
 }

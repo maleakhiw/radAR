@@ -67,6 +67,7 @@ public class SignupPresenter {
 
                 @Override
                 public void onError(Throwable e) {
+                    System.out.println(e);
                     signupView.showToastLong("Sign Up failed.");
                     signupView.dismissProgressBar();
                 }
