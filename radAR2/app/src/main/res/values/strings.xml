@@ -141,4 +141,7 @@
     <string name="title_activity_home_screen">HomeScreenActivity</string>
     <string name="title_activity_chats_list">ChatsListActivity</string>
 
+    <!-- Data related to MapsActivity -->
+    <string name="title_activity_place">radAR Location Service</string>
+
 </resources>
