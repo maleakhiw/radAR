@@ -68,6 +68,8 @@ public class AuthService {
                 // save to shared prefs
                 prefs.edit().putString("radar_token", authResponse.token)
                         .putInt("radar_userID", authResponse.userID).commit();
+
+
             }
 
             @Override

@@ -60,6 +60,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     TextureView previewView;
     Surface mSurface;
+    CameraDevice mCameraDevice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,31 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         presenter = new ARPresenter(this);
 
         presenter.loadData();
+
+        previewView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override
+            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
+
+            }
+
+            @Override
+            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
+
+            }
+
+            @Override
+            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+                if (mCameraDevice != null) {
+                    mCameraDevice.close();
+                }
+                return false;
+            }
+
+            @Override
+            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
+
+            }
+        });
 
         // stub: poll for data from server
 //        ObservableInterval.
@@ -296,7 +322,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                     return getCameraData(cameraManager);
                 })
                 .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
-                .switchMap((cameraDevice -> createCaptureSession(mSurface, cameraDevice)))
+                .switchMap((cameraDevice -> {
+                    mCameraDevice = cameraDevice;
+                    return createCaptureSession(mSurface, cameraDevice);
+                }))
                 .subscribe(new Observer<Boolean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
