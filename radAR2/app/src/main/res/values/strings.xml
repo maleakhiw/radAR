@@ -143,5 +143,7 @@
 
     <!-- Data related to MapsActivity -->
     <string name="title_activity_place">radAR Location Service</string>
+    <string name="location_permissions">Location Permissions</string>
+    <string name="need_location_permission_message">You need to enable location permissions first</string>
 
 </resources>
