@@ -29,6 +29,8 @@ public class ARPresenter {
 
         arView.setAnnotationPadding(2, 200, 16);
 
+        arView.setAnnotationMainText(2, "I can now change the text");
+
         // to remove an annotation, call ARView.removeAnnotationById
 
     }

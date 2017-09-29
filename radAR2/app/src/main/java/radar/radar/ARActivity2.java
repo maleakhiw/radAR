@@ -25,8 +25,8 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import org.reactivestreams.Subscriber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -136,6 +136,18 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // TODO unimplemented: calculate onscreen offsets from center using azimuth
     }
 
+    // add more setters for other attributes of an annotation ltaer
+    @Override
+    public void setAnnotationMainText(int userID, String text) {
+        if (arAnnotations != null) {
+            ARAnnotation annotation = arAnnotations.get(userID);
+            if (annotation != null) {
+                TextView textView = annotation.getLayout().findViewById(R.id.ARAnnotation_TextView);
+                textView.setText(text);
+            }
+        }
+    }
+
     /**
      * Moves the on-screen position of an AR annotation for a user.
      * @param userID user (key for the Map of ARAnnotations)
@@ -234,7 +246,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         // adjust
         int previewWidth = previewView.getMeasuredWidth();
-        int previewHeight = previewView.getMeasuredHeight();
 
         previewView.setLayoutParams(new ConstraintLayout.LayoutParams(previewWidth, Math.round(previewWidth * aspectRatio)));
 
