@@ -184,9 +184,9 @@ module.exports = class SMS {
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
-    
+
         if (group) {
-          groupObj = {
+          let groupObj = {
             name: group.name,
             groupID: groupID,
             admins: group.admins,
