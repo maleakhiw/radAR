@@ -22,7 +22,7 @@ let Message
 let User
 
 function newGroupImpl(req, res, callback) {
-  let userID = req.params.userID
+  let userID = parseInt(req.params.userID); // TODO validate
   let participantUserIDs = req.body.participantUserIDs
   let name = req.body.name
 
@@ -49,7 +49,7 @@ function newGroupImpl(req, res, callback) {
 
   let filteredUserIDs
   let groupID
-  let group
+  let group;
 
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
@@ -59,13 +59,12 @@ function newGroupImpl(req, res, callback) {
     if (filteredUserIDs.length == 0) {
       throw new Error('invalidParticipantUserIDs')
     }
-
     return Group.findOne().sort({groupID: -1})
   })
 
-  .then((group) => {
-    if (group) {
-      groupID = group.groupID + 1;
+  .then((pGroup) => {
+    if (pGroup) {
+      groupID = pGroup.groupID + 1;
     } else {
       groupID = 1;
     }
@@ -74,19 +73,31 @@ function newGroupImpl(req, res, callback) {
       groupID: groupID,
       members: filteredUserIDs,
       admins: [userID]
-    };
+    }
 
     return Group.create(group);
   })
 
-  .then((group) => User.findOne({ userID: userID }))
+  .then((pGroup) => {
 
-  .then((user) => { // add the user to the group
-    user.groups.push(groupID)
-    return user.save()
+    // add to everyone's group lists
+    let promiseAll = participantUserIDs.map(
+      (participantUserID) => new Promise((resolve, reject) => {
+        User.findOne({userID: participantUserID}).exec()
+        .then((user) => {
+          user.groups.push(groupID)
+          user.save() .then(() => resolve());
+        })
+        .catch((err) => winston.error(err));  // TODO send fail
+    }));
+
+    return Promise.all(promiseAll);
   })
 
-  .then((user) => {
+  .then(() => {
+
+  })
+  .then(() => {
     res.json({
       success: true,
       errors: [],
@@ -131,12 +142,12 @@ module.exports = class SMS {
       User.findOne({ userID: userID }).exec()
 
       .then((user) => {
-        response = {
+        let response = {
           success: true,
           errors: [],
           groups: user.groups
         }
-        res.json(addMetas(response, "/api/accounts/:userID/groups"))
+        res.json(addMetas(response, "/api/accounts/:userID/chats"))
 
       })
 
@@ -150,7 +161,7 @@ module.exports = class SMS {
 
   }
 
-  getGroup(req, res) {
+  getGroup(req, res) {  // TODO refactor to common between SMS and GMS
       let userID = req.params.userID
       let groupID = req.params.groupID
 
@@ -161,7 +172,8 @@ module.exports = class SMS {
           name: group.name,
           groupID: groupID,
           admins: group.admins,
-          members: group.members
+          members: group.members,
+          isTrackingGroup: group.isTrackingGroup
         }
 
         if (group) {
@@ -240,15 +252,15 @@ module.exports = class SMS {
 
   }
 
-  sendMessage(req, res) {
-      winston.debug(req.body)
-      let from = req.body.userID
+  sendMessage(req, res) { // TODO refactor - still unhandled promise rejections
+      // winston.debug(req.body)
+      let from = parseInt(req.params.userID);
       let groupID = parseInt(req.params.groupID)
       let message = req.body.message
 
       winston.debug(from, groupID, message)
 
-      errorKeys = []
+      let errorKeys = []
       if (!groupID) errorKeys.push('missingGroupID')
       if (!message) errorKeys.push('missingMessage')
       if (errorKeys.length) {
@@ -263,17 +275,18 @@ module.exports = class SMS {
       let sentMessage
 
       // check if groupID exists
-      Group.find({ groupID: groupID }).exec()
+      Group.findOne({ groupID: groupID }).exec()
 
-      .then((groups) => {
-        if (!groups.length) {
+      .then((group) => {
+        console.log(group);
+        if (!group) {
           res.json({
             success: false,
             errors: common.errorObjectBuilder(['invalidGroupID']),
             sentMessage: null
           })
           return
-        } else if (!groups[0].members.includes(from)) {  // not a member of the group
+        } else if (!group.members.includes(from)) {  // not a member of the group
           res.json({
             success: false,
             errors: common.errorObjectBuilder(['unauthorisedGroup']),

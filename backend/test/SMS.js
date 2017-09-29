@@ -3,6 +3,7 @@ let mongoose = require('mongoose')
 const User = require('../models/user');
 const Request = require('../models/request');
 const Group = require('../models/group');
+const Message = require('../models/message');
 
 let chai = require('chai')
 let chaiHttp = require('chai-http')
@@ -15,7 +16,7 @@ chai.use(chaiHttp)
 mongoose.Promise = global.Promise;
 
 describe('SMS', () => {
-  let user1token, user2token;
+  let user1token, user2token, user3token;
 
   before((done) => {
     mongoose.connect('mongodb://localhost/radarTest',
@@ -29,6 +30,7 @@ describe('SMS', () => {
     Request.remove({}).exec()
     .then(() => User.remove({}))
     .then(() => Group.remove({}))
+    .then(() => Message.remove({}))
     .then(() => {
       // create dummy users
       chai.request(server)
@@ -66,7 +68,27 @@ describe('SMS', () => {
           expect(res.body.success).to.equal(true)
           expect(res.body.userID).to.equal(2)
           user2token = res.body.token
-          done()
+
+          chai.request(server)
+          .post('/api/auth')
+          .send({
+              "firstName": "User3",
+              "lastName": "LastName",
+              "email": "email3@example.com",
+              "username": "user3",
+              "profileDesc": "",
+              "password": "hunter2",
+              "deviceID": "memes"
+          })
+          .end((err, res) => {
+            res.should.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.success).to.equal(true)
+            expect(res.body.userID).to.equal(3)
+            user3token = res.body.token;
+
+            done();
+          })
         })
 
 
@@ -92,10 +114,75 @@ describe('SMS', () => {
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
-        console.log(res.body);
+        expect(res.body.group).to.not.equal(null);
+        // console.log(res.body);
         done();
       })
     })
+
+  })
+
+  describe('GET /api/accounts/:userID/chats (sms.getGroupsForUser)', () => {
+    it('user2 should be in the group (chat, upgradeable to TrackingGroup)', (done) => {
+      chai.request(server)
+      .get('/api/accounts/2/chats')
+      .set('token', user2token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        console.log(res.body);
+        expect(res.body.groups).to.include(1);
+
+        done();
+      })
+    })
+  })
+
+  describe('POST /api/accounts/:userID/chats/:groupID/messages (sms.sendMessage)', () => {
+    it('should send a message to the group', (done) => {
+      chai.request(server)
+      .post('/api/accounts/1/chats/1/messages') // TODO remove hardcoded group ID
+      .set('token', user1token)
+      .send({
+        message: 'Hello world'
+      })
+      .end((err, res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.sentMessage).to.not.equal(null);
+        expect(res.body.sentMessage.text).to.equal('Hello world');
+        expect(res.body.sentMessage.from).to.equal(1);
+        expect(res.body.sentMessage.contentType).to.equal('text');
+
+        done();
+      })
+    })
+  })
+
+  describe('GET /api/accounts/:userID/chats/:groupID/messages (sms.getMessages)', () => {
+    console.log('test')
+    it('should see a message in the group', (done) => {
+      chai.request(server)
+      .get('/api/accounts/2/chats/1/messages') // TODO remove hardcoded group ID
+      .set('token', user2token)
+      .end((err, res) => {
+        // console.log(res.body);
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        // expect(res.body.groups).to.include(1);
+        expect(res.body.messages.length).to.equal(1);
+        expect(res.body.messages[0].from).to.equal(1);
+        expect(res.body.messages[0].contentType).to.equal('text');
+        expect(res.body.messages[0].text).to.equal('Hello world');
+
+        done();
+      })
+    })
+
 
   })
 
