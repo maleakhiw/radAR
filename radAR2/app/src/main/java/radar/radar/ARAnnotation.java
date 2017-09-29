@@ -1,6 +1,6 @@
 package radar.radar;
 
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout;
 
@@ -12,13 +12,13 @@ import radar.radar.Models.UserLocation;
 
 public class ARAnnotation {
     UserLocation userLocation;
-    LinearLayout layout;
+    RelativeLayout layout;
 
     public UserLocation getUserLocation() {
         return userLocation;
     }
 
-    public LinearLayout getLayout() {
+    public RelativeLayout getLayout() {
         return layout;
     }
 
@@ -26,11 +26,11 @@ public class ARAnnotation {
         this.userLocation = userLocation;
     }
 
-    public void setLayout(LinearLayout layout) {
+    public void setLayout(RelativeLayout layout) {
         this.layout = layout;
     }
 
-    public ARAnnotation(UserLocation userLocation, LinearLayout layout) {
+    public ARAnnotation(UserLocation userLocation, RelativeLayout layout) {
 
         this.userLocation = userLocation;
         this.layout = layout;

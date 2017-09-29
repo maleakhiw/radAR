@@ -20,7 +20,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -66,6 +68,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     CameraDevice mCameraDevice;
     CameraData mCameraData;
     CameraCaptureSession cameraCaptureSession;
+
+    // camera info
+    float[] focalLengths;
+    SizeF sensorSize;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,8 +154,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         int userID = userLocation.getUserID();
 
         // inflate a new layout
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.ar_annotation, null);
-        System.out.println(layout);
+        RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.ar_annotation, null);
+
+//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+//        layout.setLayoutParams(params);
 
         // add the layout to the view
         mainRelativeLayout.addView(layout);
@@ -159,6 +168,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // put it in the HashMap of annotations
         arAnnotations.put(userID, arAnnotation);
 
+        setAnnotationOffsets(userID, 0, 0);
         // TODO unimplemented: calculate onscreen offsets from center using azimuth
     }
 
@@ -177,17 +187,26 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     /**
      * Moves the on-screen position of an AR annotation for a user.
      * @param userID user (key for the Map of ARAnnotations)
-     * @param marginLeft margin from the left of the parent layout
-     * @param marginTop margin from the top of the parent layout
+     * @param offsetLeft margin from the left of the parent layout
+     * @param offsetTop margin from the top of the parent layout
      */
     @Override
-    public void setAnnotationMargins(int userID, int marginLeft, int marginTop) {
+    public void setAnnotationOffsets(int userID, int offsetLeft, int offsetTop) {
         ARAnnotation annotation = arAnnotations.get(userID);
         if (annotation != null) {
-            LinearLayout layout = annotation.getLayout();
-            RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-//            layout.setPadding(marginLeft, marginTop, 0, 0);
-            layoutParam.setMargins(marginLeft, marginTop, 0, 0);
+            RelativeLayout layout = annotation.getLayout();
+            RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+
+            // get size of the display
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = displayMetrics.heightPixels;   // TODO actual height
+            int width = displayMetrics.widthPixels;
+            int midpointHeight = height/2;
+            int midpointWidth = width/2;
+
+            layoutParam.setMargins(midpointWidth + offsetLeft, midpointHeight + offsetTop, 0, 0);
+//            layoutParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);   // matches above
             layout.setLayoutParams(layoutParam);
 
         } else {
@@ -269,6 +288,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                 }
             }
         });
+    }
+
+    void calculateFocalLengthSensorSize(CameraCharacteristics characteristics) {
+        focalLengths = characteristics.get(CameraCharacteristics.LENS_INFO_AVAILABLE_FOCAL_LENGTHS);
+        sensorSize = characteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
     }
 
 

@@ -26,7 +26,7 @@ public class ARPresenter {
         arView.inflateARAnnotation(userLocation1);
         arView.inflateARAnnotation(userLocation2);
 
-        arView.setAnnotationMargins(2, 200, 16);
+        arView.setAnnotationOffsets(2, 200, 16);
 
         arView.setAnnotationMainText(1, "Text1");
         arView.setAnnotationMainText(2, "I can now change the text");
