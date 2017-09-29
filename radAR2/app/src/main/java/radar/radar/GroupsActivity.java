@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,10 +13,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import radar.radar.Models.Responses.AuthResponse;
+import radar.radar.Models.Responses.UpdateLocationResponse;
+import radar.radar.Services.AuthApi;
+import radar.radar.Services.AuthService;
+import radar.radar.Services.GroupManagementSystemApi;
+import radar.radar.Services.LocationApi;
+import radar.radar.Services.LocationService;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GroupsActivity extends AppCompatActivity {
 
     NavigationActivityHelper helper;
+    Retrofit retrofit;
+    LocationApi locationApi;
+    LocationService locationService;
+    GroupManagementSystemApi groupManagementSystemApi;
+    AuthApi authApi = retrofit.create(AuthApi.class);
+    AuthService authService;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +47,57 @@ public class GroupsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
+        retrofit = new Retrofit.Builder()
+                   .baseUrl("http://35.185.35.117/api/")
+                   .addConverterFactory(GsonConverterFactory.create())
+                   .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                   .build();
+
+
+        authService = new AuthService(authApi, this);
+
+        // static measure to test location service working
+
+
+        locationService.updateLocation(3,1,1,1,72)
+                .subscribe(new Observer<UpdateLocationResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d){
+
+                    }
+
+                    @Override
+                    public void onNext(UpdateLocationResponse updateLocationResponse){
+
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toast.makeText(getApplicationContext(),
+                                "Something happened.",
+
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+        });
+
+
+
+
+
+
+        // FAB used to create new chat
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Current placeholder
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }

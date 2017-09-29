@@ -32,6 +32,10 @@
             android:name=".LaunchActivity"
             android:theme="@style/Theme.AppCompat.Translucent"></activity>
         <activity
+            android:name=".SearchResultActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
             android:name=".ChatsListActivity"
             android:label="@string/title_activity_chats_list"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -46,6 +50,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+<<<<<<< HEAD
         <activity android:name=".ARActivity2">
 
         </activity>
@@ -59,6 +64,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+=======
+        <activity android:name=".FriendRequestActivity"></activity>
+>>>>>>> fbee77fc009ba79d6e1e8fd583da9a63a7acde89
     </application>
 
 </manifest>

@@ -15,10 +15,13 @@ public class FriendsPresenter {
     public FriendsPresenter(FriendsView friendsView, UsersService usersService) {
         this.friendsView = friendsView;
         this.usersService = usersService;
+        loadFriends();
+
     }
 
     public void respondToFABClick() {
-        friendsView.launchHomeScreenActivity();
+        friendsView.launchSearchFriendsActivity();
+
     }
 
     public void loadFriends() {
@@ -32,6 +35,7 @@ public class FriendsPresenter {
             public void onNext(FriendsResponse friendsResponse) {
                 if (friendsResponse.success) {
                     friendsView.bindAdapterToRecyclerView(friendsResponse.friends);
+                    System.out.println(friendsResponse.friends);
                 } else {
                     friendsView.showToast("Error occurred");
                 }

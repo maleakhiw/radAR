@@ -11,4 +11,11 @@ public class AuthResponse {
     public ArrayList<StatusError> errors;
     public String token;
     public int userID;
+
+    public AuthResponse(boolean success, ArrayList<StatusError> errors, String token, int userID) {
+        this.success = success;
+        this.errors = errors;
+        this.token = token;
+        this.userID = userID;
+    }
 }
