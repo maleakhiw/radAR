@@ -30,7 +30,14 @@
         <activity android:name=".UserDetailActivity" />
         <activity
             android:name=".LaunchActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"></activity>
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".SearchResultActivity"
             android:screenOrientation="portrait"
@@ -58,11 +65,7 @@
             android:name=".GroupsActivity"
             android:label="@string/title_activity_groups"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity android:name=".FriendRequestActivity"></activity>
