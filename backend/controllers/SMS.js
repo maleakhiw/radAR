@@ -184,15 +184,16 @@ module.exports = class SMS {
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
-        groupObj = {
-          name: group.name,
-          groupID: groupID,
-          admins: group.admins,
-          members: group.members,
-          isTrackingGroup: group.isTrackingGroup
-        }
-
+    
         if (group) {
+          groupObj = {
+            name: group.name,
+            groupID: groupID,
+            admins: group.admins,
+            members: group.members,
+            isTrackingGroup: group.isTrackingGroup
+          }
+
           res.json({
             success: true,
             errors: [],
