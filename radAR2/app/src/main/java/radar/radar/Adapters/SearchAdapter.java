@@ -9,21 +9,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import radar.radar.Models.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
+/**
+ * Created by keyst on 28/09/2017.
+ */
 
-    ArrayList<User> friends;
+public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
+    ArrayList<User> users;
     Context context;
 
-    public FriendsAdapter(Context context, ArrayList<User> friends) {
+    public SearchAdapter(Context context, ArrayList<User> users) {
         this.context = context;
-        this.friends = friends;
+        this.users = users;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // inflate custom layout
-        View titleView = inflater.inflate(R.layout.row_friends, parent, false);
+        View titleView = inflater.inflate(R.layout.row_search, parent, false);
 
         // return a new VH instance
         return new ViewHolder(titleView);
@@ -40,42 +42,38 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        User user = friends.get(position);
+        User user = users.get(position);
 
         // load stuff
         holder.tvName.setText(user.firstName + " " + user.lastName);
         holder.tvUsername.setText(" @" + user.username);
-        if (user.profileDesc == null) {
-            holder.tvOnlineStatus.setText("Hello, I am using Radar!");
-        } else {
-            holder.tvOnlineStatus.setText(user.profileDesc);
-        }
+        holder.description.setText("Hello, I am using Radar!");
     }
 
     @Override
     public int getItemCount() {
-        return friends.size();
+        return users.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProfilePic;
         TextView tvName;
         TextView tvUsername;
-        TextView tvOnlineStatus;
+        TextView description;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivProfilePic = itemView.findViewById(R.id.row_friends_profile_picture);
-            tvName = itemView.findViewById(R.id.row_friends_name);
-            tvUsername = itemView.findViewById(R.id.row_friends_username);
-            tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
+            ivProfilePic = itemView.findViewById(R.id.searchImageID);
+            tvName = itemView.findViewById(R.id.row_input_name);
+            tvUsername = itemView.findViewById(R.id.row_search_username);
+            description = itemView.findViewById(R.id.row_description);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     // From the displayed friend list send information
-                    User user = friends.get(getAdapterPosition());
+                    User user = users.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     intent.putExtra("user", user);

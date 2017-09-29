@@ -81,7 +81,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     /** Setting up the User Interface */
     public void setupUI() {
         username = (EditText) findViewById(R.id.username);
-        email = (EditText) findViewById(R.id.username);
+        email = (EditText) findViewById(R.id.email);
         password = (EditText) findViewById(R.id.password);
         btn_signup = (Button) findViewById(R.id.btn_signup);
         link_login = (TextView) findViewById(R.id.link_login);
