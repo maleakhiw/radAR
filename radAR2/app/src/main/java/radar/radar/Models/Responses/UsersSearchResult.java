@@ -9,5 +9,5 @@ import radar.radar.Models.User;
  */
 
 public class UsersSearchResult extends Status {
-    ArrayList<User> results;
+    public ArrayList<User> results;
 }
