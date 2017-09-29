@@ -60,7 +60,54 @@ var isAdmin = (userID, groupID) => new Promise((resolve, reject) => {
   })
 })
 
+function promoteToTrackingGroupImpl(userID, groupID, req, res) {
+  // group must exist
+  groupExists(groupID).then(() => upgradeToTrackingGroup(groupID))
+  .then(() => {
+    res.json({
+      success: true,
+      errors: []
+    })
+  })
+  .catch((err) => {
+    if (err == 'groupDoesNotExist') {
+      common.sendError(res, ['invalidGroupID']);
+    }
+  })
+}
+
+function promoteToTrackingGroupImpl2(userID, groupID, req, res) {
+  // group must exist
+  groupExists(groupID).then(() => upgradeToTrackingGroup(groupID))
+  .then(() => Group.findOne({groupID: groupID}))
+  .then((group) => {
+    if (group) {
+      let groupRes = {
+        name: group.name,
+        groupID: group.groupID,
+        members: group.members,
+        admins: group.admins,
+        footprints: group.footprints,
+        meetingPoint: group.meetingPoint,
+        isTrackingGroup: group.isTrackingGroup
+      }
+      res.json({
+        success: true,
+        errors: [],
+        group: groupRes
+      })
+    }
+
+  })
+  .catch((err) => {
+    if (err == 'groupDoesNotExist') {
+      common.sendError(res, ['invalidGroupID']);
+    }
+  })
+  }
+
 module.exports = class GroupSystem extends SMS{
+
   constructor(pGroup, pMessage, pUser) {
     super(pGroup, pMessage, pUser);
     Group = pGroup;
@@ -70,27 +117,14 @@ module.exports = class GroupSystem extends SMS{
 
   newGroup(req, res) {
     let callback = (groupID) => { // callback: only called if group creation is a success
+      winston.debug('callback ' + groupID);
       let userID = req.params.userID; // TODO make this consistent -> either by changing call params of callback
-      promoteToTrackingGroupImpl(userID, groupID, req, res);
+      promoteToTrackingGroupImpl2(userID, groupID, req, res);
     }
-    super.newGroupImpl(req, res, callback);
+    SMS.newGroupImpl(req, res, callback);
   }
 
-  promoteToTrackingGroupImpl(userID, groupID, req, res) {
-    // group must exist
-    groupExists(groupID).then(() => upgradeToTrackingGroup(groupID))
-    .then(() => {
-      res.json({
-        success: true,
-        errors: []
-      })
-    })
-    .catch((err) => {
-      if (err == 'groupDoesNotExist') {
-        common.sendError(res, ['invalidGroupID']);
-      }
-    })
-  }
+
 
   promoteToTrackingGroup_validateParams(groupID, isTrackingGroup) {
     let errorKeys = [];

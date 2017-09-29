@@ -21,6 +21,9 @@ let Group
 let Message
 let User
 
+/**
+ * @param callback callback function. If defined, callback should handle response
+ */
 function newGroupImpl(req, res, callback) {
   let userID = parseInt(req.params.userID); // TODO validate
   let participantUserIDs = req.body.participantUserIDs
@@ -36,6 +39,16 @@ function newGroupImpl(req, res, callback) {
       res.status(401).json(response)
   }
 
+  if (!participantUserIDs) {
+    errorKeys.push('missingParticipantUserIDs');
+  }
+  if (!name) {
+    errorKeys.push('missingGroupName');
+  }
+  if (errorKeys.length) {
+    sendError();
+    return;
+  }
 
   if (!isArray(participantUserIDs)) {
     errorKeys.push('invalidParticipantUserIDs')
@@ -72,7 +85,10 @@ function newGroupImpl(req, res, callback) {
       name: name,
       groupID: groupID,
       members: filteredUserIDs,
-      admins: [userID]
+      admins: [userID],
+      footprints: [],
+      meetingPoint: null,
+      isTrackingGroup: false
     }
 
     return Group.create(group);
@@ -98,13 +114,14 @@ function newGroupImpl(req, res, callback) {
 
   })
   .then(() => {
-    res.json({
-      success: true,
-      errors: [],
-      group: group
-    })
     if (callback) {
       callback(groupID);
+    } else {
+      res.json({
+        success: true,
+        errors: [],
+        group: group
+      })
     }
   })
 
@@ -121,7 +138,6 @@ function newGroupImpl(req, res, callback) {
     return
   })
 }
-
 
 module.exports = class SMS {
   constructor(pGroup, pMessage, pUser) {
@@ -327,3 +343,5 @@ module.exports = class SMS {
   }
 
 }
+
+module.exports.newGroupImpl = newGroupImpl;

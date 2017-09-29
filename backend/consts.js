@@ -284,5 +284,13 @@ module.exports.errors = {
   notGroupAdmin: {
     code: 104,
     reason: "You are not authorised to carry out this action (not admin)."
+  },
+  missingGroupName: {
+    code: 105,
+    reason: "Missing param: name (String)"
+  },
+  missingParticipantUserIDs: {
+    code: 106,
+    reason: "Missing param: participantUserIDs (array of Int)"
   }
 }
