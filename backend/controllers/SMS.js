@@ -20,7 +20,97 @@ let svs;
 let Group
 let Message
 let User
-let LastGroupID
+
+function newGroupImpl(req, res, callback) {
+  let userID = req.params.userID
+  let participantUserIDs = req.body.participantUserIDs
+  let name = req.body.name
+
+  let errorKeys = []
+  // TODO: get rid of code duplication, move sendError() to common.js
+  function sendError() { // assumption: variables are in closure
+      let response = {
+          success: false,
+          errors: common.errorObjectBuilder(errorKeys)
+      }
+      res.status(401).json(response)
+  }
+
+
+  if (!isArray(participantUserIDs)) {
+    errorKeys.push('invalidParticipantUserIDs')
+    sendError()
+    return
+  }
+
+  participantUserIDs = participantUserIDs.map((entry) => parseInt(entry))
+  participantUserIDs.push(userID) // add the requester to participants
+  participantUserIDs = unique(participantUserIDs) // filter to only unique userIDs
+
+  let filteredUserIDs
+  let groupID
+  let group
+
+  User.find( { userID: { $in: participantUserIDs } } ).exec()
+
+  .then((users) => {  // userIDs that are actually on the system
+    filteredUserIDs = users.map((user) => user.userID)
+
+    if (filteredUserIDs.length == 0) {
+      throw new Error('invalidParticipantUserIDs')
+    }
+
+    return Group.findOne().sort({groupID: -1})
+  })
+
+  .then((group) => {
+    if (group) {
+      groupID = group.groupID + 1;
+    } else {
+      groupID = 1;
+    }
+    group = {
+      name: name,
+      groupID: groupID,
+      members: filteredUserIDs,
+      admins: [userID]
+    };
+
+    return Group.create(group);
+  })
+
+  .then((group) => User.findOne({ userID: userID }))
+
+  .then((user) => { // add the user to the group
+    user.groups.push(groupID)
+    return user.save()
+  })
+
+  .then((user) => {
+    res.json({
+      success: true,
+      errors: [],
+      group: group
+    })
+    if (callback) {
+      callback(groupID);
+    }
+  })
+
+  .catch((err) => {
+    winston.error(err)
+    if (err == 'Error: invalidParticipantUserIDs') {
+      errorKeys.push('invalidParticipantUserIDs')
+      sendError()
+      return
+    }
+
+    errorKeys.push('internalError')
+    sendError()
+    return
+  })
+}
+
 
 module.exports = class SMS {
   constructor(pGroup, pMessage, pUser) {
@@ -30,99 +120,9 @@ module.exports = class SMS {
       svs = new SVS(pUser)
   }
 
+
   newGroup(req, res) {
-      let userID = req.params.userID
-      let participantUserIDs = req.body.participantUserIDs
-      let name = req.body.name
-
-      let errorKeys = []
-      // TODO: get rid of code duplication, move sendError() to common.js
-      function sendError() { // assumption: variables are in closure
-          let response = {
-              success: false,
-              errors: common.errorObjectBuilder(errorKeys)
-          }
-          res.status(401).json(response)
-      }
-
-
-      if (!isArray(participantUserIDs)) {
-        errorKeys.push('invalidParticipantUserIDs')
-        sendError()
-        return
-      }
-
-      participantUserIDs = participantUserIDs.map((entry) => parseInt(entry))
-      participantUserIDs.push(userID) // add the requester to participants
-      participantUserIDs = unique(participantUserIDs) // filter to only unique userIDs
-
-      let filteredUserIDs
-      let groupID
-      let group
-
-      User.find( { userID: { $in: participantUserIDs } } ).exec()
-
-      .then((users) => {  // userIDs that are actually on the system
-        filteredUserIDs = users.map((user) => user.userID)
-
-        if (filteredUserIDs.length == 0) {
-          throw new Error('invalidParticipantUserIDs')
-        }
-
-        return LastGroupID.findOneAndRemove({})
-      })
-
-      .then((lastGroupID) => {
-        if (lastGroupID) {
-          groupID = lastGroupID.groupID + 1
-        } else {
-          groupID = 1
-        }
-
-        return LastGroupID.create({ // update the value in the system
-          groupID: groupID
-        })
-      })
-
-      .then((lastGroupID) => { // TODO remove lastGroupID collection
-        group = {
-          name: name,
-          groupID: lastGroupID.groupID,
-          members: filteredUserIDs,
-          admins: [userID]
-        }
-        Group.create(group)
-      })
-
-      .then((group) => User.findOne({ userID: userID }))
-
-      .then((user) => { // add the user to the group
-        user.groups.push(groupID)
-        return user.save()
-      })
-
-      .then((user) => {
-        res.json({
-          success: true,
-          errors: [],
-          group: group
-        })
-      })
-
-      .catch((err) => {
-        winston.error(err)
-        if (err == 'Error: invalidParticipantUserIDs') {
-          errorKeys.push('invalidParticipantUserIDs')
-          sendError()
-          return
-        }
-
-        errorKeys.push('internalError')
-        sendError()
-        return
-      })
-
-
+    newGroupImpl(req, res, null);
   }
 
   getGroupsForUser(req, res) {

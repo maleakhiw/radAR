@@ -46,6 +46,7 @@ module.exports.sendError = (res, errorKeys) => {
     res.json(response)
 }
 
+// filter duplicate entries
 module.exports.unique = (a) => {
     var seen = {};
     return a.filter(function(item) {

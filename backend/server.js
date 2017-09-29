@@ -138,6 +138,9 @@ const resms = new ResMS(Resource, User)
 const PositioningSystem = require('./controllers/PositioningSystem');
 const positioningSystem = new PositioningSystem(LocationModel, User);
 
+const GroupSystem = require('./controllers/GroupSystem');
+const groupSystem = new GroupSystem(Group, Message, User);
+
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
 
@@ -190,7 +193,12 @@ app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
 // NOTE: mirrors groups object below
 app.post("/api/accounts/:userID/chats", authenticate, sms.newGroup)
 app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
+app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promoteToTrackingGroup)
 app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
+
+// groups
+app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
+app.get("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.getGroup);
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
@@ -209,12 +217,6 @@ app.get("/api/groups", (req, res) => {
   let obj = {}
   res.json(addMetas(obj, "/api/groups"))
 })
-
-// groups
-app.post("/api/groups", authenticate, sms.newGroup)
-app.get("/api/groups/:groupID", authenticate, sms.getGroup)
-app.post("/api/groups/:groupID/messages", authenticate, sms.sendMessage)
-app.get("/api/groups/:groupID/messages", authenticate, sms.getMessages)
 
 // object: locations
 app.get("/api/users/:queryUserID/location", authenticate, positioningSystem.getLocation);
