@@ -167,7 +167,7 @@ module.exports.errors = {
   },
   invalidGroupID: {
     code: 28,
-    reason: "Invalid param: chatID."
+    reason: "Invalid param: groupID."
   },
   unauthorisedGroup: {
     code: 29,
@@ -175,15 +175,11 @@ module.exports.errors = {
   },
   missingGroupID: {
     code: 30,
-    reason: "Missing param: chatID."
+    reason: "Missing param: groupID."
   },
   missingMessage: {
     code: 31,
     reason: "Missing param: message."
-  },
-  missingGroupID: {
-    code: 78,
-    reason: "Missing param: groupID."
   },
   missingUserID: {
     code: 79,
@@ -276,5 +272,17 @@ module.exports.errors = {
   invalidQueryUserID: {
     code: 101,
     reason: "Invalid param: queryUserID. Requested queryUserID probably does not exist on the system."
+  },
+  missingIsTrackingGroup: {
+    code: 102,
+    reason: "Missing param: isTrackingGroup"
+  },
+  invalidIsTrackingGroup: {
+    code: 103,
+    reason: "Invalid param: isTrackingGroup (boolean)."
+  },
+  notGroupAdmin: {
+    code: 104,
+    reason: "You are not authorised to carry out this action (not admin)."
   }
 }
