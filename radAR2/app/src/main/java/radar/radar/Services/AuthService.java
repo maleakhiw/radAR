@@ -59,23 +59,6 @@ public class AuthService {
         Observable<AuthResponse> observable = authApi.signUp(body)
                                                     .subscribeOn(Schedulers.io())
                                                     .observeOn(AndroidSchedulers.mainThread());
-<<<<<<< HEAD
-        observable.subscribe(new Observer<AuthResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(AuthResponse authResponse) {
-                // save to shared prefs
-                prefs.edit().putString("radar_token", authResponse.token)
-                        .putInt("radar_userID", authResponse.userID).commit();
-
-
-            }
-=======
->>>>>>> fbee77fc009ba79d6e1e8fd583da9a63a7acde89
 
         Observable<AuthResponse> newObservable = Observable.create(new ObservableOnSubscribe<AuthResponse>() {
             @Override

@@ -24,11 +24,6 @@ android {
 }
 
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> fbee77fc009ba79d6e1e8fd583da9a63a7acde89
 dependencies {
     implementation 'com.google.android.gms:play-services-maps:11.2.2'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
