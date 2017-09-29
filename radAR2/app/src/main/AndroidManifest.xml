@@ -9,7 +9,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -49,9 +48,8 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-        </activity>
-
+            android:label="@string/title_activity_maps"></activity>
+        <activity android:name=".PlaceActivity"></activity>
     </application>
 
 </manifest>
