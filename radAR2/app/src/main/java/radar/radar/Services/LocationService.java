@@ -6,7 +6,7 @@ import android.content.Context;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Models.Requests.PostLocation;
+import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 
@@ -34,9 +34,9 @@ public class LocationService {
      * @return response from the API server
      */
 
-    public Observable<UpdateLocationResponse> updateLocation(int userID, float lat, float lon, float accuracy, float heading) {
+    public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading) {
         Observable<UpdateLocationResponse> observable = locationApi.updateLocation(userID, token,
-                                                                new PostLocation(lat, lon, accuracy, heading))
+                                                                new UpdateLocationRequest(lat, lon, accuracy, heading))
                                                                 .subscribeOn(Schedulers.io())
                                                                 .observeOn(AndroidSchedulers.mainThread());
 

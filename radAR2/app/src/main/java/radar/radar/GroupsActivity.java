@@ -18,10 +18,13 @@ import android.widget.Toast;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.AuthResponse;
+import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupManagementSystemApi;
+import radar.radar.Services.GroupsApi;
+import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import retrofit2.Retrofit;
@@ -32,12 +35,10 @@ public class GroupsActivity extends AppCompatActivity {
 
     NavigationActivityHelper helper;
     Retrofit retrofit;
-    LocationApi locationApi;
-    LocationService locationService;
-    GroupManagementSystemApi groupManagementSystemApi;
-    AuthApi authApi = retrofit.create(AuthApi.class);
-    AuthService authService;
 
+    AuthService authService;
+    GroupsService groupsService;
+    LocationService locationService;
 
 
     @Override
@@ -54,13 +55,43 @@ public class GroupsActivity extends AppCompatActivity {
                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                    .build();
 
-
+        AuthApi authApi = retrofit.create(AuthApi.class);
         authService = new AuthService(authApi, this);
 
+        LocationApi locationApi = retrofit.create(LocationApi.class);
+        GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         // static measure to test location service working
 
+        locationService = new LocationService(locationApi, this);
+        groupsService = new GroupsService(this, groupsApi);
 
-        locationService.updateLocation(3,1,1,1,72)
+        groupsService.getGroup(2).subscribe(new Observer<GroupsResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(GroupsResponse groupsResponse) {
+                // received a response from the server
+                if (groupsResponse.group != null) {
+
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+                // e.g. invalid token, internal errors, etc.
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+        locationService.updateLocation(1,1,1,72)
                 .subscribe(new Observer<UpdateLocationResponse>() {
                     @Override
                     public void onSubscribe(Disposable d){
@@ -69,8 +100,11 @@ public class GroupsActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(UpdateLocationResponse updateLocationResponse){
+                        Toast.makeText(getApplicationContext(),
+                                "Something didn't happen.",
 
-                        finish();
+                                Toast.LENGTH_LONG).show();
+
                     }
 
                     @Override
@@ -86,7 +120,6 @@ public class GroupsActivity extends AppCompatActivity {
 
                     }
         });
-
 
 
 
@@ -146,6 +179,10 @@ public class GroupsActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
+
+
 
 
 }

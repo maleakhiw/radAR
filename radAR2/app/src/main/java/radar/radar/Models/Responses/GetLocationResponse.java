@@ -3,7 +3,7 @@ package radar.radar.Models.Responses;
 
 import java.util.Date;
 
-public class GetLocationResponse {
+public class GetLocationResponse extends Status {
     float lat;
     float lon;
     float heading;
