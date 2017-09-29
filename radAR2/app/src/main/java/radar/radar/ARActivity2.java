@@ -3,6 +3,7 @@ package radar.radar;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -13,6 +14,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -61,6 +63,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     TextureView previewView;
     Surface mSurface;
     CameraDevice mCameraDevice;
+    CameraData mCameraData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,31 +77,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         presenter = new ARPresenter(this);
 
         presenter.loadData();
-
-        previewView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i1) {
-
-            }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i1) {
-
-            }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-                if (mCameraDevice != null) {
-                    mCameraDevice.close();
-                }
-                return false;
-            }
-
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-
-            }
-        });
 
         // stub: poll for data from server
 //        ObservableInterval.
@@ -195,6 +173,9 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
                 @Override
                 public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
+                    if (mCameraDevice != null) {
+                        mCameraDevice.close();
+                    }
                     return false;
                 }
 
@@ -221,13 +202,42 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                 if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                     // granted, open the camera and get the CameraDevice
                     // then create a capture session
-                    observableEmitter.onNext(new CameraData(cameraID, cameraCharacteristics));
+                    CameraData cameraData = new CameraData(cameraID, cameraCharacteristics);
+                    mCameraData = cameraData;
+                    System.out.println(cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE));
+
+                    // adjust camera size
+                    Rect cameraResolution = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
+                    int width = cameraResolution.width();
+                    int height = cameraResolution.height();
+                    correctAspectRatio(width, height);
+
+                    observableEmitter.onNext(cameraData);
 
                 } else {    // PERMISSION_DENIED
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_FOR_CAMERA);
                 }
             }
         });
+    }
+
+
+    void correctAspectRatio(int cameraWidth, int cameraHeight) {
+        if (cameraWidth > cameraHeight) {
+            // height should be the taller one, assuming potratit. If not, swap
+            int tmp = cameraHeight;
+            cameraHeight = cameraWidth;
+            cameraWidth = tmp;
+        }
+
+        float aspectRatio = (float) cameraHeight / cameraWidth;
+
+        // adjust
+        int previewWidth = previewView.getMeasuredWidth();
+        int previewHeight = previewView.getMeasuredHeight();
+
+        previewView.setLayoutParams(new ConstraintLayout.LayoutParams(previewWidth, Math.round(previewWidth * aspectRatio)));
+
     }
 
     Observable<CameraDevice> getCameraDevice(@NonNull CameraManager cameraManager, @NonNull String cameraID) {
