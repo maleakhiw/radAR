@@ -5,6 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +26,7 @@ public class UserDetailActivity extends AppCompatActivity {
     private TextView userDetailsEmail;
     private TextView userDetailsPhoneNumber;
     private FloatingActionButton messageFab;
-    private FloatingActionButton addFab;
+    private ImageView add;
 
     private User user;
     private UsersService usersService;
@@ -52,8 +53,8 @@ public class UserDetailActivity extends AppCompatActivity {
         user = (User) getIntent().getSerializableExtra("user");
         fullname.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
-        userDetailsEmail.setText("test@example.com");
-        userDetailsPhoneNumber.setText("0410254343");
+        userDetailsEmail.setText("Hidden email address");
+        userDetailsPhoneNumber.setText("No phone number given");
         userDetailsProfile.setText(user.profileDesc);
 
         // On click listener for fab
@@ -67,7 +68,7 @@ public class UserDetailActivity extends AppCompatActivity {
         });
 
         // On click listener for add friends
-        addFab.setOnClickListener(new View.OnClickListener() {
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // add friend
@@ -79,13 +80,13 @@ public class UserDetailActivity extends AppCompatActivity {
 
     // Setup UI with java
     public void setupUI() {
-        messageFab = (FloatingActionButton) findViewById(R.id.fab_message);
-        fullname = (TextView) findViewById(R.id.fullname);
-        username = (TextView) findViewById(R.id.username);
-        userDetailsProfile = (TextView) findViewById(R.id.user_details_profile);
-        userDetailsEmail = (TextView) findViewById(R.id.user_details_email);
-        userDetailsPhoneNumber = (TextView) findViewById(R.id.user_details_phone_number);
-        addFab = findViewById(R.id.fab_add);
+        messageFab = findViewById(R.id.fab_message);
+        fullname = findViewById(R.id.fullname);
+        username = findViewById(R.id.username);
+        userDetailsProfile = findViewById(R.id.user_details_profile);
+        userDetailsEmail = findViewById(R.id.user_details_email);
+        userDetailsPhoneNumber = findViewById(R.id.user_details_phone_number);
+        add = findViewById(R.id.userAddFriend);
     }
 
     /** This method is used to create friend request */
