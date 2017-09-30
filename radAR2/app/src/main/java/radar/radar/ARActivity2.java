@@ -26,6 +26,7 @@ import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -198,10 +199,13 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
             // get size of the display
-            DisplayMetrics displayMetrics = new DisplayMetrics();
-            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-            int height = displayMetrics.heightPixels;   // TODO actual height
-            int width = displayMetrics.widthPixels;
+            ViewGroup.LayoutParams mainRelativeLayoutParams = mainRelativeLayout.getLayoutParams();
+            int height = mainRelativeLayoutParams.height;
+            int width = mainRelativeLayoutParams.width;
+//            DisplayMetrics displayMetrics = new DisplayMetrics();
+//            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+//            int height = displayMetrics.heightPixels;   // TODO actual height
+//            int width = displayMetrics.widthPixels;
             int midpointHeight = height/2;
             int midpointWidth = width/2;
 
