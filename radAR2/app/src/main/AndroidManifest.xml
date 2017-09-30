@@ -68,8 +68,6 @@
 
         </activity>
 
-        <activity android:name=".FriendRequestActivity"></activity>
-
     </application>
 
 </manifest>

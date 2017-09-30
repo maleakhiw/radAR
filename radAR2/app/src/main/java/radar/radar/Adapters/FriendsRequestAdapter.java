@@ -15,15 +15,12 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.FriendRequestActivity;
 import radar.radar.Models.Responses.FriendRequest;
-import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.Status;
-import radar.radar.Models.User;
 import radar.radar.R;
+import radar.radar.SearchResultActivity;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
-import radar.radar.UserDetailActivity;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -126,7 +123,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                 // If success
                 if (status.success) {
                     Toast.makeText(context, "Successfully process friend request", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, FriendRequestActivity.class);
+                    Intent intent = new Intent(context, SearchResultActivity.class);
                     context.startActivity(intent);
                 }
                 else {
