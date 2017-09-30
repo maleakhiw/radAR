@@ -11,6 +11,13 @@ public class DataForPresenter {
     public DataForPresenter(double hPixelsPerDegree, double vPixelsPerDegree) {
         this.hPixelsPerDegree = hPixelsPerDegree;
         this.vPixelsPerDegree = vPixelsPerDegree;
+
+        // assumption: vertical orientation
+        if (vPixelsPerDegree > hPixelsPerDegree) {
+            this.hPixelsPerDegree = vPixelsPerDegree;
+            this.vPixelsPerDegree = hPixelsPerDegree;
+        }
+
     }
 
     @Override
