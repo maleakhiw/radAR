@@ -1,5 +1,6 @@
 package radar.radar.Views;
 
+import io.reactivex.Observable;
 import radar.radar.Models.UserLocation;
 
 /**
@@ -7,6 +8,8 @@ import radar.radar.Models.UserLocation;
  */
 
 public interface ARView {
+    Observable<Float> getAzimuthObservable();
+
     void removeAnnotation(int userID);
 
     void getAnnotation(int userID);

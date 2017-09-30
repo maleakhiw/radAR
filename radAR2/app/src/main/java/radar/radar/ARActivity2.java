@@ -3,6 +3,7 @@ package radar.radar;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.Sensor;
@@ -33,6 +34,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,17 +48,17 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import radar.radar.Models.UserLocation;
 import radar.radar.Presenters.ARPresenter;
+import radar.radar.Services.AuthApi;
+import radar.radar.Services.AuthService;
+import radar.radar.Services.GroupsApi;
+import radar.radar.Services.LocationApi;
+import radar.radar.Services.LocationService;
+import radar.radar.Services.LocationTransformations;
 import radar.radar.Views.ARView;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
-class CameraData {
-    String cameraID;
-    CameraCharacteristics cameraCharacteristics;
-
-    public CameraData(String cameraID, CameraCharacteristics cameraCharacteristics) {
-        this.cameraID = cameraID;
-        this.cameraCharacteristics = cameraCharacteristics;
-    }
-}
 
 class ViewSize {
     int height;
@@ -65,6 +69,8 @@ class ViewSize {
         this.width = width;
     }
 }
+
+
 
 public class ARActivity2 extends AppCompatActivity implements ARView {
 
@@ -97,23 +103,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     Sensor magneticSensor;
     private float[] mOrientationAngles = new float[3];
     private float[] mRotationMatrix = new float[9];
-    Observable<Float> azimuthUpdates = Observable.create(emitter -> {
-        sensorEventListener = new SensorEventListener() {
-
-            public void onAccuracyChanged(Sensor sensor, int accuracy) {
-            }
-
-            @Override
-            public void onSensorChanged(SensorEvent event) {
-                SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
-                SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
-                        SensorManager.AXIS_Z, mRotationMatrix);
-                SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
-                float azimuth = (float) Math.toDegrees(mOrientationAngles[0]);  // TODO double
-                emitter.onNext(azimuth);
-            }
-        };
-    });
+    Observable<Float> azimuthUpdates;
 
     @Override
     protected void onPause() {
@@ -151,25 +141,74 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             });
         });
 
-        presenter = new ARPresenter(this);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                                        .baseUrl("http://35.185.35.117/api/")
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                                        .build();
+
+        LocationApi locationApi = retrofit.create(LocationApi.class);
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        // TODO Customizable sensor delay
+        // TODO filtering (DSP + coefficients) or moving average
+        azimuthUpdates = Observable.create(emitter -> {
+            sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_UI);
+            sensorEventListener = new SensorEventListener() {
+                public void onAccuracyChanged(Sensor sensor, int accuracy) {
+                }
+
+                @Override
+                public void onSensorChanged(SensorEvent event) {
+                    SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+                    SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
+                            SensorManager.AXIS_Z, mRotationMatrix);
+                    SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+                    float azimuth = (float) Math.toDegrees(mOrientationAngles[0]);  // TODO double
+//                    System.out.println(azimuth);
+                    emitter.onNext(azimuth);
+                }
+            };
+        });
+
+
+
+
+        presenter = new ARPresenter(this, locationService);
         presenter.loadData();
 
         // stub: poll for data from server
 //        ObservableInterval.
 
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        azimuthUpdates.subscribe(new Observer<Float>() {
+        previewView = findViewById(R.id.AR2_texture_view);
+
+        setupCameraPrewiew();
+
+        // observable for the field of view
+        Observable.combineLatest(mainRelativeLayoutSizeObservable, cameraDataObservable, (viewSize, cameraData) -> {
+            double hFov = cameraData.horizontalFov;
+            double vFov = cameraData.verticalFov;
+            int width = viewSize.width; // in pixels (can be relative as long as we keep consistent)
+            int height = viewSize.height;   // in pixels
+
+            return new DataForPresenter(width/hFov, height/vFov);
+        }).subscribe(new Observer<DataForPresenter>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(Float azimuth) {
-                System.out.println(azimuth);
+            public void onNext(DataForPresenter dataForPresenter) {
+                System.out.println("FoV observable");
+                System.out.println(dataForPresenter);
+                presenter.updateFovs(dataForPresenter);
             }
 
             @Override
@@ -183,22 +222,19 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             }
         });
 
-        previewView = findViewById(R.id.AR2_texture_view);
-
-        setupCameraPrewiew();
-
-        mainRelativeLayoutSizeObservable.subscribe(new Consumer<ViewSize>() {
-            @Override
-            public void accept(ViewSize viewSize) throws Exception {
-                int height = viewSize.height;
-                int width = viewSize.width;
-                for (int userID: arAnnotations.keySet()) {
-                    ARAnnotation annotation = arAnnotations.get(userID);
-                    updateAnnotationOffsets(annotation, height, width);
-                }
+        mainRelativeLayoutSizeObservable.subscribe(viewSize -> {
+            System.out.println("viewSize got updated");
+            for (int userID: arAnnotations.keySet()) {
+                ARAnnotation annotation = arAnnotations.get(userID);
+                updateAnnotationOffsets(annotation, lastHeight, lastWidth);
             }
         });
 
+    }
+
+    @Override
+    public Observable<Float> getAzimuthObservable() {
+        return azimuthUpdates;
     }
 
     @Override
@@ -271,7 +307,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         arAnnotations.put(userID, arAnnotation);
 
         setAnnotationOffsets(userID, 0, 0);
-        // TODO unimplemented: calculate onscreen offsets from center using azimuth
     }
 
     // add more setters for other attributes of an annotation ltaer
@@ -298,6 +333,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         if (annotation != null) {
             annotation.offsetX = offsetLeft;
             annotation.offsetY = offsetTop;
+            updateAnnotationOffsets(annotation, lastHeight, lastWidth);
         } else {
             // TODO throw exception?
             Log.w("setLayoutPadding", "invalid key");
@@ -375,8 +411,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                 System.out.println("cameraID");
                 System.out.println(cameraID);
                 CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraID);
+
                 // NOTE cameraCharacteristics contains camera info (lens, sensor)
                 // use to calculate FoV
+
 
                 // check for permissions
                 int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -385,6 +423,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                     // then create a capture session
                     CameraData cameraData = new CameraData(cameraID, cameraCharacteristics);
                     mCameraData = cameraData;
+
                     System.out.println(cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE));
 
                     // adjust camera size
@@ -514,6 +553,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     }
 
+    Observable<CameraData> cameraDataObservable;
+
 
     void setupCameraPrewiew() {
         // Using Camera2 as a camera preview API
@@ -527,39 +568,48 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         System.out.println("setupCameraPreview() called");
 
 
-        getSurfaceFromTextureView(previewView)
-                .switchMap((surface) -> {   // similar to .then() chaining in JS
-                    System.out.println(surface);
-                    mSurface = surface;
-                    return getCameraData(cameraManager);
-                })
-                .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
-                .switchMap((cameraDevice -> {
-                    mCameraDevice = cameraDevice;
-                    return createCaptureSession(mSurface, cameraDevice);
-                }))
-                .subscribe(new Observer<CameraCaptureSession>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        cameraDataObservable = Observable.create(emitter -> {
+            getSurfaceFromTextureView(previewView)
+                    .switchMap((surface) -> {   // similar to .then() chaining in JS
+                        System.out.println(surface);
+                        mSurface = surface;
+                        return getCameraData(cameraManager);
+                    })
+                    .map((cameraData) -> {  // do something with the cameraData
+                        System.out.println("got cameraData");
+                        System.out.println(cameraData);
+                        emitter.onNext(cameraData);
+                        return cameraData;
+                    })
+                    .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
+                    .switchMap((cameraDevice -> {
+                        mCameraDevice = cameraDevice;
+                        return createCaptureSession(mSurface, cameraDevice);
+                    }))
+                    .subscribe(new Observer<CameraCaptureSession>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(CameraCaptureSession session) {
-                        cameraCaptureSession = session;
-                    }
+                        @Override
+                        public void onNext(CameraCaptureSession session) {
+                            cameraCaptureSession = session;
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.w("setupCameraPreview", "Error occurred");
-                        System.out.println(e);
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.w("setupCameraPreview", "Error occurred");
+                            System.out.println(e);
+                        }
 
-                    @Override
-                    public void onComplete() {
+                        @Override
+                        public void onComplete() {
 
-                    }
-                });
+                        }
+                    });
+
+        });
 
     }
 

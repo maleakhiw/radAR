@@ -72,7 +72,7 @@ public class LocationService {
      * @param priority priority, defined in LocationRequest
      * @return Observable of Location objects
      */
-    public Observable<Location> getLocationUpdates(int interval, int fastestInterval, int priority) throws SecurityException {
+    public Observable<Location> getLocationUpdates(int interval, int fastestInterval, int priority) {
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(interval);
         locationRequest.setFastestInterval(fastestInterval);

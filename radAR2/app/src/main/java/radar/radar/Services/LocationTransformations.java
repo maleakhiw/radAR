@@ -1,5 +1,7 @@
 package radar.radar.Services;
 
+import android.util.Log;
+
 /**
  * Created by kenneth on 30/9/17.
  */
@@ -9,8 +11,21 @@ public class LocationTransformations {
     double hPixelsPerDegree; // horizontal pixels per degree
     double vPixelsPerDegree; // vertical pixels per degree
 
+    /**
+     * Constructor
+     * @param hPixelsPerDegree number of horizontal pixels per degree of the field of view
+     * @param vPixelsPerDegree number of vertical pixels per degree of the field of view
+     */
     public LocationTransformations(double hPixelsPerDegree, double vPixelsPerDegree) {
+        this.hPixelsPerDegree = this.hPixelsPerDegree;
+        this.vPixelsPerDegree = this.vPixelsPerDegree;
+    }
+
+    public void sethPixelsPerDegree(double hPixelsPerDegree) {
         this.hPixelsPerDegree = hPixelsPerDegree;
+    }
+
+    public void setvPixelsPerDegree(double vPixelsPerDegree) {
         this.vPixelsPerDegree = vPixelsPerDegree;
     }
 
@@ -38,6 +53,9 @@ public class LocationTransformations {
      * @return horizontal offset from center of layout
      */
     public int xOffset(double heading, double azimuth) {
+//        System.out.println(deltaAngle(azimuth, heading));
+        Log.d("deltaAngle", String.valueOf(deltaAngle(azimuth, heading)));
+//        System.out.println(hPixelsPerDegree);
         return (int) Math.round(deltaAngle(azimuth, heading) * hPixelsPerDegree);
     }
 
