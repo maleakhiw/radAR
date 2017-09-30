@@ -3,9 +3,12 @@ package radar.radar;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -20,15 +23,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,9 +36,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -93,6 +91,43 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     int lastHeight;
     int lastWidth;
 
+    // sensors
+    SensorManager sensorManager;
+    SensorEventListener sensorEventListener;
+    Sensor magneticSensor;
+    private float[] mOrientationAngles = new float[3];
+    private float[] mRotationMatrix = new float[9];
+    Observable<Float> azimuthUpdates = Observable.create(emitter -> {
+        sensorEventListener = new SensorEventListener() {
+
+            public void onAccuracyChanged(Sensor sensor, int accuracy) {
+            }
+
+            @Override
+            public void onSensorChanged(SensorEvent event) {
+                SensorManager.getRotationMatrixFromVector(mRotationMatrix, event.values);
+                SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
+                        SensorManager.AXIS_Z, mRotationMatrix);
+                SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+                float azimuth = (float) Math.toDegrees(mOrientationAngles[0]);  // TODO double
+                emitter.onNext(azimuth);
+            }
+        };
+    });
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        sensorManager.unregisterListener(sensorEventListener, magneticSensor);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,9 +154,34 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         presenter = new ARPresenter(this);
         presenter.loadData();
 
-
         // stub: poll for data from server
 //        ObservableInterval.
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
+
+        azimuthUpdates.subscribe(new Observer<Float>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Float azimuth) {
+                System.out.println(azimuth);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
         previewView = findViewById(R.id.AR2_texture_view);
 
