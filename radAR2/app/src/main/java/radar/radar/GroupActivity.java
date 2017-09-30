@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -34,6 +35,7 @@ import io.reactivex.functions.Consumer;
 import radar.radar.Models.Responses.GetLocationResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.UpdateLocationResponse;
+import radar.radar.Models.UserLocation;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupsApi;
@@ -58,33 +60,12 @@ public class GroupActivity extends AppCompatActivity {
 
     FusedLocationProviderClient fusedLocationClient;
 
-    Observable<Location> userLocation;
-    Observable<Location> locationUpdates;
-
-    void getLastLocation() {
-        userLocation = Observable.create(emitter -> {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FOR_LOCATION);
-            } else {
-                // get last known location
-                fusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        emitter.onNext(location);
-                    }
-                });
-            }
-
-        });
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://35.185.35.117/api/")
@@ -97,80 +78,12 @@ public class GroupActivity extends AppCompatActivity {
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
-        // static measure to test location service working
-
-        locationService = new LocationService(locationApi, this);
-        groupsService = new GroupsService(this, groupsApi);
-
-        ArrayList<Integer> members = new ArrayList<>();
-        members.add(1);
-        members.add(2);
 
         // location stuff
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        locationService = new LocationService(locationApi, this, fusedLocationClient);
+        groupsService = new GroupsService(this, groupsApi);
 
-        // get last location
-        getLastLocation();
-        userLocation.subscribe(new Consumer<Location>() {
-            @Override
-            public void accept(Location location) throws Exception {
-                System.out.println(location);
-            }
-        });
-
-        // get polling location of the device
-        startLocationUpdates();
-        locationUpdates.subscribe(new Observer<Location>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(Location location) {
-                System.out.print("locationUpdate: ");
-                System.out.println(location);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
-
-
-
-
-
-
-//        groupsService.newGroup("keebs2", members)
-//            .subscribe(new Observer<GroupsResponse>() {
-//                @Override
-//                public void onSubscribe(Disposable d) {
-//
-//                }
-//
-//                @Override
-//                public void onNext(GroupsResponse groupsResponse) {
-//                    System.out.println("got response");
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//                    System.out.println(e);
-//                }
-//
-//                @Override
-//                public void onComplete() {
-//
-//                }
-//            });
 
         groupsService.getGroup(12).subscribe(new Observer<GroupsResponse>() {
             @Override
@@ -184,7 +97,35 @@ public class GroupActivity extends AppCompatActivity {
                 if (groupsResponse.group != null) {
                     // update list of members in instance variable in class
                     groupMembers = groupsResponse.group.members;
-                    pollForGroupMembersLocations();
+
+                    // using new service
+                    locationService.groupLocationUpdates(2, groupMembers)
+                            .subscribe(new Observer<UserLocation>() {
+                                @Override
+                                public void onSubscribe(Disposable d) {
+
+                                }
+
+                                @Override
+                                public void onNext(UserLocation userLocation) {
+                                    System.out.print(userLocation.getUserID());
+                                    System.out.print(": ");
+                                    System.out.print(userLocation.getLat());
+                                    System.out.print(", ");
+                                    System.out.println(userLocation.getLon());
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    System.out.println(e);
+
+                                }
+
+                                @Override
+                                public void onComplete() {
+
+                                }
+                            });
 
                 }
             }
@@ -233,6 +174,10 @@ public class GroupActivity extends AppCompatActivity {
                 });
 
 
+        getLastLocation();
+
+        /* navigation */
+
         // FAB used to create new chat
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -254,50 +199,6 @@ public class GroupActivity extends AppCompatActivity {
 
         helper = new NavigationActivityHelper(navigationView, drawer, toolbar, this);
 
-    }
-
-    /**
-     * Call this once you have a list of members.
-     * A route to get data for multiple members will be implemented soon.
-     */
-    void pollForGroupMembersLocations() {
-        Observable.interval(1, TimeUnit.SECONDS)
-                .map((tick) -> {
-                    getUserLocationsAndUpdateUI();
-                    return 1;
-                }).subscribe();
-    }
-
-    void getUserLocationsAndUpdateUI() {
-        System.out.println("getUserLocationsAndUpdateUI()");
-        for (int i = 0; i < groupMembers.size(); i++) {
-            int userID = groupMembers.get(i);
-            locationService.getLocation(userID).subscribe(new Observer<GetLocationResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(GetLocationResponse getLocationResponse) {
-                    System.out.print(userID);
-                    System.out.print(": ");
-                    System.out.print(getLocationResponse.lat);
-                    System.out.print(", ");
-                    System.out.println(getLocationResponse.lon);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
-        }
     }
 
     @Override
@@ -332,36 +233,38 @@ public class GroupActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    // stuff for location
-    protected LocationRequest createLocationRequest() {
-        LocationRequest locationRequest = new LocationRequest();
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(5000);
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        return locationRequest;
+    void requestLocationPermissions() {
+        System.out.println("requestLocationPermissions()");
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FOR_LOCATION);
     }
 
-    // TODO handle onResume - resume looking for location updates
+    void getLastLocation() {
+        locationService.getLastLocation().subscribe(new Observer<Location>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
-    private void startLocationUpdates() {
-        locationUpdates = Observable.create(emitter -> {
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FOR_LOCATION);
-            } else {
-                fusedLocationClient.requestLocationUpdates(createLocationRequest(), new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        for (Location location : locationResult.getLocations()) {   // List of Location objects - updates might be pending
-                            // relay updates to the appropriate observable
-                            emitter.onNext(location);
-                        }
-                    }
-                }, /* looper */ null);
+            }
+
+            @Override
+            public void onNext(Location location) {
+                // got last location!
+                System.out.println(location);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                // NOTE: must handle this error
+                Log.d("getLastLocation", e.toString());
+                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+                    requestLocationPermissions();
+                }
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
-
-
     }
 
     @Override

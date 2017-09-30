@@ -2,11 +2,13 @@ package radar.radar.Models;
 
 import java.util.Date;
 
+import radar.radar.Models.Responses.GetLocationResponse;
+
 /**
  * Created by kenneth on 28/9/17.
  */
 
-public class UserLocation {
+public class UserLocation extends GetLocationResponse {
     public int getUserID() {
         return userID;
     }
@@ -15,35 +17,35 @@ public class UserLocation {
         this.userID = userID;
     }
 
-    public double getLat() {
+    public float getLat() {
         return lat;
     }
 
-    public void setLat(double lat) {
+    public void setLat(float lat) {
         this.lat = lat;
     }
 
-    public double getLon() {
+    public float getLon() {
         return lon;
     }
 
-    public void setLon(double lon) {
+    public void setLon(float lon) {
         this.lon = lon;
     }
 
-    public double getAccuracy() {
+    public float getAccuracy() {
         return accuracy;
     }
 
-    public void setAccuracy(double accuracy) {
+    public void setAccuracy(float accuracy) {
         this.accuracy = accuracy;
     }
 
-    public double getHeading() {
+    public float getHeading() {
         return heading;
     }
 
-    public void setHeading(double heading) {
+    public void setHeading(float heading) {
         this.heading = heading;
     }
 
@@ -55,14 +57,18 @@ public class UserLocation {
         this.timeUpdated = timeUpdated;
     }
 
-    int userID;
-    double lat;
-    double lon;
-    double accuracy;
-    double heading;
-    Date timeUpdated;
+    public UserLocation(int userID, GetLocationResponse response) {
+        this.lat = response.lat;
+        this.lon = response.lon;
+        this.accuracy = response.accuracy;
+        this.heading = response.heading;
+        this.timeUpdated = response.timeUpdated;
+        this.userID = userID;
+    }
 
-    public UserLocation(int userID, double lat, double lon, double accuracy, double heading, Date timeUpdated) {
+    int userID;
+
+    public UserLocation(int userID, float lat, float lon, float accuracy, float heading, Date timeUpdated) {
         this.userID = userID;
         this.lat = lat;
         this.lon = lon;
