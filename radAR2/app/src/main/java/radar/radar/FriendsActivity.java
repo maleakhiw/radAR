@@ -55,6 +55,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         usersService = new UsersService(usersApi, this);
 
         presenter = new FriendsPresenter(this, usersService);
+        presenter.loadFriends();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
