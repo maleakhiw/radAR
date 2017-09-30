@@ -12,6 +12,10 @@ public interface SignupView {
 
     String getPassword();
 
+    String getFirstName();
+
+    String getLastName();
+
     void setProgressBarMessage(String message);
 
     void showProgressBar();
