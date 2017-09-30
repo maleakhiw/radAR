@@ -23,7 +23,7 @@ const groupSchema = new Schema({
   members: [Number],
   admins: [Number],
   footprints: [footprintSchema],
-  meetingPoint: [meetingPointSchema],
+  meetingPoint: meetingPointSchema,
   isTrackingGroup: Boolean  // true if the Group is a Tracking Group, false if the Group is just a Chat
 })
 

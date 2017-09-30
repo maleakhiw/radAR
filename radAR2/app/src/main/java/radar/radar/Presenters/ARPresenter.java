@@ -21,8 +21,8 @@ public class ARPresenter {
     public void loadData() {
         // for now, return fake data
 
-        UserLocation userLocation1 = new UserLocation(1, 0.1, 0.2, 0.1, 2, new Date());
-        UserLocation userLocation2 = new UserLocation(2, 0.2, 0.3, 0.3, 3, new Date());
+        UserLocation userLocation1 = new UserLocation(1, 0.1f, 0.2f, 0.1f, 2, new Date());
+        UserLocation userLocation2 = new UserLocation(2, 0.2f, 0.3f, 0.3f, 3, new Date());
         arView.inflateARAnnotation(userLocation1);
         arView.inflateARAnnotation(userLocation2);
 
