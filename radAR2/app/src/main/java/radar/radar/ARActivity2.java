@@ -46,6 +46,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import radar.radar.Models.Rolling;
 import radar.radar.Models.UserLocation;
 import radar.radar.Presenters.ARPresenter;
 import radar.radar.Services.AuthApi;
@@ -105,6 +106,22 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     private float[] mRotationMatrix = new float[9];
     Observable<Float> azimuthUpdates;
 
+    float ALPHA = 0.1f;
+    protected float[] lowPass( float[] input, float[] output ) {
+        if ( output == null ) return input;
+
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
+    }
+
+    float lastAzimuth = 0;
+    float lowPassOne(float input, float output) {
+        if (output == 0) return input;
+        return output + ALPHA * (input - output);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -117,11 +134,14 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    Rolling rolling = new Rolling(10);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar2);
+
+        // TODO also ask for location permissions
 
         mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
         inflater = getLayoutInflater();
@@ -158,7 +178,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // TODO Customizable sensor delay
         // TODO filtering (DSP + coefficients) or moving average
         azimuthUpdates = Observable.create(emitter -> {
-            sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_UI);
+            sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
             sensorEventListener = new SensorEventListener() {
                 public void onAccuracyChanged(Sensor sensor, int accuracy) {
                 }
@@ -170,8 +190,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                             SensorManager.AXIS_Z, mRotationMatrix);
                     SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
                     float azimuth = (float) Math.toDegrees(mOrientationAngles[0]);  // TODO double
+                    lastAzimuth = lowPassOne(azimuth, lastAzimuth);
+                    rolling.add(lastAzimuth);
 //                    System.out.println(azimuth);
-                    emitter.onNext(azimuth);
+                    emitter.onNext((float) rolling.getAverage());
                 }
             };
         });
