@@ -13,13 +13,15 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.AddFriendResponse;
 import radar.radar.Models.User;
+import radar.radar.Presenters.UserDetailPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
+import radar.radar.Views.UserDetailView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class UserDetailActivity extends AppCompatActivity {
+public class UserDetailActivity extends AppCompatActivity implements UserDetailView {
     private TextView fullname;
     private TextView username;
     private TextView userDetailsProfile;
@@ -30,6 +32,8 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private User user;
     private UsersService usersService;
+
+    private UserDetailPresenter userDetailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +61,10 @@ public class UserDetailActivity extends AppCompatActivity {
         userDetailsPhoneNumber.setText("No phone number given");
         userDetailsProfile.setText(user.profileDesc);
 
+        // initialize presenter
+        userDetailPresenter = new UserDetailPresenter(this, usersService);
+
+
         // On click listener for fab
         messageFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,13 +80,19 @@ public class UserDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // add friend
-                generateFriendRequest(user.userID);
+                userDetailPresenter.generateFriendRequest(user.userID);
             }
         });
 
     }
 
-    // Setup UI with java
+    /** Will be used to show message on the form of toast on the presenter class */
+    @Override
+    public void showToastLong(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    /** Setup ui by connecting layout item with java */
     public void setupUI() {
         messageFab = findViewById(R.id.fab_message);
         fullname = findViewById(R.id.fullname);
@@ -87,39 +101,6 @@ public class UserDetailActivity extends AppCompatActivity {
         userDetailsEmail = findViewById(R.id.user_details_email);
         userDetailsPhoneNumber = findViewById(R.id.user_details_phone_number);
         add = findViewById(R.id.userAddFriend);
-    }
-
-    /** This method is used to create friend request */
-    public void generateFriendRequest(int id) {
-        usersService.addFriend(id).subscribe(new Observer<AddFriendResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(AddFriendResponse addFriendResponse) {
-                if (addFriendResponse.success) {
-                    // If add friend successful, show alert dialogue to user to show that user has been added
-                    Toast.makeText(getApplicationContext(), "User have been added successfully. Please wait for confirmation.", Toast.LENGTH_LONG).show();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Fail to add. Please wait for confirmation", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                // Throw message if add friend fails
-                Toast.makeText(getApplicationContext(), "Error adding friend. Please retry.", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
     }
 
 }
