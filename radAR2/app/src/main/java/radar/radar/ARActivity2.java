@@ -26,6 +26,7 @@ import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -35,11 +36,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import radar.radar.Models.UserLocation;
 import radar.radar.Presenters.ARPresenter;
 import radar.radar.Views.ARView;
@@ -51,6 +55,16 @@ class CameraData {
     public CameraData(String cameraID, CameraCharacteristics cameraCharacteristics) {
         this.cameraID = cameraID;
         this.cameraCharacteristics = cameraCharacteristics;
+    }
+}
+
+class ViewSize {
+    int height;
+    int width;
+
+    public ViewSize(int height, int width) {
+        this.height = height;
+        this.width = width;
     }
 }
 
@@ -74,6 +88,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     float[] focalLengths;
     SizeF sensorSize;
 
+    // main relative layout size
+    Observable<ViewSize> mainRelativeLayoutSizeObservable;
+    int lastHeight;
+    int lastWidth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +102,23 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         inflater = getLayoutInflater();
         arAnnotations = new HashMap<>();
 
-        presenter = new ARPresenter(this);
+        // add listener for when mainRelativeLayout changes size
+        mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
+            mainRelativeLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    if (lastHeight != (bottom - top) || lastWidth != (right - left)) {
+                        emitter.onNext(new ViewSize(bottom - top, right - left));
+                        lastHeight = bottom - top;
+                        lastWidth = right - left;
+                    }
+                }
+            });
+        });
 
+        presenter = new ARPresenter(this);
         presenter.loadData();
+
 
         // stub: poll for data from server
 //        ObservableInterval.
@@ -93,6 +126,18 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         previewView = findViewById(R.id.AR2_texture_view);
 
         setupCameraPrewiew();
+
+        mainRelativeLayoutSizeObservable.subscribe(new Consumer<ViewSize>() {
+            @Override
+            public void accept(ViewSize viewSize) throws Exception {
+                int height = viewSize.height;
+                int width = viewSize.width;
+                for (int userID: arAnnotations.keySet()) {
+                    ARAnnotation annotation = arAnnotations.get(userID);
+                    updateAnnotationOffsets(annotation, height, width);
+                }
+            }
+        });
 
     }
 
@@ -157,10 +202,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // inflate a new layout
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.ar_annotation, null);
 
-//        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
-//        layout.setLayoutParams(params);
-
         // add the layout to the view
         mainRelativeLayout.addView(layout);
 
@@ -195,21 +236,28 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     public void setAnnotationOffsets(int userID, int offsetLeft, int offsetTop) {
         ARAnnotation annotation = arAnnotations.get(userID);
         if (annotation != null) {
+            annotation.offsetX = offsetLeft;
+            annotation.offsetY = offsetTop;
+        } else {
+            // TODO throw exception?
+            Log.w("setLayoutPadding", "invalid key");
+        }
+    }
+
+    void updateAnnotationOffsets(ARAnnotation annotation, int height, int width) {
+        if (annotation != null) {
             RelativeLayout layout = annotation.getLayout();
             RelativeLayout.LayoutParams layoutParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            // get size of the display
-            ViewGroup.LayoutParams mainRelativeLayoutParams = mainRelativeLayout.getLayoutParams();
-            int height = mainRelativeLayoutParams.height;
-            int width = mainRelativeLayoutParams.width;
-//            DisplayMetrics displayMetrics = new DisplayMetrics();
-//            getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//            int height = displayMetrics.heightPixels;   // TODO actual height
-//            int width = displayMetrics.widthPixels;
             int midpointHeight = height/2;
             int midpointWidth = width/2;
 
-            layoutParam.setMargins(midpointWidth + offsetLeft, midpointHeight + offsetTop, 0, 0);
+            // TODO center relative to annotation size
+            int annotationHeight = layout.getHeight();
+            int annotationWidth = layout.getWidth();
+
+
+            layoutParam.setMargins(midpointWidth + annotation.offsetX - annotationWidth/2, midpointHeight + annotation.offsetY - annotationHeight/2, 0, 0);
 //            layoutParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);   // matches above
             layout.setLayoutParams(layoutParam);
 

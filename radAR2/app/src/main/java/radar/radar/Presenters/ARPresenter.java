@@ -22,14 +22,18 @@ public class ARPresenter {
         // for now, return fake data
 
         UserLocation userLocation1 = new UserLocation(1, 0.1f, 0.2f, 0.1f, 2, new Date());
-        UserLocation userLocation2 = new UserLocation(2, 0.2f, 0.3f, 0.3f, 3, new Date());
+//        UserLocation userLocation2 = new UserLocation(2, 0.2f, 0.3f, 0.3f, 3, new Date());
+//        UserLocation userLocation3 = new UserLocation(3, 0.2f, 0.3f, 0.3f, 3, new Date());
         arView.inflateARAnnotation(userLocation1);
-        arView.inflateARAnnotation(userLocation2);
+//        arView.inflateARAnnotation(userLocation2);
+//        arView.inflateARAnnotation(userLocation3);
 
-        arView.setAnnotationOffsets(2, 200, 16);
+
+//        arView.setAnnotationOffsets(1, 200, 16);
 
         arView.setAnnotationMainText(1, "Text1");
-        arView.setAnnotationMainText(2, "I can now change the text");
+//        arView.setAnnotationMainText(2, "I can now change the text");
+//        arView.setAnnotationMainText(3, "can now change the text");
 
         // to remove an annotation, call ARView.removeAnnotationById
 

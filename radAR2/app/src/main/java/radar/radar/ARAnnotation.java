@@ -13,6 +13,8 @@ import radar.radar.Models.UserLocation;
 public class ARAnnotation {
     UserLocation userLocation;
     RelativeLayout layout;
+    int offsetX;
+    int offsetY;
 
     public UserLocation getUserLocation() {
         return userLocation;
