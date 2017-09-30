@@ -12,9 +12,6 @@ import android.view.MenuItem;
 
 import radar.radar.Services.AuthService;
 
-/**
- * Created by kenneth on 20/9/17.
- */
 
 public class NavigationActivityHelper {    // not actually a pure "Presenter"
     NavigationView navigationView;

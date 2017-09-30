@@ -11,9 +11,6 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
 
-/**
- * Created by kenneth on 20/9/17.
- */
 
 public class ChatService {
     Context context;

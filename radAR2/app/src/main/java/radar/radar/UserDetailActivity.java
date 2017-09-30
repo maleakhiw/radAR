@@ -59,7 +59,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         username.setText(user.username);
         userDetailsEmail.setText("Hidden email address");
         userDetailsPhoneNumber.setText("No phone number given");
-        userDetailsProfile.setText(user.profileDesc);
+        userDetailsProfile.setText("Hello, I am using Radar!");
 
         // initialize presenter
         userDetailPresenter = new UserDetailPresenter(this, usersService);
@@ -70,7 +70,8 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             @Override
             public void onClick(View view) {
                 // Go to home page
-                Intent intent = new Intent(UserDetailActivity.this, HomeScreenActivity.class);
+                Intent intent = new Intent(UserDetailActivity.this, ChatActivity.class);
+                intent.putExtra("user", user);
                 startActivity(intent);
             }
         });
