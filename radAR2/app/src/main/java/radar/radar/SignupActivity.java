@@ -31,6 +31,8 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     private Button btn_signup;
     private TextView link_login;
     private ProgressDialog mProgress; // for loading animation
+    private EditText firstName;
+    private EditText lastName;
 
     private AuthService authService;  // service for making requests to our API
 
@@ -43,12 +45,6 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
 
         // Setup UI
         setupUI();
-
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
-//        OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(logging)
-//                .build();
 
         // get a Retrofit instance (this is also called the Builder pattern)
         Retrofit retrofit = new Retrofit.Builder()
@@ -88,11 +84,13 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
 
     /** Setting up the User Interface */
     public void setupUI() {
-        username = (EditText) findViewById(R.id.username);
-        email = (EditText) findViewById(R.id.email);
-        password = (EditText) findViewById(R.id.password);
-        btn_signup = (Button) findViewById(R.id.btn_signup);
-        link_login = (TextView) findViewById(R.id.link_login);
+        username = findViewById(R.id.username);
+        email = findViewById(R.id.email);
+        password = findViewById(R.id.password);
+        btn_signup = findViewById(R.id.btn_signup);
+        link_login = findViewById(R.id.link_login);
+        firstName = findViewById(R.id.first_name);
+        lastName = findViewById(R.id.last_name);
         mProgress = new ProgressDialog(SignupActivity.this);
     }
 
@@ -111,6 +109,12 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     public String getPassword() {
         return password.getText().toString();
     }
+
+    @Override
+    public String getFirstName() { return firstName.getText().toString(); }
+
+    @Override
+    public String getLastName() { return lastName.getText().toString(); }
 
     @Override
     public void setProgressBarMessage(String message) {

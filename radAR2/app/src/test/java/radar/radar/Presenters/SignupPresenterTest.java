@@ -62,6 +62,8 @@ public class SignupPresenterTest {
         Mockito.when(signupView.getUsernameText()).thenReturn("maleakhiw");
         Mockito.when(signupView.getEmailText()).thenReturn("keystorm7@gmail.com");
         Mockito.when(signupView.getPassword()).thenReturn("hunter2");
+        Mockito.when(signupView.getFirstName()).thenReturn("Maleakhi");
+        Mockito.when(signupView.getLastName()).thenReturn("Wijaya");
 
         // Set up the AuthService mock
         AuthService authService = Mockito.mock(AuthService.class);
@@ -77,6 +79,8 @@ public class SignupPresenterTest {
         Mockito.verify(signupView).getUsernameText();
         Mockito.verify(signupView).getEmailText();
         Mockito.verify(signupView).getPassword();
+        Mockito.verify(signupView).getFirstName();
+        Mockito.verify(signupView).getLastName();
 
     }
 
@@ -87,6 +91,8 @@ public class SignupPresenterTest {
         Mockito.when(signupView.getUsernameText()).thenReturn("");
         Mockito.when(signupView.getEmailText()).thenReturn("blablabla@gmail.com");
         Mockito.when(signupView.getPassword()).thenReturn("1231231231");
+        Mockito.when(signupView.getFirstName()).thenReturn("Maleakhi");
+        Mockito.when(signupView.getLastName()).thenReturn("Wijaya");
 
         AuthService authService = Mockito.mock(AuthService.class);
 
@@ -98,6 +104,8 @@ public class SignupPresenterTest {
         Mockito.verify(signupView).getPassword();
         Mockito.verify(signupView).getUsernameText();
         Mockito.verify(signupView).getEmailText();
+        Mockito.verify(signupView).getFirstName();
+        Mockito.verify(signupView).getLastName();
     }
 
 
