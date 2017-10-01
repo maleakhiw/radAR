@@ -25,15 +25,18 @@ class MovingAverage {
         if (++index == size) index = 0; // cheaper than modulus
     }
 
+    public void setAllToValue(double x) {
+        for (int i=0; i<size; i++) {
+            samples[i] = x;
+        }
+    }
+
     public double getAverage() {
         return total / size;
     }
 }
 
 public class SensorFilter {
-    // values
-    private float[] mOrientationAngles = new float[3];  // for compass
-    private float[] mRotationMatrix = new float[9];     // for compass
 
     // moving average
     MovingAverage movingAverage = new MovingAverage(10);
@@ -52,6 +55,10 @@ public class SensorFilter {
     double lowPassOne(double input, double output) {
         if (output == 0) return input;
         return output + ALPHA * (input - output);
+    }
+
+    void setLastValue(double input) {
+        lastValue = input;
     }
 
     public double updateAndGetSmoothed(double input) {

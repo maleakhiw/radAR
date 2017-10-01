@@ -31,7 +31,7 @@ public class SensorService {
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
 
         azimuthUpdates = Observable.create(emitter -> {
-            SensorFilter filter = new SensorFilter();
+            CompassSensorFilter filter = new CompassSensorFilter();
             float[] mOrientationAngles = new float[3];  // for compass
             float[] mRotationMatrix = new float[9];     // for compass
 
