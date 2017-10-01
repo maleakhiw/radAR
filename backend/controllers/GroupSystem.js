@@ -220,7 +220,7 @@ module.exports = class GroupSystem extends SMS{
           resolve();
         })
       }))
-    }
+    })
     .then(() => {
       console.log(locations);
       console.log(userDetails);
