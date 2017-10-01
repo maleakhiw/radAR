@@ -194,6 +194,8 @@ public class ARPresenter {
 
                 for (UserLocation userLocation: userLocations) {
                     int userID = userLocation.getUserID();
+
+                    arView.setAnnotationMainText(userID, userDetails.get(userID).firstName);
                     if (!arView.isInflated(userID)) {
                         // inflate if not inflated
                         arView.inflateARAnnotation(userLocation);
