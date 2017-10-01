@@ -2,6 +2,9 @@ package radar.radar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -9,6 +12,8 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Requests.NewChatRequest;
+import radar.radar.Models.Responses.SendMessageResponse;
+import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.User;
 import radar.radar.Services.AuthService;
@@ -21,11 +26,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ChatActivity extends AppCompatActivity {
     private ChatService chatService;
     private User user;
+    private int groupID;
+
+    private EditText chatText;
+    private ImageView send;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
+        // Setup UI
+        setupUI();
 
         // Create instance of retrofit
         Retrofit retrofit = new Retrofit.Builder()
@@ -66,7 +78,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onNext(NewChatResponse newChatResponse) {
                 // if the response is successful, then we can proceed to create a chat
                 if (newChatResponse.success) {
-                    // Load the message if there is any
+                    groupID = newChatResponse.group.groupID;
+                    Toast.makeText(getApplicationContext(), "newchat", Toast.LENGTH_LONG).show();
+                    embedSendMessage(); // embed on click listener
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Status false", Toast.LENGTH_LONG).show();
@@ -82,6 +96,47 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onComplete() {
 
+            }
+        });
+    }
+
+    public void setupUI() {
+        chatText = findViewById(R.id.chat_text_field_item_text_box);
+        send = findViewById(R.id.chat_text_field_item_send_button);
+    }
+
+    public void embedSendMessage() {
+        // embed onclick listener, remember the async process
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // If send is clicked then send the message
+                // Extract string from edit text
+                MessageBody messageBody = new MessageBody(chatText.getText().toString());
+
+                chatService.sendMessages(groupID, messageBody).subscribe(new Observer<SendMessageResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(SendMessageResponse sendMessageResponse) {
+                        if (sendMessageResponse.success) {
+                            Toast.makeText(getApplicationContext(), "Send message successful", Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
             }
         });
     }

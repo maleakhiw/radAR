@@ -1,5 +1,8 @@
 package radar.radar.Models.Responses;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import radar.radar.Models.Chat;
 
 /**
@@ -7,5 +10,5 @@ import radar.radar.Models.Chat;
  */
 
 public class NewChatResponse extends Status {
-    public Chat chat;
+   public Chat group;
 }
