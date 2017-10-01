@@ -13,6 +13,7 @@ import android.widget.Toast;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import radar.radar.ChatActivity;
 import radar.radar.Models.Chat;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
@@ -67,9 +68,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                     Chat chat = chats.get(getAdapterPosition());
 
                     Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show();
-                    //Intent intent = new Intent(context, UserDetailActivity.class);
-                    //intent.putExtra("user", user);
-                    //context.startActivity(intent);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra("chat", chat);
+                    context.startActivity(intent);
 
                 }
             });

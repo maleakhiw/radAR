@@ -2,7 +2,9 @@ package radar.radar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,7 +31,8 @@ public class ChatActivity extends AppCompatActivity {
     private int groupID;
 
     private EditText chatText;
-    private ImageView send;
+    private Button send;
+    private RecyclerView messageRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +82,6 @@ public class ChatActivity extends AppCompatActivity {
                 // if the response is successful, then we can proceed to create a chat
                 if (newChatResponse.success) {
                     groupID = newChatResponse.group.groupID;
-                    Toast.makeText(getApplicationContext(), "newchat", Toast.LENGTH_LONG).show();
                     embedSendMessage(); // embed on click listener
                 }
                 else {
@@ -101,8 +103,9 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     public void setupUI() {
-        chatText = findViewById(R.id.chat_text_field_item_text_box);
-        send = findViewById(R.id.chat_text_field_item_send_button);
+        chatText = findViewById(R.id.chat_text_field);
+        send = findViewById(R.id.button_send);
+        messageRecyclerView = findViewById(R.id.messageRecyclerView);
     }
 
     public void embedSendMessage() {
@@ -124,6 +127,8 @@ public class ChatActivity extends AppCompatActivity {
                     public void onNext(SendMessageResponse sendMessageResponse) {
                         if (sendMessageResponse.success) {
                             Toast.makeText(getApplicationContext(), "Send message successful", Toast.LENGTH_LONG).show();
+
+                            // Here we will create
                         }
                     }
 
