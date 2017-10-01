@@ -141,4 +141,19 @@ public class ARPresenter {
         });
 
     }
+
+    // null checks since this function will be called on Activity creation too
+    // when the Service has not been created yet.
+
+    public void unregisterSensors() {
+        if (sensorService != null) {
+            sensorService.unregisterSensorEventListener();
+        }
+    }
+
+    public void reregisterSensors() {
+        if (sensorService != null) {
+            sensorService.reregisterSensorEventListener();
+        }
+    }
 }

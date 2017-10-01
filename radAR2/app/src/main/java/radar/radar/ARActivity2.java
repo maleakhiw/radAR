@@ -194,7 +194,9 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             cameraCaptureSession.close();
         }
 
-        // TODO close sensors - call SensorService
+        if (presenter != null) {
+            presenter.unregisterSensors();
+        }
 
         super.onStop();
     }
@@ -206,7 +208,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             restartCameraPreview();
         }
 
-        // TODO start sensors - call SensorService
+        // no guarantee that presenter will already be instantiated
+        // presenter instantiation is asynchronous, dependent on camera data being available
+        if (presenter != null) {
+            presenter.reregisterSensors();
+        }
 
         super.onStart();
     }

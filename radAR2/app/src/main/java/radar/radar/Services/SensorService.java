@@ -105,8 +105,30 @@ public class SensorService {
 
     }
 
+    /**
+     * Unregisters the sensor event listeners.
+     * To be used on onStart on the activity lifecycle.
+     * Location tracking still can continue in the background via the LocationService.
+     */
     public void unregisterSensorEventListener() {
-//        sensorManager.unregisterListener(sensorEventListener);
+        if (sensorManager != null && azimuthEventListener != null && pitchEventListener != null) {
+            sensorManager.unregisterListener(azimuthEventListener);
+            sensorManager.unregisterListener(pitchEventListener);
+        }
+    }
+
+    /**
+     * Reregisters the sensor event listeners.
+     * To be used on onStart on the activity lifecycle for when the activity comes back into the
+     * foreground.
+     * Is actually called by Android on Activity creation, thus the null checks.
+     * Location tracking still can continue in the background via the LocationService.
+     */
+    public void reregisterSensorEventListener() {
+        if (sensorManager != null && azimuthEventListener != null && pitchEventListener != null) {
+            sensorManager.registerListener(azimuthEventListener, magneticSensor, SensorManager.SENSOR_DELAY_FASTEST);
+            sensorManager.registerListener(pitchEventListener, rotationSensor, SensorManager.SENSOR_DELAY_FASTEST);
+        }
     }
 }
 
