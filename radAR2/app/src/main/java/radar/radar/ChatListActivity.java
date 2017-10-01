@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
@@ -9,6 +10,8 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Adapters.ChatAdapter;
+import radar.radar.Models.Chat;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatApi;
@@ -22,6 +25,7 @@ public class ChatListActivity extends AppCompatActivity {
     private RecyclerView chatRecyclerView;
 
     private ArrayList<Integer> chatIDs;
+    private ArrayList<Chat> groups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +34,9 @@ public class ChatListActivity extends AppCompatActivity {
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
+
+        // Setup groups
+        groups = new ArrayList<>();
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -76,7 +83,6 @@ public class ChatListActivity extends AppCompatActivity {
 
             @Override
             public void onComplete() {
-
             }
         });
     }
@@ -96,7 +102,8 @@ public class ChatListActivity extends AppCompatActivity {
                 public void onNext(GetChatInfoResponse getChatInfoResponse) {
                     // If the response successful display on the recycler view
                     if (getChatInfoResponse.success) {
-                        Toast.makeText(ChatListActivity.this, "Successfully displaychatlist method", Toast.LENGTH_LONG).show();
+                        // Add to groups
+                        groups.add(getChatInfoResponse.group);
                     }
                     else {
                         Toast.makeText(ChatListActivity.this, "Failed to display chat", Toast.LENGTH_LONG).show();
@@ -111,7 +118,11 @@ public class ChatListActivity extends AppCompatActivity {
 
                 @Override
                 public void onComplete() {
-
+                    // When it is complete, it means that the group is filled up, now connect this to the recycler view
+                    ChatAdapter chatAdapter = new ChatAdapter(ChatListActivity.this, groups);
+                    chatRecyclerView.setAdapter(chatAdapter);
+                    chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
+                    chatAdapter.notifyDataSetChanged();
                 }
             });
         }
