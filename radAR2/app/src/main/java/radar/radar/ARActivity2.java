@@ -176,7 +176,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
         // TODO Customizable sensor delay
-        // TODO filtering (DSP + coefficients) or moving average
         azimuthUpdates = Observable.create(emitter -> {
             sensorManager.registerListener(sensorEventListener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
             sensorEventListener = new SensorEventListener() {
@@ -197,8 +196,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                 }
             };
         });
-
-
 
 
         presenter = new ARPresenter(this, locationService);
