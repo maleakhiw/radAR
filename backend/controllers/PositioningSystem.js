@@ -16,13 +16,13 @@ const isNumber = common.isNumber;
 
 let LocationModel, User;
 
-function isValidLat(lat) {
+function isValidLat(val) {
   // latitude can only be +/- 90 degrees.
   // longitude can be +/- 180 deg.
   return (val >= -90 && val <= 90);
 }
 
-function isValidLon(lon) {
+function isValidLon(val) {
   return (val >= -180 && val <= 180);
 }
 
