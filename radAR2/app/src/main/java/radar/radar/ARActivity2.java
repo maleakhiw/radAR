@@ -198,6 +198,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             presenter.unregisterSensors();
         }
 
+        // TODO read user preferences. User location is still being polled on the background.
+
         super.onStop();
     }
 

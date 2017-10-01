@@ -118,7 +118,7 @@ public class ARPresenter {
 
                     // get xOffset and yOffset
                     int xOffset = locationTransformations.xOffset(bearing, azimuth);
-                    System.out.println(((Float) azimuth).toString() + ": " + ((Integer) xOffset).toString());
+//                    System.out.println(((Float) azimuth).toString() + ": " + ((Integer) xOffset).toString());
                     int yOffset = locationTransformations.yOffset(pitch, 0);
 
                     arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets too
