@@ -60,9 +60,9 @@ public class ChatListActivity extends AppCompatActivity {
             public void onNext(GetChatsResponse getChatsResponse) {
                 // If we successfully get chat ids
                 if (getChatsResponse.success) {
-                    chatIDs = getChatsResponse.chats;
+                    chatIDs = getChatsResponse.groups;
                     Toast.makeText(ChatListActivity.this, "Successfully get chat ids", Toast.LENGTH_LONG).show();
-//                    displayChatList();
+                    displayChatList();
                 }
                 else {
                     Toast.makeText(ChatListActivity.this, "Unsuccessful getting chat ids", Toast.LENGTH_LONG).show();
