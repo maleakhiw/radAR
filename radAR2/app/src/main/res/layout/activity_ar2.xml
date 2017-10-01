@@ -17,7 +17,7 @@
         android:layout_width="0dp"
         android:id="@+id/ARview_layout_for_annotations"/>
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -28,13 +28,18 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_marginStart="8dp"
+            android:orientation="vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:layout_editor_absoluteY="0dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingRight="24dp"
                 android:text="Heading" />
 
             <TextView
@@ -46,53 +51,72 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/HUD_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toTopOf="@+id/HUD_destination_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/HUD_distance_to_dest"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="200m"
-                        android:textAlignment="center"
-                        android:textSize="48dp" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="to your " />
+                        android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/HUD_relative_compass_direction"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="west" />
+                        <TextView
+                            android:id="@+id/HUD_distance_to_dest"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="200m"
+                            android:textAlignment="center"
+                            android:textSize="48dp" />
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="to your " />
+
+                        <TextView
+                            android:id="@+id/HUD_relative_compass_direction"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="west" />
+
+                    </LinearLayout>
                 </LinearLayout>
+
+
             </LinearLayout>
 
-
-            <TextView
-                android:id="@+id/HUD_destination_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/HUD_distance_to_dest"
-                android:layout_centerHorizontal="true"
-                android:text="to South Lawn"
-                android:textAlignment="center" />
         </LinearLayout>
 
-    </RelativeLayout>
+        <TextView
+            android:id="@+id/HUD_destination_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/HUD_main"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="8dp"
+            android:text="to South Lawn"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="0dp" />
+
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
