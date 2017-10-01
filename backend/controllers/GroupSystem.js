@@ -104,7 +104,7 @@ function promoteToTrackingGroupImpl2(userID, groupID, req, res) {
       common.sendError(res, ['invalidGroupID']);
     }
   })
-  }
+}
 
 module.exports = class GroupSystem extends SMS{
 
@@ -167,6 +167,56 @@ module.exports = class GroupSystem extends SMS{
     }
 
     promoteToTrackingGroupImpl(userID, groupID, req, res);
+  }
+
+  getLocations(req, res) {
+    // GET {serverURL}/api/accounts/:userID/groups/:groupID/locations
+    let userID = req.params.userID;
+    let groupID = req.params.groupID;
+
+    let locations = [];
+
+
+    groupExists(groupID)
+    .then(() => Group.findOne({groupID: groupID}))
+    .then((group) => {
+      let members = group.members;
+      let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+        Location.findOne({userID: memberUserID}).exec()
+        .then((location) => {
+          if (location) {
+            let locationData = {
+              userID: location.userID,
+              lat: location.lat,
+              lon: location.lon,
+              heading: location.heading,
+              accuracy: location.accuracy,
+              timeUpdated: location.timeUpdated
+            };
+            resolve(locationData);
+            locations.push(locationData);
+          } else {
+            resolve(null);
+          }
+        });
+      }));
+
+      return Promise.all(promiseAll);
+    })
+    .then(() => {
+      res.json({
+        success: true,
+        errors: [],
+        locations: locations
+      })
+    })
+
+    .catch((err) => {
+      if (err == 'groupDoesNotExist') {
+        common.sendError(res, ['invalidGroupID']);
+      }
+    })
+
   }
 
 
