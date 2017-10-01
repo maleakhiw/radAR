@@ -176,10 +176,11 @@ module.exports = class GroupSystem extends SMS{
 
     let locations = [];
 
+    console.log(userID, groupID);
 
-    groupExists(groupID)
-    .then(() => Group.findOne({groupID: groupID}))
+    groupExists(groupID).then(() => Group.findOne({groupID: groupID}))
     .then((group) => {
+      console.log(group);
       let members = group.members;
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         Location.findOne({userID: memberUserID}).exec()
