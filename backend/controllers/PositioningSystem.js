@@ -16,9 +16,14 @@ const isNumber = common.isNumber;
 
 let LocationModel, User;
 
-function isValidLatOrLon(val) {
-  // latitude and longitude can only be +/- 90 degrees.
+function isValidLat(lat) {
+  // latitude can only be +/- 90 degrees.
+  // longitude can be +/- 180 deg.
   return (val >= -90 && val <= 90);
+}
+
+function isValidLon(lon) {
+  return (val >= -180 && val <= 180);
 }
 
 function isValidHeading(val) {
@@ -59,8 +64,8 @@ function validateUpdateLocationReq(req) {
     return errorKeys;
   }
 
-  if (!isValidLatOrLon(lat)) errorKeys.push('invalidLat');
-  if (!isValidLatOrLon(lon)) errorKeys.push('invalidLon');
+  if (!isValidLat(lat)) errorKeys.push('invalidLat');
+  if (!isValidLon(lon)) errorKeys.push('invalidLon');
   if (!isValidHeading(heading)) errorKeys.push('invalidHeading');
 
   return errorKeys;
