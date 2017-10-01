@@ -4,6 +4,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 import io.reactivex.Observable;
 
@@ -29,6 +30,11 @@ public class SensorService {
         this.sensorManager = sensorManager;
         magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
+
+        if (rotationSensor == null) {
+            // gyro not supported
+            Log.w("sensorService", "gyro not supported");
+        }
 
         azimuthUpdates = Observable.create(emitter -> {
             CompassSensorFilter filter = new CompassSensorFilter();
