@@ -185,6 +185,7 @@ module.exports = class GroupSystem extends SMS{
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         Location.findOne({userID: memberUserID}).exec()
         .then((location) => {
+          console.log(location);
           if (location) {
             let locationData = {
               userID: location.userID,
@@ -194,8 +195,8 @@ module.exports = class GroupSystem extends SMS{
               accuracy: location.accuracy,
               timeUpdated: location.timeUpdated
             };
-            resolve(locationData);
             locations.push(locationData);
+            resolve(locationData);
           } else {
             resolve();
           }
