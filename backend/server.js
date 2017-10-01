@@ -134,7 +134,7 @@ const PositioningSystem = require('./controllers/PositioningSystem');
 const positioningSystem = new PositioningSystem(LocationModel, User);
 
 const GroupSystem = require('./controllers/GroupSystem');
-const groupSystem = new GroupSystem(Group, Message, User);
+const groupSystem = new GroupSystem(Group, Message, User, LocationModel);
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose

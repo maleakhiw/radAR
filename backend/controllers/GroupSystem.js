@@ -16,7 +16,7 @@ const unique = common.unique;
 const SMS = require('./SMS');
 
 // data models
-let Group, Message, User;
+let Group, Message, User, UserLocation;
 
 var groupExists = (groupID) => new Promise((resolve, reject) => {
   Group.findOne({groupID: groupID}).exec()
@@ -108,11 +108,12 @@ function promoteToTrackingGroupImpl2(userID, groupID, req, res) {
 
 module.exports = class GroupSystem extends SMS{
 
-  constructor(pGroup, pMessage, pUser) {
+  constructor(pGroup, pMessage, pUser, pLocation) {
     super(pGroup, pMessage, pUser);
     Group = pGroup;
     Message = pMessage;
     User = pUser;
+    UserLocation = pLocation;
   }
 
   newGroup(req, res) {
@@ -183,6 +184,7 @@ module.exports = class GroupSystem extends SMS{
       console.log(group);
       let members = group.members;
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+        console.log(memberUserID);
         Location.findOne({userID: memberUserID}).exec()
         .then((location) => {
           console.log(location);
