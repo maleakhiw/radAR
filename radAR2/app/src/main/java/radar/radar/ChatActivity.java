@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,6 @@ public class ChatActivity extends AppCompatActivity {
     private EditText chatText;
     private Button send;
     private RecyclerView messageRecyclerView;
-    private MessageListAdapter messageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,7 +147,10 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
                         // Here link with recycler view
-                        messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
+                        MessageListAdapter messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
+                        messageRecyclerView.setAdapter(messageListAdapter);
+                        messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                        messageListAdapter.notifyDataSetChanged();
                     }
                 });
             }
