@@ -13,7 +13,10 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Adapters.MessageListAdapter;
+import radar.radar.Models.Message;
 import radar.radar.Models.Requests.NewChatRequest;
+import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.NewChatResponse;
@@ -29,10 +32,12 @@ public class ChatActivity extends AppCompatActivity {
     private ChatService chatService;
     private User user;
     private int groupID;
+    private ArrayList<MessageResponse> messages;
 
     private EditText chatText;
     private Button send;
     private RecyclerView messageRecyclerView;
+    private MessageListAdapter messageListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Setup UI
         setupUI();
+        messages = new ArrayList<>();
 
         // Create instance of retrofit
         Retrofit retrofit = new Retrofit.Builder()
@@ -128,7 +134,8 @@ public class ChatActivity extends AppCompatActivity {
                         if (sendMessageResponse.success) {
                             Toast.makeText(getApplicationContext(), "Send message successful", Toast.LENGTH_LONG).show();
 
-                            // Here we will create
+                            // When you click send you will add into message
+                            messages.add(sendMessageResponse.sentMessage);
                         }
                     }
 
@@ -139,7 +146,8 @@ public class ChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-
+                        // Here link with recycler view
+                        messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
                     }
                 });
             }

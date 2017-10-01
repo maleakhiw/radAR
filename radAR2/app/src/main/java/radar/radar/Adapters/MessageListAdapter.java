@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import radar.radar.Models.Message;
+import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.R;
 import radar.radar.Services.AuthService;
 
@@ -19,13 +20,13 @@ import radar.radar.Services.AuthService;
 
 public class MessageListAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<Message> messageList;
+    private List<MessageResponse> messageList;
 
     // Constant for message sent and received
     public static final int MESSAGE_SENT = 1;
     public static final int MESSAGE_RECEIVED = 2;
 
-    public MessageListAdapter(Context context, List<Message> messageList) {
+    public MessageListAdapter(Context context, List<MessageResponse> messageList) {
         this.messageList = messageList;
         this.context = context;
     }
@@ -48,7 +49,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     // Determines the appropriate ViewType according to the sender of the message.
     @Override
     public int getItemViewType(int position) {
-        Message message = (Message) messageList.get(position);
+        MessageResponse message = (MessageResponse) messageList.get(position);
 
         if (AuthService.getUserID(context) == message.from) {
             // If the current user is the sender of the message
@@ -61,7 +62,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Message message = (Message) messageList.get(position);
+        MessageResponse message = (MessageResponse) messageList.get(position);
 
         switch (holder.getItemViewType()) {
             case MESSAGE_SENT:
@@ -90,7 +91,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         // Bind method
-        void bind(Message message) {
+        void bind(MessageResponse message) {
             messageText.setText(message.text);
             //timeText.setText(message.time);
             //nameText.setText(message.)
@@ -107,7 +108,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
 
         // Bind method
-        void bind(Message message) {
+        void bind(MessageResponse message) {
             messageText.setText(message.text);
             //timeText.setText(message.time);
             //nameText.setText(message.)
