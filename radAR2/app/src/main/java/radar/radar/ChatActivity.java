@@ -66,7 +66,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onNext(NewChatResponse newChatResponse) {
                 // if the response is successful, then we can proceed to create a chat
                 if (newChatResponse.success) {
-                    Toast.makeText(getApplicationContext(), "Yeyy!! Success", Toast.LENGTH_LONG).show();
+                    // Load the message if there is any
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Status false", Toast.LENGTH_LONG).show();

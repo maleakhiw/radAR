@@ -26,26 +26,26 @@ public class ChatService {
     }
 
     public Observable<GetChatsResponse> getChats() {
-        return chatApi.getChats(userID)
+        return chatApi.getChats(userID, token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<NewChatResponse> newChat(NewChatRequest newChatRequest) {
         // TODO: validation
-        return chatApi.newChat(userID, newChatRequest)
+        return chatApi.newChat(userID, token, newChatRequest)
                       .subscribeOn(Schedulers.io())
                       .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<GetChatInfoResponse> getChatInfo(int chatID) {
-        return chatApi.getChatInfo(userID, chatID)
+        return chatApi.getChatInfo(userID, token,  chatID)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<MessagesResponse> getMessages(int chatID) {
-        return chatApi.getMessages(userID, chatID)
+        return chatApi.getMessages(userID, token, chatID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
