@@ -25,6 +25,7 @@ import io.reactivex.schedulers.Schedulers;
 import radar.radar.CompassDirection;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
+import radar.radar.Models.Responses.MembersLocationResponse;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 import radar.radar.Models.UserLocation;
 
@@ -146,6 +147,7 @@ public class LocationService {
      */
 
     public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading) {
+
         Observable<UpdateLocationResponse> observable = locationApi.updateLocation(userID, token,
                                                                 new UpdateLocationRequest(lat, lon, accuracy, heading))
                                                                 .subscribeOn(Schedulers.io())
@@ -169,6 +171,13 @@ public class LocationService {
 
         return observable;
 
+    }
+
+    public Observable<MembersLocationResponse> getGroupMembersLocations(int groupID) {
+        System.out.println("groupID " + ((Integer) groupID).toString());
+        return locationApi.getGroupLocations(userID, groupID, token)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread());
     }
 
 

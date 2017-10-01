@@ -27,6 +27,7 @@ import android.view.TextureView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,8 +44,12 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import radar.radar.Models.UserLocation;
 import radar.radar.Presenters.ARPresenter;
+import radar.radar.Services.GroupsApi;
+import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
@@ -148,6 +153,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             });
         });
 
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.addInterceptor(new HttpLoggingInterceptor());
 
         Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("http://35.185.35.117/api/")
@@ -156,8 +163,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                                         .build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
+        GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
+        GroupsService groupsService = new GroupsService(this, groupsApi);
 
         SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
@@ -177,7 +186,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             // create a new presenter
             LocationTransformations locationTransformations = new LocationTransformations(width/hFov, height/vFov);
             if (presenter == null) {
-                presenter = new ARPresenter(this, locationService, sensorManager, locationTransformations);
+                presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations);
                 presenter.updateData(width/hFov, height/vFov);
             } else {
                 presenter.updateData(width/hFov, height/vFov);
@@ -197,6 +206,21 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             }
         });
 
+    }
+
+    @Override
+    public void showToast(String toast) {
+        Toast.makeText(this, toast, Toast.LENGTH_LONG);
+    }
+
+    /**
+     * Returns whether an annotation for a user is already inflated or not.
+     * @param userID
+     * @return
+     */
+    @Override
+    public boolean isInflated(int userID) {
+        return arAnnotations.get(userID) != null;
     }
 
 

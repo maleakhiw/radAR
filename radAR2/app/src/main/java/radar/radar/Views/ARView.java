@@ -11,6 +11,10 @@ import radar.radar.Models.UserLocation;
 public interface ARView {
     void requestLocationPermissions();
 
+    void showToast(String toast);
+
+    boolean isInflated(int userID);
+
     void removeAnnotation(int userID);
 
     void getAnnotation(int userID);
