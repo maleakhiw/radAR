@@ -186,6 +186,9 @@ module.exports = class GroupSystem extends SMS{
     .then((group) => {
       console.log(group);
       members = group.members;
+      // don't include self
+      members = members.filter((memberUserID) => memberUserID != userID);
+
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         console.log(memberUserID);
         UserLocation.findOne({userID: memberUserID}).exec()
