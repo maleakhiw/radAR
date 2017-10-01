@@ -18,7 +18,9 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Adapters.FriendsRequestAdapter;
 import radar.radar.Adapters.SearchAdapter;
+import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Models.User;
 import radar.radar.Services.UsersApi;
@@ -30,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchResultActivity extends AppCompatActivity {
     private UsersService usersService;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerView2;
 
     private EditText query;
     private Button pending;
@@ -37,12 +40,13 @@ public class SearchResultActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search_result);
+        setContentView(R.layout.activity_search_result2);
 
         // Instantiate recyclerview and query edit view
         recyclerView = findViewById(R.id.searchRecyclerView);
+        recyclerView2 = findViewById(R.id.requestRecyclerView);
+
         query = findViewById(R.id.search_bar);
-        pending = findViewById(R.id.pending);
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -67,14 +71,8 @@ public class SearchResultActivity extends AppCompatActivity {
             }
         });
 
-        // If pending button is clicked, go to a new activity displaying pending friend request
-        pending.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(SearchResultActivity.this, FriendRequestActivity.class);
-                startActivity(intent);
-            }
-        });
+        // Display pending friend requests for particular user
+        displayFriendsRequest();
 
     }
 
@@ -105,6 +103,41 @@ public class SearchResultActivity extends AppCompatActivity {
             public void onError(Throwable e) {
                 Toast.makeText(getApplicationContext(), "Error occurred.", Toast.LENGTH_LONG).show();
 
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+    public void displayFriendsRequest() {
+        // just display all of the friend request for a given user
+        usersService.getFriendRequests().subscribe(new Observer<FriendRequestsResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(FriendRequestsResponse friendRequestsResponse) {
+                // Check status of the response
+                if (friendRequestsResponse.success) {
+                    // Display on the recycler view
+                    FriendsRequestAdapter adapter = new FriendsRequestAdapter(SearchResultActivity.this, friendRequestsResponse.requestDetails);
+                    recyclerView2.setAdapter(adapter);
+                    recyclerView2.setLayoutManager(new LinearLayoutManager(SearchResultActivity.this));
+                    adapter.notifyDataSetChanged();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Error generating requests.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Toast.makeText(getApplicationContext(), "Internal error", Toast.LENGTH_LONG).show();
             }
 
             @Override

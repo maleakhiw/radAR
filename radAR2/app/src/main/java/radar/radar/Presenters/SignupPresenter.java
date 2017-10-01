@@ -9,6 +9,7 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.HomeScreenActivity;
 import radar.radar.Models.Requests.SignUpRequest;
 import radar.radar.Models.Responses.AuthResponse;
+import radar.radar.R;
 import radar.radar.Services.AuthService;
 import radar.radar.SignupActivity;
 import radar.radar.Views.SignupView;
@@ -27,27 +28,30 @@ public class SignupPresenter {
     }
 
     /** Validation check to make sure that there is no empty things on the form */
-    // TODO: Real validation on the client side
     public boolean validateForm() {
-        String username, email, password;
+        String username, email, password, firstName, lastName;
         // Check to make sure that everything is filled
 
         username = signupView.getUsernameText().trim();
         email = signupView.getEmailText().trim();
         password = signupView.getPassword().trim();
+        firstName = signupView.getFirstName().trim();
+        lastName = signupView.getLastName().trim();
 
 
-        return !(username.isEmpty() || email.isEmpty() || password.isEmpty());
+        return !(username.isEmpty() || email.isEmpty() || password.isEmpty() || firstName.isEmpty()
+                || lastName.isEmpty());
     }
 
-    // MOVED already
+    /** Method to signup processes */
     public void processSignup() {
         signupView.setProgressBarMessage("Signing Up...");
         signupView.showProgressBar();
         if (validateForm()) {
-            SignUpRequest signUpRequest = new SignUpRequest("dragon",
-                    "ball", signupView.getEmailText(), signupView.getUsernameText(),
-                    "dra", signupView.getPassword(), "fakeDeviceID");
+            SignUpRequest signUpRequest = new SignUpRequest(signupView.getFirstName(), signupView.getLastName(),
+                    signupView.getEmailText(), signupView.getUsernameText(),
+                    "Hello, I am using Radar!",
+                    signupView.getPassword(), "DeviceID");
 
             authService.signUp(signUpRequest).subscribe(new Observer<AuthResponse>() {
                 @Override
@@ -80,6 +84,7 @@ public class SignupPresenter {
         }
         else {
             signupView.showToastLong("Please enter all fields.");
+            signupView.dismissProgressBar();
         }
     }
 }

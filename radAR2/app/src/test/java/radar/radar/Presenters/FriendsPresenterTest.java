@@ -21,9 +21,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
-/**
- * Created by kenneth on 27/9/17.
- */
 public class FriendsPresenterTest {
     @BeforeClass
     public static void setupClass() {
@@ -51,8 +48,7 @@ public class FriendsPresenterTest {
 
         // I want to make sure that feedback is shown to the user in the form
         // of a new Activity being launched.
-        Mockito.verify(friendsView).launchHomeScreenActivity();
-
+        Mockito.verify(friendsView).launchSearchFriendsActivity();
     }
 
     @Test
@@ -118,8 +114,8 @@ public class FriendsPresenterTest {
 
         // list of friends for friendsResponse
         ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
-        friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user"));
-        friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too"));
+        friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user", "keystorm@rocketmail.com"));
+        friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too", "dragonica@gmail.com"));
 
         friendsResponse.friends = friendsForFriendsResponse;
 
