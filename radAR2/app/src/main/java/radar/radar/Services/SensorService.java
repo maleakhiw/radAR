@@ -11,20 +11,6 @@ import io.reactivex.Observable;
  * Created by kenneth on 1/10/17.
  */
 
-enum Type {
-    PITCH, AZIMUTH
-}
-
-class PitchOrAzimuth {
-    double value;
-    Type type;
-
-    public PitchOrAzimuth(double value, Type type) {
-        this.value = value;
-        this.type = type;
-    }
-}
-
 public class SensorService {
     SensorEventListener azimuthEventListener;
     SensorEventListener pitchEventListener;
@@ -60,6 +46,10 @@ public class SensorService {
                         SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
                         double azimuth = Math.toDegrees(mOrientationAngles[0]);
+                        if (azimuth < 0.0f) {   // normalise
+                            azimuth += 360f;
+                        }
+
                         azimuth = filter.updateAndGetSmoothed(azimuth);
 
                         emitter.onNext(azimuth);

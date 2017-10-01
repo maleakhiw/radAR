@@ -63,12 +63,17 @@ public class ARPresenter {
         userLocations = new ArrayList<>();
         // for now, return fake data
 
-        UserLocation userLocation1 = new UserLocation(1, 37.7978317f,144.9604245f, 0.1f, 2, new Date());
-        userLocations.add(userLocation1);
-        arView.inflateARAnnotation(userLocation1);
+//        UserLocation userLocation1 = new UserLocation(1, 37.7978317f,144.9604245f, 0.1f, 2, new Date());
+//        userLocations.add(userLocation1);
+//        arView.inflateARAnnotation(userLocation1);
+
+        UserLocation userLocation2 = new UserLocation(2, -37.829293f, 144.956805f, 0.1f, 2, new Date());
+        userLocations.add(userLocation2);
+        arView.inflateARAnnotation(userLocation2);
 
 //        arView.setAnnotationOffsets(1, 200, 16);
-        arView.setAnnotationMainText(1, "University of Melbourne");
+//        arView.setAnnotationMainText(1, "University of Melbourne");
+        arView.setAnnotationMainText(2, "Southbank");
 
         // to remove an annotation, call ARView.removeAnnotationById
     }
@@ -86,10 +91,13 @@ public class ARPresenter {
 //            ((Float) azimuth).toString() + ", " + ((Float) pitch).toString()
 //        ).subscribe(text -> System.out.println(text));
 
+
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 //        azimuthObservable.subscribe(azimuth -> System.out.println("azimuth"));
 //        pitchObservable.subscribe(pitch -> System.out.println("pitch"));
 //        locationObservable.subscribe(location -> System.out.println("location"));
+
+//        locationObservable.take(1).subscribe(location -> System.out.println(location));
 
         Observable.combineLatest(azimuthObservable, pitchObservable, locationObservable, LocationAndDeviceData::new).subscribe(new Observer<LocationAndDeviceData>() {
             @Override
@@ -99,30 +107,30 @@ public class ARPresenter {
 
             @Override
             public void onNext(LocationAndDeviceData locationAndDeviceData) {
-                // TODO later refactor to List
-//                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
-                float azimuth = locationAndDeviceData.azimuth;
-                float pitch = locationAndDeviceData.pitch;
+                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
                 Location location = locationAndDeviceData.location;
                 float latUser = (float) location.getLatitude();
                 float lonUser = (float) location.getLongitude();
+                float azimuth = locationAndDeviceData.azimuth;
+                float pitch = locationAndDeviceData.pitch;
 
-                UserLocation unimelb = userLocations.get(0);
-                float latUnimelb = unimelb.getLat();
-                float lonUnimelb = unimelb.getLon();
+                for (UserLocation userLocation: userLocations) {
+                    int userID = userLocation.getUserID();
+                    double bearing = locationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
+                    System.out.println(bearing);
 
-                double bearing = locationTransformations.bearingBetween(latUser, lonUser, latUnimelb, lonUnimelb);
+                    // get xOffset and yOffset
+                    int xOffset = locationTransformations.xOffset(bearing, azimuth);
+                    int yOffset = locationTransformations.yOffset(pitch, 0);
 
-                // get xOffset and yOffset
-                int xOffset = locationTransformations.xOffset(bearing, azimuth);
-                int yOffset = locationTransformations.yOffset(pitch, 0);
+                    arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets too
+                                                                            // so we can check if they are overlapping
+                }
 
-                arView.setAnnotationOffsets(1, xOffset, yOffset);
             }
 
             @Override
             public void onError(Throwable e) {
-                // TODO check for the GRANT_LOCATION_PERMISSIONS
                 if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
                     arView.requestLocationPermissions();
                 }

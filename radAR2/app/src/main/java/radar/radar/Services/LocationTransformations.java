@@ -56,7 +56,7 @@ public class LocationTransformations {
 //        System.out.println(deltaAngle(azimuth, heading));
 //        Log.d("deltaAngle", String.valueOf(deltaAngle(azimuth, heading)));
 //        System.out.println(hPixelsPerDegree);
-        return (int) Math.round(deltaAngle(azimuth, heading) * hPixelsPerDegree);
+        return (int) -Math.round(deltaAngle(azimuth, heading) * hPixelsPerDegree);
     }
 
 
