@@ -54,7 +54,7 @@ public class LocationTransformations {
      */
     public int xOffset(double heading, double azimuth) {
 //        System.out.println(deltaAngle(azimuth, heading));
-        Log.d("deltaAngle", String.valueOf(deltaAngle(azimuth, heading)));
+//        Log.d("deltaAngle", String.valueOf(deltaAngle(azimuth, heading)));
 //        System.out.println(hPixelsPerDegree);
         return (int) Math.round(deltaAngle(azimuth, heading) * hPixelsPerDegree);
     }
@@ -70,7 +70,7 @@ public class LocationTransformations {
      */
     public int yOffset(double pitch, double arPositionOffset) {
         double offset = pitch * vPixelsPerDegree;
-        return (int) Math.round(offset + arPositionOffset);
+        return (int) -Math.round(offset + arPositionOffset);
     }
 
     /**

@@ -54,7 +54,7 @@ public class SensorFilter {
         return output + ALPHA * (input - output);
     }
 
-    public double updateAndGetSmotothed(double input) {
+    public double updateAndGetSmoothed(double input) {
         lastValue = lowPassOne(input, lastValue);
         movingAverage.add(lastValue);
         return movingAverage.getAverage();

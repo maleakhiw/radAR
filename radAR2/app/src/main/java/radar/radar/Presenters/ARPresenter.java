@@ -81,7 +81,11 @@ public class ARPresenter {
         locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
 
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
-        Observable<Float> pitchObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
+        Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
+
+        //        Observable.combineLatest(azimuthObservable, pitchObservable, (azimuth, pitch) ->
+//            ((Float) azimuth).toString() + ", " + ((Float) pitch).toString()
+//        ).subscribe(text -> System.out.println(text));
 
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 //        azimuthObservable.subscribe(azimuth -> System.out.println("azimuth"));
@@ -97,7 +101,7 @@ public class ARPresenter {
             @Override
             public void onNext(LocationAndDeviceData locationAndDeviceData) {
                 // TODO later refactor to List
-                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
+//                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
                 float azimuth = locationAndDeviceData.azimuth;
                 float pitch = locationAndDeviceData.pitch;
                 Location location = locationAndDeviceData.location;
