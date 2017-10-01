@@ -127,8 +127,6 @@ module.exports = class PositioningSystem {
     let accuracy = req.body.accuracy;
     let heading  = req.body.heading;
 
-    console.log(req.body);
-
     let errorKeys = validateUpdateLocationReq(req);
     if (errorKeys.length) {
       sendError(res, errorKeys);
