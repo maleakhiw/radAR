@@ -2,6 +2,7 @@ package radar.radar.Presenters;
 
 
 
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.util.Log;
 
@@ -13,48 +14,53 @@ import java.util.Date;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-import radar.radar.CameraData;
-import radar.radar.DataForPresenter;
 import radar.radar.Models.UserLocation;
 import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
+import radar.radar.Services.SensorService;
 import radar.radar.Views.ARView;
 
 /**
  * Created by kenneth on 28/9/17.
  */
 
-class AzimuthLocation {
+class LocationAndDeviceData {
     float azimuth;
+    float pitch;
     Location location;
 
-    public AzimuthLocation(float azimuth, Location location) {
+    public LocationAndDeviceData(float azimuth, float pitch, Location location) {
+        System.out.println("location and device data");
+        this.pitch = pitch;
         this.azimuth = azimuth;
         this.location = location;
     }
 
     @Override
     public String toString() {
-        return ((Float) azimuth).toString() + ", " + location.toString();
+        return ((Float) azimuth).toString() + ", " + ((Float) pitch).toString() + ", " + location.toString();
     }
 }
 
 public class ARPresenter {
     ARView arView;
-    LocationService locationService;
 
+    // services (part of model)
+    LocationService locationService;
+    SensorService sensorService;
+    LocationTransformations locationTransformations;
+    // mock
     ArrayList<UserLocation> userLocations;  // will be part of the Observable later on
+
                                             // mock for testing
 
-    LocationTransformations locationTransformations;
-
-    public ARPresenter(ARView arView, LocationService locationService) {
+    public ARPresenter(ARView arView, LocationService locationService, SensorManager sensorManager, LocationTransformations locationTransformations) {
         this.arView = arView;
         this.locationService = locationService;
-    }
+        this.sensorService = new SensorService(sensorManager);
+        this.locationTransformations = locationTransformations;
 
-    public void loadData() {
+        // TODO remove
         userLocations = new ArrayList<>();
         // for now, return fake data
 
@@ -62,48 +68,39 @@ public class ARPresenter {
         userLocations.add(userLocation1);
         arView.inflateARAnnotation(userLocation1);
 
-        arView.setAnnotationOffsets(1, 200, 16);
+//        arView.setAnnotationOffsets(1, 200, 16);
         arView.setAnnotationMainText(1, "University of Melbourne");
 
         // to remove an annotation, call ARView.removeAnnotationById
     }
 
+    public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
+        System.out.println("updateData");
+        // update number of pixels per degree
+        locationTransformations.sethPixelsPerDegree(hPixelsPerDegree);
+        locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
 
-    boolean called = false;
+        Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
+        Observable<Float> pitchObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
 
-    Observable<AzimuthLocation> azimuthLocationObservable;
-
-    public void updateFovs(DataForPresenter dataForPresenter) {
-        System.out.println("updateFovs");
-
-        if (locationTransformations == null) {
-            locationTransformations = new LocationTransformations(dataForPresenter.hPixelsPerDegree, dataForPresenter.vPixelsPerDegree);
-        } else {
-            locationTransformations.sethPixelsPerDegree(dataForPresenter.hPixelsPerDegree);
-            locationTransformations.setvPixelsPerDegree(dataForPresenter.vPixelsPerDegree);
-        }
-
-        Observable<Float> azimuthObservable = arView.getAzimuthObservable();
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
-        azimuthLocationObservable = Observable.combineLatest(azimuthObservable, locationObservable, (azimuth, location) -> {
-            AzimuthLocation azimuthLocation = new AzimuthLocation(azimuth, location);
-            return azimuthLocation;
-        });
+//        azimuthObservable.subscribe(azimuth -> System.out.println("azimuth"));
+//        pitchObservable.subscribe(pitch -> System.out.println("pitch"));
+//        locationObservable.subscribe(location -> System.out.println("location"));
 
-
-        azimuthLocationObservable.subscribe(new Observer<AzimuthLocation>() {
+        Observable.combineLatest(azimuthObservable, pitchObservable, locationObservable, LocationAndDeviceData::new).subscribe(new Observer<LocationAndDeviceData>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(AzimuthLocation azimuthLocation) {
-
+            public void onNext(LocationAndDeviceData locationAndDeviceData) {
                 // TODO later refactor to List
-                Log.d("azimuthLocation", azimuthLocation.toString());
-                float azimuth = azimuthLocation.azimuth;
-                Location location = azimuthLocation.location;
+                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
+                float azimuth = locationAndDeviceData.azimuth;
+                float pitch = locationAndDeviceData.pitch;
+                Location location = locationAndDeviceData.location;
                 float latUser = (float) location.getLatitude();
                 float lonUser = (float) location.getLongitude();
 
@@ -115,15 +112,17 @@ public class ARPresenter {
 
                 // get xOffset and yOffset
                 int xOffset = locationTransformations.xOffset(bearing, azimuth);
-                // TODO yOffset
+                int yOffset = locationTransformations.yOffset(pitch, 0);
 
-                arView.setAnnotationOffsets(1, xOffset, 0);
-
+                arView.setAnnotationOffsets(1, xOffset, yOffset);
             }
 
             @Override
             public void onError(Throwable e) {
-
+                // TODO check for the GRANT_LOCATION_PERMISSIONS
+                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+                    arView.requestLocationPermissions();
+                }
             }
 
             @Override

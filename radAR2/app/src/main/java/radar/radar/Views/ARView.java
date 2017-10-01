@@ -8,7 +8,7 @@ import radar.radar.Models.UserLocation;
  */
 
 public interface ARView {
-    Observable<Float> getAzimuthObservable();
+    void requestLocationPermissions();
 
     void removeAnnotation(int userID);
 
