@@ -22,6 +22,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import radar.radar.CompassDirection;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
 import radar.radar.Models.Responses.UpdateLocationResponse;

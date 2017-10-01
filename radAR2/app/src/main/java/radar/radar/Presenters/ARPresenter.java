@@ -4,7 +4,6 @@ package radar.radar.Presenters;
 
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.android.gms.location.LocationRequest;
 
@@ -117,7 +116,18 @@ public class ARPresenter {
 
                 // update distance to destination
                 // TODO: hardcoded destination
-                arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, userLocations.get(0).getLat(), userLocations.get(0).getLon(), 'K') * 1000);
+                UserLocation destination = userLocations.get(0);
+                arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, destination.getLat(), destination.getLon(), 'K') * 1000);
+                double bearingToDest = LocationTransformations.bearingBetween(latUser, lonUser, destination.getLat(), destination.getLon());
+                arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
+
+                // update heading
+                double headingAzimuth = azimuth;
+                if (azimuth < 0) {
+                    headingAzimuth += 180;
+                }
+//                System.out.println(azimuth);
+                arView.updateHUDHeading(LocationTransformations.getCompassDirection(headingAzimuth));
 
                 for (UserLocation userLocation: userLocations) {
                     int userID = userLocation.getUserID();

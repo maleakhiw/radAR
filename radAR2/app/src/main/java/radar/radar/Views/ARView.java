@@ -1,6 +1,7 @@
 package radar.radar.Views;
 
 import io.reactivex.Observable;
+import radar.radar.CompassDirection;
 import radar.radar.Models.UserLocation;
 
 /**
@@ -24,4 +25,8 @@ public interface ARView {
     void updateDistanceToDestination(double distance);
 
     void updateDestinationName(String name);
+
+    void updateRelativeDestinationPosition(CompassDirection compassDirection);
+
+    void updateHUDHeading(CompassDirection direction);
 }

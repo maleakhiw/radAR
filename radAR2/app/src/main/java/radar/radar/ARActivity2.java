@@ -80,6 +80,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     // HUD Views
     TextView distanceToDestination;
     TextView destinationName;
+    TextView relativeCompassDirection;
+    TextView heading;
 
     // main relative layout size
     Observable<ViewSize> mainRelativeLayoutSizeObservable;
@@ -124,8 +126,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         inflater = getLayoutInflater();
         arAnnotations = new HashMap<>();
 
+        // HUD views
         destinationName = findViewById(R.id.HUD_destination_name);
         distanceToDestination = findViewById(R.id.HUD_distance_to_dest);
+        relativeCompassDirection = findViewById(R.id.HUD_relative_compass_direction);
+        heading = findViewById(R.id.HUD_heading);
 
         // add listener for when mainRelativeLayout changes size
         mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
@@ -642,9 +647,74 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         destinationName.setText(name);
     }
 
+    @Override
+    public void updateRelativeDestinationPosition(CompassDirection compassDirection) {
+//        System.out.println(compassDirection);
+        switch (compassDirection) {
+            case NORTH:
+                relativeCompassDirection.setText("front");
+                break;
+            case NORTHEAST:
+                relativeCompassDirection.setText("front");
+                break;
+            case EAST:
+                relativeCompassDirection.setText("right");
+                break;
+            case SOUTHEAST:
+                relativeCompassDirection.setText("right");
+                break;
+            case SOUTH:
+                relativeCompassDirection.setText("back");
+                break;
+            case SOUTHWEST:
+                relativeCompassDirection.setText("left");
+                break;
+            case WEST:
+                relativeCompassDirection.setText("left");
+                break;
+            case NORTHWEST:
+                relativeCompassDirection.setText("front");
+                break;
+            default:
+                Log.d("updatePosition", "Invalid compass direction");
+        }
+    }
+
+    @Override
+    public void updateHUDHeading(CompassDirection direction) {
+        switch (direction) {
+            case NORTH:
+                heading.setText("N");
+                break;
+            case NORTHEAST:
+                heading.setText("NE");
+                break;
+            case EAST:
+                heading.setText("E");
+                break;
+            case SOUTHEAST:
+                heading.setText("SE");
+                break;
+            case SOUTH:
+                heading.setText("S");
+                break;
+            case SOUTHWEST:
+                heading.setText("SW");
+                break;
+            case WEST:
+                heading.setText("W");
+                break;
+            case NORTHWEST:
+                heading.setText("NW");
+                break;
+            default:
+                Log.d("updateHeading", "Invalid compass direction");
+        }
+    }
 
 
 
 
 
 }
+

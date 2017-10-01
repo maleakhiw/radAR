@@ -2,6 +2,9 @@ package radar.radar.Services;
 
 import android.util.Log;
 
+import radar.radar.CompassDirection;
+import static radar.radar.CompassDirection.*;
+
 /**
  * Created by kenneth on 30/9/17.
  */
@@ -126,5 +129,52 @@ public class LocationTransformations {
             dist = dist * 0.8684;
         }
         return (dist);
+    }
+
+    public static CompassDirection getDeltaAngleCompassDirection(double azimuth, double heading) {
+        double deltaAngle = deltaAngle(azimuth, heading);
+        if (deltaAngle < 0) {
+            deltaAngle += 360;
+        }
+        if (deltaAngle >= 0 && deltaAngle < 22.5 || deltaAngle >= 337.5 && deltaAngle < 360) {
+            return NORTH;
+        } else if (deltaAngle >= 22.5 && deltaAngle < 67.5) {
+            return NORTHEAST;
+        } else if (deltaAngle >= 67.5 && deltaAngle < 112.5) {
+            return EAST;
+        } else if (deltaAngle >= 112.5 && deltaAngle < 157.5) {
+            return SOUTHEAST;
+        } else if (deltaAngle >= 157.5 && deltaAngle < 202.5) {
+            return SOUTH;
+        } else if (deltaAngle >= 202.5 && deltaAngle < 247.5) {
+            return SOUTHWEST;
+        } else if (deltaAngle >= 247.5 && deltaAngle < 292.5) {
+            return WEST;
+        } else {
+            return NORTHWEST;
+        }
+    }
+
+    public static CompassDirection getCompassDirection(double degree) {
+        if (degree < 0) {
+            degree += 360;
+        }
+        if (degree >= 0 && degree < 22.5 || degree >= 337.5 && degree < 360) {
+            return NORTH;
+        } else if (degree >= 22.5 && degree < 67.5) {
+            return NORTHEAST;
+        } else if (degree >= 67.5 && degree < 112.5) {
+            return EAST;
+        } else if (degree >= 112.5 && degree < 157.5) {
+            return SOUTHEAST;
+        } else if (degree >= 157.5 && degree < 202.5) {
+            return SOUTH;
+        } else if (degree >= 202.5 && degree < 247.5) {
+            return SOUTHWEST;
+        } else if (degree >= 247.5 && degree < 292.5) {
+            return WEST;
+        } else {
+            return NORTHWEST;
+        }
     }
 }
