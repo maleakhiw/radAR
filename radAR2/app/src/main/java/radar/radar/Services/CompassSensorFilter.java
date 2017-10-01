@@ -23,7 +23,6 @@ public class CompassSensorFilter extends SensorFilter {
          * it takes for the sensor to take a sample.
          */
         if (Math.abs(input - lastValue) > 170) {    // wraparound, don't smooth!
-
             setLastValue(input);
             movingAverage.setAllToValue(input);
             return input;
