@@ -63,16 +63,15 @@ public class ARPresenter {
         userLocations = new ArrayList<>();
         // for now, return fake data
 
-//        UserLocation userLocation1 = new UserLocation(1, 37.7978317f,144.9604245f, 0.1f, 2, new Date());
-//        userLocations.add(userLocation1);
-//        arView.inflateARAnnotation(userLocation1);
+        UserLocation userLocation1 = new UserLocation(1, -37.797639f, 144.958405f, 0.1f, 2, new Date());
+        userLocations.add(userLocation1);
+        arView.inflateARAnnotation(userLocation1);
 
         UserLocation userLocation2 = new UserLocation(2, -37.829293f, 144.956805f, 0.1f, 2, new Date());
         userLocations.add(userLocation2);
         arView.inflateARAnnotation(userLocation2);
 
-//        arView.setAnnotationOffsets(1, 200, 16);
-//        arView.setAnnotationMainText(1, "University of Melbourne");
+        arView.setAnnotationMainText(1, "MCM");
         arView.setAnnotationMainText(2, "Southbank");
 
         // to remove an annotation, call ARView.removeAnnotationById
@@ -107,7 +106,6 @@ public class ARPresenter {
 
             @Override
             public void onNext(LocationAndDeviceData locationAndDeviceData) {
-                Log.d("locationAndDeviceData", locationAndDeviceData.toString());
                 Location location = locationAndDeviceData.location;
                 float latUser = (float) location.getLatitude();
                 float lonUser = (float) location.getLongitude();
@@ -117,7 +115,6 @@ public class ARPresenter {
                 for (UserLocation userLocation: userLocations) {
                     int userID = userLocation.getUserID();
                     double bearing = locationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
-                    System.out.println(bearing);
 
                     // get xOffset and yOffset
                     int xOffset = locationTransformations.xOffset(bearing, azimuth);

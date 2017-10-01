@@ -316,8 +316,16 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             int annotationHeight = layout.getHeight();
             int annotationWidth = layout.getWidth();
 
+            int marginLeft = midpointWidth + annotation.offsetX - annotationWidth/2;
+            int marginTop = midpointHeight + annotation.offsetY - annotationHeight/2;
 
-            layoutParam.setMargins(midpointWidth + annotation.offsetX - annotationWidth/2, midpointHeight + annotation.offsetY - annotationHeight/2, 0, 0);
+//            System.out.println(marginLeft);
+            if (marginLeft > 0 && marginLeft < width) {
+                layout.setVisibility(View.VISIBLE);
+                layoutParam.setMargins(marginLeft, marginTop, 0, 0);
+            } else {
+                layout.setVisibility(View.GONE);
+            }
 //            layoutParam.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);   // matches above
             layout.setLayoutParams(layoutParam);
 

@@ -27,7 +27,7 @@ public class SensorService {
         assert (sensorManager != null);
 
         this.sensorManager = sensorManager;
-        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
 
         azimuthUpdates = Observable.create(emitter -> {
@@ -46,11 +46,13 @@ public class SensorService {
                         SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
                         double azimuth = Math.toDegrees(mOrientationAngles[0]);
-                        if (azimuth < 0.0f) {   // normalise
-                            azimuth += 360f;
-                        }
+//                        if (azimuth < 0.0f) {   // normalise
+//                            azimuth += 360f;
+//                        }
 
                         azimuth = filter.updateAndGetSmoothed(azimuth);
+
+//                        System.out.println(azimuth);
 
                         emitter.onNext(azimuth);
                     }
