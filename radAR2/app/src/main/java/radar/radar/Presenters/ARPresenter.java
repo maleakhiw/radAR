@@ -74,6 +74,9 @@ public class ARPresenter {
         arView.setAnnotationMainText(1, "MCM");
         arView.setAnnotationMainText(2, "Southbank");
 
+        // TODO remove hardcode on destination
+        arView.updateDestinationName("MCM");
+
         // to remove an annotation, call ARView.removeAnnotationById
     }
 
@@ -112,9 +115,13 @@ public class ARPresenter {
                 float azimuth = locationAndDeviceData.azimuth;
                 float pitch = locationAndDeviceData.pitch;
 
+                // update distance to destination
+                // TODO: hardcoded destination
+                arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, userLocations.get(0).getLat(), userLocations.get(0).getLon(), 'K') * 1000);
+
                 for (UserLocation userLocation: userLocations) {
                     int userID = userLocation.getUserID();
-                    double bearing = locationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
+                    double bearing = LocationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
 
                     // get xOffset and yOffset
                     int xOffset = locationTransformations.xOffset(bearing, azimuth);

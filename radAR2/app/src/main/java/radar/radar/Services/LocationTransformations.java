@@ -36,7 +36,7 @@ public class LocationTransformations {
      * @param angle2 angle in degrees
      * @return
      */
-    public double deltaAngle(double angle1, double angle2) {
+    public static double deltaAngle(double angle1, double angle2) {
         double deltaAngle = angle1 - angle2;
         if (deltaAngle > 180) {
             deltaAngle -= 360;
@@ -82,7 +82,7 @@ public class LocationTransformations {
      * @return azimuth between the 2 points
      */
     // http://mathforum.org/library/drmath/view/55417.html
-    public double bearingBetween(double lat1, double lon1, double lat2, double lon2) {
+    public static double bearingBetween(double lat1, double lon1, double lat2, double lon2) {
         double azimuth = 0;
         lat1 = Math.toRadians(lat1);
         lon1 = Math.toRadians(lon1);
@@ -102,5 +102,29 @@ public class LocationTransformations {
 
         return azimuth;
 
+    }
+
+    /**
+     * Calculates the distance between two latitudes and longitudes
+     * @param lat1
+     * @param lon1
+     * @param lat2
+     * @param lon2
+     * @param unit
+     * @return
+     */
+    public static double distance(double lat1, double lon1, double lat2, double lon2, char unit) {
+        // adapted from https://stackoverflow.com/a/3694410
+        double theta = lon1 - lon2;
+        double dist = Math.sin(Math.toRadians(lat1)) * Math.sin(Math.toRadians(lat2)) + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) * Math.cos(Math.toRadians(theta));
+        dist = Math.acos(dist);
+        dist = Math.toDegrees(dist);
+        dist = dist * 60 * 1.1515;
+        if (unit == 'K') {
+            dist = dist * 1.609344;
+        } else if (unit == 'N') {
+            dist = dist * 0.8684;
+        }
+        return (dist);
     }
 }

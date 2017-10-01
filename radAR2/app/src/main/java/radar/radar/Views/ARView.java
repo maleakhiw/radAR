@@ -20,4 +20,8 @@ public interface ARView {
     void setAnnotationMainText(int userID, String text);
 
     void setAnnotationOffsets(int userID, int offsetLeft, int offsetTop);
+
+    void updateDistanceToDestination(double distance);
+
+    void updateDestinationName(String name);
 }

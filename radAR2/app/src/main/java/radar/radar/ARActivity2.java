@@ -77,6 +77,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     CameraData mCameraData;
     CameraCaptureSession cameraCaptureSession;
 
+    // HUD Views
+    TextView distanceToDestination;
+    TextView destinationName;
+
     // main relative layout size
     Observable<ViewSize> mainRelativeLayoutSizeObservable;
     int lastHeight;
@@ -119,6 +123,9 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
         inflater = getLayoutInflater();
         arAnnotations = new HashMap<>();
+
+        destinationName = findViewById(R.id.HUD_destination_name);
+        distanceToDestination = findViewById(R.id.HUD_distance_to_dest);
 
         // add listener for when mainRelativeLayout changes size
         mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
@@ -623,7 +630,17 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     }
 
 
+    @Override
+    public void updateDistanceToDestination(double distance) {
+        // TODO intelligent formatting: km, m
+        // TODO: east, west? relative bearing to azimuth - use LocationTransformations
+        distanceToDestination.setText(((Integer) (int) distance).toString() + " m");
+    }
 
+    @Override
+    public void updateDestinationName(String name) {
+        destinationName.setText(name);
+    }
 
 
 
