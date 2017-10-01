@@ -197,7 +197,7 @@ module.exports = class GroupSystem extends SMS{
             resolve(locationData);
             locations.push(locationData);
           } else {
-            resolve(null);
+            resolve();
           }
         });
       }));
@@ -205,6 +205,7 @@ module.exports = class GroupSystem extends SMS{
       return Promise.all(promiseAll);
     })
     .then(() => {
+      console.log(locations);
       res.json({
         success: true,
         errors: [],
