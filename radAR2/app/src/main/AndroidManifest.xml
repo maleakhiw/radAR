@@ -52,12 +52,13 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
-        <activity android:name=".ARActivity2"></activity>
+        <activity android:name=".ARActivity2" />
         <activity
             android:name=".GroupsActivity"
             android:label="@string/title_activity_groups"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".ChatActivity"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".ChatListActivity"></activity>
     </application>
 
 </manifest>
