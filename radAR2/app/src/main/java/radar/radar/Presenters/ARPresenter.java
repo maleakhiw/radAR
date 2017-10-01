@@ -30,7 +30,6 @@ class LocationAndDeviceData {
     Location location;
 
     public LocationAndDeviceData(float azimuth, float pitch, Location location) {
-        System.out.println("location and device data");
         this.pitch = pitch;
         this.azimuth = azimuth;
         this.location = location;
