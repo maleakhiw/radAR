@@ -31,10 +31,13 @@
             android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            tools:layout_editor_absoluteY="0dp">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -82,9 +85,16 @@
                             android:id="@+id/HUD_distance_to_dest"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="200m"
+                            android:text="200"
                             android:textAlignment="center"
-                            android:textSize="48dp" />
+                            android:textSize="36dp" />
+
+                        <TextView
+                            android:id="@+id/HUD_distance_unit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingRight="8dp"
+                            android:text="m" />
 
                         <TextView
                             android:layout_width="wrap_content"

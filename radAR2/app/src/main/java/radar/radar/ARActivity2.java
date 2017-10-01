@@ -32,6 +32,9 @@ import android.widget.TextView;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import org.w3c.dom.Text;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -79,6 +82,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     // HUD Views
     TextView distanceToDestination;
+    TextView distanceUnit;
     TextView destinationName;
     TextView relativeCompassDirection;
     TextView heading;
@@ -129,6 +133,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // HUD views
         destinationName = findViewById(R.id.HUD_destination_name);
         distanceToDestination = findViewById(R.id.HUD_distance_to_dest);
+        distanceUnit = findViewById(R.id.HUD_distance_unit);
         relativeCompassDirection = findViewById(R.id.HUD_relative_compass_direction);
         heading = findViewById(R.id.HUD_heading);
 
@@ -634,12 +639,21 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     }
 
+    DecimalFormat df = new DecimalFormat();
 
     @Override
     public void updateDistanceToDestination(double distance) {
-        // TODO intelligent formatting: km, m
-        // TODO: east, west? relative bearing to azimuth - use LocationTransformations
-        distanceToDestination.setText(((Integer) (int) distance).toString() + " m");
+        if (distance >= 1000) {
+            distance = distance/1000;
+            distanceUnit.setText("km");
+            df.setMaximumFractionDigits(2);
+            distanceToDestination.setText(df.format(distance));
+        } else {
+            distanceUnit.setText("m");
+            distanceToDestination.setText(((Integer) (int) distance).toString());
+        }
+
+
     }
 
     @Override
