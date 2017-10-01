@@ -47,6 +47,7 @@
                 android:id="@+id/HUD_heading"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:text="N"
                 android:textAlignment="center"
                 android:textSize="24dp" />
 

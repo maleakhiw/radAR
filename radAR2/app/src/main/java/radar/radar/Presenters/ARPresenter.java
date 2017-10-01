@@ -58,6 +58,8 @@ public class ARPresenter {
         this.sensorService = new SensorService(sensorManager);
         this.locationTransformations = locationTransformations;
 
+        // TODO warn if no location in 5sec
+
         // TODO remove
         userLocations = new ArrayList<>();
         // for now, return fake data
