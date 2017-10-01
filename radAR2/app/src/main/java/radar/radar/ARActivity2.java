@@ -3,12 +3,8 @@ package radar.radar;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -17,7 +13,6 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
-import android.location.Location;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -26,7 +21,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.SizeF;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
@@ -111,10 +105,14 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FOR_LOCATION);
     }
 
+    CameraManager cameraManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar2);
+
+        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         // TODO also ask for location permissions
 
@@ -148,7 +146,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         previewView = findViewById(R.id.AR2_texture_view);
 
-        setupCameraPrewiew();   // TODO refactor to camera service
+        setupCameraPreview();   // TODO refactor to camera service
 
         // every time the size of the main RelativeLayout changes, or when the camera data (FOV) is returned
         // update view, create a new presenter or update the data
@@ -191,7 +189,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             System.out.println("Closing camera device");
             mCameraDevice.close();
         }
-        mCameraData = null;
         if (cameraCaptureSession != null) {
             System.out.println("Closing capture session");
             cameraCaptureSession.close();
@@ -206,7 +203,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     public void onStart() { // multitask to other apps
         if (cameraCaptureSession != null) {
             System.out.println("setupCameraPreview()");
-            setupCameraPrewiew();
+            restartCameraPreview();
         }
 
         // TODO start sensors - call SensorService
@@ -221,7 +218,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             // if request is cancelled, the result arrays are empty
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted!
-                setupCameraPrewiew();
+                setupCameraPreview();
 
             } else {
                 // permission denied!
@@ -232,7 +229,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted!
-//                setupCameraPrewiew();
+//                setupCameraPreview();
 
             } else {
                 // permission denied!
@@ -522,7 +519,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     Observable<CameraData> cameraDataObservable;
 
-    void setupCameraPrewiew() {
+    void setupCameraPreview() {
         // uses Camera2 API
         // 1. Get a Surface to draw on from the TextureView, then
         // 2. Fetch camera data, then
@@ -530,7 +527,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // 4. Create a new capture session
 
         // fetch camera data
-        CameraManager cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         System.out.println("setupCameraPreview() called");
 
         cameraDataObservable = Observable.create(emitter -> {
@@ -577,6 +573,43 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
                     }
                 });
 
+        });
+
+    }
+
+    void restartCameraPreview() {
+        // fetch camera data
+        System.out.println("resetCameraPreview() called");
+
+        getCameraDevice(cameraManager, mCameraData.cameraID)
+        .switchMap((cameraDevice -> {
+            mCameraDevice = cameraDevice;
+            return createCaptureSession(mSurface, cameraDevice);
+        }))
+        .subscribe(new Observer<CameraCaptureSession>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(CameraCaptureSession session) {
+                cameraCaptureSession = session;
+                Log.d("captureSessionObserver", "Camera setup complete");
+
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.w("restartCameraPreview", "Error occurred");
+                System.out.println(e);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
         });
 
     }
