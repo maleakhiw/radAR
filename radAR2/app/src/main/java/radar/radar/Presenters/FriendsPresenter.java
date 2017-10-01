@@ -15,13 +15,10 @@ public class FriendsPresenter {
     public FriendsPresenter(FriendsView friendsView, UsersService usersService) {
         this.friendsView = friendsView;
         this.usersService = usersService;
-        loadFriends();
-
     }
 
     public void respondToFABClick() {
         friendsView.launchSearchFriendsActivity();
-
     }
 
     public void loadFriends() {
@@ -37,13 +34,13 @@ public class FriendsPresenter {
                     friendsView.bindAdapterToRecyclerView(friendsResponse.friends);
                     System.out.println(friendsResponse.friends);
                 } else {
-                    friendsView.showToast("Error occurred");
+                    friendsView.showToast("Failed to load friends");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
-                friendsView.showToast("Error occurred");
+                friendsView.showToast("Unauthorized token. Please login again");
             }
 
             @Override

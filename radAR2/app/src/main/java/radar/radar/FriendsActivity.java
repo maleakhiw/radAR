@@ -43,8 +43,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        recyclerView = (RecyclerView) findViewById(R.id.friends_recyclerView);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        recyclerView = findViewById(R.id.friends_recyclerView);
+        fab = findViewById(R.id.fab);
         
         Retrofit retrofit = new Retrofit.Builder()
                                         .baseUrl("http://35.185.35.117/api/")
@@ -55,6 +55,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         usersService = new UsersService(usersApi, this);
 
         presenter = new FriendsPresenter(this, usersService);
+        presenter.loadFriends();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
