@@ -49,7 +49,9 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 if (id == R.id.nav_maps) {
                     //TODO: Go to maps
                 } else if (id == R.id.nav_chats) {
-                    //TODO: Go to chats
+                    Intent intent = new Intent(activity, ChatListActivity.class);
+                    activity.startActivity(intent);
+                    activity.finish();
                 } else if (id == R.id.nav_friends) {
 
                     // launch Friends activity
