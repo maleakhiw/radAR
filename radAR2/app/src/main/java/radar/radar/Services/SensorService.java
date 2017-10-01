@@ -67,7 +67,7 @@ public class SensorService {
                         float[] orientation = new float[3];
                         SensorManager.getOrientation(mRotationMatrix2, orientation);
 
-                        double pitch = Math.toDegrees(orientation[1]);
+                        double pitch = -1 * Math.toDegrees(orientation[1]); // TODO needs -1 on OnePlus 5
                         pitch = sensorFilter.updateAndGetSmotothed(pitch);
 
                         emitter.onNext(new PitchOrAzimuth(pitch, Type.PITCH));
