@@ -176,13 +176,16 @@ module.exports = class GroupSystem extends SMS{
     let groupID = req.params.groupID;
 
     let locations = [];
+    let userDetails = {};
 
     console.log(userID, groupID);
+
+    let members;
 
     groupExists(groupID).then(() => Group.findOne({groupID: groupID}))
     .then((group) => {
       console.log(group);
-      let members = group.members;
+      members = group.members;
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         console.log(memberUserID);
         UserLocation.findOne({userID: memberUserID}).exec()
@@ -208,11 +211,24 @@ module.exports = class GroupSystem extends SMS{
       return Promise.all(promiseAll);
     })
     .then(() => {
+      let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+        User.findOne({userID: memberUserID}).exec()
+        .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
+          if (user) {
+            userDetails[memberUserID] = common.getPublicUserInfo(user);
+          }
+          resolve();
+        })
+      }))
+    }
+    .then(() => {
       console.log(locations);
+      console.log(userDetails);
       res.json({
         success: true,
         errors: [],
-        locations: locations
+        locations: locations,
+        userDetails: userDetails
       })
     })
 
