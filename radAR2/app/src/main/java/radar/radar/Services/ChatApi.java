@@ -2,6 +2,7 @@ package radar.radar.Services;
 
 import io.reactivex.Observable;
 import radar.radar.Models.Requests.NewChatRequest;
+import radar.radar.Models.Requests.SendMessageRequest;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.MessagesResponse;
@@ -25,6 +26,9 @@ public interface ChatApi {
 
     @GET("accounts/{userID}/chats/{chatID}")
     Observable<GetChatInfoResponse> getChatInfo(@Path(value="userID", encoded=true) int userID, @Header("token") String token,  @Path(value="chatID", encoded=true) int chatID);
+
+    @POST("accounts/{userID}/chats/{chatID}/messages")
+    Observable<SendMessageRequest> sendMessages(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="chatID", encoded=true) int chatID);
 
     @GET("accounts/{userID}/chats/{chatID}/messages")
     Observable<MessagesResponse> getMessages(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="chatID", encoded=true) int chatID);

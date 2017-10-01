@@ -6,6 +6,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Requests.NewChatRequest;
+import radar.radar.Models.Requests.SendMessageRequest;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.MessagesResponse;
@@ -46,6 +47,13 @@ public class ChatService {
 
     public Observable<MessagesResponse> getMessages(int chatID) {
         return chatApi.getMessages(userID, token, chatID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    // send message
+    public Observable<SendMessageRequest> sendMessages(int chatID) {
+        return chatApi.sendMessages(userID, token, chatID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
