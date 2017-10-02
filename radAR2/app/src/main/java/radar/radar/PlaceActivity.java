@@ -1,6 +1,5 @@
 package radar.radar;
 
-
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,9 +22,9 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceBuffer;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
@@ -43,7 +42,7 @@ public class PlaceActivity extends AppCompatActivity implements
     // Member variables
     private PlaceListAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private GoogleApiClient.Builder mClient;
+    private GoogleApiClient mClient;
 
     /**
      * Called when the activity is starting
@@ -61,29 +60,49 @@ public class PlaceActivity extends AppCompatActivity implements
         mAdapter = new PlaceListAdapter(this, null);
         mRecyclerView.setAdapter(mAdapter);
 
+        // Build up the LocationServices API client
+        // Uses the addApi method to request the LocationServices API
+        // Also uses enableAutoManage to automatically when to connect/suspend the client
         mClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API);
+                .addApi(LocationServices.API)
+                .build();
     }
 
+    /***
+     * Called when the Google API Client is successfully connected
+     *
+     * @param connectionHint Bundle of data provided to clients by Google Play services
+     */
     @Override
     public void onConnected(@Nullable Bundle connectionHint) {
         refreshPlacesData();
         Log.i(TAG, "API Client Connection Successful!");
     }
 
+    /***
+     * Called when the Google API Client is suspended
+     *
+     * @param cause cause The reason for the disconnection. Defined by constants CAUSE_*.
+     */
     @Override
-    public void onConnectionSuspended(int i)  {
+    public void onConnectionSuspended(int cause) {
         Log.i(TAG, "API Client Connection Suspended!");
     }
 
+    /***
+     * Called when the Google API Client failed to connect to Google Play Services
+     *
+     * @param result A ConnectionResult that can be used for resolving the error
+     */
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
         Log.e(TAG, "API Client Connection Failed!");
     }
 
     public void refreshPlacesData() {
+        Log.println(Log.INFO, TAG, "TESTING REFRESH PLACES DATA");
         Uri uri = PlaceContract.PlaceEntry.CONTENT_URI;
         Cursor data = getContentResolver().query(
                 uri,
@@ -97,9 +116,8 @@ public class PlaceActivity extends AppCompatActivity implements
         while (data.moveToNext()) {
             guids.add(data.getString(data.getColumnIndex(PlaceContract.PlaceEntry.COLUMN_PLACE_ID)));
         }
-
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(mClient,
-                guids.toArray(new String[]),null);
+                guids.toArray(new String[guids.size()]));
         placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
             @Override
             public void onResult(@NonNull PlaceBuffer places) {
