@@ -27,7 +27,13 @@
         <activity android:name=".UserDetailActivity" />
         <activity
             android:name=".LaunchActivity"
-            android:theme="@style/Theme.AppCompat.Translucent"></activity>
+            android:theme="@style/Theme.AppCompat.Translucent">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ChatsListActivity"
             android:label="@string/title_activity_chats_list"
@@ -42,20 +48,16 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
+            android:label="@string/title_activity_maps">
+        </activity>
         <activity
             android:name=".PlaceActivity"
             android:label="@string/title_activity_place">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <activity
-            android:name=".SearchLocationActivity">
-
+            android:name=".SearchLocationActivity"
+            android:label="radAR Search Location">
         </activity>
     </application>
 

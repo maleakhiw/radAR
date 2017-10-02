@@ -43,14 +43,16 @@
             android:autoLink="all"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <TextView
             android:id="@+id/place_attribution"
             android:autoLink="all"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark" />
 
     </LinearLayout>
 

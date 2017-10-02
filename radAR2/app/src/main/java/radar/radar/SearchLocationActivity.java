@@ -90,7 +90,7 @@ public class SearchLocationActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
             if (resultCode == RESULT_OK) {
                 // Get the user's selected place from the Intent.
-                Place place = PlaceAutocomplete.getPlace(this, data);
+                Place place = PlacePicker.getPlace(this, data);
                 Log.i(TAG, "Place Selected: " + place.getName());
 
                 // Format the place's details and display them in the TextView.
@@ -106,7 +106,7 @@ public class SearchLocationActivity extends AppCompatActivity {
                     mPlaceAttribution.setText("");
                 }
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
+                Status status = PlacePicker.getStatus(this, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
             } else if (resultCode == RESULT_CANCELED) {
                 // Indicates that the activity closed before a selection was made. For example if
