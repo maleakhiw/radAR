@@ -94,6 +94,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     // main relative layout size
     Observable<ViewSize> mainRelativeLayoutSizeObservable;
+    ViewSize lastViewSize;
     int lastHeight;
     int lastWidth;
 
@@ -122,6 +123,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     CameraManager cameraManager;
 
+    LocationService locationService;
+    GroupsService groupsService;
+    SensorManager sensorManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -146,7 +151,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
             mainRelativeLayout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 if (lastHeight != (bottom - top) || lastWidth != (right - left)) {
-                    emitter.onNext(new ViewSize(bottom - top, right - left));
+                    lastViewSize = new ViewSize(bottom - top, right - left);
+                    emitter.onNext(lastViewSize);
                     lastHeight = bottom - top;
                     lastWidth = right - left;
                 }
@@ -165,37 +171,17 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
-        GroupsService groupsService = new GroupsService(this, groupsApi);
+        locationService = new LocationService(locationApi, this, fusedLocationClient);
+        groupsService = new GroupsService(this, groupsApi);
 
-        SensorManager sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 
         previewView = findViewById(R.id.AR2_texture_view);
 
         setupCameraPreview();   // TODO refactor to camera service
 
         // every time the size of the main RelativeLayout changes, or when the camera data (FOV) is returned
-        // update view, create a new presenter or update the data
-        Observable.combineLatest(mainRelativeLayoutSizeObservable, cameraDataObservable, (viewSize, cameraData) -> {
-
-            double hFov = cameraData.horizontalFov;
-            double vFov = cameraData.verticalFov;
-            int width = viewSize.width; // in pixels (can be relative as long as we keep consistent)
-            int height = viewSize.height;   // in pixels
-
-            // create a new presenter
-            LocationTransformations locationTransformations = new LocationTransformations(width/hFov, height/vFov);
-            if (presenter == null) {
-                presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations);
-                presenter.updateData(width/hFov, height/vFov);
-            } else {
-                presenter.updateData(width/hFov, height/vFov);
-            }
-
-            return 1;   // does not matter
-
-
-        }).subscribe();
+        setupPresenter();
 
         // observable for layout size changes
         mainRelativeLayoutSizeObservable.subscribe(viewSize -> {
@@ -206,6 +192,37 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             }
         });
 
+    }
+
+    void setupPresenterImpl(double hFov, double vFov, int width, int height) {
+        // create a new presenter
+        LocationTransformations locationTransformations = new LocationTransformations(width/hFov, height/vFov);
+        if (presenter == null) {
+            presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations);
+            presenter.updateData(width/hFov, height/vFov);
+        } else {
+            presenter.updateData(width/hFov, height/vFov);
+        }
+    }
+
+    void setupPresenter() {
+        if (mCameraData != null) {
+            double hFov = mCameraData.horizontalFov;
+            double vFov = mCameraData.verticalFov;
+            int width = lastViewSize.width;
+            int height = lastViewSize.height;
+            setupPresenterImpl(hFov, vFov, width, height);
+            return;
+        }
+        // update view, create a new presenter or update the data
+        Observable.combineLatest(mainRelativeLayoutSizeObservable, cameraDataObservable, (viewSize, cameraData) -> {
+            double hFov = cameraData.horizontalFov;
+            double vFov = cameraData.verticalFov;
+            int width = viewSize.width; // in pixels (can be relative as long as we keep consistent)
+            int height = viewSize.height;   // in pixels
+            setupPresenterImpl(hFov, vFov, width, height);
+            return 1;   // does not matter, no observers that consume output
+        }).subscribe();
     }
 
     @Override
@@ -268,7 +285,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted!
                 setupCameraPreview();
-
             } else {
                 // permission denied!
                 // TODO show TextView in activity, say that permission was not granted
@@ -277,8 +293,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // permission was granted!
-//                setupCameraPreview();
+                if (mCameraData != null) {
+
+                } else {
+                    setupCameraPreview();   // setup camera preview
+                }
 
             } else {
                 // permission denied!

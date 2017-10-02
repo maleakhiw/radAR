@@ -13,21 +13,18 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import java.security.Security;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
-import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.CompassDirection;
+import radar.radar.Models.MeetingPoint;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
-import radar.radar.Models.Responses.MembersLocationResponse;
+import radar.radar.Models.Responses.GroupsResponse;
+import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
-import radar.radar.Models.UserLocation;
 
 public class LocationService {
     LocationApi locationApi;
@@ -98,46 +95,6 @@ public class LocationService {
     }
 
     /**
-     * Stream of location updates for group members
-     * @param interval interval between requests in ms
-     * @param membersUserIDs list of group members
-     * @return Observable of UserLocations
-     */
-    public Observable<UserLocation> groupLocationUpdates(int interval, ArrayList<Integer> membersUserIDs) {
-        return Observable.create(emitter -> {
-            intervalObservable = Observable.interval(interval, TimeUnit.MILLISECONDS)
-                .map(tick -> {
-                    for (int userID: membersUserIDs) {
-                        getLocation(userID).subscribe(new Observer<GetLocationResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(GetLocationResponse getLocationResponse) {
-                                emitter.onNext(new UserLocation(userID, getLocationResponse));
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
-                    }
-                    return 1;
-                });
-        });
-    }
-
-
-
-    /**
      * Updates the location of a user to the server
      * @param lat Latitude
      * @param lon Longitude
@@ -176,7 +133,7 @@ public class LocationService {
 
     }
 
-    public Observable<MembersLocationResponse> getGroupMembersLocations(int groupID) {
+    public Observable<GroupLocationsInfo> getGroupMembersLocations(int groupID) {
         System.out.println("groupID " + ((Integer) groupID).toString());
         return locationApi.getGroupLocations(userID, groupID, token)
                             .subscribeOn(Schedulers.io())

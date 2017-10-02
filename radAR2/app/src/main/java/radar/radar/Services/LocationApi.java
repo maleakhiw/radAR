@@ -4,7 +4,7 @@ package radar.radar.Services;
 import io.reactivex.Observable;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
-import radar.radar.Models.Responses.MembersLocationResponse;
+import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -21,6 +21,6 @@ public interface LocationApi {
     Observable<GetLocationResponse> getLocation(@Path(value = "queryUserID", encoded=true) int queryUserID, @Query("userID") int yourUserID, @Header("token") String token);
 
     @GET("accounts/{userID}/groups/{groupID}/locations")
-    Observable<MembersLocationResponse> getGroupLocations(@Path(value="userID", encoded=true) int userID, @Path(value="groupID", encoded=true) int groupID, @Header("token") String token);
+    Observable<GroupLocationsInfo> getGroupLocations(@Path(value="userID", encoded=true) int userID, @Path(value="groupID", encoded=true) int groupID, @Header("token") String token);
 
 }

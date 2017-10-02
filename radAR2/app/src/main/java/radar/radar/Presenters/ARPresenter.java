@@ -4,12 +4,9 @@ package radar.radar.Presenters;
 
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.provider.MediaStore;
-import android.util.Log;
 
 import com.google.android.gms.location.LocationRequest;
 
-import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,8 +14,7 @@ import java.util.HashMap;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.Models.Responses.GroupsResponse;
-import radar.radar.Models.Responses.MembersLocationResponse;
+import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 import radar.radar.Models.User;
 import radar.radar.Models.UserLocation;
@@ -36,9 +32,9 @@ class LocationAndDeviceData {
     float azimuth;
     float pitch;
     Location location;
-    MembersLocationResponse groupLocationDetails;
+    GroupLocationsInfo groupLocationDetails;
 
-    public LocationAndDeviceData(float azimuth, float pitch, Location location, MembersLocationResponse groupLocationDetails) {
+    public LocationAndDeviceData(float azimuth, float pitch, Location location, GroupLocationsInfo groupLocationDetails) {
         this.pitch = pitch;
         this.azimuth = azimuth;
         this.location = location;
@@ -64,7 +60,7 @@ public class ARPresenter {
 
                                             // mock for testing
 
-    Observable<MembersLocationResponse> groupMemberLocationsObservable;
+    Observable<GroupLocationsInfo> groupMemberLocationsObservable;
 
     UserLocation destinationLocation;
 
@@ -79,36 +75,7 @@ public class ARPresenter {
 
         userLocations = new ArrayList<>();
 
-        // TODO safe get group
-
-        groupMemberLocationsObservable = Observable.create(emitter -> {
-            groupsService.getGroup(1)
-            .switchMap(groupsResponse -> {
-                ArrayList<Integer> members = groupsResponse.group.members;
-                return locationService.getGroupMembersLocations(1);
-            }).subscribe(new Observer<MembersLocationResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(MembersLocationResponse membersLocationResponse) {
-                    emitter.onNext(membersLocationResponse);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    arView.showToast("Unexpected error occurred");
-                    Log.w("getGroup()", e.getMessage());
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });;
-        });
+        // groupMemberLocationsObservable
 
 
         UserLocation userLocation1 = new UserLocation(1, -37.797639f, 144.958405f, 0.1f, 2, new Date());

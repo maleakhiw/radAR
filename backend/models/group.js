@@ -5,6 +5,7 @@ const uniqueValidator = require('mongoose-unique-validator')
 const meetingPointSchema = new Schema({
   lat: Number,
   lon: Number,
+  name: String,
   description: String,
   timeAdded: Date
 })

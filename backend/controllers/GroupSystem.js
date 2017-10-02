@@ -180,12 +180,21 @@ module.exports = class GroupSystem extends SMS{
 
     console.log(userID, groupID);
 
-    let members;
+    let members, meetingPoint;
 
     groupExists(groupID).then(() => Group.findOne({groupID: groupID}))
     .then((group) => {
+      // TODO refactor to function isAuthorized()
+
       console.log(group);
       members = group.members;
+      meetingPoint = group.meetingPoint;
+
+      // TODO: implement
+      // if (!members.includes(userID)) {
+      //   throw 'unauthorizedGroup';
+      // }
+
       // don't include self
       members = members.filter((memberUserID) => memberUserID != userID);
 
@@ -232,7 +241,8 @@ module.exports = class GroupSystem extends SMS{
         success: true,
         errors: [],
         locations: locations,
-        userDetails: userDetails
+        userDetails: userDetails,
+        meetingPoint: meetingPoint
       })
     })
 
