@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,7 @@ import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.User;
+import radar.radar.Presenters.ChatPresenter;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
@@ -45,6 +47,8 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     private MessageListAdapter messageListAdapter;
 
     private Boolean load;
+
+    private ChatPresenter chatPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,104 +75,78 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         ChatApi chatApi = retrofit.create(ChatApi.class);
         chatService = new ChatService(this, chatApi);
 
+        // Setup presenter
+        chatPresenter = new ChatPresenter(this, chatService);
+
         // Get the user data that we will be chatting with from the previous intent
         user = (User) getIntent().getSerializableExtra("user");
 
         // Check whether we should load or generate new message
         load = getIntent().getExtras().getBoolean("load");
 
-        // If there exist the message, just load the message
-        if (load) {
-            Chat chat = (Chat) getIntent().getSerializableExtra("chat");
-            groupID = chat.groupID;
-            loadMessages(chat.groupID);
-            embedSendMessage();
-        } else {
-            generateNewChat();
-            embedSendMessage();
-        }
-
+        // Process loading message or determine message creation
+        chatPresenter.determineMessageCreation();
     }
 
-    /** Used to get messages */
-    public void loadMessages(int chatID) {
-        chatService.getMessages(chatID).subscribe(new Observer<MessagesResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(MessagesResponse messagesResponse) {
-                // If successful display on recycler view
-                messages = messagesResponse.messages;
-                messageListAdapter.setMessageList(messages);
-                messageListAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    @Override
+    public void setLoad(Boolean load) {
+        this.load = load;
     }
 
-    /** Used to generate a new chat for a particular user */
-    public void generateNewChat() {
-        // Create an object for new chat request which includes the participant of the chat
-        // and also the name of the chat
-        int id = user.userID;
-        ArrayList<Integer> participant = new ArrayList<>();
-        participant.add(id); // add user id (the person user id)
-        participant.add(AuthService.getUserID(this));
-        String name = user.username; // name of the chat is the username
-
-        NewChatRequest newChatRequest = new NewChatRequest(participant, name);
-
-        chatService.newChat(newChatRequest).subscribe(new Observer<NewChatResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(NewChatResponse newChatResponse) {
-                // if the response is successful, then we can proceed to create a chat
-                if (newChatResponse.success) {
-                    // new chat created
-                    groupID = newChatResponse.group.groupID;
-
-
-                }
-                else {
-                    Toast.makeText(getApplicationContext(), "Status false", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getApplicationContext(), "Go to OnError", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    @Override
+    public Boolean getLoad() {
+        return load;
     }
 
-    public void setupUI() {
-        chatText = findViewById(R.id.chat_text_field);
-        send = findViewById(R.id.button_send);
-        messageRecyclerView = findViewById(R.id.messageRecyclerView);
+    @Override
+    public Chat getChatFromIntent() {
+        return ((Chat) getIntent().getSerializableExtra("chat"));
     }
 
+    @Override
+    public void setGroupID(int groupID) {
+        this.groupID = groupID;
+    }
+
+    @Override
+    public int getGroupID() {
+        return groupID;
+    }
+
+    @Override
+    public void setMessages(ArrayList<MessageResponse> messages) {
+        this.messages = messages;
+    }
+
+    @Override
+    public ArrayList<MessageResponse> getMessages() {
+        return messages;
+    }
+
+    @Override
+    public MessageListAdapter getMessageListAdapter() {
+        return messageListAdapter;
+    }
+
+    @Override
+    public User getUser() {
+        return user;
+    }
+
+    @Override
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    /** More appropriate to put into the view as it only contains minimum amount of logic whil
+     * having so much dependency with the view, i.e. manipulating the onclicklistener
+     */
+    @Override
     public void embedSendMessage() {
         // embed onclick listener, remember the async process
         send.setOnClickListener(new View.OnClickListener() {
@@ -213,6 +191,17 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                 });
             }
         });
+    }
+
+    @Override
+    public Context getChatContext() {
+        return this;
+    }
+
+    public void setupUI() {
+        chatText = findViewById(R.id.chat_text_field);
+        send = findViewById(R.id.button_send);
+        messageRecyclerView = findViewById(R.id.messageRecyclerView);
     }
 
 }
