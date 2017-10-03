@@ -13,13 +13,11 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 
 public class GroupsService {
-    Context context;
     GroupsApi groupsApi;
     int userID;
     String token;
 
     public GroupsService(Context context, GroupsApi groupsApi) {
-        this.context = context;
         this.groupsApi = groupsApi;
         userID = AuthService.getUserID(context);
         token = AuthService.getToken(context);

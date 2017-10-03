@@ -37,7 +37,8 @@ public class GroupsListPresenter {
                     ArrayList<Observable<GroupsResponse>> observablesArrayList = new ArrayList<>();
 
                     if (response.success != true) {
-                        Log.w("loadData()", "response.success is false");
+                        System.out.println("response.success is false");
+//                        Log.w("loadData()", "response.success is false");
                     } else {
                         for (int groupID: response.groups) {
                             observablesArrayList.add(groupsService.getGroup(groupID));
@@ -71,7 +72,8 @@ public class GroupsListPresenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.w("error", e.getMessage());
+                        System.out.println(e);
+//                        Log.w("error", e.getMessage());
                     }
 
                     @Override
