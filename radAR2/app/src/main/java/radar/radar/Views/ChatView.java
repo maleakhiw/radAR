@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Chat;
+import radar.radar.Models.Group;
 import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.Models.User;
 
@@ -18,7 +18,7 @@ public interface ChatView {
 
     Boolean getLoad();
 
-    Chat getChatFromIntent();
+    Group getChatFromIntent();
 
     void setGroupID(int groupID);
 

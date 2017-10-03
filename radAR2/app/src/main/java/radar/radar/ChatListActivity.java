@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import radar.radar.Adapters.ChatAdapter;
 import radar.radar.Models.Group;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
@@ -41,7 +43,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, this);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
         // Setup groups
         groups = new ArrayList<>();
@@ -72,7 +76,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public void setGroups(ArrayList<Chat> groups) {
+    public void setGroups(ArrayList<Group> groups) {
         this.groups = groups;
     }
 
@@ -87,7 +91,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public ArrayList<Chat> getGroups() {
+    public ArrayList<Group> getGroups() {
         return this.groups;
     }
 
@@ -97,7 +101,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public void setArrayListInAdapter(ArrayList<Chat> groups) {
+    public void setArrayListInAdapter(ArrayList<Group> groups) {
         chatAdapter.setChatList(groups);
     }
 

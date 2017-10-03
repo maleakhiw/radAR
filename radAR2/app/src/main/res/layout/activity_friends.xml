@@ -20,6 +20,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header_home_screen"
+        app:headerLayout="@layout/nav_header_common"
         app:menu="@menu/drawer_common" />
 </android.support.v4.widget.DrawerLayout>
