@@ -20,11 +20,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +92,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     TextView destinationName;
     TextView relativeCompassDirection;
     TextView heading;
+    LinearLayout layoutForButtons;
 
     // main relative layout size
     Observable<ViewSize> mainRelativeLayoutSizeObservable;
@@ -149,6 +153,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         distanceUnit = findViewById(R.id.HUD_distance_unit);
         relativeCompassDirection = findViewById(R.id.HUD_relative_compass_direction);
         heading = findViewById(R.id.HUD_heading);
+        layoutForButtons = findViewById(R.id.HUD_buttons_layout);
 
         // add listener for when mainRelativeLayout changes size
         mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
@@ -257,7 +262,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         }
 
         if (presenter != null) {
-            presenter.unregisterSensors();
+            presenter.onStop();
         }
 
         // TODO read user preferences. User location is still being polled on the background.
@@ -275,7 +280,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // no guarantee that presenter will already be instantiated
         // presenter instantiation is asynchronous, dependent on camera data being available
         if (presenter != null) {
-            presenter.reregisterSensors();
+            presenter.onStart();
         }
 
         super.onStart();
@@ -315,6 +320,9 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         arAnnotations.get(userID);
     }
 
+
+    HashMap<Integer, Integer> buttonIDToUserID = new HashMap<>();
+
     /**
      * Adds an annotation onscreen based on a UserLocation object.
      * @param userLocation location details of a user
@@ -322,14 +330,22 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     @Override
     public void inflateARAnnotation(UserLocation userLocation) {
         int userID = userLocation.getUserID();
+        System.out.println("Inflating for " + ((Integer) userID).toString());
 
         // inflate a new layout
+        // TODO change to RecyclerView
         RelativeLayout layout = (RelativeLayout) inflater.inflate(R.layout.ar_annotation, null);
+
+        Button button = new Button(this);
+        button.setOnClickListener(view -> {
+            presenter.setActiveAnnotation(userID);
+        });
+        layoutForButtons.addView(button);
 
         // add the layout to the view
         mainRelativeLayout.addView(layout);
 
-        ARAnnotation arAnnotation = new ARAnnotation(userLocation, layout);
+        ARAnnotation arAnnotation = new ARAnnotation(userLocation, layout, button);
 
         // put it in the HashMap of annotations
         arAnnotations.put(userID, arAnnotation);
@@ -337,14 +353,24 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         setAnnotationOffsets(userID, 0, 0);
     }
 
-    // add more setters for other attributes of an annotation ltaer
+    // add more setters for other attributes of an annotation later
     @Override
     public void setAnnotationMainText(int userID, String text) {
         if (arAnnotations != null) {
             ARAnnotation annotation = arAnnotations.get(userID);
             if (annotation != null) {
-                TextView textView = annotation.getLayout().findViewById(R.id.ARAnnotation_TextView);
+                RelativeLayout layout = annotation.getLayout();
+                TextView textView = layout.findViewById(R.id.ARAnnotation_TextView);
                 textView.setText(text);
+
+                Button button = annotation.getButton();
+
+                // TODO use new class for different behaviour
+                if (userID == -1) {
+                    button.setText("Destination");
+                } else {
+                    button.setText(text);
+                }
             }
         }
     }

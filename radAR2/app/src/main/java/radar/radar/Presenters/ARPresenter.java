@@ -7,6 +7,8 @@ import android.location.Location;
 
 import com.google.android.gms.location.LocationRequest;
 
+import org.reactivestreams.Subscription;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -59,6 +61,8 @@ public class ARPresenter {
 
     Observable<GroupLocationsInfo> groupMemberLocationsObservable;
 
+    int activeAnnotationUserID = -1; // TODO remove magic number
+
     public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorManager sensorManager, LocationTransformations locationTransformations, int groupID) {
         this.arView = arView;
         this.locationService = locationService;
@@ -87,12 +91,14 @@ public class ARPresenter {
         arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets - check for overlaps, etc.
     }
 
-    public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
-        System.out.println("presenter updateData");
-        // update number of pixels per degree
-        locationTransformations.sethPixelsPerDegree(hPixelsPerDegree);
-        locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
+    Disposable locationPushDisposable;
+    Disposable combinedDataDisposable;
 
+    public void setActiveAnnotation(int userID) {
+        activeAnnotationUserID = userID;
+    }
+
+    private void updateDataImpl() {
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -125,7 +131,7 @@ public class ARPresenter {
         }).subscribe(new Observer<Integer>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                locationPushDisposable = d;
             }
 
             @Override
@@ -152,7 +158,7 @@ public class ARPresenter {
         Observable.combineLatest(azimuthObservable, pitchObservable, locationObservable, groupMemberLocationsObservable, LocationAndDeviceData::new).subscribe(new Observer<LocationAndDeviceData>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                combinedDataDisposable = d;
             }
 
             @Override
@@ -169,9 +175,11 @@ public class ARPresenter {
                 // group members locations
                 ArrayList<UserLocation> userLocations = locationAndDeviceData.groupLocationDetails.locations;
                 HashMap<Integer, User> userDetails = locationAndDeviceData.groupLocationDetails.userDetails;
+                HashMap<Integer, UserLocation> userLocationsMap = new HashMap<>();
 
                 for (UserLocation userLocation: userLocations) {
                     int userID = userLocation.getUserID();
+                    userLocationsMap.put(userID, userLocation);
 
                     arView.setAnnotationMainText(userID, userDetails.get(userID).firstName);
                     if (!arView.isInflated(userID)) {
@@ -188,17 +196,23 @@ public class ARPresenter {
                     UserLocation destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
                     if (!arView.isInflated(-1)) {
                         arView.inflateARAnnotation(destination);
-                        arView.setAnnotationMainText(-1, meetingPoint.name);
                     }
+                    arView.setAnnotationMainText(-1, meetingPoint.name);
                     render(-1, latUser, lonUser, destination, azimuth, pitch);
-
-                    // update distance to destination
-                    // TODO make selectable
-                    arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, destination.getLat(), destination.getLon(), 'K') * 1000);
-                    double bearingToDest = LocationTransformations.bearingBetween(latUser, lonUser, destination.getLat(), destination.getLon());
-                    arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
-
                 }
+
+                /* render HUD */
+                UserLocation destination;
+                if (activeAnnotationUserID == -1) {
+                    destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
+                    arView.updateDestinationName(meetingPoint.name);
+                } else {
+                    destination = userLocationsMap.get(activeAnnotationUserID);
+                    arView.updateDestinationName(userDetails.get(activeAnnotationUserID).firstName);
+                }
+                double bearingToDest = LocationTransformations.bearingBetween(latUser, lonUser, destination.getLat(), destination.getLon());
+                arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, destination.getLat(), destination.getLon(), 'K') * 1000);
+                arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
 
                 // update heading
                 double headingAzimuth = azimuth;
@@ -220,21 +234,42 @@ public class ARPresenter {
 
             }
         });
+    }
 
+
+
+    public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
+        System.out.println("presenter updateData");
+        // update number of pixels per degree
+        locationTransformations.sethPixelsPerDegree(hPixelsPerDegree);
+        locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
+
+        updateDataImpl();
     }
 
     // null checks since this function will be called on Activity creation too
     // when the Service has not been created yet.
 
-    public void unregisterSensors() {
+    public void onStop() {
         if (sensorService != null) {
             sensorService.unregisterSensorEventListener();
         }
+        boolean tracking = true;    // TODO move out
+
+        if (!tracking) {    // do not send location data in the background
+            locationPushDisposable.dispose();
+        }
+
+        if (combinedDataDisposable != null) {
+            combinedDataDisposable.dispose();
+        }
     }
 
-    public void reregisterSensors() {
+    public void onStart() {
         if (sensorService != null) {
             sensorService.reregisterSensorEventListener();
         }
+
+        updateDataImpl();
     }
 }
