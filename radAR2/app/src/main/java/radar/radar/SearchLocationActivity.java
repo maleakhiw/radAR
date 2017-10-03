@@ -142,6 +142,7 @@ public class SearchLocationActivity extends AppCompatActivity implements GoogleA
             } else if (resultCode == RESULT_CANCELED) {
                 // Indicates that the activity closed before a selection was made. For example if
                 // the user pressed the back button.
+                Log.e(TAG, "Error: Result Canceled ");
             }
         }
     }
