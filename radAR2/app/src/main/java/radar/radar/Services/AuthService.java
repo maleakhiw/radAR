@@ -43,6 +43,20 @@ public class AuthService {
         return prefs.getInt("radar_userID", 0);
     }
 
+    public static String getFirstName(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("firstName", "");
+    }
+    public static String getLastName(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("lastName", "");
+    }
+
+    public static String getEmail(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("email",  "");
+    }
+
     public AuthService(AuthApi authApi, Context context) {
         this.prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
 //        this.retrofit = retrofit;
@@ -118,7 +132,11 @@ public class AuthService {
                     @Override
                     public void onNext(AuthResponse authResponse) {
                         prefs.edit().putString("radar_token", authResponse.token)
-                                .putInt("radar_userID", authResponse.userID).apply();
+                                .putInt("radar_userID", authResponse.userID)
+                                .putString("firstName", authResponse.userInfo.firstName)
+                                .putString("lastName", authResponse.userInfo.lastName)
+                                .putString("email", authResponse.userInfo.email)
+                                .apply();
                         emitter.onNext(authResponse);
                     }
 

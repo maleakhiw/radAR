@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import radar.radar.Services.AuthService;
 
@@ -18,6 +19,10 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
     DrawerLayout drawerLayout;
     android.support.v7.widget.Toolbar toolbar;
     AppCompatActivity activity;
+
+    // TODO move to constructor
+    TextView name;
+    TextView email;
 
     public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar, AppCompatActivity activity) {
         this.navigationView = navigationView;
@@ -39,6 +44,13 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 activity, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+
+        // update profile info display
+        // TODO should be provided via constructor
+        name = activity.findViewById(R.id.nav_header_name);
+        email = activity.findViewById(R.id.nav_header_email);
+        name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
+        email.setText(AuthService.getEmail(activity));
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
