@@ -50,7 +50,7 @@ public class GroupsListPresenter {
                         ArrayList<Group> groupsArrayListTmp = new ArrayList<>();
                         for (Object obj: responses) {
                             GroupsResponse response = (GroupsResponse) obj;
-                            if (response.success) {
+                            if (response.success && response.group.isTrackingGroup) {
                                 groupsArrayListTmp.add(response.group);
                             }
                         }
