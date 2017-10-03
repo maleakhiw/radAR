@@ -38,7 +38,11 @@ public class ChatActivity extends AppCompatActivity {
 
     private EditText chatText;
     private Button send;
+
+    // recyclerView
     private RecyclerView messageRecyclerView;
+    private MessageListAdapter messageListAdapter;
+
 
     private Boolean load;
 
@@ -50,6 +54,11 @@ public class ChatActivity extends AppCompatActivity {
         // Setup UI
         setupUI();
         messages = new ArrayList<>();
+
+        // setup RecyclerView
+        messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
+        messageRecyclerView.setAdapter(messageListAdapter);
+        messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
         // Create instance of retrofit
         Retrofit retrofit = new Retrofit.Builder()
@@ -71,6 +80,7 @@ public class ChatActivity extends AppCompatActivity {
         // If there exist the message, just load the message
         if (load) {
             Chat chat = (Chat) getIntent().getSerializableExtra("chat");
+            groupID = chat.groupID;
             loadMessages(chat.groupID);
             embedSendMessage();
         } else {
@@ -92,9 +102,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
                 messages = messagesResponse.messages;
-                MessageListAdapter messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
-                messageRecyclerView.setAdapter(messageListAdapter);
-                messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                messageListAdapter.setMessageList(messages);
                 messageListAdapter.notifyDataSetChanged();
             }
 
@@ -110,7 +118,7 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
-    /** Used to generate a new chat/ new message for a particular user */
+    /** Used to generate a new chat for a particular user */
     public void generateNewChat() {
         // Create an object for new chat request which includes the participant of the chat
         // and also the name of the chat
@@ -132,7 +140,10 @@ public class ChatActivity extends AppCompatActivity {
             public void onNext(NewChatResponse newChatResponse) {
                 // if the response is successful, then we can proceed to create a chat
                 if (newChatResponse.success) {
+                    // new chat created
                     groupID = newChatResponse.group.groupID;
+
+
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Status false", Toast.LENGTH_LONG).show();
@@ -178,24 +189,26 @@ public class ChatActivity extends AppCompatActivity {
                         if (sendMessageResponse.success) {
                             // When you click send you will add into message
                             messages.add(sendMessageResponse.sentMessage);
+
+                            messageListAdapter.setMessageList(messages);
+
+                            // Here link with recycler view
+                            messageListAdapter.notifyDataSetChanged();
+
+                            // Remove the text on the edit view
+                            chatText.setText("");
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
+                        System.out.println(e);
                         Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        // Here link with recycler view
-                        MessageListAdapter messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
-                        messageRecyclerView.setAdapter(messageListAdapter);
-                        messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-                        messageListAdapter.notifyDataSetChanged();
 
-                        // Remove the text on the edit view
-                        chatText.setText("");
                     }
                 });
             }

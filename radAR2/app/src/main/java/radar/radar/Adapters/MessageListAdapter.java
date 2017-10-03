@@ -30,6 +30,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         this.context = context;
     }
 
+    public void setMessageList(List<MessageResponse> messageList) {
+        this.messageList = messageList;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view;

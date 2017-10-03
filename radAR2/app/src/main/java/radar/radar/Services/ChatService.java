@@ -54,9 +54,16 @@ public class ChatService {
 
     // send message
     public Observable<SendMessageResponse> sendMessages(int chatID, MessageBody messageBody) {
-        return chatApi.sendMessages(userID, token, chatID, messageBody)
+        System.out.println("sendMessages");
+
+        Observable<SendMessageResponse> sendMessageResponseObservable = chatApi.sendMessages(userID, token, chatID, messageBody)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+
+        return sendMessageResponseObservable.map(message -> {
+            System.out.println(message.sentMessage);
+            return message;
+        });
     }
 
 
