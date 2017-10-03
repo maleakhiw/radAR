@@ -14,6 +14,7 @@ import java.util.HashMap;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Models.MeetingPoint;
 import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 import radar.radar.Models.User;
@@ -55,16 +56,10 @@ public class ARPresenter {
     GroupsService groupsService;
     SensorService sensorService;
     LocationTransformations locationTransformations;
-    // mock
-    ArrayList<UserLocation> userLocations;  // will be part of the Observable later on
-
-                                            // mock for testing
 
     Observable<GroupLocationsInfo> groupMemberLocationsObservable;
 
-    UserLocation destinationLocation;
-
-    public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorManager sensorManager, LocationTransformations locationTransformations) {
+    public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorManager sensorManager, LocationTransformations locationTransformations, int groupID) {
         this.arView = arView;
         this.locationService = locationService;
         this.groupsService = groupsService;
@@ -72,22 +67,13 @@ public class ARPresenter {
         this.locationTransformations = locationTransformations;
 
         // TODO warn if no location in 5sec
+        groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
 
-        userLocations = new ArrayList<>();
+//        destinationLocation = new UserLocation(79, -37.829293f, 144.956805f, 0.1f, 2, new Date());
+//        arView.inflateARAnnotation(destinationLocation);
+//        arView.setAnnotationMainText(79, "Southbank");
+//        arView.updateDestinationName("Southbank");
 
-        // groupMemberLocationsObservable
-
-
-        UserLocation userLocation1 = new UserLocation(1, -37.797639f, 144.958405f, 0.1f, 2, new Date());
-        userLocations.add(userLocation1);
-        arView.inflateARAnnotation(userLocation1);
-//
-        destinationLocation = new UserLocation(79, -37.829293f, 144.956805f, 0.1f, 2, new Date());
-        arView.inflateARAnnotation(destinationLocation);
-        arView.setAnnotationMainText(79, "Southbank");
-        arView.updateDestinationName("Southbank");
-
-        // to remove an annotation, call ARView.removeAnnotationById
     }
 
     void render(int userID, double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
@@ -95,11 +81,10 @@ public class ARPresenter {
 
         // get xOffset and yOffset
         int xOffset = locationTransformations.xOffset(bearing, azimuth);
-//                    System.out.println(((Float) azimuth).toString() + ": " + ((Integer) xOffset).toString());
+//        System.out.println(((Float) azimuth).toString() + ": " + ((Integer) xOffset).toString());
         int yOffset = locationTransformations.yOffset(pitch, 0);
 
-        arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets too
-        // so we can check if they are overlapping
+        arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets - check for overlaps, etc.
     }
 
     public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
@@ -112,8 +97,32 @@ public class ARPresenter {
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 
-        // push location to server. Unlike combineLatest, zip only emits when both Observables
-        // have something ready to emit
+        // assumption: registered first
+        locationObservable.subscribe(new Observer<Location>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Location location) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+                    arView.requestLocationPermissions();
+                }
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+        // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
             System.out.println(azimuth.toString() + " " + location.toString());
             locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), azimuth).subscribe(new Observer<UpdateLocationResponse>() {
@@ -141,6 +150,7 @@ public class ARPresenter {
         }).subscribe();
 
 
+        // combines the latest data from all the streams - compass, accelerometer/gyroscope, Google Maps location
         Observable.combineLatest(azimuthObservable, pitchObservable, locationObservable, groupMemberLocationsObservable, LocationAndDeviceData::new).subscribe(new Observer<LocationAndDeviceData>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -154,6 +164,9 @@ public class ARPresenter {
                 float lonUser = (float) location.getLongitude();
                 float azimuth = locationAndDeviceData.azimuth;
                 float pitch = locationAndDeviceData.pitch;
+
+                // meeting point
+                MeetingPoint meetingPoint = locationAndDeviceData.groupLocationDetails.meetingPoint;
 
                 // group members locations
                 ArrayList<UserLocation> userLocations = locationAndDeviceData.groupLocationDetails.locations;
@@ -171,15 +184,23 @@ public class ARPresenter {
                     render(userID, latUser, lonUser, userLocation, azimuth, pitch);
                 }
 
-                // redraw destination location too!
-                render(79, latUser, lonUser, destinationLocation, azimuth, pitch);
+                // render destination location, userID -1
+                if (meetingPoint != null) {
+                    // TODO new class
+                    UserLocation destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
+                    if (!arView.isInflated(-1)) {
+                        arView.inflateARAnnotation(destination);
+                        arView.setAnnotationMainText(-1, meetingPoint.description);
+                    }
+                    render(-1, latUser, lonUser, destination, azimuth, pitch);
 
-                // update distance to destination
-                // TODO: hardcoded destination
-                UserLocation destination = destinationLocation;
-                arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, destination.getLat(), destination.getLon(), 'K') * 1000);
-                double bearingToDest = LocationTransformations.bearingBetween(latUser, lonUser, destination.getLat(), destination.getLon());
-                arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
+                    // update distance to destination
+                    // TODO make selectable
+                    arView.updateDistanceToDestination(LocationTransformations.distance(latUser, lonUser, destination.getLat(), destination.getLon(), 'K') * 1000);
+                    double bearingToDest = LocationTransformations.bearingBetween(latUser, lonUser, destination.getLat(), destination.getLon());
+                    arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
+
+                }
 
                 // update heading
                 double headingAzimuth = azimuth;
@@ -188,7 +209,6 @@ public class ARPresenter {
                 }
 //                System.out.println(azimuth);
                 arView.updateHUDHeading(LocationTransformations.getCompassDirection(headingAzimuth));
-
 
             }
 

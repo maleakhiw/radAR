@@ -7,9 +7,9 @@ import java.util.Date;
  */
 
 public class MeetingPoint {
-    double lat;
-    double lon;
-    String name;
-    String description;
-    Date timeAdded;
+    public double lat;
+    public double lon;
+    public String name;
+    public String description;
+    public Date timeAdded;
 }

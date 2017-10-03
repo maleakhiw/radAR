@@ -84,64 +84,6 @@ public class GroupActivity extends AppCompatActivity {
         locationService = new LocationService(locationApi, this, fusedLocationClient);
         groupsService = new GroupsService(this, groupsApi);
 
-
-        groupsService.getGroup(12).subscribe(new Observer<GroupsResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(GroupsResponse groupsResponse) {
-                // received a response from the server
-                if (groupsResponse.group != null) {
-                    // update list of members in instance variable in class
-                    groupMembers = groupsResponse.group.members;
-
-                    // using new service
-                    locationService.groupLocationUpdates(2, groupMembers)
-                            .subscribe(new Observer<UserLocation>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(UserLocation userLocation) {
-                                    System.out.print(userLocation.getUserID());
-                                    System.out.print(": ");
-                                    System.out.print(userLocation.getLat());
-                                    System.out.print(", ");
-                                    System.out.println(userLocation.getLon());
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    System.out.println(e);
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-                            });
-
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println(e);
-                // e.g. invalid token, internal errors, etc.
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
-
         // example for updating location on the server
         locationService.updateLocation(1, 1, 1, 72)
                 .subscribe(new Observer<UpdateLocationResponse>() {

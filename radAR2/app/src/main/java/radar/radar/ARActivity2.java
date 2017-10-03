@@ -98,6 +98,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     int lastHeight;
     int lastWidth;
 
+    int groupID;
+
     static final int REQUEST_FOR_CAMERA = 1;
     static final int REQUEST_FOR_LOCATION = 2;
 
@@ -131,6 +133,9 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar2);
+
+        groupID = 1;    // TODO get from bundle
+                        // TODO getGroup and check if it exists
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
@@ -194,11 +199,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     }
 
-    void setupPresenterImpl(double hFov, double vFov, int width, int height) {
+    void setupPresenterImpl(double hFov, double vFov, int width, int height, int groupID) {
         // create a new presenter
         LocationTransformations locationTransformations = new LocationTransformations(width/hFov, height/vFov);
         if (presenter == null) {
-            presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations);
+            presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations, groupID);
             presenter.updateData(width/hFov, height/vFov);
         } else {
             presenter.updateData(width/hFov, height/vFov);
@@ -211,7 +216,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             double vFov = mCameraData.verticalFov;
             int width = lastViewSize.width;
             int height = lastViewSize.height;
-            setupPresenterImpl(hFov, vFov, width, height);
+            setupPresenterImpl(hFov, vFov, width, height, groupID);
             return;
         }
         // update view, create a new presenter or update the data
@@ -220,7 +225,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             double vFov = cameraData.verticalFov;
             int width = viewSize.width; // in pixels (can be relative as long as we keep consistent)
             int height = viewSize.height;   // in pixels
-            setupPresenterImpl(hFov, vFov, width, height);
+            setupPresenterImpl(hFov, vFov, width, height, groupID);
             return 1;   // does not matter, no observers that consume output
         }).subscribe();
     }

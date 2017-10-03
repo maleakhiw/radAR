@@ -133,11 +133,17 @@ public class LocationService {
 
     }
 
-    public Observable<GroupLocationsInfo> getGroupMembersLocations(int groupID) {
-        System.out.println("groupID " + ((Integer) groupID).toString());
-        return locationApi.getGroupLocations(userID, groupID, token)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread());
+    /**
+     * Returns location info for a group.
+     * @param groupID group for which location info is requested
+     * @param interval time between requests in milliseconds
+     * @return location info
+     */
+    public Observable<GroupLocationsInfo> getGroupLocationInfo(int groupID, int interval) {
+        return Observable.interval(interval, TimeUnit.MILLISECONDS).switchMap(tick ->
+                locationApi.getGroupLocations(userID, groupID, token)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread()));
     }
 
 
