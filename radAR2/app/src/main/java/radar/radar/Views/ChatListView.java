@@ -13,5 +13,13 @@ public interface ChatListView {
 
     void setChatIDs(ArrayList<Integer> chatIDs);
 
+    ArrayList<Integer> getChatIDs();
+
+    ArrayList<Chat> getGroups();
+
     void showToastMessage(String message);
+
+    void setArrayListInAdapter(ArrayList<Chat> groups);
+
+    void notifyAdapterChange();
 }

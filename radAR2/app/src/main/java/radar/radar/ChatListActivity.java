@@ -74,11 +74,30 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     public void setChatIDs(ArrayList<Integer> chatIDs) {
         this.chatIDs = chatIDs;
     }
-    
+
+    @Override
+    public ArrayList<Integer> getChatIDs() {
+        return this.chatIDs;
+    }
+
+    @Override
+    public ArrayList<Chat> getGroups() {
+        return this.groups;
+    }
 
     @Override
     public void showToastMessage(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setArrayListInAdapter(ArrayList<Chat> groups) {
+        chatAdapter.setChatList(groups);
+    }
+
+    @Override
+    public void notifyAdapterChange() {
+        chatAdapter.notifyDataSetChanged();
     }
 
 //    public void getChatIDs() {

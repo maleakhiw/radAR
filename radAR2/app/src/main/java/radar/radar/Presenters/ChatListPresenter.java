@@ -58,8 +58,8 @@ public class ChatListPresenter {
     public void displayChatList() {
         // Using the id that we have get display the chat
         // Iterate through all ids
-        for (int i=0; i < chatIDs.size(); i++) {
-            chatService.getChatInfo(chatIDs.get(i)).subscribe(new Observer<GetChatInfoResponse>() {
+        for (int i=0; i < chatListView.getChatIDs().size(); i++) {
+            chatService.getChatInfo(chatListView.getChatIDs().get(i)).subscribe(new Observer<GetChatInfoResponse>() {
                 @Override
                 public void onSubscribe(Disposable d) {
 
@@ -70,9 +70,9 @@ public class ChatListPresenter {
                     // If the response successful display on the recycler view
                     if (getChatInfoResponse.success) {
                         // Add to groups
-                        groups.add(getChatInfoResponse.group);
-                        chatAdapter.setChatList(groups);
-                        chatAdapter.notifyDataSetChanged();
+                        chatListView.getGroups().add(getChatInfoResponse.group);
+                        chatListView.setArrayListInAdapter(chatListView.getGroups());
+                        chatListView.notifyAdapterChange();
                     }
                     else {
                         chatListView.showToastMessage("Failed to display chat information.");
