@@ -113,7 +113,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
     @Override
     public Group getChatFromIntent() {
-        return ((Group) getIntent().getSerializableExtra("chat"));
+        return ((Group) getIntent().getSerializableExtra("group"));
     }
 
     @Override

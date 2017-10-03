@@ -2,7 +2,6 @@ package radar.radar.Views;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.Chat;
 import radar.radar.Models.Group;
 
 /**

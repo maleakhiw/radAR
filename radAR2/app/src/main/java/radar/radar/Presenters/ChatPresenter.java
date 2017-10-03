@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.ChatActivity;
-import radar.radar.Models.Chat;
+import radar.radar.Models.Group;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.MessagesResponse;
@@ -36,7 +36,7 @@ public class ChatPresenter {
     public void determineMessageCreation() {
         // If there exist the message, just load the message
         if (chatView.getLoad()) {
-            Chat chat = chatView.getChatFromIntent();
+            Group chat = chatView.getChatFromIntent();
             chatView.setGroupID(chat.groupID);
             loadMessages(chat.groupID);
             chatView.embedSendMessage();
