@@ -46,7 +46,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         holder.tvName.setText(user.firstName + " " + user.lastName);
         holder.tvUsername.setText(" @" + user.username);
         if (user.profileDesc == null) {
-            holder.tvOnlineStatus.setText("am not horse");
+            holder.tvOnlineStatus.setText("Hello, I am using Radar!");
         } else {
             holder.tvOnlineStatus.setText(user.profileDesc);
         }
@@ -78,7 +78,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     User user = friends.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
-                    intent.putExtra("user", (Serializable) user);
+                    intent.putExtra("user", user);
                     context.startActivity(intent);
 
                 }

@@ -1,28 +1,35 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const uniqueValidator = require('mongoose-unique-validator')
 
-// TODO: move MeetingPoint and Footprint to their own files
 const meetingPointSchema = new Schema({
   lat: Number,
   lon: Number,
-  description: String
+  name: String,
+  description: String,
+  updatedBy: Number,
+  timeAdded: {type: Date, default: Date.now}
 })
 // MeetingPoint = mongoose.model('MeetingPoint', meetingPointSchema)
 
 const footprintSchema = new Schema({
   from: Number,
   description: String,
-  resourceID: Number
+  resourceID: Number,
+  timeAdded: {type: Date, default: Date.now}
 })
-// Footprint = mongoose.model('Footprint', footprintSchema)
 
 const groupSchema = new Schema({
-  groupID: Number,
   name: String,
+  groupID: {type: Number, unique: true},
+  createdOn: {type: Date, default: Date.now},
   members: [Number],
   admins: [Number],
   footprints: [footprintSchema],
-  meetingPoint: [meetingPointSchema]
+  meetingPoint: meetingPointSchema,
+  isTrackingGroup: Boolean  // true if the Group is a Tracking Group, false if the Group is just a Chat
 })
+
+groupSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Group', groupSchema)

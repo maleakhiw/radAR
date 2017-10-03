@@ -1,11 +1,7 @@
 let mongoose = require('mongoose')
 
-const Metadata = require('../models/metadata')
 const User = require('../models/user')
 const Request = require('../models/request')
-const LastRequestID = require('../models/lastRequestID')
-const LastUserID = require('../models/lastUserID')
-const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -31,12 +27,8 @@ describe('UMS', () => {
     )
 
     // clean database before tests
-    Metadata.remove({}).exec()
-    .then(() => Request.remove({}))
-    .then(() => LastRequestID.remove({}))
+    Request.remove({}).exec()
     .then(() => User.remove({}))
-    .then(() => LastUserID.remove({}))
-    .then(() => PasswordHash.remove({}))
     .then(() => {
       // create dummy users
       chai.request(server)
@@ -131,7 +123,7 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/accounts/:userID/friends', () => {
+  describe('POST /api/accounts/:userID/friends', () => {
     it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {
       chai.request(server)
       .post('/api/accounts/1/friends')
@@ -151,15 +143,12 @@ describe('UMS', () => {
 
   })
 
-  describe('GET /api/accounts/:userID/friendRequests and DELETE /api/accounts/:userID/friendRequests/:requestID', () => {
+  describe('GET /api/accounts/:userID/friendRequests and POST /api/accounts/:userID/friendRequests/:requestID', () => {
     it('user2 should receive a friend request from user1', (done) => {
       chai.request(server)
       .get('/api/accounts/2/friendRequests')
       .set('token', user2token)
-      .query({
-      })
       .end((err, res) => {
-        console.log(res.body)
         res.should.have.status(200)
         expect(res).to.be.json
         expect(res.body.success).to.equal(true)
