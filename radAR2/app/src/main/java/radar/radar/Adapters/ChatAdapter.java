@@ -50,6 +50,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
         // load stuff
         holder.chatName.setText(chat.name);
+
+        // Check type of chat
+        if (chat.isTrackingGroup) {
+            holder.chatType.setText("Tracking Group");
+        } else {
+            holder.chatType.setText("Chat");
+        }
     }
 
     @Override
@@ -59,10 +66,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView chatName;
+        TextView chatType;
 
         public ViewHolder(View itemView) {
             super(itemView);
             chatName = itemView.findViewById(R.id.row_chat_name);
+            chatType = itemView.findViewById(R.id.row_type_value);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {
