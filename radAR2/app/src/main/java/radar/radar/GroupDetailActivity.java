@@ -1,19 +1,24 @@
 package radar.radar;
 
 import android.app.Fragment;
+import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import radar.radar.Fragments.GroupDetailsFragment;
+import radar.radar.Fragments.GroupLocationsFragment;
 
-public class GroupDetailActivity extends AppCompatActivity {
+public class GroupDetailActivity extends AppCompatActivity implements GroupDetailsLifecycleListener {
 
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
 
-    // fragment1
+    GroupDetailsFragment fragment;
+    GroupLocationsFragment groupLocationsFragment;
     // fragment2
 
     @Override
@@ -23,12 +28,27 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         viewPager = findViewById(R.id.groupDetailPager);
 
+        GroupDetailsLifecycleListener that = this;  // so that we know when the Fragment is fully inflated
+                                                    // and ready to have its UI elements modified
+
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-                Fragment fragment = new GroupDetailsFragment();
+//                fragment = new GroupLocationsFragment();
+//                fragment.setListener(that);
+                GroupLocationsFragment fragment = new GroupLocationsFragment();
+                fragment.setListener(that);
                 return fragment;
-//                return null;
+//                if (position == 1) {
+//                    fragment = new GroupDetailsFragment();
+//                    fragment.setListener(that);
+//                    return fragment;
+//                } else {
+//                    groupLocationsFragment = new GroupLocationsFragment();
+//                    groupLocationsFragment.setListener(that);
+//                    return fragment;
+//                }
+
             }
 
             @Override
@@ -39,6 +59,37 @@ public class GroupDetailActivity extends AppCompatActivity {
 
         viewPager.setAdapter(pagerAdapter);
 
+        // setup tabs
+        TabLayout tabLayout = findViewById(R.id.group_detail_tabs);
+//        tabLayout.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                tabLayout.setupWithViewPager(viewPager);
+//            }
+//        });
+        tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setText("Details");
+        tabLayout.getTabAt(1).setText("Location Tracking");
 
+        // set up back button on the toolbar
+        Toolbar toolbar = findViewById(R.id.group_detail_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        // TODO get title from bundle
+        toolbar.setTitle("Group name");
+
+    }
+
+    @Override
+    public void onSetUp(Fragment fragment) {
+        if (fragment instanceof GroupDetailsFragment) {
+//            ((GroupDetailsFragment) fragment).setMainTextView("Programmatically set text");
+        }
     }
 }

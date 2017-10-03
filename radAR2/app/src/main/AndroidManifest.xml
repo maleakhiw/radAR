@@ -63,7 +63,10 @@
         <activity android:name=".ChatActivity" />
         <activity android:name=".ChatListActivity" />
         <activity android:name=".GroupsListActivity" />
-        <activity android:name=".GroupDetailActivity"></activity>
+        <activity android:name=".GroupDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
