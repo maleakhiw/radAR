@@ -52,7 +52,9 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 if (id == R.id.nav_maps) {
                     //TODO: Go to maps
                 } else if (id == R.id.nav_chats) {
-                    //TODO: Go to chats
+                    //TODO: Go to chats - currently goes to group list
+
+
                 } else if (id == R.id.nav_friends) {
 
                     // launch Friends activity
@@ -68,8 +70,15 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
 
                 } else if (id == R.id.nav_settings) {
+                    // TODO - Define settings
+                    // TODO for now used for AR
+
+                    Intent intent = new Intent(activity, ARActivity2.class);
+                    activity.startActivity(intent);
 
                 } else if (id == R.id.nav_tracking_groups) {
+                    Intent intent = new Intent(activity, GroupActivity.class);
+                    activity.startActivity(intent);
 
                 }
 

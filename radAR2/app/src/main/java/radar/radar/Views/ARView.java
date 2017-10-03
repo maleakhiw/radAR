@@ -1,5 +1,7 @@
 package radar.radar.Views;
 
+import io.reactivex.Observable;
+import radar.radar.CompassDirection;
 import radar.radar.Models.UserLocation;
 
 /**
@@ -7,6 +9,12 @@ import radar.radar.Models.UserLocation;
  */
 
 public interface ARView {
+    void requestLocationPermissions();
+
+    void showToast(String toast);
+
+    boolean isInflated(int userID);
+
     void removeAnnotation(int userID);
 
     void getAnnotation(int userID);
@@ -16,5 +24,13 @@ public interface ARView {
     // add more setters for other attributes of an annotation ltaer
     void setAnnotationMainText(int userID, String text);
 
-    void setAnnotationMargins(int userID, int marginLeft, int marginTop);
+    void setAnnotationOffsets(int userID, int offsetLeft, int offsetTop);
+
+    void updateDistanceToDestination(double distance);
+
+    void updateDestinationName(String name);
+
+    void updateRelativeDestinationPosition(CompassDirection compassDirection);
+
+    void updateHUDHeading(CompassDirection direction);
 }
