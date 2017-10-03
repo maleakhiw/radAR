@@ -181,10 +181,25 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
+      let group, userDetails;
       Group.findOne({ groupID: groupID }).exec()
-
-      .then((group) => {
-
+      .then((groupRes) => {
+        group = groupRes;
+        let promiseAll = group.members.map((memberUserID) => new Promise((resolve, reject) => {
+          User.findOne({userID: memberUserID}).exec().then((user) => {
+            if (user) {
+              resolve(user);
+            } else {
+              resolve();
+            }
+          })
+        }));
+        return Promise.all(promiseAll);
+      })
+      .then((userDetailsRes) => {
+        userDetails = userDetailsRes.map(common.getPublicUserInfo);
+      })
+      .then(() => {
         if (group) {
           let groupObj = {
             name: group.name,
@@ -197,8 +212,10 @@ module.exports = class SMS {
           res.json({
             success: true,
             errors: [],
-            group: groupObj
-          })
+            group: groupObj,
+            usersDetails: userDetails
+          });
+          
         } else {
           // group does not exist
           res.status(404).json({
