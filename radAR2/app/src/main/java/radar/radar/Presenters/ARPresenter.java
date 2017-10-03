@@ -88,7 +88,7 @@ public class ARPresenter {
     }
 
     public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
-        System.out.println("updateData");
+        System.out.println("presenter updateData");
         // update number of pixels per degree
         locationTransformations.sethPixelsPerDegree(hPixelsPerDegree);
         locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
@@ -96,31 +96,6 @@ public class ARPresenter {
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        // assumption: registered first
-        locationObservable.subscribe(new Observer<Location>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(Location location) {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
-                    arView.requestLocationPermissions();
-                }
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
@@ -147,7 +122,30 @@ public class ARPresenter {
                 }
             });
             return 0;
-        }).subscribe();
+        }).subscribe(new Observer<Integer>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+                    arView.requestLocationPermissions();
+                }
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
 
         // combines the latest data from all the streams - compass, accelerometer/gyroscope, Google Maps location
@@ -214,9 +212,7 @@ public class ARPresenter {
 
             @Override
             public void onError(Throwable e) {
-                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
-                    arView.requestLocationPermissions();
-                }
+
             }
 
             @Override

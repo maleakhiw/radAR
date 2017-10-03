@@ -33,8 +33,6 @@ import android.widget.Toast;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
-import org.w3c.dom.Text;
-
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -183,10 +181,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         previewView = findViewById(R.id.AR2_texture_view);
 
-        setupCameraPreview();   // TODO refactor to camera service
-
-        // every time the size of the main RelativeLayout changes, or when the camera data (FOV) is returned
-        setupPresenter();
+        setupCameraPreviewAndPresenter();   // TODO refactor to camera service
 
         // observable for layout size changes
         mainRelativeLayoutSizeObservable.subscribe(viewSize -> {
@@ -200,25 +195,29 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     }
 
     void setupPresenterImpl(double hFov, double vFov, int width, int height, int groupID) {
+        System.out.println("setupPresenterImpl");
         // create a new presenter
         LocationTransformations locationTransformations = new LocationTransformations(width/hFov, height/vFov);
         if (presenter == null) {
             presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations, groupID);
-            presenter.updateData(width/hFov, height/vFov);
-        } else {
-            presenter.updateData(width/hFov, height/vFov);
         }
+        presenter.updateData(width/hFov, height/vFov);
     }
 
     void setupPresenter() {
+        System.out.println("setupPresenter()");
         if (mCameraData != null) {
+            System.out.println("cameraData not null @ setupPresenter");
             double hFov = mCameraData.horizontalFov;
             double vFov = mCameraData.verticalFov;
             int width = lastViewSize.width;
             int height = lastViewSize.height;
             setupPresenterImpl(hFov, vFov, width, height, groupID);
             return;
+        } else {
+            System.out.println("cameraData null @ setupPresenter");
         }
+
         // update view, create a new presenter or update the data
         Observable.combineLatest(mainRelativeLayoutSizeObservable, cameraDataObservable, (viewSize, cameraData) -> {
             double hFov = cameraData.horizontalFov;
@@ -269,7 +268,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     @Override
     public void onStart() { // multitask to other apps
         if (cameraCaptureSession != null) {
-            System.out.println("setupCameraPreview()");
+            System.out.println("setupCameraPreviewAndPresenter()");
             restartCameraPreview();
         }
 
@@ -289,7 +288,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             // if request is cancelled, the result arrays are empty
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted!
-                setupCameraPreview();
+                setupCameraPreviewAndPresenter();
             } else {
                 // permission denied!
                 // TODO show TextView in activity, say that permission was not granted
@@ -298,12 +297,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (mCameraData != null) {
-
-                } else {
-                    setupCameraPreview();   // setup camera preview
-                }
-
+                setupPresenter();
             } else {
                 // permission denied!
                 // TODO show TextView in activity, say that permission was not granted
@@ -477,6 +471,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
                 } else {    // PERMISSION_DENIED
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_FOR_CAMERA);
+                    observableEmitter.onError(new Throwable("TEST"));
                 }
             }
         });
@@ -592,7 +587,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     Observable<CameraData> cameraDataObservable;
 
-    void setupCameraPreview() {
+    void setupCameraPreviewAndPresenter() {
         // uses Camera2 API
         // 1. Get a Surface to draw on from the TextureView, then
         // 2. Fetch camera data, then
@@ -600,53 +595,56 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         // 4. Create a new capture session
 
         // fetch camera data
-        System.out.println("setupCameraPreview() called");
+        System.out.println("setupCameraPreviewAndPresenter() called");
 
         cameraDataObservable = Observable.create(emitter -> {
             getSurfaceFromTextureView(previewView)
-                .switchMap((surface) -> {   // similar to .then() chaining in JS
-                    System.out.println(surface);
-                    mSurface = surface;
-                    return getCameraData(cameraManager);
-                })
-                .map((cameraData) -> {  // do something with the cameraData
-                    System.out.println("got cameraData");
-                    System.out.println(cameraData);
-                    emitter.onNext(cameraData);
-                    return cameraData;
-                })
-                .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
-                .switchMap((cameraDevice -> {
-                    mCameraDevice = cameraDevice;
-                    return createCaptureSession(mSurface, cameraDevice);
-                }))
-                .subscribe(new Observer<CameraCaptureSession>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                    .switchMap((surface) -> {   // similar to .then() chaining in JS
+                        System.out.println(surface);
+                        mSurface = surface;
+                        return getCameraData(cameraManager);
+                    })
+                    .map((cameraData) -> {  // do something with the cameraData
+                        System.out.println("got cameraData");
+                        System.out.println(cameraData);
+                        emitter.onNext(cameraData);
+                        return cameraData;
+                    })
+                    .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
+                    .switchMap((cameraDevice -> {
+                        mCameraDevice = cameraDevice;
+                        return createCaptureSession(mSurface, cameraDevice);
+                    }))
+                    .subscribe(new Observer<CameraCaptureSession>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(CameraCaptureSession session) {
-                        cameraCaptureSession = session;
-                        Log.d("captureSessionObserver", "Camera setup complete");
+                        @Override
+                        public void onNext(CameraCaptureSession session) {
+                            cameraCaptureSession = session;
+                            Log.d("captureSessionObserver", "Camera setup complete");
 
+                            setupPresenter();
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
+                            Log.w("setup", "Error occurred");
+                            System.out.println(e);
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.w("setupCameraPreview", "Error occurred");
-                        System.out.println(e);
-                    }
+                        @Override
+                        public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+                        }
+                    });
 
         });
+
+        // to get the above code going without depending on the Presenter
+        cameraDataObservable.subscribe();
 
     }
 
