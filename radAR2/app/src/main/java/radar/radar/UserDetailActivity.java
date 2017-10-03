@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,6 +42,10 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         setContentView(R.layout.activity_user_detail);
 
         setupUI();
+
+        // Enable back action bar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup Retrofit Instances
         Retrofit retrofit = new Retrofit.Builder()
@@ -85,6 +90,12 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             }
         });
 
+    }
+
+    /** Method that are used for the back */
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     /** Will be used to show message on the form of toast on the presenter class */
