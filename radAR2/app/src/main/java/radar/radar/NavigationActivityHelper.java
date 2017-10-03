@@ -49,17 +49,16 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 if (id == R.id.nav_maps) {
                     //TODO: Go to maps
                 } else if (id == R.id.nav_chats) {
+                    // launch chats
                     Intent intent = new Intent(activity, ChatListActivity.class);
                     activity.startActivity(intent);
                     activity.finish();
                 } else if (id == R.id.nav_friends) {
-
                     // launch Friends activity
                     Intent intent = new Intent(activity, FriendsActivity.class);
                     activity.startActivity(intent);
 
                 } else if (id == R.id.nav_logout) {
-
                     // launch Login activity
                     Intent intent = new Intent(activity, LoginActivity.class);
                     AuthService.signOut(activity);
@@ -67,8 +66,15 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
 
                 } else if (id == R.id.nav_settings) {
+                    // TODO - Define settings
+                    // TODO for now used for AR
+
+                    Intent intent = new Intent(activity, ARActivity2.class);
+                    activity.startActivity(intent);
 
                 } else if (id == R.id.nav_tracking_groups) {
+                    Intent intent = new Intent(activity, GroupActivity.class);
+                    activity.startActivity(intent);
 
                 }
 

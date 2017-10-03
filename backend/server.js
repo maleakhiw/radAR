@@ -38,15 +38,10 @@ mongoose.Promise = global.Promise
 
 // Error handling for invalid JSON
 app.use(function (error, req, res, next) {
-  if (error instanceof SyntaxError) {
-    res.json({
-      success: false,
-      errors: common.errorObjectBuilder(['invalidJSON'])
-    })
-  }
-  else {
-    next()
-  }
+  res.json({
+    success: false,
+    errors: common.errorObjectBuilder(['invalidJSON'])
+  })
 });
 
 // handle rapid-fire duplicate requests
@@ -139,7 +134,7 @@ const PositioningSystem = require('./controllers/PositioningSystem');
 const positioningSystem = new PositioningSystem(LocationModel, User);
 
 const GroupSystem = require('./controllers/GroupSystem');
-const groupSystem = new GroupSystem(Group, Message, User);
+const groupSystem = new GroupSystem(Group, Message, User, LocationModel);
 
 // export the mongoose object so it is accessible by other subsystems
 // module.exports.mongoose = mongoose
@@ -200,6 +195,9 @@ app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.send
 app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub
 app.get("/api/accounts/:userID/groups/:groupID", authenticate, sms.getGroup);
+app.get("/api/accounts/:userID/groups/:groupID/locations", authenticate, groupSystem.getLocations);
+app.post("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
+app.put("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
