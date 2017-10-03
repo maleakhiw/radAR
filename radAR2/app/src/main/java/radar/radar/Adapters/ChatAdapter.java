@@ -28,6 +28,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         this.chats = chats;
     }
 
+    public void setChatList(ArrayList<Chat> chats) {
+        this.chats = chats;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();

@@ -23,6 +23,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ChatListActivity extends AppCompatActivity {
     private ChatService chatService;
     private RecyclerView chatRecyclerView;
+    private ChatAdapter chatAdapter;
 
     private ArrayList<Integer> chatIDs;
     private ArrayList<Chat> groups;
@@ -32,11 +33,14 @@ public class ChatListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
-        // Setup recycler view
-        chatRecyclerView = findViewById(R.id.chatRecyclerView);
-
         // Setup groups
         groups = new ArrayList<>();
+
+        // Setup recycler view
+        chatRecyclerView = findViewById(R.id.chatRecyclerView);
+        chatAdapter = new ChatAdapter(ChatListActivity.this, groups);
+        chatRecyclerView.setAdapter(chatAdapter);
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -104,6 +108,8 @@ public class ChatListActivity extends AppCompatActivity {
                     if (getChatInfoResponse.success) {
                         // Add to groups
                         groups.add(getChatInfoResponse.group);
+                        chatAdapter.setChatList(groups);
+                        chatAdapter.notifyDataSetChanged();
                     }
                     else {
                         Toast.makeText(ChatListActivity.this, "Failed to display chat", Toast.LENGTH_LONG).show();
@@ -118,11 +124,6 @@ public class ChatListActivity extends AppCompatActivity {
 
                 @Override
                 public void onComplete() {
-                    // When it is complete, it means that the group is filled up, now connect this to the recycler view
-                    ChatAdapter chatAdapter = new ChatAdapter(ChatListActivity.this, groups);
-                    chatRecyclerView.setAdapter(chatAdapter);
-                    chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
-                    chatAdapter.notifyDataSetChanged();
                 }
             });
         }
