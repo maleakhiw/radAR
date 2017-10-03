@@ -25,11 +25,12 @@ import radar.radar.Models.User;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
+import radar.radar.Views.ChatView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity implements ChatView {
     private ChatService chatService;
     private User user;
     private int groupID;
