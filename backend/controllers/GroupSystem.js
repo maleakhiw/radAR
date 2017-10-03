@@ -317,7 +317,7 @@ module.exports = class GroupSystem extends SMS{
       res.json({
         success: true,
         errors: [],
-        meetingPoint = {
+        meetingPoint: {
           lat: lat,
           lon: lon,
           name: name,
@@ -331,6 +331,5 @@ module.exports = class GroupSystem extends SMS{
       }
     });
   }
-
 
 }
