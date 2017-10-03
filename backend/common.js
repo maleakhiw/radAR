@@ -95,6 +95,19 @@ module.exports.getPublicUserInfo = function(user) {
   return retVal
 }
 
+module.exports.getAuthUserInfo = function(user) {
+  let retVal = {
+    email: user.email,
+    userID: user.userID,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    profilePicture: user.profilePicture,
+    profileDesc: user.profileDesc
+  }
+  return retVal
+}
+
 module.exports.isString = (object) => {
   return (typeof object === 'string' || object instanceof String)
 }
