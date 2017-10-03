@@ -66,12 +66,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 public void onClick(View view) {
                     // From the displayed friend list send information
                     Chat chat = chats.get(getAdapterPosition());
-
-                    Toast.makeText(context, "Clicked", Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra("chat", chat);
+                    intent.putExtra("load", true);
                     context.startActivity(intent);
-
                 }
             });
         }

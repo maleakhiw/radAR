@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import radar.radar.Models.Message;
 import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.R;
 import radar.radar.Services.AuthService;

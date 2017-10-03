@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -15,9 +14,10 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Message;
+import radar.radar.Models.Chat;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.NewChatResponse;
@@ -34,10 +34,13 @@ public class ChatActivity extends AppCompatActivity {
     private User user;
     private int groupID;
     private ArrayList<MessageResponse> messages;
+    private ArrayList<Integer> chatIDs;
 
     private EditText chatText;
     private Button send;
     private RecyclerView messageRecyclerView;
+
+    private Boolean load;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,49 @@ public class ChatActivity extends AppCompatActivity {
         // Get the user data that we will be chatting with from the previous intent
         user = (User) getIntent().getSerializableExtra("user");
 
-        generateNewChat();
+        // Check whether we should load or generate new message
+        load = getIntent().getExtras().getBoolean("load");
+
+        // If there exist the message, just load the message
+        if (load) {
+            Chat chat = (Chat) getIntent().getSerializableExtra("chat");
+            loadMessages(chat.groupID);
+            embedSendMessage();
+        } else {
+            generateNewChat();
+            embedSendMessage();
+        }
+
+    }
+
+    /** Used to get messages */
+    public void loadMessages(int chatID) {
+        chatService.getMessages(chatID).subscribe(new Observer<MessagesResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(MessagesResponse messagesResponse) {
+                // If successful display on recycler view
+                messages = messagesResponse.messages;
+                MessageListAdapter messageListAdapter = new MessageListAdapter(ChatActivity.this, messages);
+                messageRecyclerView.setAdapter(messageListAdapter);
+                messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
+                messageListAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
     }
 
     /** Used to generate a new chat/ new message for a particular user */
@@ -88,7 +133,6 @@ public class ChatActivity extends AppCompatActivity {
                 // if the response is successful, then we can proceed to create a chat
                 if (newChatResponse.success) {
                     groupID = newChatResponse.group.groupID;
-                    embedSendMessage(); // embed on click listener
                 }
                 else {
                     Toast.makeText(getApplicationContext(), "Status false", Toast.LENGTH_LONG).show();
@@ -132,8 +176,6 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onNext(SendMessageResponse sendMessageResponse) {
                         if (sendMessageResponse.success) {
-                            Toast.makeText(getApplicationContext(), "Send message successful", Toast.LENGTH_LONG).show();
-
                             // When you click send you will add into message
                             messages.add(sendMessageResponse.sentMessage);
                         }
@@ -141,7 +183,7 @@ public class ChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -151,6 +193,9 @@ public class ChatActivity extends AppCompatActivity {
                         messageRecyclerView.setAdapter(messageListAdapter);
                         messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
                         messageListAdapter.notifyDataSetChanged();
+
+                        // Remove the text on the edit view
+                        chatText.setText("");
                     }
                 });
             }
