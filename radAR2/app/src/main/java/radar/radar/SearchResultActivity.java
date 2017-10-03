@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,10 @@ public class SearchResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_result2);
 
+        // Enable back action bar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         // Instantiate recyclerview and query edit view
         recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView2 = findViewById(R.id.requestRecyclerView);
@@ -74,6 +79,13 @@ public class SearchResultActivity extends AppCompatActivity {
         // Display pending friend requests for particular user
         displayFriendsRequest();
 
+    }
+
+
+    /** Method that are used for the back */
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     /** This search method will search the appropriate user using the user's query */
