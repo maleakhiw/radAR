@@ -23,7 +23,7 @@ This assumes Node and NPM has been installed on the testing machine.
  ## Team Oxygen
  
  Full Name | GitHub Username | Student ID 
- —--------|--------------------|------------
+ ---------|--------------------|------------
  Edelin Onggo | edelinonggo | 784172
  Kenneth Aloysius | krusli |  772449
  Maleakhi Wijaya | maleakhiw | 784091
