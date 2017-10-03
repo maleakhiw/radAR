@@ -25,20 +25,15 @@ public class GroupLocationsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
-        View rootView = inflater.inflate(
-                R.layout.fragment_group_locations, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
         Bundle args = getArguments();
 
+        System.out.println("groupLocationsFragment");
         if (args != null) {
             Group group = (Group) args.getSerializable("group");
             rootView.findViewById(R.id.start_tracking_in_AR).setOnClickListener(view -> {
                 Intent intent = new Intent(getActivity(), ARActivity2.class);
-                intent.putExtra("groupID", group.groupID);
-                startActivity(intent);
-            });
-            rootView.findViewById(R.id.go_to_mapView).setOnClickListener(view -> {
-                Intent intent = new Intent(getActivity(), MapView.class);
                 intent.putExtra("groupID", group.groupID);
                 startActivity(intent);
             });
