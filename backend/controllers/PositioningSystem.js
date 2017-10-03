@@ -16,19 +16,9 @@ const isNumber = common.isNumber;
 
 let LocationModel, User;
 
-function isValidLat(val) {
-  // latitude can only be +/- 90 degrees.
-  // longitude can be +/- 180 deg.
-  return (val >= -90 && val <= 90);
-}
-
-function isValidLon(val) {
-  return (val >= -180 && val <= 180);
-}
-
-function isValidHeading(val) {
-  return (val >= 0 && val <= 360);
-}
+const isValidLat = common.isValidLat;
+const isValidLon = common.isValidLon;
+const isValidHeading = common.isValidHeading;
 
 /**
  * Validates the request object for updateLocation(req, res)

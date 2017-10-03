@@ -13,6 +13,9 @@ const isNumber = common.isNumber;
 const isArray = common.isArray;
 const isString = common.isString;
 const unique = common.unique;
+const isValidLat = common.isValidLat;
+const isValidLon = common.isValidLon;
+const isValidHeading = common.isValidHeading;
 
 const SMS = require('./SMS');
 

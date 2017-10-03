@@ -18,6 +18,21 @@ module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   })
 })
 
+module.exports.isValidLat = (val) => {
+  // latitude can only be +/- 90 degrees.
+  // longitude can be +/- 180 deg.
+  return (val >= -90 && val <= 90);
+}
+
+module.exports.isValidLon = (val) => {
+  return (val >= -180 && val <= 180);
+}
+
+module.exports.isValidHeading = (val) => {
+  return (val >= 0 && val <= 360);
+}
+
+
 module.exports.sendUnauthorizedError = (res, errorKeys) => {
   res.status(401).json({
     success: false,
