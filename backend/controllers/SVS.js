@@ -341,16 +341,22 @@ module.exports = class SVS {
         return;
     }
 
+    let response = {};
     validateCredentials(username, password)
     .then((obj) => {
       let token = obj.token;
       let userID = obj.userID;
-      res.json({
+      response = {
         success: true,
         errors: [],
         userID: userID,
         token: token
-      });
+      };
+      return User.findOne({userID: userID}).exec()
+    })
+    .then((user) => {
+      response.userInfo = common.getPublicUserInfo(user);
+      res.json(response);
     })
     .catch((error) => {
       if (error == 'invalidUsername') {
