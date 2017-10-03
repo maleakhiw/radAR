@@ -43,7 +43,6 @@ public class ChatActivity extends AppCompatActivity {
     private RecyclerView messageRecyclerView;
     private MessageListAdapter messageListAdapter;
 
-
     private Boolean load;
 
     @Override

@@ -28,9 +28,10 @@ android:layout_height="wrap_content">
             android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:id="@+id/row_search_name"
             android:layout_toRightOf="@+id/row_profile_picture"
             android:layout_marginLeft="5dp">
@@ -41,9 +42,17 @@ android:layout_height="wrap_content">
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:text="Name"
-                android:layout_marginTop="20dp"
                 android:textColor="@android:color/black"
                 android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/row_recent_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:text="Recent Message"
+                android:textColor="@android:color/darker_gray"
+                />
 
         </LinearLayout>
 
