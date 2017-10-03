@@ -141,11 +141,6 @@
     <string name="title_activity_home_screen">HomeScreenActivity</string>
     <string name="title_activity_chats_list">ChatsListActivity</string>
 
-    <!-- Data related to LocationActivity -->
-    <string name="title_activity_place">radAR Location Service</string>
-    <string name="location_permissions">Location Permissions</string>
-    <string name="need_location_permission_message">You need to enable location permissions first</string>
-
     <string name="place_details">
     <![CDATA[
         <b>%1$s</b>
