@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 import radar.radar.ChatActivity;
 import radar.radar.GroupActivity;
+import radar.radar.GroupDetailActivity;
 import radar.radar.Models.Group;
 import radar.radar.R;
 
@@ -84,7 +85,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
                 public void onClick(View view) {
                     // From the displayed friend list send information
                     Group group = groups.get(getAdapterPosition());
-                    Intent intent = new Intent(context, GroupActivity.class);
+                    Intent intent = new Intent(context, GroupDetailActivity.class);
                     intent.putExtra("groupID", group.groupID);
 //                    intent.putExtra("group", group);
 //                    intent.putExtra("load", true);

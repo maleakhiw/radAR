@@ -24,11 +24,13 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
     TextView name;
     TextView email;
 
-    public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar, AppCompatActivity activity) {
+    public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar, TextView name, TextView email, AppCompatActivity activity) {
         this.navigationView = navigationView;
         this.drawerLayout = drawerLayout;
         this.toolbar = toolbar;
         this.activity = activity;
+        this.name = name;
+        this.email = email;
 
         initialiseToolbarAndDrawer();
     }
@@ -46,54 +48,48 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         toggle.syncState();
 
         // update profile info display
-        // TODO should be provided via constructor
-        name = activity.findViewById(R.id.nav_header_name);
-        email = activity.findViewById(R.id.nav_header_email);
         name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
         email.setText(AuthService.getEmail(activity));
 
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                // Handle navigation view item clicks here.
-                int id = item.getItemId();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            // Handle navigation view item clicks here.
+            int id = item.getItemId();
 
-                if (id == R.id.nav_maps) {
-                    //TODO: Go to maps
-                    Intent intent = new Intent(activity, MapsActivity.class);
-                    activity.startActivity(intent);
-                } else if (id == R.id.nav_chats) {
-                    // launch chats
-                    Intent intent = new Intent(activity, ChatListActivity.class);
-                    activity.startActivity(intent);
-                } else if (id == R.id.nav_friends) {
-                    // launch Friends activity
-                    Intent intent = new Intent(activity, FriendsActivity.class);
-                    activity.startActivity(intent);
+            if (id == R.id.nav_maps) {
+                //TODO: Go to maps
+                Intent intent = new Intent(activity, MapsActivity.class);
+                activity.startActivity(intent);
+            } else if (id == R.id.nav_chats) {
+                // launch chats
+                Intent intent = new Intent(activity, ChatListActivity.class);
+                activity.startActivity(intent);
+            } else if (id == R.id.nav_friends) {
+                // launch Friends activity
+                Intent intent = new Intent(activity, FriendsActivity.class);
+                activity.startActivity(intent);
 
-                } else if (id == R.id.nav_logout) {
-                    // launch Login activity
-                    Intent intent = new Intent(activity, LoginActivity.class);
-                    AuthService.signOut(activity);
-                    activity.startActivity(intent);
+            } else if (id == R.id.nav_logout) {
+                // launch Login activity
+                Intent intent = new Intent(activity, LoginActivity.class);
+                AuthService.signOut(activity);
+                activity.startActivity(intent);
 
 
-                } else if (id == R.id.nav_settings) {
-                    // TODO - Define settings
-                    // TODO for now used for AR
+            } else if (id == R.id.nav_settings) {
+                // TODO - Define settings
+                // TODO for now used for AR
 
-                    Intent intent = new Intent(activity, ARActivity2.class);
-                    activity.startActivity(intent);
+                Intent intent = new Intent(activity, ARActivity2.class);
+                activity.startActivity(intent);
 
-                } else if (id == R.id.nav_tracking_groups) {
-                    Intent intent = new Intent(activity, GroupsListActivity.class);
-                    activity.startActivity(intent);
+            } else if (id == R.id.nav_tracking_groups) {
+                Intent intent = new Intent(activity, GroupsListActivity.class);
+                activity.startActivity(intent);
 
-                }
-
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return true;
             }
+
+            drawerLayout.closeDrawer(GravityCompat.START);
+            return true;
         });
 
     }

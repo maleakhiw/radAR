@@ -86,7 +86,11 @@ public class AuthService {
                     @Override
                     public void onNext(AuthResponse authResponse) {
                         prefs.edit().putString("radar_token", authResponse.token)
-                                .putInt("radar_userID", authResponse.userID).apply();
+                                .putInt("radar_userID", authResponse.userID)
+                                .putString("firstName", authResponse.userInfo.firstName)
+                                .putString("lastName", authResponse.userInfo.lastName)
+                                .putString("email", authResponse.userInfo.email)
+                                .apply();
                         emitter.onNext(authResponse);
                     }
 

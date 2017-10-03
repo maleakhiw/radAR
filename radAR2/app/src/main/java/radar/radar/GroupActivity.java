@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -138,8 +139,10 @@ public class GroupActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
 
-        helper = new NavigationActivityHelper(navigationView, drawer, toolbar, this);
+        helper = new NavigationActivityHelper(navigationView, drawer, toolbar, name, email, this);
 
     }
 
