@@ -293,6 +293,8 @@ module.exports = class GroupSystem extends SMS{
 
   updateMeetingPoint(req, res) {
 
+    let groupID = req.params.groupID;
+    let userID = req.params.userID;
 
     let lat = req.body.lat;
     let lon = req.body.lon;
@@ -311,7 +313,8 @@ module.exports = class GroupSystem extends SMS{
           lat: lat,
           lon: lon,
           name: name,
-          description: description
+          description: description,
+          updatedBy: userID
         }
         group.save();
       })
@@ -324,7 +327,8 @@ module.exports = class GroupSystem extends SMS{
           lat: lat,
           lon: lon,
           name: name,
-          description: description
+          description: description,
+          updatedBy: userID
         }
       })
     })

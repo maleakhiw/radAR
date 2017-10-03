@@ -7,6 +7,7 @@ const meetingPointSchema = new Schema({
   lon: Number,
   name: String,
   description: String,
+  updatedBy: Number,
   timeAdded: {type: Date, default: Date.now}
 })
 // MeetingPoint = mongoose.model('MeetingPoint', meetingPointSchema)

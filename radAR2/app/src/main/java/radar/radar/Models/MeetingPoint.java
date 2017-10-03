@@ -12,4 +12,5 @@ public class MeetingPoint {
     public String name;
     public String description;
     public Date timeAdded;
+    public int updatedBy;
 }
