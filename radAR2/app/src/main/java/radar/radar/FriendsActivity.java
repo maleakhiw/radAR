@@ -1,27 +1,19 @@
 package radar.radar;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Adapters.SearchAdapter;
-import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Models.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Services.UsersApi;
@@ -32,7 +24,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class FriendsActivity extends AppCompatActivity implements FriendsView {
-
+    NavigationActivityHelper helper;
     FriendsPresenter presenter;
     RecyclerView recyclerView;
     FloatingActionButton fab;
@@ -42,6 +34,12 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
+
+        // Setup drawer and navigation helper
+        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, this);
 
         recyclerView = findViewById(R.id.friends_recyclerView);
         fab = findViewById(R.id.fab);
@@ -82,7 +80,6 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
     public void launchSearchFriendsActivity() {
         Intent intent = new Intent(this, SearchResultActivity.class);
         startActivity(intent);
-        finish();
     }
 
 
