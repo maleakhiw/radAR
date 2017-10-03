@@ -1,10 +1,13 @@
 package radar.radar;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +58,10 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
 
+        // Enable back action bar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
         // Setup UI
         setupUI();
         messages = new ArrayList<>();
@@ -86,6 +93,12 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
         // Process loading message or determine message creation
         chatPresenter.determineMessageCreation();
+    }
+
+    /** Method that are used for the back */
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     @Override
