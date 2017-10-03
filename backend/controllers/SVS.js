@@ -310,7 +310,7 @@ module.exports = class SVS {
         errors: [],
         token: token,
         userID: userID,
-        userInfo: common.getPublicUserInfo(user)
+        userInfo: common.getAuthUserInfo(user)
       })
 
     })
@@ -356,7 +356,7 @@ module.exports = class SVS {
       return User.findOne({userID: userID}).exec()
     })
     .then((user) => {
-      response['userInfo'] = common.getPublicUserInfo(user);
+      response['userInfo'] = common.getAuthUserInfo(user);
       console.log(response);
       res.json(response);
     })
