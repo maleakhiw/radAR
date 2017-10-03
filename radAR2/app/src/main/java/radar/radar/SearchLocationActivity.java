@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.text.Spanned;
@@ -13,19 +14,21 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
 /**
  * Created by rtanudjaja on 3/10/17.
  */
 
-public class SearchLocationActivity extends AppCompatActivity {
+public class SearchLocationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     /**
      * Request code for the autocomplete activity. This will be used to identify results from the
@@ -36,7 +39,7 @@ public class SearchLocationActivity extends AppCompatActivity {
 
     private TextView mPlaceDetailsText;
     private TextView mPlaceAttribution;
-
+    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,34 @@ public class SearchLocationActivity extends AppCompatActivity {
         mPlaceDetailsText = (TextView) findViewById(R.id.place_details);
         mPlaceAttribution = (TextView) findViewById(R.id.place_attribution);
 
+        // Build up the LocationServices API client
+        // Uses the addApi method to request the LocationServices API
+        // Also uses enableAutoManage to automatically when to connect/suspend the client
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.e(TAG, "API Client Connection Failed!");
     }
 
     /***
@@ -105,7 +136,7 @@ public class SearchLocationActivity extends AppCompatActivity {
                 } else {
                     mPlaceAttribution.setText("");
                 }
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+            } else if (resultCode == PlacePicker.RESULT_ERROR) {
                 Status status = PlacePicker.getStatus(this, data);
                 Log.e(TAG, "Error: Status = " + status.toString());
             } else if (resultCode == RESULT_CANCELED) {
