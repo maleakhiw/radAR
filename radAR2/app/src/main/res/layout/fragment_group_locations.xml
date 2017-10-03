@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+
+
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:text="AR view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:id="@+id/start_tracking_in_AR" />
-            <Button
-                android:text="Map view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:id="@+id/go_to_mapView" />
-        </LinearLayout>
 
-    </RelativeLayout>
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:id="@+id/start_tracking_in_AR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AR view" />
 
-</LinearLayout>
+    <Button
+        android:layout_below="@+id/start_tracking_in_AR"
+        android:id="@+id/go_to_mapView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Map view" />
+</RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

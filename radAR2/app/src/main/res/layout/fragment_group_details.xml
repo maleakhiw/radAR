@@ -60,10 +60,6 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/group_details_members_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
             <TextView
                 android:id="@+id/group_detail_textview"
                 android:layout_width="match_parent"
@@ -73,6 +69,12 @@
                 android:text="Hello world"
                 android:padding="@dimen/activity_horizontal_margin"
                 />
+            <!--TODO move TextView inside RV-->
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/group_details_members_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
