@@ -309,7 +309,8 @@ module.exports = class SVS {
         success: true,
         errors: [],
         token: token,
-        userID: userID
+        userID: userID,
+        userInfo: common.getPublicUserInfo(user)
       })
 
     })
@@ -356,6 +357,7 @@ module.exports = class SVS {
     })
     .then((user) => {
       response['userInfo'] = common.getPublicUserInfo(user);
+      console.log(response);
       res.json(response);
     })
     .catch((error) => {
