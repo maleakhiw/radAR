@@ -309,7 +309,8 @@ module.exports = class SVS {
         success: true,
         errors: [],
         token: token,
-        userID: userID
+        userID: userID,
+        userInfo: common.getAuthUserInfo(user)
       })
 
     })
@@ -341,16 +342,23 @@ module.exports = class SVS {
         return;
     }
 
+    let response = {};
     validateCredentials(username, password)
     .then((obj) => {
       let token = obj.token;
       let userID = obj.userID;
-      res.json({
+      response = {
         success: true,
         errors: [],
         userID: userID,
         token: token
-      });
+      };
+      return User.findOne({userID: userID}).exec()
+    })
+    .then((user) => {
+      response['userInfo'] = common.getAuthUserInfo(user);
+      console.log(response);
+      res.json(response);
     })
     .catch((error) => {
       if (error == 'invalidUsername') {

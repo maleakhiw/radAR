@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import radar.radar.Services.AuthService;
@@ -32,7 +33,10 @@ public class HomeScreenActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, this);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
     }
 

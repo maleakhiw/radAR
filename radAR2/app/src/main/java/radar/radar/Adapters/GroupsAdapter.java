@@ -11,15 +11,20 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import radar.radar.ChatActivity;
+import radar.radar.GroupActivity;
+import radar.radar.GroupDetailActivity;
 import radar.radar.Models.Group;
 import radar.radar.R;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+/**
+ * Created by kenneth on 3/10/17.
+ */
+public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder> {
 
     ArrayList<Group> groups;
     Context context;
 
-    public ChatAdapter(Context context, ArrayList<Group> groups) {
+    public GroupsAdapter(Context context, ArrayList<Group> groups) {
         this.context = context;
         this.groups = groups;
     }
@@ -60,6 +65,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
         return groups.size();
     }
 
+    public void setGroupsList(ArrayList<Group> groups) {
+        setChatList(groups);
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView chatName;
         TextView chatType;
@@ -76,9 +85,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
                 public void onClick(View view) {
                     // From the displayed friend list send information
                     Group group = groups.get(getAdapterPosition());
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra("group", group);
-                    intent.putExtra("load", true);
+                    Intent intent = new Intent(context, GroupDetailActivity.class);
+                    intent.putExtra("groupID", group.groupID);
+//                    intent.putExtra("group", group);
+//                    intent.putExtra("load", true);
                     context.startActivity(intent);
                 }
             });

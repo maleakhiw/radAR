@@ -11,8 +11,9 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.ChatAdapter;
-import radar.radar.Models.Chat;
-import radar.radar.Presenters.ChatListPresenter;
+import radar.radar.Models.Group;
+import radar.radar.Models.Responses.GetChatInfoResponse;
+import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
@@ -26,7 +27,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     private ChatAdapter chatAdapter;
 
     private ArrayList<Integer> chatIDs;
-    private ArrayList<Chat> groups;
+    private ArrayList<Group> groups;
 
     private ChatListPresenter chatListPresenter;
     NavigationActivityHelper helper;

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Chat;
+import radar.radar.Models.Group;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.Models.Responses.MessagesResponse;

@@ -20,6 +20,7 @@
     </style>
 
     <style name="AppTheme.NoActionBar">
+        <item name="itemIconTint">@android:color/darker_gray</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
