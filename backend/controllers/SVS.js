@@ -355,7 +355,7 @@ module.exports = class SVS {
       return User.findOne({userID: userID}).exec()
     })
     .then((user) => {
-      response.userInfo = common.getPublicUserInfo(user);
+      response['userInfo'] = common.getPublicUserInfo(user);
       res.json(response);
     })
     .catch((error) => {
