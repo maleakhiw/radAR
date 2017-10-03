@@ -36,7 +36,6 @@ public class SearchResultActivity extends AppCompatActivity {
     private RecyclerView recyclerView2;
 
     private EditText query;
-    private Button pending;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

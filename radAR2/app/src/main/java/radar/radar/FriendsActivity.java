@@ -80,7 +80,6 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
     public void launchSearchFriendsActivity() {
         Intent intent = new Intent(this, SearchResultActivity.class);
         startActivity(intent);
-        finish();
     }
 
 
