@@ -17,7 +17,7 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
 
-    GroupDetailsFragment fragment;
+    GroupDetailsFragment groupDetailsFragment;
     GroupLocationsFragment groupLocationsFragment;
     // fragment2
 
@@ -34,20 +34,15 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
-//                fragment = new GroupLocationsFragment();
-//                fragment.setListener(that);
-                GroupLocationsFragment fragment = new GroupLocationsFragment();
-                fragment.setListener(that);
-                return fragment;
-//                if (position == 1) {
-//                    fragment = new GroupDetailsFragment();
-//                    fragment.setListener(that);
-//                    return fragment;
-//                } else {
-//                    groupLocationsFragment = new GroupLocationsFragment();
-//                    groupLocationsFragment.setListener(that);
-//                    return fragment;
-//                }
+                if (position == 0) {
+                    groupDetailsFragment = new GroupDetailsFragment();
+                    groupDetailsFragment.setListener(that);
+                    return groupDetailsFragment;
+                } else {
+                    groupLocationsFragment = new GroupLocationsFragment();
+                    groupLocationsFragment.setListener(that);
+                    return groupLocationsFragment;
+                }
 
             }
 
@@ -82,14 +77,14 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
             }
         });
         // TODO get title from bundle
-        toolbar.setTitle("Group name");
+        setTitle("group name");
 
     }
 
     @Override
     public void onSetUp(Fragment fragment) {
         if (fragment instanceof GroupDetailsFragment) {
-//            ((GroupDetailsFragment) fragment).setMainTextView("Programmatically set text");
+//            ((groupDetailsFragment) groupDetailsFragment).setMainTextView("Programmatically set text");
         }
     }
 }
