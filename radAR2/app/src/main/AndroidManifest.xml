@@ -50,10 +50,6 @@
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
         </activity>
-        <activity
-            android:name=".PlaceActivity"
-            android:label="@string/title_activity_place">
-        </activity>
 
         <activity
             android:name=".SearchLocationActivity"
