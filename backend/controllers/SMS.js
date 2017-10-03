@@ -206,16 +206,16 @@ module.exports = class SMS {
             groupID: groupID,
             admins: group.admins,
             members: group.members,
-            isTrackingGroup: group.isTrackingGroup
+            isTrackingGroup: group.isTrackingGroup,
+            usersDetails: userDetails
           }
 
           res.json({
             success: true,
             errors: [],
-            group: groupObj,
-            usersDetails: userDetails
+            group: groupObj
           });
-          
+
         } else {
           // group does not exist
           res.status(404).json({
