@@ -136,7 +136,7 @@ function validateMeetingPoint(req) {
   if (!isValidLat(lat)) {
     errorKeys.push('invalidLat');
   }
-  if (!isValidLon(lot)) {
+  if (!isValidLon(lon)) {
     errorKeys.push('invalidLon');
   }
 
