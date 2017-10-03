@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Chat;
+import radar.radar.Models.Group;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.Models.Responses.MessagesResponse;
@@ -78,9 +78,9 @@ public class ChatActivity extends AppCompatActivity {
 
         // If there exist the message, just load the message
         if (load) {
-            Chat chat = (Chat) getIntent().getSerializableExtra("chat");
-            groupID = chat.groupID;
-            loadMessages(chat.groupID);
+            Group group = (Group) getIntent().getSerializableExtra("group");
+            groupID = group.groupID;
+            loadMessages(group.groupID);
             embedSendMessage();
         } else {
             generateNewChat();

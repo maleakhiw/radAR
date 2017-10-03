@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.ChatAdapter;
-import radar.radar.Models.Chat;
+import radar.radar.Models.Group;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatApi;
@@ -26,7 +26,7 @@ public class ChatListActivity extends AppCompatActivity {
     private ChatAdapter chatAdapter;
 
     private ArrayList<Integer> chatIDs;
-    private ArrayList<Chat> groups;
+    private ArrayList<Group> groups;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
