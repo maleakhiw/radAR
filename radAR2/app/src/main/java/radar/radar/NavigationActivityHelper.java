@@ -12,9 +12,6 @@ import android.view.MenuItem;
 
 import radar.radar.Services.AuthService;
 
-/**
- * Created by kenneth on 20/9/17.
- */
 
 public class NavigationActivityHelper {    // not actually a pure "Presenter"
     NavigationView navigationView;
@@ -52,17 +49,16 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 if (id == R.id.nav_maps) {
                     //TODO: Go to maps
                 } else if (id == R.id.nav_chats) {
-                    //TODO: Go to chats - currently goes to group list
-
-
+                    // launch chats
+                    Intent intent = new Intent(activity, ChatListActivity.class);
+                    activity.startActivity(intent);
+                    activity.finish();
                 } else if (id == R.id.nav_friends) {
-
                     // launch Friends activity
                     Intent intent = new Intent(activity, FriendsActivity.class);
                     activity.startActivity(intent);
 
                 } else if (id == R.id.nav_logout) {
-
                     // launch Login activity
                     Intent intent = new Intent(activity, LoginActivity.class);
                     AuthService.signOut(activity);

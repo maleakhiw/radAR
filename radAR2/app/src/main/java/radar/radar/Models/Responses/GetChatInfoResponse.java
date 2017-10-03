@@ -7,5 +7,5 @@ import radar.radar.Models.Chat;
  */
 
 public class GetChatInfoResponse extends Status {
-    Chat chat;
+    public Chat group;
 }

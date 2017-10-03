@@ -7,6 +7,11 @@ import java.util.ArrayList;
  */
 
 public class NewChatRequest {   // TODO ideally what we POST should be what we get back
-    public ArrayList<Integer> participantUserIDs;
     public String name; // name for the chat
+    public ArrayList<Integer> participantUserIDs;
+
+    public NewChatRequest(ArrayList<Integer> participantUserIDs, String name) {
+        this.participantUserIDs = participantUserIDs;
+        this.name = name;
+    }
 }
