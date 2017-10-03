@@ -190,7 +190,7 @@ public class ARPresenter {
                     UserLocation destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
                     if (!arView.isInflated(-1)) {
                         arView.inflateARAnnotation(destination);
-                        arView.setAnnotationMainText(-1, meetingPoint.description);
+                        arView.setAnnotationMainText(-1, meetingPoint.name);
                     }
                     render(-1, latUser, lonUser, destination, azimuth, pitch);
 

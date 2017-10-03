@@ -196,6 +196,7 @@ app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub
 app.get("/api/accounts/:userID/groups/:groupID", authenticate, sms.getGroup);
 app.get("/api/accounts/:userID/groups/:groupID/locations", authenticate, groupSystem.getLocations);
+app.put("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 
 // online statuses
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)

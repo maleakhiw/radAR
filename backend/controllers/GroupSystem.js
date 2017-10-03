@@ -11,6 +11,7 @@ winston.level = 'debug';  // TODO use environment variable
 const common = require('../common');
 const isNumber = common.isNumber;
 const isArray = common.isArray;
+const isString = common.isString;
 const unique = common.unique;
 
 const SMS = require('./SMS');
@@ -104,6 +105,39 @@ function promoteToTrackingGroupImpl2(userID, groupID, req, res) {
       common.sendError(res, ['invalidGroupID']);
     }
   })
+}
+
+function validateMeetingPoint(req) {
+  let errorKeys = [];
+  let lat = req.body.lat;
+  let lon = req.body.lon;
+  let name = req.body.name;
+  let description = req.body.description;
+
+  if (lat == null) {
+    errorKeys.push('missingLat');
+  }
+  if (lon == null) {
+    errorKeys.push('missingLon');
+  }
+  if (name == null) {
+    errorKeys.push('missingMeetingPointName');
+  }
+  if (errorKeys.length) {
+    return errorKeys;
+  }
+
+  if (!isString(name)) {
+    errorKeys.push('invalidMeetingPointName');
+  }
+  if (!isValidLat(lat)) {
+    errorKeys.push('invalidLat');
+  }
+  if (!isValidLon(lot)) {
+    errorKeys.push('invalidLon');
+  }
+
+  return errorKeys;
 }
 
 module.exports = class GroupSystem extends SMS{
@@ -252,6 +286,50 @@ module.exports = class GroupSystem extends SMS{
       }
     })
 
+  }
+
+  updateMeetingPoint(req, res) {
+
+
+    let lat = req.body.lat;
+    let lon = req.body.lon;
+    let name = req.body.name;
+    let description = req.body.description;
+    let errorKeys = validateMeetingPoint(req);
+    if (errorKeys.length) {
+      common.sendError(res, errorKeys);
+      return;
+    }
+
+    groupExists(groupID).then(() => {
+      Group.findOne({groupID: groupID}).exec()
+      .then((group) => {
+        group.meetingPoint = {
+          lat: lat,
+          lon: lon,
+          name: name,
+          description: description
+        }
+        group.save();
+      })
+    })
+    .then((group) => {
+      res.json({
+        success: true,
+        errors: [],
+        meetingPoint = {
+          lat: lat,
+          lon: lon,
+          name: name,
+          description: description
+        }
+      })
+    })
+    .catch((err) => {
+      if (err == 'groupDoesNotExist') {
+        common.sendError(res, ['invalidGroupID']);
+      }
+    });
   }
 
 

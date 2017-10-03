@@ -292,5 +292,13 @@ module.exports.errors = {
   missingParticipantUserIDs: {
     code: 106,
     reason: "Missing param: participantUserIDs (array of Int)"
+  },
+  invalidMeetingPointName: {
+    code: 107,
+    reason: "Invalid param: name (String)"
+  },
+  missingMeetingPointName: {
+    code: 108,
+    reason: "Missing param: name (String)"
   }
 }

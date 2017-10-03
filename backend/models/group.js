@@ -7,7 +7,7 @@ const meetingPointSchema = new Schema({
   lon: Number,
   name: String,
   description: String,
-  timeAdded: Date
+  timeAdded: {type: Date, default: Date.now}
 })
 // MeetingPoint = mongoose.model('MeetingPoint', meetingPointSchema)
 
@@ -15,12 +15,13 @@ const footprintSchema = new Schema({
   from: Number,
   description: String,
   resourceID: Number,
-  timeAdded: Date
+  timeAdded: {type: Date, default: Date.now}
 })
 
 const groupSchema = new Schema({
   name: String,
   groupID: {type: Number, unique: true},
+  createdOn: {type: Date, default: Date.now},
   members: [Number],
   admins: [Number],
   footprints: [footprintSchema],
