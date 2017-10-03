@@ -25,7 +25,7 @@
         <activity
             android:name=".HomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FriendsActivity" />
+        <activity android:name=".FriendsActivity" android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
         <activity

@@ -47,7 +47,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 int id = item.getItemId();
 
                 if (id == R.id.nav_maps) {
-                    //TODO: Go to maps
                     Intent intent = new Intent(activity, MapsActivity.class);
                     activity.startActivity(intent);
                 } else if (id == R.id.nav_chats) {
