@@ -112,8 +112,8 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     }
 
     @Override
-    public Chat getChatFromIntent() {
-        return ((Chat) getIntent().getSerializableExtra("chat"));
+    public Group getChatFromIntent() {
+        return ((Group) getIntent().getSerializableExtra("chat"));
     }
 
     @Override

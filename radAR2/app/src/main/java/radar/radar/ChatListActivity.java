@@ -14,6 +14,7 @@ import radar.radar.Adapters.ChatAdapter;
 import radar.radar.Models.Group;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
@@ -72,7 +73,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public void setGroups(ArrayList<Chat> groups) {
+    public void setGroups(ArrayList<Group> groups) {
         this.groups = groups;
     }
 
@@ -87,7 +88,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public ArrayList<Chat> getGroups() {
+    public ArrayList<Group> getGroups() {
         return this.groups;
     }
 
@@ -97,7 +98,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     }
 
     @Override
-    public void setArrayListInAdapter(ArrayList<Chat> groups) {
+    public void setArrayListInAdapter(ArrayList<Group> groups) {
         chatAdapter.setChatList(groups);
     }
 
