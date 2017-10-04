@@ -26,6 +26,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         this.friends = friends;
     }
 
+    public void updateFriends(ArrayList<User> friends) {
+        this.friends = friends;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -46,7 +50,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         holder.tvName.setText(user.firstName + " " + user.lastName);
         holder.tvUsername.setText(" @" + user.username);
         if (user.profileDesc == null) {
-            holder.tvOnlineStatus.setText("am not horse");
+            holder.tvOnlineStatus.setText("Hello, I am using Radar!");
         } else {
             holder.tvOnlineStatus.setText(user.profileDesc);
         }
@@ -54,6 +58,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
+        if (friends == null) {
+            return 0;
+        }
         return friends.size();
     }
 
@@ -78,7 +85,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     User user = friends.get(getAdapterPosition());
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
-                    intent.putExtra("user", (Serializable) user);
+                    intent.putExtra("user", user);
                     context.startActivity(intent);
 
                 }
