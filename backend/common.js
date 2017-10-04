@@ -1,5 +1,51 @@
 const errorValues = require('./consts').errors
 const metas = require('./consts').metas
+const User = require('./models/user') // TODO refactor so User is plug and play
+
+module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
+  if (!userID) {  // if no userID specified
+    reject('missingUserID');
+  }
+
+  User.findOne({ userID: userID }).exec()
+
+  .then((user) => {
+    if (!user) {
+      reject('invalidUserID');
+    } else {
+      resolve();
+    }
+  })
+})
+
+module.exports.isValidLat = (val) => {
+  // latitude can only be +/- 90 degrees.
+  // longitude can be +/- 180 deg.
+  return (val >= -90 && val <= 90);
+}
+
+module.exports.isValidLon = (val) => {
+  return (val >= -180 && val <= 180);
+}
+
+module.exports.isValidHeading = (val) => {
+  return (val >= 0 && val <= 360);
+}
+
+
+module.exports.sendUnauthorizedError = (res, errorKeys) => {
+  res.status(401).json({
+    success: false,
+    errors: module.exports.errorObjectBuilder(errorKeys)
+  });
+}
+
+module.exports.sendInternalError = (res) => {
+  res.status(500).json({
+    success: false,
+    errors: module.exports.errorObjectBuilder(['internalError'])
+  });
+}
 
 module.exports.addMetas = (obj, key) => {
   // console.log(obj, key)
@@ -7,6 +53,15 @@ module.exports.addMetas = (obj, key) => {
   return obj
 }
 
+module.exports.sendError = (res, errorKeys) => {
+    let response = {
+        success: false,
+        errors: module.exports.errorObjectBuilder(errorKeys)
+    }
+    res.json(response)
+}
+
+// filter duplicate entries
 module.exports.unique = (a) => {
     var seen = {};
     return a.filter(function(item) {
@@ -30,6 +85,19 @@ module.exports.errorObjectBuilder = function(errorKeys) {
 module.exports.getPublicUserInfo = function(user) {
   // TODO: check settings - privacy, visibility (Iteration 3)
   let retVal = {
+    userID: user.userID,
+    username: user.username,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    profilePicture: user.profilePicture,
+    profileDesc: user.profileDesc
+  }
+  return retVal
+}
+
+module.exports.getAuthUserInfo = function(user) {
+  let retVal = {
+    email: user.email,
     userID: user.userID,
     username: user.username,
     firstName: user.firstName,

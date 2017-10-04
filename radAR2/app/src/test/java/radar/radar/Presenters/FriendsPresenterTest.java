@@ -1,10 +1,5 @@
 package radar.radar.Presenters;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,37 +11,20 @@ import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Adapters.FriendsAdapter;
 import radar.radar.Models.Responses.FriendsResponse;
+import radar.radar.Models.Responses.StatusError;
 import radar.radar.Models.User;
-import radar.radar.Services.AuthApi;
-import radar.radar.Services.AuthService;
-import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
 import radar.radar.Views.FriendsView;
 
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 
-/**
- * Created by kenneth on 20/9/17.
- */
 public class FriendsPresenterTest {
-    FriendsPresenter presenter;
-    AuthService authService;
-    AuthApi mockAuthApi;
-    Context mockContext;
-    SharedPreferences mockSharedPrefs;
-    SharedPreferences.Editor mockEditor;
-
-    Context friendsViewAsContext;
-    FriendsView friendsView;
-
-    FriendsAdapter friendsAdapter;
-
     @BeforeClass
     public static void setupClass() {
-        // set all schedulers to trampoline scheduler
+        // set all schedulers to trampoline scheduler - to run on the "main thread"
         RxAndroidPlugins.setInitMainThreadSchedulerHandler(
                 __ -> Schedulers.trampoline());
         RxJavaPlugins.setIoSchedulerHandler(
@@ -60,77 +38,99 @@ public class FriendsPresenterTest {
 
     }
 
-    @Before
-    public void setUp() throws Exception {
-        // mock the Retrofit API
-//        mockAuthApi = Mockito.mock(AuthApi.class);
+    @Test
+    public void respondToFABClick() throws Exception {
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
+        UsersService usersService = Mockito.mock(UsersService.class);
 
-        // mock Android's SharedPreferences
-        mockSharedPrefs = Mockito.mock(SharedPreferences.class);
-        mockEditor = Mockito.mock(SharedPreferences.Editor.class);
-        Mockito.when(mockSharedPrefs.edit()).thenReturn(mockEditor);
-        Mockito.when(mockEditor.putString(anyString(), anyString())).thenReturn(mockEditor);
-        Mockito.when(mockEditor.putInt(anyString(), anyInt())).thenReturn(mockEditor);
-        Mockito.when(mockSharedPrefs.getString(anyString(), anyString())).thenReturn("fakeToken");
-        Mockito.when(mockSharedPrefs.getInt(anyString(), anyInt())).thenReturn(79);
+        FriendsPresenter presenter = new FriendsPresenter(friendsView, usersService);
+        presenter.respondToFABClick();
 
-        // mock friendsView as a FriendsView and Context (for SharedPrefs)
-        friendsViewAsContext = Mockito.mock(Context.class, Mockito.withSettings().extraInterfaces(FriendsView.class));
-        friendsView = (FriendsView) friendsViewAsContext;
-        Mockito.when(friendsViewAsContext.getSharedPreferences(anyString(), anyInt())).thenReturn(mockSharedPrefs);
-
-        // mock the RecyclerView adapter
-        friendsAdapter = Mockito.mock(FriendsAdapter.class);
-
-//        AuthResponse authResponse = new AuthResponse();
-//        authResponse.success = true;
-//        authResponse.errors = new ArrayList<>();
-//        authResponse.token = "someString";
-//        authResponse.userID = 3141592;
-//
-//        Mockito.when(mockAuthApi.signUp(Mockito.any(SignUpRequest.class))).
-//                thenReturn(Observable.just(authResponse));
-//        authService = new AuthService(mockAuthApi, mockContext);
-
-    }
-
-    @After
-    public void tearDown() throws Exception {
+        // I want to make sure that feedback is shown to the user in the form
+        // of a new Activity being launched.
+        Mockito.verify(friendsView).launchSearchFriendsActivity();
     }
 
     @Test
-    public void loadFriends() throws Exception {
-        UsersApi usersApi = Mockito.mock(UsersApi.class);
+    public void loadFriends_connectionError() throws Exception {
+        UsersService usersService = Mockito.mock(UsersService.class);
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
 
-        // mock returned data, simulate success scenario
-        ArrayList<User> friends = new ArrayList<>();
-        friends.add(new User(1, "user1", "John", "Doe", "", "I'm a mock user!"));
-        friends.add(new User(2, "krusli", "Kenneth", "Aloysius", "", "I'm a dev!"));
-        FriendsResponse friendsResponse = new FriendsResponse(friends);
-        friendsResponse.success = true;
+        // define an Observable that simply throws an error.
+        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
+        Observable<FriendsResponse> observable = Observable.just(friendsResponse)
+                                                .map(friendsResponse1 -> {
+                                                    throw new SocketTimeoutException("Fake timeout exception");
+                                                });
 
-        Mockito.when(usersApi.getFriends(anyInt(), anyString()))
-                .thenReturn(Observable.just(friendsResponse));
-        presenter = new FriendsPresenter(friendsView, usersApi);
-        Mockito.verify(friendsView).bindAdapterToRecyclerView(any());
-    }
 
-    @Test
-    public void loadFriendsError() throws Exception {
-        // simulate failure scenario
-        UsersApi usersApi = Mockito.mock(UsersApi.class);
+        Mockito.when(usersService.getFriends()).thenReturn(observable);
 
-        // mock returned data, simulate failure scenario
-        ArrayList<User> friends = new ArrayList<>();
-        FriendsResponse friendsResponse = new FriendsResponse(friends);
-        friendsResponse.success = true;
+        // system under test
+        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
+        friendsPresenter.loadFriends();
 
-        Observable<FriendsResponse> throwsError = Observable.just(friendsResponse)
-                .map(friendsResponse1 -> { throw new SocketTimeoutException(); });
-        Mockito.when(usersApi.getFriends(anyInt(), anyString()))
-                .thenReturn(throwsError);
-        presenter = new FriendsPresenter(friendsView, usersApi);
+        // assertions
         Mockito.verify(friendsView).showToast(anyString());
+
+    }
+
+    @Test
+    public void loadFriends_loginFailure() throws Exception {
+        UsersService usersService = Mockito.mock(UsersService.class);
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
+
+        // define behaviours
+        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
+        friendsResponse.success = false;
+        ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
+        friendsResponse.friends = friendsForFriendsResponse;
+        friendsResponse.errors = new ArrayList<>();
+        friendsResponse.errors.add(new StatusError("fakeReason", 42));
+
+        Mockito.when(usersService.getFriends()).thenReturn(
+                Observable.just(friendsResponse)    // return an object similar to one encountered
+                // in a successful request
+        );
+
+        // system under test
+        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
+        friendsPresenter.loadFriends();
+
+        // make sure the View is told to inform that the login failed
+        Mockito.verify(friendsView).showToast(anyString());
+
+    }
+
+    @Test
+    public void loadFriends_success() throws Exception {
+        UsersService usersService = Mockito.mock(UsersService.class);
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
+
+        // define behaviours
+        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
+        friendsResponse.success = true;
+        friendsResponse.errors = new ArrayList<>();
+
+        // list of friends for friendsResponse
+        ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
+        friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user", "keystorm@rocketmail.com"));
+        friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too", "dragonica@gmail.com"));
+
+        friendsResponse.friends = friendsForFriendsResponse;
+
+        Mockito.when(usersService.getFriends()).thenReturn(
+                Observable.just(friendsResponse)    // return an object similar to one encountered
+                                                    // in a successful request
+        );
+
+        // system under test
+        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
+        friendsPresenter.loadFriends();
+
+        // assertions
+        Mockito.verify(friendsView).bindAdapterToRecyclerView(friendsForFriendsResponse);
+
     }
 
 }

@@ -1,10 +1,7 @@
 let mongoose = require('mongoose')
 
 const User = require('../models/user')
-const Metadata = require('../models/metadata')
-const LastUserID = require('../models/lastUserID')
 const Resource = require('../models/resource')
-const PasswordHash = require('../models/passwordHash')
 
 // dev dependencies
 let chai = require('chai')
@@ -34,16 +31,7 @@ describe('ResMS', () => {
 
     User.remove({}).exec()
     .then(() => {
-      return Metadata.remove({})
-    })
-    .then(() => {
-      return LastUserID.remove({})
-    })
-    .then(() => {
       return Resource.remove({})
-    })
-    .then(() => {
-      return PasswordHash.remove({})
     })
     .then(() => {
       // create a user account

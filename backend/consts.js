@@ -165,25 +165,21 @@ module.exports.errors = {
     code: 27,
     reason: "Invalid params: participantUserIDs."
   },
-  invalidChatID: {
+  invalidGroupID: {
     code: 28,
-    reason: "Invalid param: chatID."
+    reason: "Invalid param: groupID."
   },
-  unauthorisedChat: {
+  unauthorisedGroup: {
     code: 29,
     reason: "You do not have access to this chat."
   },
-  missingChatID: {
+  missingGroupID: {
     code: 30,
-    reason: "Missing param: chatID."
+    reason: "Missing param: groupID."
   },
   missingMessage: {
     code: 31,
     reason: "Missing param: message."
-  },
-  missingGroupID: {
-    code: 78,
-    reason: "Missing param: groupID."
   },
   missingUserID: {
     code: 79,
@@ -228,5 +224,81 @@ module.exports.errors = {
   selfInviteError: {
     code: 89,
     reason: 'userID and invitedUserID cannot be the same.'
+  },
+  invitedUserIDAlreadyAdded: {
+    code: 90,
+    reason: 'The user you are trying to add is already in your friends list.'
+  },
+  missingLat: {
+    code: 91,
+    reason: "Missing param: lat."
+  },
+  missingLon: {
+    code: 92,
+    reason: "Missing param: lon."
+  },
+  missingAccuracy: {
+    code: 93,
+    reason: "Missing param: accuracy."
+  },
+  missingHeading: {
+    code: 94,
+    reason: "Missing param: heading."
+  },
+  invalidLat: {
+    code: 95,
+    reason: "Invalid param: lat."
+  },
+  invalidLon: {
+    code: 96,
+    reason: "Invalid param: lon."
+  },
+  invalidAccuracy: {
+    code: 97,
+    reason: "Invalid param: accuracy."
+  },
+  invalidHeading: {
+    code: 98,
+    reason: "Invalid param: heading."
+  },
+  locationUnavailable: {
+    code: 99,
+    reason: "Location data for the requested user is unavailable. User might not have updated location at all, or set privacy settings to limit location sharing."
+  },
+  missingQueryUserID: {
+    code: 100,
+    reason: "Missing param: queryUserID"
+  },
+  invalidQueryUserID: {
+    code: 101,
+    reason: "Invalid param: queryUserID. Requested queryUserID probably does not exist on the system."
+  },
+  missingIsTrackingGroup: {
+    code: 102,
+    reason: "Missing param: isTrackingGroup"
+  },
+  invalidIsTrackingGroup: {
+    code: 103,
+    reason: "Invalid param: isTrackingGroup (boolean)."
+  },
+  notGroupAdmin: {
+    code: 104,
+    reason: "You are not authorised to carry out this action (not admin)."
+  },
+  missingGroupName: {
+    code: 105,
+    reason: "Missing param: name (String)"
+  },
+  missingParticipantUserIDs: {
+    code: 106,
+    reason: "Missing param: participantUserIDs (array of Int)"
+  },
+  invalidMeetingPointName: {
+    code: 107,
+    reason: "Invalid param: name (String)"
+  },
+  missingMeetingPointName: {
+    code: 108,
+    reason: "Missing param: name (String)"
   }
 }
