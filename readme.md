@@ -13,17 +13,16 @@
  
  The AR functionality is best experienced via an actual Android device instead of through the emulator.
  
-## Server Information
+ ## Server Information
 The server for this application is placed on a remote VPS running NodeJS. It uses RESTful design and its API root is accessible from http://radar.fadhilanshar.com/.
-
-To start the server on a local machine, navigate to the /backend directory, and in a terminal instance, type 'npm install' to get all dependencies, and 'npm start' to intiate loading of the server after installation. To perform tests, type in 'npm test'.
+a
 
 This assumes Node and NPM has been installed on the testing machine. 
  
  ## Team Oxygen
  
  Full Name | GitHub Username | Student ID 
- ----------|--------------------|------------
+ ---------|--------------------|------------
  Edelin Onggo | edelinonggo | 784172
  Kenneth Aloysius | krusli |  772449
  Maleakhi Wijaya | maleakhiw | 784091
