@@ -80,13 +80,14 @@ function promoteToTrackingGroupImpl(userID, groupID, req, res) {
   })
 }
 
-function promoteToTrackingGroupImpl2(userID, groupID, req, res) {
+function promoteToTrackingGroupImpl2(userID, groupID, userDetails, req, res) {
   // group must exist
   groupExists(groupID).then(() => upgradeToTrackingGroup(groupID))
   .then(() => Group.findOne({groupID: groupID}))
   .then((group) => {
     if (group) {
       let groupRes = {
+        userDetails: userDetails,
         name: group.name,
         groupID: group.groupID,
         members: group.members,
@@ -154,10 +155,10 @@ module.exports = class GroupSystem extends SMS{
   }
 
   newGroup(req, res) {
-    let callback = (groupID) => { // callback: only called if group creation is a success
+    let callback = (groupID, userDetails) => { // callback: only called if group creation is a success
       winston.debug('callback ' + groupID);
       let userID = req.params.userID; // TODO make this consistent -> either by changing call params of callback
-      promoteToTrackingGroupImpl2(userID, groupID, req, res);
+      promoteToTrackingGroupImpl2(userID, groupID, userDetails, req, res);
     }
     SMS.newGroupImpl(req, res, callback);
   }
