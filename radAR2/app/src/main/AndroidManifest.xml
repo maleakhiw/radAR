@@ -25,7 +25,8 @@
         <activity
             android:name=".HomeScreenActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FriendsActivity"
+        <activity
+            android:name=".FriendsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
@@ -63,12 +64,13 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".GroupsListActivity" />
-        <activity android:name=".GroupDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".ChatListActivity"
+        <activity
+            android:name=".GroupDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".NewGroupActivity"></activity>
     </application>
 
 </manifest>

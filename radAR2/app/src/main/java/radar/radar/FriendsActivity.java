@@ -53,7 +53,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
         UsersApi usersApi = retrofit.create(UsersApi.class);
-        usersService = new UsersService(usersApi, this);
+        usersService = new UsersService(this, usersApi);
 
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();

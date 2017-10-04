@@ -1,21 +1,14 @@
 package radar.radar;
 
-import android.app.SearchManager;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -23,7 +16,6 @@ import radar.radar.Adapters.FriendsRequestAdapter;
 import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
-import radar.radar.Models.User;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
@@ -60,7 +52,7 @@ public class SearchResultActivity extends AppCompatActivity {
                                         .build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
-        usersService = new UsersService(usersApi, this);
+        usersService = new UsersService(this, usersApi);
 
         // When edit text is entered do search
         query.setOnKeyListener(new View.OnKeyListener() {

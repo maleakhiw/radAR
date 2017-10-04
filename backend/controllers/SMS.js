@@ -64,6 +64,8 @@ function newGroupImpl(req, res, callback) {
   let groupID
   let group;
 
+  let userDetails;
+
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
   .then((users) => {  // userIDs that are actually on the system
@@ -101,6 +103,8 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
+          userDetails.push(common.getPublicUserInfo(user));
+
           user.groups.push(groupID)
           user.save() .then(() => resolve());
         })
@@ -117,6 +121,8 @@ function newGroupImpl(req, res, callback) {
     if (callback) {
       callback(groupID);
     } else {
+      group['usersDetails'] = userDetails;
+
       res.json({
         success: true,
         errors: [],

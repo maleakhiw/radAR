@@ -49,7 +49,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                 .build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
-        usersService = new UsersService(usersApi, context);
+        usersService = new UsersService(context, usersApi);
     }
 
     @Override
