@@ -41,6 +41,7 @@ public class NewGroupActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GroupDetailActivity.class);
         intent.putExtra("group", group);
         startActivity(intent);
+        finish();
     }
 
     @Override
