@@ -7,20 +7,20 @@
         android:id="@+id/navdrawer_top">
         <item
             android:id="@+id/nav_maps"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:icon="@drawable/ic_map_black_48dp"
             android:title="Map View" />
         <item
             android:id="@+id/nav_chats"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_chat_black_48dp"
             android:title="Chats" />
         <item
             android:id="@+id/nav_tracking_groups"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/ic_group_black_48dp"
             android:title="Tracking Groups" />
 
         <item
             android:id="@+id/nav_friends"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_person_black_48dp"
             android:title="Friends" />
     </group>
 
@@ -28,7 +28,7 @@
         android:id="@+id/navdrawer_bottom">
         <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
+            android:icon="@drawable/ic_settings_black_48dp"
             android:title="Settings" />
 
         <item
