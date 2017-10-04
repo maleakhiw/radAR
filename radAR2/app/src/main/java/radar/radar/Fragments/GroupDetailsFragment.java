@@ -2,11 +2,18 @@ package radar.radar.Fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
+import radar.radar.Adapters.FriendsAdapter;
+import radar.radar.GroupDetailsLifecycleListener;
+import radar.radar.Models.Group;
 import radar.radar.R;
 
 /**
@@ -14,6 +21,17 @@ import radar.radar.R;
  */
 
 public class GroupDetailsFragment extends Fragment {
+    TextView nameTextView;
+    TextView mainTextView;
+    RecyclerView recyclerView;
+    FriendsAdapter friendsAdapter;
+
+    GroupDetailsLifecycleListener listener;
+
+    public void setListener(GroupDetailsLifecycleListener listener) {
+        this.listener = listener;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The last two arguments ensure LayoutParams are inflated
@@ -21,8 +39,30 @@ public class GroupDetailsFragment extends Fragment {
         View rootView = inflater.inflate(
                 R.layout.fragment_group_details, container, false);
         Bundle args = getArguments();
-//        ((TextView) rootView.findViewById(android.R.id.text1)).setText(
-//                Integer.toString(args.getInt(ARG_OBJECT)));
+
+        Group group = (Group) args.getSerializable("group");
+
+        nameTextView = rootView.findViewById(R.id.fragment_group_details_name);
+        nameTextView.setText(group.name);
+
+        mainTextView = rootView.findViewById(R.id.group_detail_textview);
+        mainTextView.setText("Members");
+
+        recyclerView = rootView.findViewById(R.id.group_details_members_recyclerView);
+        friendsAdapter = new FriendsAdapter(getActivity(), new ArrayList<>());  // getContext becomes getActivity inside a fragment
+        recyclerView.setAdapter(friendsAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        friendsAdapter.updateFriends(group.usersDetails);
+
+        // notify main activity that we have done initiating
+        listener.onSetUp(this);
+
         return rootView;
+    }
+
+    public void setMainTextView(String text) {
+        if (mainTextView != null) {
+            mainTextView.setText(text);
+        }
     }
 }

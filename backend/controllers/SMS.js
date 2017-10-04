@@ -64,6 +64,8 @@ function newGroupImpl(req, res, callback) {
   let groupID
   let group;
 
+  let userDetails = [];
+
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
   .then((users) => {  // userIDs that are actually on the system
@@ -101,6 +103,8 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
+          userDetails.push(common.getPublicUserInfo(user));
+
           user.groups.push(groupID)
           user.save() .then(() => resolve());
         })
@@ -115,8 +119,10 @@ function newGroupImpl(req, res, callback) {
   })
   .then(() => {
     if (callback) {
-      callback(groupID);
+      callback(groupID, userDetails);
     } else {
+      group['usersDetails'] = userDetails;
+
       res.json({
         success: true,
         errors: [],
@@ -181,24 +187,41 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
+      let group, userDetails;
       Group.findOne({ groupID: groupID }).exec()
-
-      .then((group) => {
-
+      .then((groupRes) => {
+        group = groupRes;
+        let promiseAll = group.members.map((memberUserID) => new Promise((resolve, reject) => {
+          User.findOne({userID: memberUserID}).exec().then((user) => {
+            if (user) {
+              resolve(user);
+            } else {
+              resolve();
+            }
+          })
+        }));
+        return Promise.all(promiseAll);
+      })
+      .then((userDetailsRes) => {
+        userDetails = userDetailsRes.map(common.getPublicUserInfo);
+      })
+      .then(() => {
         if (group) {
           let groupObj = {
             name: group.name,
             groupID: groupID,
             admins: group.admins,
             members: group.members,
-            isTrackingGroup: group.isTrackingGroup
+            isTrackingGroup: group.isTrackingGroup,
+            usersDetails: userDetails
           }
 
           res.json({
             success: true,
             errors: [],
             group: groupObj
-          })
+          });
+
         } else {
           // group does not exist
           res.status(404).json({

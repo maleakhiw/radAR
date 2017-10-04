@@ -10,9 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import radar.radar.Models.Responses.AddFriendResponse;
 import radar.radar.Models.User;
 import radar.radar.Presenters.UserDetailPresenter;
 import radar.radar.Services.UsersApi;
@@ -56,7 +53,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
 
         // Setup user api that will be used to generate a service so that we can add friends
         UsersApi usersApi = retrofit.create(UsersApi.class);
-        usersService = new UsersService(usersApi, this);
+        usersService = new UsersService(this, usersApi);
 
         // Get the information
         user = (User) getIntent().getSerializableExtra("user");
