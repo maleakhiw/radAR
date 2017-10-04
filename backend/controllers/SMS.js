@@ -64,7 +64,7 @@ function newGroupImpl(req, res, callback) {
   let groupID
   let group;
 
-  let userDetails;
+  let userDetails = [];
 
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
