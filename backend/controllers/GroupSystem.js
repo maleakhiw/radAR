@@ -87,7 +87,7 @@ function promoteToTrackingGroupImpl2(userID, groupID, userDetails, req, res) {
   .then((group) => {
     if (group) {
       let groupRes = {
-        userDetails: userDetails,
+        usersDetails: userDetails,
         name: group.name,
         groupID: group.groupID,
         members: group.members,
