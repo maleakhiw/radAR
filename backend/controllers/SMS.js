@@ -183,23 +183,15 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
-      let group, userDetails;
+      let group, usersDetails;
       Group.findOne({ groupID: groupID }).exec()
       .then((groupRes) => {
         group = groupRes;
-        let promiseAll = group.members.map((memberUserID) => new Promise((resolve, reject) => {
-          User.findOne({userID: memberUserID}).exec().then((user) => {
-            if (user) {
-              resolve(user);
-            } else {
-              resolve();
-            }
-          })
-        }));
-        return Promise.all(promiseAll);
+
+        return common.getUsersDetails(groupRes.members);
       })
-      .then((userDetailsRes) => {
-        userDetails = userDetailsRes.map(common.getPublicUserInfo);
+      .then((pUserDetails) => {
+        usersDetails = pUserDetails;
       })
       .then(() => {
         if (group) {
@@ -209,7 +201,7 @@ module.exports = class SMS {
             admins: group.admins,
             members: group.members,
             isTrackingGroup: group.isTrackingGroup,
-            usersDetails: userDetails
+            usersDetails: usersDetails
           }
 
           res.json({
