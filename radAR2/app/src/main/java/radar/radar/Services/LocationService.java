@@ -64,11 +64,13 @@ public class LocationService {
         });
     }
 
-    // TODO DEPRECATE DUE TO LOCATIONCALLBACK HAVING TO BE INSTANTIATED IN CONSTRUCTOR
     LocationCallback locationCallback;
 
     /**
      * Stream of Location updates (current position of the device).
+     * Caveat: location updates cannot be deregistered. This is fine if the location updates are meant to work in the background;
+     * as when the activity is destroyed, the locationClient automatically gets destroyed (presumably).
+     * 
      * @param interval interval between requests in ms
      * @param fastestInterval fastestInterval between requests in ms
      * @param priority priority, defined in LocationRequest
