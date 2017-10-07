@@ -167,6 +167,8 @@ class HomeScreenPresenter {
 
     }
 
+    boolean first = true;
+
     void locationUpdates() {
         locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY).subscribe(new Observer<Location>() {
             @Override
@@ -200,7 +202,11 @@ class HomeScreenPresenter {
                 LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
                 googleMap.addMarker(new MarkerOptions().position(melbourne_university)
                         .title(homeScreenView.getStringRes(R.string.unimelb)));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+
+                if (first) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                    first = false;
+                }
             }
 
             @Override
