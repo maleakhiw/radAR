@@ -115,7 +115,7 @@ function newGroupImpl(req, res, callback) {
   })
   .then(() => {
     if (callback) {
-      callback(groupID, userDetails);
+      callback(groupID, usersDetails);
     } else {
       group['usersDetails'] = usersDetails;
 
