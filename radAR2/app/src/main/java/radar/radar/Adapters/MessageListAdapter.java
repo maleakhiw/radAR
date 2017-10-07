@@ -114,9 +114,24 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             System.out.println(date);
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(date.getTime());
+
             Integer hour = calendar.get(Calendar.HOUR_OF_DAY);
             Integer minute = calendar.get(Calendar.MINUTE);
-            return hour.toString() + ":" + minute.toString();
+
+            String hourString, minuteString;
+            if (hour < 10) {
+                hourString = "0" + hour.toString();
+            } else {
+                hourString = hour.toString();
+            }
+
+            if (minute < 10) {
+                minuteString = "0" + minute.toString();
+            } else {
+                minuteString = minute.toString();
+            }
+
+            return hourString + ":" + minuteString;
         } catch (ParseException e) {
             e.printStackTrace();
             return "";

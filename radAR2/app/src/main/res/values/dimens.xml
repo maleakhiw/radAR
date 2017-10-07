@@ -10,6 +10,7 @@
     <dimen name="user_profile_img_size">48dp</dimen>
     <dimen name="recyclerView_padding_small">8dp</dimen>
     <dimen name="row_padding">8dp</dimen>
+    <dimen name="row_padding_small">4dp</dimen>
     <dimen name="name_font_size">18sp</dimen>
 
     <!-- Profile dimensions for the sidebar and account/group info -->

@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:paddingLeft="@dimen/recyclerView_padding_small"
     android:paddingRight="@dimen/recyclerView_padding_small"
-    android:paddingTop="@dimen/row_padding"
+    android:paddingTop="@dimen/row_padding_small"
+    android:paddingBottom="@dimen/row_padding_small"
 
     android:background="@color/colorWhite">
 

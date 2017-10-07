@@ -73,7 +73,9 @@
                 android:textSize="20sp"
                 android:lineSpacingExtra="8dp"
                 android:text="Hello world"
-                android:padding="@dimen/activity_horizontal_margin"
+                android:paddingTop="@dimen/activity_horizontal_margin"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
                 />
             <!--TODO move TextView inside RV-->
             <android.support.v7.widget.RecyclerView
