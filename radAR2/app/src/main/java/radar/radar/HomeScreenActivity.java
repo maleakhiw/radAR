@@ -74,19 +74,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
 
-
-        // testing
-//        locationCallback = new LocationCallback() {
-//            @Override
-//            public void onLocationResult(LocationResult result) {
-//                for (Location location : result.getLocations()) {
-//                    System.out.println(location.getLatitude());
-//                    System.out.println(location.getLongitude());
-//                }
-//            }
-//        };
-
-//        presenter = new HomeScreenPresenter(this, locationService, locationCallback);
         presenter = new HomeScreenPresenter(this, locationService);
 
         // set up mapView
@@ -98,7 +85,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-
         presenter.onMapReady(googleMap);
     }
 
@@ -116,7 +102,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 presenter.onMapReady(googleMap);
@@ -173,16 +158,43 @@ class HomeScreenPresenter {
 
     LocationCallback locationCallback;
 
-    HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService, LocationCallback callback) {
-        this.homeScreenView = homeScreenView;
-        this.locationService = locationService;
-        this.locationCallback = callback;
-    }
 
     public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
         this.homeScreenView = homeScreenView;
         this.locationService = locationService;
-        locationCallback = ((LocationCallbackProvider) homeScreenView).getLocationCallback(location -> System.out.println(location));
+        // NOTE locationCallback just has to be instantiated in constructor! Moving it to method call
+        // makes it unable to be unregistered.
+        locationCallback = ((LocationCallbackProvider) homeScreenView).getLocationCallback(location -> {
+            System.out.println(location.getLatitude());
+            System.out.println(location.getLongitude());
+
+            googleMap.clear();
+
+            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
+            googleMap.addCircle(new CircleOptions()
+                    .center(current)
+                    .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
+                    .radius(location.getAccuracy()));
+
+            googleMap.addCircle(new CircleOptions()
+                    .center(current)
+                    .fillColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
+                    .strokeColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
+                    .radius(1));
+
+            // Add a marker in Melbourne Uni and move the camera
+            double unimelb_lat = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lat));
+            double unimelb_lng = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lng));
+
+            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
+            googleMap.addMarker(new MarkerOptions().position(melbourne_university)
+                    .title(homeScreenView.getStringRes(R.string.unimelb)));
+
+            if (first) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                first = false;
+            }
+        });
     }
 
     void onMapReady(GoogleMap googleMap) {
@@ -191,13 +203,7 @@ class HomeScreenPresenter {
     }
 
     void onStop() {
-        System.out.println("onStop @ presenter");
-//        locationServiceDisposable.dispose();
-//        locationService.disconnect();
-
-//        if (locationCallback != null) {
-//            locationService.getFusedLocationClient().removeLocationUpdates(locationCallback);
-//        }
+        // don't need to do anything
     }
 
     void onStart() {
@@ -210,7 +216,11 @@ class HomeScreenPresenter {
 
 
     void locationUpdates() {
-        locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);
+        try {
+            locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);
+        } catch (SecurityException e) {
+            homeScreenView.requestLocationPermissions();
+        }
     }
 
 }
