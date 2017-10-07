@@ -58,6 +58,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();
 
+        setTitle("Friends");
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
