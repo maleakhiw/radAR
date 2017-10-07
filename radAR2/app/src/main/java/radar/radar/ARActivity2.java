@@ -13,6 +13,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
+import android.location.Location;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
@@ -20,7 +21,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Surface;
@@ -41,14 +41,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import radar.radar.Models.UserLocation;
 import radar.radar.Presenters.ARPresenter;
+import radar.radar.Services.CameraObjects;
+import radar.radar.Services.CameraService;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationApi;
@@ -70,7 +71,7 @@ class ViewSize {
     }
 }
 
-public class ARActivity2 extends AppCompatActivity implements ARView {
+public class ARActivity2 extends AppCompatActivity implements ARView, CameraDataListener {
 
     RelativeLayout mainRelativeLayout;
     HashMap<Integer, ARAnnotation> arAnnotations;   // userID -> ARAnnotation
@@ -79,12 +80,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     ARPresenter presenter;
 
+    // camera
     TextureView previewView;
-    Surface mSurface;
-    SurfaceTexture mSurfaceTexture;
-    CameraDevice mCameraDevice;
-    CameraData mCameraData;
-    CameraCaptureSession cameraCaptureSession;
+    CameraService cameraService;
+    SurfaceTexture surfaceTexture;
 
     // HUD Views
     TextView distanceToDestination;
@@ -97,8 +96,8 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     // main relative layout size
     Observable<ViewSize> mainRelativeLayoutSizeObservable;
     ViewSize lastViewSize;
-    int lastHeight;
-    int lastWidth;
+    int lastHeight = -1;
+    int lastWidth = -1;
 
     int groupID;
 
@@ -125,79 +124,89 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_FOR_LOCATION);
     }
 
+    public void requestCameraPermissions() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_FOR_CAMERA);
+    }
+
     CameraManager cameraManager;
 
     LocationService locationService;
     GroupsService groupsService;
     SensorManager sensorManager;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ar2);
-
-
-        groupID = getIntent().getIntExtra("groupID", -1);
-//        groupID = 1;    // TODO get from bundle
-//                        // TODO getGroup and check if it exists
-
-        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
-        // TODO also ask for location permissions
-
-        mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
-        inflater = getLayoutInflater();
-        arAnnotations = new HashMap<>();
-
-        // HUD views
+    private void setupHUDViews() {
         destinationName = findViewById(R.id.HUD_destination_name);
         distanceToDestination = findViewById(R.id.HUD_distance_to_dest);
         distanceUnit = findViewById(R.id.HUD_distance_unit);
         relativeCompassDirection = findViewById(R.id.HUD_relative_compass_direction);
         heading = findViewById(R.id.HUD_heading);
         layoutForButtons = findViewById(R.id.HUD_buttons_layout);
+    }
+
+    private void setupAnnotationView() {
+        mainRelativeLayout = findViewById(R.id.ARview_layout_for_annotations);
+        inflater = getLayoutInflater();
+        arAnnotations = new HashMap<>();
 
         // add listener for when mainRelativeLayout changes size
         mainRelativeLayoutSizeObservable = Observable.create(emitter -> {
+
             mainRelativeLayout.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
                 if (lastHeight != (bottom - top) || lastWidth != (right - left)) {
                     lastViewSize = new ViewSize(bottom - top, right - left);
+
                     emitter.onNext(lastViewSize);
+
                     lastHeight = bottom - top;
                     lastWidth = right - left;
                 }
             });
+
         });
 
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(new HttpLoggingInterceptor());
+//        // observable for layout size changes
+//        mainRelativeLayoutSizeObservable.subscribe(viewSize -> {
+//            System.out.println("viewSize got updated");
+//            for (int userID: arAnnotations.keySet()) {
+//                ARAnnotation annotation = arAnnotations.get(userID);
+//                updateAnnotationOffsets(annotation, lastHeight, lastWidth);
+//            }
+//        });
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ar2);
+
+        groupID = getIntent().getIntExtra("groupID", -1);
+
+        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+        // setup services
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                                        .build();
+                .baseUrl("http://35.185.35.117/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
         locationService = new LocationService(locationApi, this, fusedLocationClient);
         groupsService = new GroupsService(this, groupsApi);
+        cameraService = new CameraService(cameraManager, this);
+
+        // setup camera preview
+        previewView = findViewById(R.id.AR2_texture_view);
+        setupAnnotationView();
+        setupCameraPreviewAndPresenter();
+        setupHUDViews();
+
+
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-
-        previewView = findViewById(R.id.AR2_texture_view);
-
-        setupCameraPreviewAndPresenter();   // TODO refactor to camera service
-
-        // observable for layout size changes
-        mainRelativeLayoutSizeObservable.subscribe(viewSize -> {
-//            System.out.println("viewSize got updated");
-            for (int userID: arAnnotations.keySet()) {
-                ARAnnotation annotation = arAnnotations.get(userID);
-                updateAnnotationOffsets(annotation, lastHeight, lastWidth);
-            }
-        });
 
     }
 
@@ -208,33 +217,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         if (presenter == null) {
             presenter = new ARPresenter(this, locationService, groupsService, sensorManager, locationTransformations, groupID);
         }
-        presenter.updateData(width/hFov, height/vFov);
+        presenter.updateLocationTransformations(width/hFov, height/vFov);
     }
 
-    void setupPresenter() {
-        System.out.println("setupPresenter()");
-        if (mCameraData != null) {
-            System.out.println("cameraData not null @ setupPresenter");
-            double hFov = mCameraData.horizontalFov;
-            double vFov = mCameraData.verticalFov;
-            int width = lastViewSize.width;
-            int height = lastViewSize.height;
-            setupPresenterImpl(hFov, vFov, width, height, groupID);
-            return;
-        } else {
-            System.out.println("cameraData null @ setupPresenter");
-        }
 
-        // update view, create a new presenter or update the data
-        Observable.combineLatest(mainRelativeLayoutSizeObservable, cameraDataObservable, (viewSize, cameraData) -> {
-            double hFov = cameraData.horizontalFov;
-            double vFov = cameraData.verticalFov;
-            int width = viewSize.width; // in pixels (can be relative as long as we keep consistent)
-            int height = viewSize.height;   // in pixels
-            setupPresenterImpl(hFov, vFov, width, height, groupID);
-            return 1;   // does not matter, no observers that consume output
-        }).subscribe();
-    }
 
     @Override
     public void showToast(String toast) {
@@ -254,14 +240,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     @Override
     public void onStop() {
-        if (mCameraDevice != null) {
-            System.out.println("Closing camera device");
-            mCameraDevice.close();
-        }
-        if (cameraCaptureSession != null) {
-            System.out.println("Closing capture session");
-            cameraCaptureSession.close();
-        }
+        cameraService.cleanup();
 
         if (presenter != null) {
             presenter.onStop();
@@ -274,13 +253,11 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     @Override
     public void onStart() { // multitask to other apps
-        if (cameraCaptureSession != null) {
-            System.out.println("setupCameraPreviewAndPresenter()");
-            restartCameraPreview();
-        }
+        cameraService.resumeCameraPreview().subscribe();
 
         // no guarantee that presenter will already be instantiated
-        // presenter instantiation is asynchronous, dependent on camera data being available
+        // presenter instantiation is asynchronous - as it is instantiated only when the camera data
+        // is already available
         if (presenter != null) {
             presenter.onStart();
         }
@@ -288,7 +265,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         super.onStart();
     }
 
-    // called when permissions request completed (event from Activity)
+    // handle the result of requesting user permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == REQUEST_FOR_CAMERA) {
@@ -304,7 +281,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                setupPresenter();
+                setupCameraPreviewAndPresenter();   // TODO check
             } else {
                 // permission denied!
                 // TODO show TextView in activity, say that permission was not granted
@@ -322,8 +299,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         arAnnotations.get(userID);
     }
 
-
-    HashMap<Integer, Integer> buttonIDToUserID = new HashMap<>();
 
     /**
      * Adds an annotation onscreen based on a UserLocation object.
@@ -391,11 +366,17 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             annotation.offsetY = offsetTop;
             updateAnnotationOffsets(annotation, lastHeight, lastWidth);
         } else {
-            // TODO throw exception?
+            // TODO throw exception
             Log.w("setLayoutPadding", "invalid key");
         }
     }
 
+    /**
+     * Updates the offsets (margins) for the AR annotations.
+     * @param annotation annotation to update offsets for
+     * @param height height of the annotation "canvas"
+     * @param width width of the annotation "canvas"
+     */
     void updateAnnotationOffsets(ARAnnotation annotation, int height, int width) {
         if (annotation != null) {
             RelativeLayout layout = annotation.getLayout();
@@ -427,282 +408,73 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         }
     }
 
-    // camera code adapted from https://willowtreeapps.com/ideas/camera2-and-you-leveraging-android-lollipops-new-camera/
 
-    Observable<Surface> getSurfaceFromTextureView(TextureView previewView) {
-        System.out.println("getSurfaceFromTextureView()");
-        return Observable.create(observableEmitter -> {
-            if (mSurfaceTexture != null) {
-                observableEmitter.onNext(new Surface(mSurfaceTexture));
-            }
-
-            previewView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-                @Override
-                public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
-                    System.out.println(surfaceTexture);
-                    mSurfaceTexture = surfaceTexture;
-                    observableEmitter.onNext(new Surface(surfaceTexture));
-                }
-
-                @Override
-                public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int width, int height) {
-
-                }
-
-                @Override
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture surfaceTexture) {
-                    if (mCameraDevice != null) {
-                        mCameraDevice.close();
-                    }
-                    return false;
-                }
-
-                @Override
-                public void onSurfaceTextureUpdated(SurfaceTexture surfaceTexture) {
-
-                }
-            });
-        });
-    }
-
-    Observable<CameraData> getCameraData(@NonNull CameraManager cameraManager) {
-        return Observable.create(observableEmitter -> {
-            String[] cameraIDs = cameraManager.getCameraIdList();   // first camera
-            if (cameraIDs.length > 0) {
-                // take the 1st camera. Assume to be rear camera. TODO remove assumption, allow selection
-                String cameraID = cameraIDs[0];
-                System.out.println("cameraID");
-                System.out.println(cameraID);
-                CameraCharacteristics cameraCharacteristics = cameraManager.getCameraCharacteristics(cameraID);
-
-                // NOTE cameraCharacteristics contains camera info (lens, sensor)
-                // use to calculate FoV
-
-
-                // check for permissions
-                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                    // granted, open the camera and get the CameraDevice
-                    // then create a capture session
-                    CameraData cameraData = new CameraData(cameraID, cameraCharacteristics);
-                    mCameraData = cameraData;
-
-                    System.out.println(cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE));
-
-                    // adjust camera size
-                    Rect cameraResolution = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_ACTIVE_ARRAY_SIZE);
-                    int width = cameraResolution.width();
-                    int height = cameraResolution.height();
-                    correctAspectRatio(width, height);
-
-                    observableEmitter.onNext(cameraData);
-
-                } else {    // PERMISSION_DENIED
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_FOR_CAMERA);
-                    observableEmitter.onError(new Throwable("TEST"));
-                }
-            }
-        });
-    }
-
-    Observable<CameraDevice> getCameraDevice(@NonNull CameraManager cameraManager, @NonNull String cameraID) {
-        return Observable.create(observableEmitter -> {
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                cameraManager.openCamera(cameraID, new CameraDevice.StateCallback() {
-                    @Override
-                    public void onOpened(@NonNull CameraDevice cameraDevice) {
-                        System.out.println(cameraDevice);
-                        observableEmitter.onNext(cameraDevice);
-
-                    }
-
-                    @Override
-                    public void onDisconnected(@NonNull CameraDevice cameraDevice) {
-
-                    }
-
-                    @Override
-                    public void onError(@NonNull CameraDevice cameraDevice, int i) {
-
-                    }
-                }, new Handler(message -> {
-                    System.out.println("getCameraDevice");
-                    System.out.println(message);
-                    return false;
-                }));
-
-            }
-        });
-    }
-
-    Observable<CameraCaptureSession> createCaptureSession(@NonNull Surface previewSurface, @NonNull CameraDevice cameraDevice) {
-        return Observable.create(observableEmitter -> {
-            // create a new CaptureSession
-            List<Surface> surfaces = Arrays.asList(previewSurface); // NOTE if we have other surfaces, include them too
-            cameraDevice.createCaptureSession(surfaces, new CameraCaptureSession.StateCallback() {
-                @Override
-                public void onConfigured(@NonNull CameraCaptureSession cameraCaptureSession) {
-                    // we now have a capture session
-                    System.out.println(cameraCaptureSession);
-
-                    // now we have full control over image capture
-                    CaptureRequest request;
-                    try {
-                        CaptureRequest.Builder request2 = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
-                        request2.addTarget(previewSurface);
-                        request = request2.build();
-
-                        List<CaptureRequest> requestList = new ArrayList<>();
-                        requestList.add(request);
-
-                        // set capture options here
-
-                        // set the session to continuously get data from the camera
-                        cameraCaptureSession.setRepeatingBurst(requestList, new CameraCaptureSession.CaptureCallback() {
-                            @Override
-                            public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
-                                super.onCaptureCompleted(session, request, result);
-                            }
-                        }, new Handler(message -> {
-                            System.out.println("createCaptureSession");
-                            System.out.println(message);
-                            return false;
-                        }));
-
-                        observableEmitter.onNext(cameraCaptureSession);
-                    } catch (CameraAccessException e) {
-                        observableEmitter.onError(e);
-                    }
-
-                }
-
-                @Override
-                public void onConfigureFailed(@NonNull CameraCaptureSession cameraCaptureSession) {
-
-                }
-            }, new Handler(message -> {
-                System.out.println(message);
-                return false;
-            }));
-        });
-    }
 
     /**
      * Corrects the aspect ratio of the camera preview window
      * @param cameraWidth width of the camera
      * @param cameraHeight height of the camera
      */
-    void correctAspectRatio(int cameraWidth, int cameraHeight) {
+    @Override
+    public void correctAspectRatio(float cameraWidth, float cameraHeight) {
+        System.out.println("correctAspectRatio()");
         if (cameraWidth > cameraHeight) {
-            // height should be the taller one, assuming potratit. If not, swap
-            int tmp = cameraHeight;
+            // height should be the taller one, assuming potrait. If not, swap
+            float tmp = cameraHeight;
             cameraHeight = cameraWidth;
             cameraWidth = tmp;
         }
 
-        float aspectRatio = (float) cameraHeight / cameraWidth;
+        float aspectRatio = cameraHeight / cameraWidth;
+        System.out.println(aspectRatio);
 
-        // adjust
+        // adjust preview surface and annotations view to match camera aspect ratio
         int previewWidth = previewView.getMeasuredWidth();
+        int newWidth = previewWidth;
+        int newHeight = Math.round(previewWidth * aspectRatio);
 
-        previewView.setLayoutParams(new ConstraintLayout.LayoutParams(previewWidth, Math.round(previewWidth * aspectRatio)));
-
-        // also make the annotations overlay size to match the camera surface size
-        mainRelativeLayout.setLayoutParams(new ConstraintLayout.LayoutParams(previewWidth, Math.round(previewWidth * aspectRatio)));
-
+        previewView.setLayoutParams(new ConstraintLayout.LayoutParams(newWidth, newHeight));
+        mainRelativeLayout.setLayoutParams(new ConstraintLayout.LayoutParams(newWidth, newHeight));
     }
 
-    Observable<CameraData> cameraDataObservable;
 
     void setupCameraPreviewAndPresenter() {
-        // uses Camera2 API
-        // 1. Get a Surface to draw on from the TextureView, then
-        // 2. Fetch camera data, then
-        // 3. Get capture device, then
-        // 4. Create a new capture session
 
-        // fetch camera data
-        System.out.println("setupCameraPreviewAndPresenter() called");
-
-        cameraDataObservable = Observable.create(emitter -> {
-            getSurfaceFromTextureView(previewView)
-                    .switchMap((surface) -> {   // similar to .then() chaining in JS
-                        System.out.println(surface);
-                        mSurface = surface;
-                        return getCameraData(cameraManager);
-                    })
-                    .map((cameraData) -> {  // do something with the cameraData
-                        System.out.println("got cameraData");
-                        System.out.println(cameraData);
-                        emitter.onNext(cameraData);
-                        return cameraData;
-                    })
-                    .switchMap((cameraData) -> getCameraDevice(cameraManager, cameraData.cameraID))
-                    .switchMap((cameraDevice -> {
-                        mCameraDevice = cameraDevice;
-                        return createCaptureSession(mSurface, cameraDevice);
-                    }))
-                    .subscribe(new Observer<CameraCaptureSession>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(CameraCaptureSession session) {
-                            cameraCaptureSession = session;
-                            Log.d("captureSessionObserver", "Camera setup complete");
-
-                            setupPresenter();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.w("setup", "Error occurred");
-                            System.out.println(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-
-        });
-
-        // to get the above code going without depending on the Presenter
-        cameraDataObservable.subscribe();
-
-    }
-
-    void restartCameraPreview() {
-        // fetch camera data
-        System.out.println("resetCameraPreview() called");
-
-        getCameraDevice(cameraManager, mCameraData.cameraID)
-        .switchMap((cameraDevice -> {
-            mCameraDevice = cameraDevice;
-            return createCaptureSession(mSurface, cameraDevice);
-        }))
-        .subscribe(new Observer<CameraCaptureSession>() {
+        System.out.println("setupCameraPreviewAndPresenter()");
+        Observable.combineLatest(cameraService.getCameraObjects(previewView), mainRelativeLayoutSizeObservable,
+                CameraObjectsAndMainRelativeLayoutSize::new).subscribe(new Observer<CameraObjectsAndMainRelativeLayoutSize>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(CameraCaptureSession session) {
-                cameraCaptureSession = session;
-                Log.d("captureSessionObserver", "Camera setup complete");
+            public void onNext(CameraObjectsAndMainRelativeLayoutSize cameraObjectsAndMainRelativeLayoutSize) {
+                System.out.println(cameraObjectsAndMainRelativeLayoutSize);
+                // got camera data, setup presenter
+                CameraObjects cameraObjects = cameraObjectsAndMainRelativeLayoutSize.cameraObjects;
+                ViewSize viewSize = cameraObjectsAndMainRelativeLayoutSize.relativeLayoutSize;
+                CameraData cameraData = cameraObjects.getCameraData();
 
+                System.out.println(viewSize);
+                double hFov = cameraData.horizontalFov;
+                double vFov = cameraData.verticalFov;
+                int width = viewSize.width;
+                int height = viewSize.height;
+                setupPresenterImpl(hFov, vFov, width, height, groupID);
 
+                // NOTE correctAspectRatio() won't work here because you cannot change the size of
+                // the view once the camera is already using it.
+                // Thus we define an interface CameraDataListener -> method gets called
+                // when cameraData is ready; but the View is not used yet for the camera preview.
             }
 
             @Override
             public void onError(Throwable e) {
-                Log.w("restartCameraPreview", "Error occurred");
-                System.out.println(e);
+                if (e.getMessage().equals("REQUEST_CAMERA_PERMISSIONS")) {
+                    requestCameraPermissions();
+                }
+
             }
 
             @Override
@@ -712,6 +484,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         });
 
     }
+
 
     DecimalFormat df = new DecimalFormat();
 
@@ -727,7 +500,6 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
             distanceToDestination.setText(((Integer) (int) distance).toString());
         }
 
-
     }
 
     @Override
@@ -737,35 +509,7 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
 
     @Override
     public void updateRelativeDestinationPosition(CompassDirection compassDirection) {
-//        System.out.println(compassDirection);
-        switch (compassDirection) {
-            case NORTH:
-                relativeCompassDirection.setText("front");
-                break;
-            case NORTHEAST:
-                relativeCompassDirection.setText("front");
-                break;
-            case EAST:
-                relativeCompassDirection.setText("right");
-                break;
-            case SOUTHEAST:
-                relativeCompassDirection.setText("right");
-                break;
-            case SOUTH:
-                relativeCompassDirection.setText("back");
-                break;
-            case SOUTHWEST:
-                relativeCompassDirection.setText("left");
-                break;
-            case WEST:
-                relativeCompassDirection.setText("left");
-                break;
-            case NORTHWEST:
-                relativeCompassDirection.setText("front");
-                break;
-            default:
-                Log.d("updatePosition", "Invalid compass direction");
-        }
+        relativeCompassDirection.setText(LocationTransformations.getRelativeDestinationString(compassDirection));
     }
 
     @Override
@@ -801,8 +545,14 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
     }
 
 
+    private class CameraObjectsAndMainRelativeLayoutSize {
+        CameraObjects cameraObjects;
+        ViewSize relativeLayoutSize;
 
-
-
+        public CameraObjectsAndMainRelativeLayoutSize(CameraObjects cameraObjects, ViewSize relativeLayoutSize) {
+            this.cameraObjects = cameraObjects;
+            this.relativeLayoutSize = relativeLayoutSize;
+        }
+    }
 }
 
