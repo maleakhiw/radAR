@@ -26,6 +26,8 @@ public class ChatPresenter {
     private ChatView chatView;
     private ChatService chatService;
 
+    private Integer lastGroupID;
+
     /** Constructor */
     public ChatPresenter(ChatView chatView, ChatService chatService) {
         this.chatView = chatView;
@@ -39,6 +41,7 @@ public class ChatPresenter {
             Group chat = chatView.getChatFromIntent();
             chatView.setGroupID(chat.groupID);
             loadMessages(chat.groupID);
+            lastGroupID = chat.groupID;
             chatView.embedSendMessage();
         } else {
             generateNewChat();
@@ -46,12 +49,14 @@ public class ChatPresenter {
         }
     }
 
+    Disposable loadMessagesDisposable;
+
     /** Used to get messages */
     public void loadMessages(int chatID) {
         chatService.getMessages(chatID, 5000).subscribe(new Observer<MessagesResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                loadMessagesDisposable = d;
             }
 
             @Override
@@ -81,6 +86,18 @@ public class ChatPresenter {
         participant.add(id2);
 
         return (new NewChatRequest(participant, name));
+    }
+
+    public void onStop() {
+        if (loadMessagesDisposable != null) {
+            loadMessagesDisposable.dispose();
+        }
+    }
+
+    public void onStart() {
+        if (lastGroupID != null) {
+            loadMessages(lastGroupID);
+        }
     }
 
     /** Used to generate a new chat for a particular user */
