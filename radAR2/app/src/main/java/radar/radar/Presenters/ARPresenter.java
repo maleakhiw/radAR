@@ -99,9 +99,12 @@ public class ARPresenter {
     }
 
     private void updateDataImpl() {
+        // TODO verify
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
+
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
@@ -169,6 +172,7 @@ public class ARPresenter {
                 float azimuth = locationAndDeviceData.azimuth;
                 float pitch = locationAndDeviceData.pitch;
 
+
                 // meeting point
                 MeetingPoint meetingPoint = locationAndDeviceData.groupLocationDetails.meetingPoint;
 
@@ -215,12 +219,7 @@ public class ARPresenter {
                 arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
 
                 // update heading
-                double headingAzimuth = azimuth;
-                if (azimuth < 0) {
-                    headingAzimuth += 180;
-                }
-//                System.out.println(azimuth);
-                arView.updateHUDHeading(LocationTransformations.getCompassDirection(headingAzimuth));
+                arView.updateHUDHeading(LocationTransformations.getCompassDirection(azimuth));
 
             }
 
@@ -254,7 +253,7 @@ public class ARPresenter {
         if (sensorService != null) {
             sensorService.unregisterSensorEventListener();
         }
-        boolean tracking = true;    // TODO move out
+        boolean tracking = false;    // TODO move out
 
         if (!tracking) {    // do not send location data in the background
             locationPushDisposable.dispose();

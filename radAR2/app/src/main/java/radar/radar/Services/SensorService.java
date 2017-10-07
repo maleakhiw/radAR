@@ -37,7 +37,7 @@ public class SensorService {
         }
 
         azimuthUpdates = Observable.create(emitter -> {
-            CompassSensorFilter filter = new CompassSensorFilter();
+//            CompassSensorFilter filter = new CompassSensorFilter();
             float[] mOrientationAngles = new float[3];  // for compass
             float[] mRotationMatrix = new float[9];     // for compass
 
@@ -52,14 +52,12 @@ public class SensorService {
                         SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
                         double azimuth = Math.toDegrees(mOrientationAngles[0]);
-//                        if (azimuth < 0.0f) {   // normalise
-//                            azimuth += 360f;
-//                        }
+                        azimuth = azimuth % 360d;    // azimuth can be less than -360 or 360
+                        if (azimuth < 0.0d) {   // normalise
+                            azimuth += 360d;
+                        }
 
-                        azimuth = filter.updateAndGetSmoothed(azimuth);
-
-//                        System.out.println(azimuth);
-
+//                        azimuth = filter.updateAndGetSmoothed(azimuth);
                         emitter.onNext(azimuth);
                     }
 
