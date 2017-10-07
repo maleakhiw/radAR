@@ -276,14 +276,14 @@ module.exports = class SMS {
             contentType: message.contentType,
             text: message.text,
             contentResourceID: message.contentResourceID,
-            usersDetails: usersDetails
           }
         })
 
         res.send({
           success: true,
           errors: [],
-          messages: messagesRes
+          messages: messagesRes,
+          usersDetails: usersDetails
         })
       })
 
