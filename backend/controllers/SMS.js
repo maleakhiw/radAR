@@ -344,6 +344,8 @@ module.exports = class SMS {
       })
 
       .then((message) => {
+        sentMessage.time = message.time;
+
         res.json({
           success: true,
           errors: null,
