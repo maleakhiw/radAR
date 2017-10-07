@@ -44,7 +44,9 @@ public class GroupLocationsFragment extends Fragment {
         // The last two arguments ensure LayoutParams are inflated properly.
 
         // restore the listener
-        listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+        if (savedInstanceState != null) {
+            listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+        }
 
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 

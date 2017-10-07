@@ -96,8 +96,10 @@ public class GroupDetailsFragment extends Fragment {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
 
-        // restore the listener
-        listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+        if (savedInstanceState != null) {
+            // restore the listener
+            listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+        }
 
         View rootView = inflater.inflate(
                 R.layout.fragment_group_details, container, false);
