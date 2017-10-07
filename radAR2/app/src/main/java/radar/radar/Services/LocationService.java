@@ -47,6 +47,8 @@ public class LocationService {
         token = AuthService.getToken(context);
     }
 
+
+
     /**
      * Gets the last location of the device.
      * @return Observable that emits the last location of the device
@@ -65,6 +67,8 @@ public class LocationService {
     }
 
     public void disconnect() {
+        System.out.println(locationCallback);
+        fusedLocationClient.flushLocations();
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 

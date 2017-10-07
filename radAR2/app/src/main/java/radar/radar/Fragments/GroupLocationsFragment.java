@@ -34,9 +34,18 @@ public class GroupLocationsFragment extends Fragment {
     private GroupDetailsLifecycleListener listener;
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("listener", listener);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // The last two arguments ensure LayoutParams are inflated
-        // properly.
+        // The last two arguments ensure LayoutParams are inflated properly.
+
+        // restore the listener
+        listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
 

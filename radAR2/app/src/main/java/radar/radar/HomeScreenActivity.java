@@ -156,6 +156,7 @@ class HomeScreenPresenter {
     }
 
     void onStop() {
+        System.out.println("onStop @ presenter");
         locationServiceDisposable.dispose();
         locationService.disconnect();
     }
@@ -164,7 +165,6 @@ class HomeScreenPresenter {
         if (googleMap != null) {
             locationUpdates();
         }
-
     }
 
     boolean first = true;

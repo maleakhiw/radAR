@@ -80,6 +80,7 @@ public class GroupDetailsFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
+        bundle.putSerializable("listener", listener);
         super.onSaveInstanceState(bundle);
         mapView.onSaveInstanceState(bundle);
     }
@@ -94,6 +95,10 @@ public class GroupDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
+
+        // restore the listener
+        listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+
         View rootView = inflater.inflate(
                 R.layout.fragment_group_details, container, false);
         Bundle args = getArguments();
@@ -136,10 +141,14 @@ public class GroupDetailsFragment extends Fragment {
         });
 
         // notify main activity that we have done initiating
+
         listener.onSetUp(this);
+
 
         return rootView;
     }
+
+
 
     public void setMainTextView(String text) {
         if (mainTextView != null) {
