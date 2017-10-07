@@ -48,7 +48,7 @@ public class ChatPresenter {
 
     /** Used to get messages */
     public void loadMessages(int chatID) {
-        chatService.getMessages(chatID).subscribe(new Observer<MessagesResponse>() {
+        chatService.getMessages(chatID, 5000).subscribe(new Observer<MessagesResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 
