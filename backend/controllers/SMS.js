@@ -64,7 +64,7 @@ function newGroupImpl(req, res, callback) {
   let groupID
   let group;
 
-  let userDetails = [];
+  let usersDetails = {};
 
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
@@ -103,7 +103,7 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
-          userDetails.push(common.getPublicUserInfo(user));
+          usersDetails[userID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
           user.save() .then(() => resolve());
@@ -113,15 +113,11 @@ function newGroupImpl(req, res, callback) {
 
     return Promise.all(promiseAll);
   })
-
-  .then(() => {
-
-  })
   .then(() => {
     if (callback) {
       callback(groupID, userDetails);
     } else {
-      group['usersDetails'] = userDetails;
+      group['usersDetails'] = usersDetails;
 
       res.json({
         success: true,
