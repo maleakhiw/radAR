@@ -7,108 +7,116 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ScrollView
+    <RelativeLayout
+        android:id="@+id/group_detail_relativeLayoutForAnchor"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Meeting point"
-                android:textSize="@dimen/section_text_size"/>
+                android:layout_height="match_parent">
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp">
-
-                <LinearLayout
-                    android:orientation="vertical"
+                <TextView
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:text="Meeting point"
+                    android:textSize="@dimen/section_text_size"/>
 
-                    <com.google.android.gms.maps.MapView
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp">
+
+                    <LinearLayout
+                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
-                        android:id="@+id/group_detail_map"
-                        />
+                        android:layout_height="wrap_content">
 
-                    <!--<fragment-->
-                    <!--android:id="@+id/group_detail_map"-->
-                    <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="200dp"-->
-                    <!--tools:context="radar.radar.Fragments.GroupDetailsFragment" />-->
+                        <com.google.android.gms.maps.MapView
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:id="@+id/group_detail_map"
+                            />
 
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/group_detail_HUD"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@color/cardview_light_background">
+                        <!--<fragment-->
+                        <!--android:id="@+id/group_detail_map"-->
+                        <!--android:name="com.google.android.gms.maps.SupportMapFragment"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="200dp"-->
+                        <!--tools:context="radar.radar.Fragments.GroupDetailsFragment" />-->
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <android.support.constraint.ConstraintLayout
+                            android:id="@+id/group_detail_HUD"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginStart="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="South Lawn"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
+                            android:background="@color/cardview_light_background">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginTop="8dp"
-                            android:text="300m"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-                    </android.support.constraint.ConstraintLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="South Lawn"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
 
-                </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginTop="8dp"
+                                android:text="300m"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+                        </android.support.constraint.ConstraintLayout>
 
-            </android.support.v7.widget.CardView>
+                    </LinearLayout>
 
-            <Button
-                android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SET" />
+                </android.support.v7.widget.CardView>
 
-            <TextView
-                android:id="@+id/group_detail_textview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="8dp"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_horizontal_margin"
-                android:text="Hello world"
-                android:textSize="@dimen/section_text_size" />
+                <Button
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SET" />
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/group_details_members_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                <TextView
+                    android:id="@+id/group_detail_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="8dp"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_horizontal_margin"
+                    android:text="Hello world"
+                    android:textSize="@dimen/section_text_size" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/group_details_members_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
 
-        </LinearLayout>
+            </LinearLayout>
 
 
-    </ScrollView>
+        </ScrollView>
+    </RelativeLayout>
+
+
+
 
 
     <android.support.design.widget.FloatingActionButton
@@ -117,7 +125,7 @@
         android:layout_width="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_chat_white_24dp"
-        app:layout_anchor="@id/fragment_group_details"
+        app:layout_anchor="@id/group_detail_relativeLayoutForAnchor"
         app:layout_anchorGravity="bottom|right|end"
         />
 
