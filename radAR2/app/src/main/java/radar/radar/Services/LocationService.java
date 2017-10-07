@@ -72,6 +72,9 @@ public class LocationService {
         fusedLocationClient.removeLocationUpdates(locationCallback);
     }
 
+    public FusedLocationProviderClient getFusedLocationClient() {
+        return fusedLocationClient;
+    }
 
     LocationCallback locationCallback;
 
@@ -105,6 +108,23 @@ public class LocationService {
 
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, /* looper */ null);
         });
+    }
+
+    /**
+     * Variant of the above.
+     * Only exists because somehow the locationCallback cannot be unregistered if it is instantiated
+     * in the context of Observable.create()
+     * @param interval
+     * @param fastestInterval
+     * @param priority
+     * @param locationCallback
+     */
+    public void getLocationUpdates(int interval, int fastestInterval, int priority, LocationCallback locationCallback) throws SecurityException {
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(interval);
+        locationRequest.setFastestInterval(fastestInterval);
+        locationRequest.setPriority(priority);
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, /* looper */ null);
     }
 
     /**

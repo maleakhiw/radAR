@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,16 +33,21 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView {
+public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
     NavigationActivityHelper helper;
 
-    private GoogleMap mMap;
+    private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
 
     private HomeScreenPresenter presenter;
 
+    FusedLocationProviderClient fusedLocationClient;
+    LocationCallback locationCallback;
+
     static final int REQUEST_FOR_LOCATION = 1;
+
+    private boolean first = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +64,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
-        // set up mapView
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
-        mapFragment.getMapAsync(this);
-
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://35.185.35.117/api/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -68,28 +71,35 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 .build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
-        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
 
+
+        // testing
+//        locationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult result) {
+//                for (Location location : result.getLocations()) {
+//                    System.out.println(location.getLatitude());
+//                    System.out.println(location.getLongitude());
+//                }
+//            }
+//        };
+
+//        presenter = new HomeScreenPresenter(this, locationService, locationCallback);
         presenter = new HomeScreenPresenter(this, locationService);
 
+        // set up mapView
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
+        mapFragment.getMapAsync(this);
 
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        this.googleMap = googleMap;
 
         presenter.onMapReady(googleMap);
-
-//        // Add a marker in Melbourne Univeristy and move the camera
-//        double unimelb_lat = Double.parseDouble(getString(R.string.melbourne_university_lat));
-//        double unimelb_lng = Double.parseDouble(getString(R.string.melbourne_university_lng));
-//
-//        LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-//        googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-//                .title(getString(R.string.unimelb)));
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
     }
 
 
@@ -109,7 +119,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         if (requestCode == REQUEST_FOR_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                presenter.onMapReady(mMap);
+                presenter.onMapReady(googleMap);
             } else {
                 // TODO display to user
             }
@@ -124,6 +134,10 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onStop() {
         super.onStop();
+        if (locationCallback != null) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+        }
+
         presenter.onStop();
     }
 
@@ -135,6 +149,18 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         presenter.onStart();
     }
 
+    @Override
+    public LocationCallback getLocationCallback(LocationConsumer locationConsumer) {
+        locationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult result) {
+                for (Location location : result.getLocations()) {
+                    locationConsumer.onLocationUpdate(location);
+                }
+            }
+        };
+        return locationCallback;
+    }
 }
 
 class HomeScreenPresenter {
@@ -145,9 +171,18 @@ class HomeScreenPresenter {
 
     Disposable locationServiceDisposable;
 
-    HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
+    LocationCallback locationCallback;
+
+    HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService, LocationCallback callback) {
         this.homeScreenView = homeScreenView;
         this.locationService = locationService;
+        this.locationCallback = callback;
+    }
+
+    public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
+        this.homeScreenView = homeScreenView;
+        this.locationService = locationService;
+        locationCallback = ((LocationCallbackProvider) homeScreenView).getLocationCallback(location -> System.out.println(location));
     }
 
     void onMapReady(GoogleMap googleMap) {
@@ -157,8 +192,12 @@ class HomeScreenPresenter {
 
     void onStop() {
         System.out.println("onStop @ presenter");
-        locationServiceDisposable.dispose();
-        locationService.disconnect();
+//        locationServiceDisposable.dispose();
+//        locationService.disconnect();
+
+//        if (locationCallback != null) {
+//            locationService.getFusedLocationClient().removeLocationUpdates(locationCallback);
+//        }
     }
 
     void onStart() {
@@ -169,58 +208,9 @@ class HomeScreenPresenter {
 
     boolean first = true;
 
+
     void locationUpdates() {
-        locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY).subscribe(new Observer<Location>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                locationServiceDisposable = d;
-            }
-
-            @Override
-            public void onNext(Location location) {
-                System.out.println(location.getLatitude());
-                System.out.println(location.getLongitude());
-
-                googleMap.clear();
-
-                LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
-                googleMap.addCircle(new CircleOptions()
-                        .center(current)
-                        .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
-                        .radius(location.getAccuracy()/2));
-
-                googleMap.addCircle(new CircleOptions()
-                        .center(current)
-                        .fillColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                        .strokeColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                        .radius(1));
-
-                // Add a marker in Melbourne Uni and move the camera
-                double unimelb_lat = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lat));
-                double unimelb_lng = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lng));
-
-                LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-                googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-                        .title(homeScreenView.getStringRes(R.string.unimelb)));
-
-                if (first) {
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
-                    first = false;
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
-                    homeScreenView.requestLocationPermissions();
-                }
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+        locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);
     }
 
 }
