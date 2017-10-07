@@ -48,7 +48,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         // load stuff
         holder.tvName.setText(user.firstName + " " + user.lastName);
-        holder.tvUsername.setText(" @" + user.username);
+//        holder.tvUsername.setText(" @" + user.username);
         if (user.profileDesc == null) {
             holder.tvOnlineStatus.setText("Hello, I am using Radar!");
         } else {
@@ -67,14 +67,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProfilePic;
         TextView tvName;
-        TextView tvUsername;
+//        TextView tvUsername;
         TextView tvOnlineStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivProfilePic = itemView.findViewById(R.id.row_friends_profile_picture);
             tvName = itemView.findViewById(R.id.row_friends_name);
-            tvUsername = itemView.findViewById(R.id.row_friends_username);
+//            tvUsername = itemView.findViewById(R.id.row_friends_username);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
 
             // Setup on click listener on the view

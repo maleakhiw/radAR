@@ -32,7 +32,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
-        android:minHeight="48dp"
+        android:minHeight="52dp"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -52,32 +52,37 @@
             android:textColor="#e7f0f4"
             android:textColorHint="#b7bfc2" />
 
-        <ImageButton
-            android:id="@+id/button_send_attachment"
-            android:layout_width="64dp"
-            android:layout_height="24dp"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="12dp"
-            android:layout_marginTop="12dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:scaleType="fitCenter"
-            android:tint="@color/gray"
-            app:srcCompat="@drawable/ic_attach_file_black_48dp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <ImageButton
+                android:id="@+id/button_send_attachment"
+                android:layout_width="64dp"
+                android:layout_height="24dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:scaleType="fitCenter"
+                android:tint="@color/gray"
+                app:srcCompat="@drawable/ic_attach_file_black_48dp" />
 
-        <ImageButton
-            android:id="@+id/button_send"
-            android:layout_width="64dp"
-            android:layout_height="48dp"
-            android:layout_gravity="bottom"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:gravity="center"
-            android:src="@android:drawable/ic_menu_send"
-            android:tint="@color/colorWhite" />
+            <ImageButton
+                android:id="@+id/button_send"
+                android:layout_toRightOf="@id/button_send_attachment"
+                android:layout_width="64dp"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:src="@android:drawable/ic_menu_send"
+                android:tint="@color/colorWhite" />
+        </RelativeLayout>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

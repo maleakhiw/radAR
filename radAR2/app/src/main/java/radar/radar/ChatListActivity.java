@@ -45,6 +45,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
+        setTitle("Chats");
+
         // Setup groups
         groups = new ArrayList<>();
 

@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import radar.radar.Adapters.FriendsAdapter;
+import radar.radar.Adapters.GroupMembersAdapter;
 import radar.radar.ChatActivity;
 import radar.radar.GroupDetailsLifecycleListener;
 import radar.radar.Models.Group;
@@ -29,7 +31,7 @@ public class GroupDetailsFragment extends Fragment {
     TextView nameTextView;
     TextView mainTextView;
     RecyclerView recyclerView;
-    FriendsAdapter friendsAdapter;
+    GroupMembersAdapter friendsAdapter;
 
     GroupDetailsLifecycleListener listener;
 
@@ -54,7 +56,7 @@ public class GroupDetailsFragment extends Fragment {
         mainTextView.setText("Members");
 
         recyclerView = rootView.findViewById(R.id.group_details_members_recyclerView);
-        friendsAdapter = new FriendsAdapter(getActivity(), new ArrayList<>());  // getContext becomes getActivity inside a fragment
+        friendsAdapter = new GroupMembersAdapter(getActivity(), new HashMap<Integer, User>());  // getContext becomes getActivity inside a fragment
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         friendsAdapter.updateFriends(group.usersDetails);

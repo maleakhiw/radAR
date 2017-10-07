@@ -123,6 +123,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         }
     }
 
+    // TODO ViewHolder for date separator
+
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
 

@@ -31,6 +31,38 @@ public class ChatService {
         token = AuthService.getToken(context);
     }
 
+    public Observable<GetChatsResponse> getChats(int pollingPeriod) {
+        return Observable.create(emitter -> {
+            Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
+                    .subscribe(tick -> {
+                        chatApi.getChats(userID, token)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<GetChatsResponse>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(GetChatsResponse getChatsResponse) {
+                                emitter.onNext(getChatsResponse);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                emitter.onError(e);
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+                    });
+        });
+    }
+
     public Observable<GetChatsResponse> getChats() {
         return chatApi.getChats(userID, token)
                 .subscribeOn(Schedulers.io())

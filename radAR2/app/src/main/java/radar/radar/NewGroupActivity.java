@@ -120,6 +120,7 @@ public class NewGroupActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(Throwable e) {
+                                System.out.println(e);
                                 button.setEnabled(true);
                             }
 
