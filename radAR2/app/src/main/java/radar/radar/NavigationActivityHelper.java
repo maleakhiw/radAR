@@ -75,6 +75,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
                 activity.finish();
+                return true;
 
             } else if (id == R.id.nav_settings) {
                 // TODO - Define settings
@@ -87,6 +88,10 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 Intent intent = new Intent(activity, GroupsListActivity.class);
                 activity.startActivity(intent);
 
+            }
+
+            if (!activity.getClass().equals(HomeScreenActivity.class)) {
+                activity.finish();
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
