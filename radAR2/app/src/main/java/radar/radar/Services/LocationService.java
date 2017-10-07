@@ -64,6 +64,13 @@ public class LocationService {
         });
     }
 
+    public void disconnect() {
+        fusedLocationClient.removeLocationUpdates(locationCallback);
+    }
+
+
+    LocationCallback locationCallback;
+
     /**
      * Stream of Location updates (current position of the device).
      * @param interval interval between requests in ms
@@ -83,14 +90,16 @@ public class LocationService {
                 emitter.onError(new Throwable("GRANT_ACCESS_FINE_LOCATION"));
                 return;
             }
-            fusedLocationClient.requestLocationUpdates(locationRequest, new LocationCallback() {
+            locationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
                     for (Location location : locationResult.getLocations()) {   // includes unconsumed location updates
                         emitter.onNext(location);
                     }
                 }
-            }, /* looper */ null);
+            };
+
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, /* looper */ null);
         });
     }
 

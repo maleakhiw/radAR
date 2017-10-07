@@ -16,4 +16,5 @@
     <!-- Profile dimensions for the sidebar and account/group info -->
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
+    <dimen name="section_text_size">20sp</dimen>
 </resources>

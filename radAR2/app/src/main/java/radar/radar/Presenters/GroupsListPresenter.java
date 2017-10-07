@@ -1,14 +1,11 @@
 package radar.radar.Presenters;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.function.Function;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.GroupsListView;
+import radar.radar.Views.GroupsListView;
 import radar.radar.Models.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;

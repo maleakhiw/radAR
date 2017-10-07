@@ -2,7 +2,6 @@ package radar.radar;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +15,7 @@ import radar.radar.Models.Group;
 import radar.radar.Presenters.GroupsListPresenter;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
+import radar.radar.Views.GroupsListView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;

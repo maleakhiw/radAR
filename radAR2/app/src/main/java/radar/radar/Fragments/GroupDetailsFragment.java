@@ -11,6 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -33,10 +40,54 @@ public class GroupDetailsFragment extends Fragment {
     RecyclerView recyclerView;
     GroupMembersAdapter friendsAdapter;
 
+    MapView mapView;
+
     GroupDetailsLifecycleListener listener;
 
     public void setListener(GroupDetailsLifecycleListener listener) {
         this.listener = listener;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        mapView.onSaveInstanceState(bundle);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
     @Override
@@ -49,8 +100,8 @@ public class GroupDetailsFragment extends Fragment {
 
         Group group = (Group) args.getSerializable("group");
 
-        nameTextView = rootView.findViewById(R.id.fragment_group_details_name);
-        nameTextView.setText(group.name);
+//        nameTextView = rootView.findViewById(R.id.fragment_group_details_name);
+//        nameTextView.setText(group.name);
 
         mainTextView = rootView.findViewById(R.id.group_detail_textview);
         mainTextView.setText("Members");
@@ -60,6 +111,19 @@ public class GroupDetailsFragment extends Fragment {
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         friendsAdapter.updateFriends(group.usersDetails);
+
+        mapView = rootView.findViewById(R.id.group_detail_map);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(googleMap -> {
+            // Add a marker in Melbourne Uni and move the camera
+            double unimelb_lat = Double.parseDouble(getString(R.string.melbourne_university_lat));
+            double unimelb_lng = Double.parseDouble(getString(R.string.melbourne_university_lng));
+
+            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
+            googleMap.addMarker(new MarkerOptions().position(melbourne_university)
+                    .title(getString(R.string.unimelb)));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
+        });
 
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {

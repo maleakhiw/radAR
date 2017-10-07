@@ -1,4 +1,4 @@
-package radar.radar;
+package radar.radar.Views;
 
 import java.util.ArrayList;
 
