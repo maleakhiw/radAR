@@ -14,6 +14,7 @@ public class CompassSensorFilter extends SensorFilter {
         /*
          * The reading for azimuth "wraps around" drastically past 360 degrees
          */
+        // TODO does not work
         if (Math.abs(input - lastValue) > 358) {    // wraparound, don't smooth!
             setLastValue(input);
             movingAverage.setAllToValue(input);
