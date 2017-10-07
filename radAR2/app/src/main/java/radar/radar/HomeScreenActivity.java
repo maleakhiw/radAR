@@ -35,6 +35,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     NavigationActivityHelper helper;
 
     private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
 
     private HomeScreenPresenter presenter;
 
@@ -56,7 +57,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
         // set up mapView
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
 
 
@@ -90,6 +91,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 //                .title(getString(R.string.unimelb)));
 //        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
     }
+
 
     @Override
     public String getStringRes(int resourceID) {
@@ -128,6 +130,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     @Override
     public void onStart() {
         super.onStart();
+        mapFragment.getMapAsync(this); // reload map
+
         presenter.onStart();
     }
 
