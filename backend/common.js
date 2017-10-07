@@ -125,3 +125,24 @@ module.exports.isValidEmail = (email) => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
+
+module.exports.getUsersDetails = (members) => new Promise((resolve, reject) => {
+  let userDetails = {};
+  let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+    User.findOne({userID: memberUserID}).exec()
+    .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
+      if (user) {
+        userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
+      }
+      resolve();
+    })
+  }))
+
+  // when all info loaded, resolve the promise
+  Promise.all(promiseAll).then(() => {
+    resolve(userDetails);
+  })
+  .catch((err) => {
+    reject(err);
+  })
+});

@@ -238,6 +238,9 @@ module.exports = class SMS {
       let groupID = parseInt(req.query.groupID) || parseInt(req.params.groupID)
       let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
 
+      let usersDetails;
+
+
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
@@ -257,7 +260,12 @@ module.exports = class SMS {
           return
         }
 
-        return Message.find({groupID: groupID})
+        return common.getUsersDetails(group.members);
+      })
+
+      .then((pUsersDetails) => {
+        usersDetails = pUsersDetails;
+        return Message.find({groupID: groupID});
       })
 
       .then((messages) => {
@@ -267,7 +275,8 @@ module.exports = class SMS {
             time: message.time,
             contentType: message.contentType,
             text: message.text,
-            contentResourceID: message.contentResourceID
+            contentResourceID: message.contentResourceID,
+            usersDetails: usersDetails
           }
         })
 
