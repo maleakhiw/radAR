@@ -72,8 +72,9 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 // launch Login activity
                 Intent intent = new Intent(activity, LoginActivity.class);
                 AuthService.signOut(activity);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
-
+                activity.finish();
 
             } else if (id == R.id.nav_settings) {
                 // TODO - Define settings
