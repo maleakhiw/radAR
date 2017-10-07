@@ -94,7 +94,7 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 //            }
 //        });
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("Details");
+        tabLayout.getTabAt(0).setText("Info");
         tabLayout.getTabAt(1).setText("Location Tracking");
 
         // set up back button on the toolbar

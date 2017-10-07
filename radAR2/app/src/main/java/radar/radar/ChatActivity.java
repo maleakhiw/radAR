@@ -63,6 +63,11 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        Group group = (Group) getIntent().getSerializableExtra("group");
+        if (group != null) {
+            setTitle(group.name);
+        }
+
         // Setup UI
         setupUI();
         messages = new ArrayList<>();

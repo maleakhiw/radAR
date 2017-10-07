@@ -53,7 +53,7 @@ public class ChatPresenter {
 
     /** Used to get messages */
     public void loadMessages(int chatID) {
-        chatService.getMessages(chatID, 5000).subscribe(new Observer<MessagesResponse>() {
+        chatService.getMessages(chatID, 2000).subscribe(new Observer<MessagesResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
                 loadMessagesDisposable = d;
@@ -63,7 +63,7 @@ public class ChatPresenter {
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
                 chatView.setMessages(messagesResponse.messages);
-                chatView.getMessageListAdapter().setMessageList(chatView.getMessages());
+                chatView.getMessageListAdapter().setMessageList(chatView.getMessages(), messagesResponse.usersDetails);
                 chatView.getMessageListAdapter().notifyDataSetChanged();
             }
 

@@ -11,10 +11,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import radar.radar.Adapters.ChatAdapter;
+import radar.radar.Adapters.ChatListAdapter;
 import radar.radar.Models.Group;
-import radar.radar.Models.Responses.GetChatInfoResponse;
-import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
@@ -26,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ChatListActivity extends AppCompatActivity implements ChatListView {
     private ChatService chatService;
     private RecyclerView chatRecyclerView;
-    private ChatAdapter chatAdapter;
+    private ChatListAdapter chatListAdapter;
 
     private ArrayList<Integer> chatIDs;
     private ArrayList<Group> groups;
@@ -52,8 +50,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatAdapter = new ChatAdapter(ChatListActivity.this, groups);
-        chatRecyclerView.setAdapter(chatAdapter);
+        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups);
+        chatRecyclerView.setAdapter(chatListAdapter);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
 
         // Create retrofit instance
@@ -102,12 +100,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
     @Override
     public void setArrayListInAdapter(ArrayList<Group> groups) {
-        chatAdapter.setChatList(groups);
+        chatListAdapter.setChatList(groups);
     }
 
     @Override
     public void notifyAdapterChange() {
-        chatAdapter.notifyDataSetChanged();
+        chatListAdapter.notifyDataSetChanged();
     }
 
 }

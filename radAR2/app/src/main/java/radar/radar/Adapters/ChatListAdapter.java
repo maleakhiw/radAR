@@ -14,12 +14,12 @@ import radar.radar.ChatActivity;
 import radar.radar.Models.Group;
 import radar.radar.R;
 
-public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     ArrayList<Group> groups;
     Context context;    // TODO remove, not used?
 
-    public ChatAdapter(Context context, ArrayList<Group> groups) {
+    public ChatListAdapter(Context context, ArrayList<Group> groups) {
         this.context = context;
         this.groups = groups;
     }
