@@ -11,7 +11,7 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Views.GroupsListView;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;

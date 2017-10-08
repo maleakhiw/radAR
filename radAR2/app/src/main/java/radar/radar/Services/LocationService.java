@@ -13,16 +13,13 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Models.MeetingPoint;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
-import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 

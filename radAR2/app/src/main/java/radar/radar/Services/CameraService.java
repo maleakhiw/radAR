@@ -3,7 +3,6 @@ package radar.radar.Services;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -14,9 +13,7 @@ import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 
@@ -27,8 +24,8 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.CameraData;
-import radar.radar.CameraDataListener;
+import radar.radar.Models.Android.CameraData;
+import radar.radar.Listeners.CameraDataListener;
 
 /**
  * Created by kenneth on 7/10/17.

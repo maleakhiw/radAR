@@ -12,21 +12,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import radar.radar.Adapters.FriendsAdapter;
 import radar.radar.Adapters.GroupMembersAdapter;
 import radar.radar.ChatActivity;
-import radar.radar.GroupDetailsLifecycleListener;
-import radar.radar.Models.Group;
-import radar.radar.Models.User;
+import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.Services.AuthService;
 

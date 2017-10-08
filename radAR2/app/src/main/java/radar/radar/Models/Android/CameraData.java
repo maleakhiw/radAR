@@ -1,4 +1,4 @@
-package radar.radar;
+package radar.radar.Models.Android;
 
 import android.hardware.camera2.CameraCharacteristics;
 import android.util.SizeF;

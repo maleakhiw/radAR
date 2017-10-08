@@ -2,7 +2,7 @@ package radar.radar.Views;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 
 /**
  * Created by keyst on 3/10/2017.

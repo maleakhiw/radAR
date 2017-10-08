@@ -9,14 +9,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import java.util.ArrayList;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import radar.radar.Fragments.GroupDetailsFragment;
 import radar.radar.Fragments.GroupLocationsFragment;
-import radar.radar.Models.Group;
-import radar.radar.Models.Responses.GroupsResponse;
+import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import retrofit2.Retrofit;

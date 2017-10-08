@@ -1,19 +1,13 @@
 package radar.radar.Presenters;
 
-import android.view.View;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ChatActivity;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Requests.NewChatRequest;
-import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
-import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;

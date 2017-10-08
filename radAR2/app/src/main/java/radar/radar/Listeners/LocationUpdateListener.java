@@ -1,4 +1,4 @@
-package radar.radar;
+package radar.radar.Listeners;
 
 import android.location.Location;
 
@@ -6,6 +6,6 @@ import android.location.Location;
  * Created by kenneth on 8/10/17.
  */
 
-interface LocationConsumer {
+public interface LocationUpdateListener {
     void onLocationUpdate(Location location);
 }

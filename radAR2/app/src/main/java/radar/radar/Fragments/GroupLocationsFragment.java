@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.MapView;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ARActivity2;
-import radar.radar.GroupDetailsLifecycleListener;
-import radar.radar.Models.Group;
-import radar.radar.Models.MeetingPoint;
+import radar.radar.ARActivity;
+import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.Status;
 import radar.radar.R;
 import radar.radar.Services.GroupsApi;
@@ -62,7 +60,7 @@ public class GroupLocationsFragment extends Fragment {
         if (args != null) {
             Group group = (Group) args.getSerializable("group");
             rootView.findViewById(R.id.start_tracking_in_AR).setOnClickListener(view -> {
-                Intent intent = new Intent(getActivity(), ARActivity2.class);
+                Intent intent = new Intent(getActivity(), ARActivity.class);
                 intent.putExtra("groupID", group.groupID);
                 startActivity(intent);
             });

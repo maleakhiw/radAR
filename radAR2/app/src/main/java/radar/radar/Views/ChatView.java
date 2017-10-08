@@ -5,9 +5,9 @@ import android.content.Context;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.MessageResponse;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 
 /**
  * Created by keyst on 3/10/2017.

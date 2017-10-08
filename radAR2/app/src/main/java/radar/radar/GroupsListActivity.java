@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.GroupsAdapter;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.GroupsListPresenter;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;

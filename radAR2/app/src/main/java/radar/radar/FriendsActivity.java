@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;

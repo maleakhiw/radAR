@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 

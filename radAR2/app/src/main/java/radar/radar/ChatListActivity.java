@@ -12,7 +12,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.ChatListAdapter;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
