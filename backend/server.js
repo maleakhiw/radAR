@@ -1,7 +1,11 @@
 // Imports
 // Express
-const express = require('express')
+const express = require('express');
+const https = require('https');
+const fs = require('fs');
+
 const mongoose = require('mongoose')
+
 const bodyParser = require('body-parser')
 const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
 const cors = require('cors')
@@ -25,9 +29,9 @@ const Message = require('./models/message')
 const Resource = require('./models/resource')
 const LocationModel = require('./models/location');
 
-const app = express()
-app.use(bodyParser.json())
-app.use(cors())
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
 // Common constants/variables
 const common = require('./common')
@@ -228,9 +232,26 @@ app.get("/api/groups", (req, res) => {
 // app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
 // app.post("/api/groups", authenticate, gms.newGroup)
 
-app.listen(3000, function(req, res) {
-  // console.log("Listening at port 3000.")
-})
+// app.listen(3000, function(req, res) {
+//   // console.log("Listening at port 3000.")
+// })
+
+
+// for Let's Encrypt
+app.get('/health-check', (req, res) => res.sendStatus(200));
+app.use(express.static('static'));
+
+const options = {
+    cert: fs.readFileSync('./sslcert/fullchain.pem'),
+    key: fs.readFileSync('./sslcert/privkey.pem')
+}
+
+const http = require('http');
+http.createServer((req, res) => {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(8080);
+https.createServer(options, app).listen(8443);
 
 // export the app, for testing
 module.exports = app
