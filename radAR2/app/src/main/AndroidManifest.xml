@@ -31,14 +31,25 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
         <activity
-            android:name=".LaunchActivity"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:name=".LaunchActivity">
+            <!--android:theme="@style/Theme.AppCompat.Translucent">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <!--Tabbed activity-->
+        <activity android:name=".TabbedSearchActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".SearchResultActivity"
             android:screenOrientation="portrait"
