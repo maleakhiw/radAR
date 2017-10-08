@@ -21,6 +21,7 @@ import radar.radar.R;
 import radar.radar.SearchResultActivity;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
+import radar.radar.TabbedSearchActivity;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -123,7 +124,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                 // If success
                 if (status.success) {
                     Toast.makeText(context, "Successfully process friend request", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, SearchResultActivity.class);
+                    Intent intent = new Intent(context, TabbedSearchActivity.class);
                     context.startActivity(intent);
                 }
                 else {
