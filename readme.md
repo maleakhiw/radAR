@@ -22,7 +22,7 @@ In addition to location sharing in map-based and AR-based fashion, the applicati
  
  ## Server Information
 The server for this application is placed on a remote VPS running NodeJS. It uses RESTful design and its API root is accessible from http://radar.fadhilanshar.com/.
-a
+
 
 This assumes Node and NPM has been installed on the testing machine. 
  
