@@ -46,7 +46,7 @@ public class SearchResultActivity extends AppCompatActivity {
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
+                                        .baseUrl("https://radar.fadhilanshar.com/api/")
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
