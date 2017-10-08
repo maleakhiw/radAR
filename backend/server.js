@@ -241,17 +241,17 @@ app.get("/api/groups", (req, res) => {
 app.get('/health-check', (req, res) => res.sendStatus(200));
 app.use(express.static('static'));
 
-const options = {
-    cert: fs.readFileSync('./sslcert/fullchain.pem'),
-    key: fs.readFileSync('./sslcert/privkey.pem')
-}
+// const options = {
+//     cert: fs.readFileSync('./sslcert/fullchain.pem'),
+//     key: fs.readFileSync('./sslcert/privkey.pem')
+// }
 
 const http = require('http');
 http.createServer((req, res) => {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
 }).listen(8080);
-https.createServer(options, app).listen(8443);
+// https.createServer(options, app).listen(8443);
 
 // export the app, for testing
 module.exports = app
