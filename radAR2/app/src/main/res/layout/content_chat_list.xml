@@ -14,8 +14,6 @@
         android:id="@+id/chatRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingTop="@dimen/recyclerView_padding_small"
-        android:paddingBottom="@dimen/recyclerView_padding_small"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

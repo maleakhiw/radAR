@@ -4,6 +4,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -55,6 +56,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups);
         chatRecyclerView.setAdapter(chatListAdapter);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
+        chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
