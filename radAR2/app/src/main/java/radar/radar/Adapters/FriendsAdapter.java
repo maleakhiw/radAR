@@ -84,7 +84,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     // From the displayed friend list send information
                     User user = friends.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    Intent intent = new Intent(itemView.getContext(), UserDetailActivity.class);
                     intent.putExtra("user", user);
                     context.startActivity(intent);
 

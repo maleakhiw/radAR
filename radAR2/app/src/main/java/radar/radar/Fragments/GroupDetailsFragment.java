@@ -80,7 +80,9 @@ public class GroupDetailsFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle bundle) {
-        bundle.putSerializable("listener", listener);
+        if (listener != null) {
+            bundle.putSerializable("listener", listener);
+        }
         super.onSaveInstanceState(bundle);
         mapView.onSaveInstanceState(bundle);
     }

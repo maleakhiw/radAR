@@ -100,6 +100,8 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                     // From the displayed friend list send information
                     User user = friendsList.get(getAdapterPosition());
 
+                    System.out.println(user);
+
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     intent.putExtra("user", user);
                     context.startActivity(intent);

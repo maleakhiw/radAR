@@ -23,7 +23,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GroupDetailActivity extends AppCompatActivity implements GroupDetailsLifecycleListener {
+public class GroupDetailActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
@@ -33,6 +33,18 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
     // fragment2
 
     GroupsService groupsService;
+
+    static GroupDetailsLifecycleListener lifecycleListener = new GroupDetailsLifecycleListener() {
+        @Override
+        public void onSetUp(Fragment fragment) {
+            if (fragment instanceof GroupDetailsFragment) {
+
+            } else if (fragment instanceof GroupLocationsFragment) {
+
+            }
+        }
+    };  // so that we know when the Fragment is fully inflated
+    // and ready to have its UI elements modified
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +67,6 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 
         viewPager = findViewById(R.id.groupDetailPager);
 
-        GroupDetailsLifecycleListener that = this;  // so that we know when the Fragment is fully inflated
-                                                    // and ready to have its UI elements modified
 
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
@@ -66,12 +76,12 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
                 if (position == 0) {
                     groupDetailsFragment = new GroupDetailsFragment();
                     groupDetailsFragment.setArguments(bundle);
-                    groupDetailsFragment.setListener(that);
+                    groupDetailsFragment.setListener(lifecycleListener);
                     return groupDetailsFragment;
                 } else {
                     groupLocationsFragment = new GroupLocationsFragment();
                     groupLocationsFragment.setArguments(bundle);
-                    groupLocationsFragment.setListener(that);
+                    groupLocationsFragment.setListener(lifecycleListener);
                     return groupLocationsFragment;
                 }
 
@@ -114,12 +124,5 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 
     }
 
-    @Override
-    public void onSetUp(Fragment fragment) {
-        if (fragment instanceof GroupDetailsFragment) {
 
-        } else if (fragment instanceof GroupLocationsFragment) {
-
-        }
-    }
 }
