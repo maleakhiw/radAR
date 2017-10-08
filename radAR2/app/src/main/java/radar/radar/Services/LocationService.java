@@ -111,6 +111,11 @@ public class LocationService {
      * @param locationCallback
      */
     public void getLocationUpdates(int interval, int fastestInterval, int priority, LocationCallback locationCallback) throws SecurityException {
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            throw new SecurityException("GRANT_ACCESS_FINE_LOCATION");
+        }
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(interval);
         locationRequest.setFastestInterval(fastestInterval);
