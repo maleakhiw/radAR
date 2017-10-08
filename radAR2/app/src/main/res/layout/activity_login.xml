@@ -26,7 +26,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Username"
-                android:inputType="textEmailAddress" />
+                android:inputType="textEmailAddress"
+                android:ellipsize="end"
+                android:textColorHint="@color/gray_tint"/>
         </android.support.design.widget.TextInputLayout>
 
         <!-- Password Label -->
@@ -41,7 +43,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
-                android:inputType="textPassword" />
+                android:inputType="textPassword"
+                android:textColorHint="@color/gray_tint"
+                android:ellipsize="end"
+                />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.v7.widget.AppCompatButton
