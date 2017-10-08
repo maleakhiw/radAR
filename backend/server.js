@@ -246,8 +246,8 @@ if (!HTTPS_MODE) {
   });
 } else {
   const options = {
-      cert: fs.readFileSync('./sslcert/fullchain.pem'),
-      key: fs.readFileSync('./sslcert/privkey.pem')
+      cert: fs.readFileSync('/etc/letsencrypt/live/radar.fadhilanshar.com/fullchain.pem'),
+      key: fs.readFileSync('/etc/letsencrypt/live/radar.fadhilanshar.com/privkey.pem')
   }
   http.createServer((req, res) => {
       res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
