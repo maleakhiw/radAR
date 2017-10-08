@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class TrackingGroupInteractorImpl implements TrackingGroupInteractor {
     public Observable<GroupDetails> getGroupDetails(int userID, int queryUserID, String token) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/GMS/")
+                .baseUrl("https://radar.fadhilanshar.com/GMS/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
@@ -27,7 +27,7 @@ public class TrackingGroupInteractorImpl implements TrackingGroupInteractor {
     @Override
     public Observable<GroupDetails> getGroupDetails(String username, int queryUserID, String token) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/GMS/")
+                .baseUrl("https://radar.fadhilanshar.com/GMS/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
