@@ -244,17 +244,17 @@ app.use(express.static('static'));
 
 const http = require('http');
 // TODO environment variable
-let HTTPS_MODE = false;
+let HTTPS_MODE = true;
 if (!HTTPS_MODE) {
   app.listen(8080, (req, res) => {
     //
   });
 } else {
-  // http.createServer((req, res) => {
-  //     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-  //     res.end();
-  // }).listen(8080);
-  // https.createServer(options, app).listen(8443);
+  http.createServer((req, res) => {
+      res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+      res.end();
+  }).listen(8080);
+  https.createServer(options, app).listen(8443);
 }
 
 
