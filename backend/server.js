@@ -237,11 +237,6 @@ app.get("/api/groups", (req, res) => {
 app.get('/health-check', (req, res) => res.sendStatus(200));
 app.use(express.static('static'));
 
-// const options = {
-//     cert: fs.readFileSync('./sslcert/fullchain.pem'),
-//     key: fs.readFileSync('./sslcert/privkey.pem')
-// }
-
 const http = require('http');
 // TODO environment variable
 let HTTPS_MODE = true;
@@ -250,6 +245,10 @@ if (!HTTPS_MODE) {
     //
   });
 } else {
+  const options = {
+      cert: fs.readFileSync('./sslcert/fullchain.pem'),
+      key: fs.readFileSync('./sslcert/privkey.pem')
+  }
   http.createServer((req, res) => {
       res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
       res.end();
