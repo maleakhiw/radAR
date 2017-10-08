@@ -26,6 +26,10 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         this.friends = friends;
     }
 
+    public void updateFriends(ArrayList<User> friends) {
+        this.friends = friends;
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -54,6 +58,9 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
     @Override
     public int getItemCount() {
+        if (friends == null) {
+            return 0;
+        }
         return friends.size();
     }
 

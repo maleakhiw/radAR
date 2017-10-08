@@ -17,7 +17,7 @@ import radar.radar.R;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder> {
 
     ArrayList<Group> groups;
-    Context context;
+    Context context;    // TODO remove, not used?
 
     public ChatAdapter(Context context, ArrayList<Group> groups) {
         this.context = context;

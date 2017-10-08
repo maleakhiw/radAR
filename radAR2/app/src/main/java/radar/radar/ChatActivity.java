@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     private ArrayList<Integer> chatIDs;
 
     private EditText chatText;
-    private Button send;
+    private ImageButton send;
 
     // recyclerView
     private RecyclerView messageRecyclerView;

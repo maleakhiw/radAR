@@ -86,7 +86,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
                     // From the displayed friend list send information
                     Group group = groups.get(getAdapterPosition());
                     Intent intent = new Intent(context, GroupDetailActivity.class);
-                    intent.putExtra("groupID", group.groupID);
+                    intent.putExtra("group", group);
 //                    intent.putExtra("group", group);
 //                    intent.putExtra("load", true);
                     context.startActivity(intent);

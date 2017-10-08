@@ -13,4 +13,11 @@ public class MeetingPoint {
     public String description;
     public Date timeAdded;
     public int updatedBy;
+
+    public MeetingPoint(double lat, double lon, String name, String description) {
+        this.lat = lat;
+        this.lon = lon;
+        this.name = name;
+        this.description = description;
+    }
 }

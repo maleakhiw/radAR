@@ -136,8 +136,10 @@ public class ARActivity2 extends AppCompatActivity implements ARView {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar2);
 
-        groupID = 1;    // TODO get from bundle
-                        // TODO getGroup and check if it exists
+
+        groupID = getIntent().getIntExtra("groupID", -1);
+//        groupID = 1;    // TODO get from bundle
+//                        // TODO getGroup and check if it exists
 
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 

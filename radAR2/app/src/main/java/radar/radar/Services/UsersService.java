@@ -23,7 +23,7 @@ public class UsersService {
     int userID;
     String token;
 
-    public UsersService(UsersApi usersApi, Context context) {
+    public UsersService(Context context, UsersApi usersApi) {
         this.context = context;
         this.usersApi = usersApi;
         userID = AuthService.getUserID(context);

@@ -16,6 +16,7 @@ public class Group implements Serializable {
     public ArrayList<Object> footprints;
     public Object meetingPoint;
     public boolean isTrackingGroup;
+    public ArrayList<User> usersDetails;
 
     public Group(String name, boolean isTrackingGroup) {
         this.name = name;

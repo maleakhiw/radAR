@@ -1,5 +1,7 @@
 package radar.radar;
 
+import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +37,7 @@ public class GroupsListActivity extends AppCompatActivity
 
         loadViews();
 
-        System.out.println("GroupsListActivity");
+        System.out.println("Group   sListActivity");
 
         // setup recyclerView
         rvAdapter = new GroupsAdapter(this, new ArrayList<>());
@@ -52,6 +54,12 @@ public class GroupsListActivity extends AppCompatActivity
         GroupsService groupsService = new GroupsService(this, groupsApi);
 
         presenter = new GroupsListPresenter(groupsService, this);
+
+        FloatingActionButton fab = findViewById(R.id.new_group_fab);
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+            startActivity(intent);
+        });
 
     }
 
