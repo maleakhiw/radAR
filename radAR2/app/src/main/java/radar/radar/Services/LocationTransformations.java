@@ -1,9 +1,7 @@
 package radar.radar.Services;
 
-import android.util.Log;
-
-import radar.radar.CompassDirection;
-import static radar.radar.CompassDirection.*;
+import radar.radar.Models.Android.CompassDirection;
+import static radar.radar.Models.Android.CompassDirection.*;
 
 /**
  * Created by kenneth on 30/9/17.

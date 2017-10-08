@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.UserDetailPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;

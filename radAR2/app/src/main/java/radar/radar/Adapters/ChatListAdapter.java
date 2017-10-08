@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import radar.radar.ChatActivity;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.R;
 
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {

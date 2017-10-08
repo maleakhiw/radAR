@@ -1,6 +1,6 @@
 package radar.radar.Services;
 
-import radar.radar.Models.GroupDetails;
+import radar.radar.Models.Domain.GroupDetails;
 import radar.radar.Models.Requests.RMSGetGroupInfoRequest;
 
 import io.reactivex.Observable;

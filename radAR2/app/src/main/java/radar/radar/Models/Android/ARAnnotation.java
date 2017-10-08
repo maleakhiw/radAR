@@ -1,11 +1,9 @@
-package radar.radar;
+package radar.radar.Models.Android;
 
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout;
 
-import radar.radar.Models.UserLocation;
+import radar.radar.Models.Domain.UserLocation;
 
 /**
  * Created by kenneth on 28/9/17.
@@ -18,6 +16,23 @@ public class ARAnnotation {
     Button button;
 
     int offsetX;
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public void setOffsetX(int offsetX) {
+        this.offsetX = offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
+    }
+
+    public void setOffsetY(int offsetY) {
+        this.offsetY = offsetY;
+    }
+
     int offsetY;
 
     public UserLocation getUserLocation() {

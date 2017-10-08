@@ -1,4 +1,6 @@
-package radar.radar.Models;
+package radar.radar.Models.Android;
+
+import radar.radar.Models.Domain.User;
 
 /**
  * Created by kenneth on 4/10/17.

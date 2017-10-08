@@ -12,7 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 
@@ -99,6 +99,8 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
                 public void onClick(View view) {
                     // From the displayed friend list send information
                     User user = friendsList.get(getAdapterPosition());
+
+                    System.out.println(user);
 
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     intent.putExtra("user", user);

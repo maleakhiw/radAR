@@ -13,16 +13,13 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Models.MeetingPoint;
 import radar.radar.Models.Requests.UpdateLocationRequest;
 import radar.radar.Models.Responses.GetLocationResponse;
-import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.GroupLocationsInfo;
 import radar.radar.Models.Responses.UpdateLocationResponse;
 
@@ -33,9 +30,7 @@ public class LocationService {
     int userID;
     int queryUserID;
     String token;
-
-    Observable<Integer> intervalObservable;
-
+    
     FusedLocationProviderClient fusedLocationClient;
 
     public LocationService(LocationApi locationApi, Activity activity, FusedLocationProviderClient fusedLocationClient) {
@@ -111,6 +106,11 @@ public class LocationService {
      * @param locationCallback
      */
     public void getLocationUpdates(int interval, int fastestInterval, int priority, LocationCallback locationCallback) throws SecurityException {
+
+        if (ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            throw new SecurityException("GRANT_ACCESS_FINE_LOCATION");
+        }
         LocationRequest locationRequest = new LocationRequest();
         locationRequest.setInterval(interval);
         locationRequest.setFastestInterval(fastestInterval);
@@ -128,10 +128,6 @@ public class LocationService {
      */
 
     public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading) {
-        if (heading < 0) {
-            heading += 360;
-        }
-
         Observable<UpdateLocationResponse> observable = locationApi.updateLocation(userID, token,
                                                                 new UpdateLocationRequest(lat, lon, accuracy, heading))
                                                                 .subscribeOn(Schedulers.io())

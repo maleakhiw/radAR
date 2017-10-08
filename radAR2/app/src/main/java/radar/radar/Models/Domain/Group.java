@@ -1,9 +1,8 @@
-package radar.radar.Models;
+package radar.radar.Models.Domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by kenneth on 20/9/17.

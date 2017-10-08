@@ -1,7 +1,6 @@
 package radar.radar;
 
 import android.content.Intent;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,12 +14,11 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.NewGroupListAdapter;
-import radar.radar.Models.Group;
-import radar.radar.Models.GroupDetails;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
-import radar.radar.Models.User;
-import radar.radar.Models.UserWithCheckbox;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.UsersApi;

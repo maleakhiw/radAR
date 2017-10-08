@@ -4,9 +4,8 @@ import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraDevice;
 import android.view.Surface;
-import android.view.TextureView;
 
-import radar.radar.CameraData;
+import radar.radar.Models.Android.CameraData;
 
 /**
  * Created by kenneth on 7/10/17.

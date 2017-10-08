@@ -6,7 +6,7 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Views.GroupsListView;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;
 

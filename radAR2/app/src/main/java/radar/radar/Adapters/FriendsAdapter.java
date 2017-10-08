@@ -9,10 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 
@@ -84,7 +83,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
                     // From the displayed friend list send information
                     User user = friends.get(getAdapterPosition());
 
-                    Intent intent = new Intent(context, UserDetailActivity.class);
+                    Intent intent = new Intent(itemView.getContext(), UserDetailActivity.class);
                     intent.putExtra("user", user);
                     context.startActivity(intent);
 
