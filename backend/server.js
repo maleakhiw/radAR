@@ -232,10 +232,6 @@ app.get("/api/groups", (req, res) => {
 // app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
 // app.post("/api/groups", authenticate, gms.newGroup)
 
-// app.listen(3000, function(req, res) {
-//   // console.log("Listening at port 3000.")
-// })
-
 
 // for Let's Encrypt
 app.get('/health-check', (req, res) => res.sendStatus(200));
@@ -247,11 +243,21 @@ app.use(express.static('static'));
 // }
 
 const http = require('http');
-http.createServer((req, res) => {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(8080);
-// https.createServer(options, app).listen(8443);
+// TODO environment variable
+let HTTPS_MODE = false;
+if (!HTTPS_MODE) {
+  app.listen(8080, (req, res) => {
+    //
+  });
+} else {
+  // http.createServer((req, res) => {
+  //     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+  //     res.end();
+  // }).listen(8080);
+  // https.createServer(options, app).listen(8443);
+}
+
+
 
 // export the app, for testing
 module.exports = app
