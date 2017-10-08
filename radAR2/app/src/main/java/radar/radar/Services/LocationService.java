@@ -33,9 +33,7 @@ public class LocationService {
     int userID;
     int queryUserID;
     String token;
-
-    Observable<Integer> intervalObservable;
-
+    
     FusedLocationProviderClient fusedLocationClient;
 
     public LocationService(LocationApi locationApi, Activity activity, FusedLocationProviderClient fusedLocationClient) {
@@ -133,10 +131,6 @@ public class LocationService {
      */
 
     public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading) {
-        if (heading < 0) {
-            heading += 360;
-        }
-
         Observable<UpdateLocationResponse> observable = locationApi.updateLocation(userID, token,
                                                                 new UpdateLocationRequest(lat, lon, accuracy, heading))
                                                                 .subscribeOn(Schedulers.io())

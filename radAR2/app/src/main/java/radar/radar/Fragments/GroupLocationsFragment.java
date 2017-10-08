@@ -96,7 +96,7 @@ public class GroupLocationsFragment extends Fragment {
 
                         @Override
                         public void onNext(Status status) {
-                            Toast.makeText(getActivity(), "Updated meeting point", Toast.LENGTH_SHORT);
+                            Toast.makeText(getActivity(), "Updated meeting point", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
