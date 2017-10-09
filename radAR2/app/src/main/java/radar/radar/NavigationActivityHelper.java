@@ -86,7 +86,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 Intent intent = new Intent(activity, GroupsListActivity.class);
                 activity.startActivity(intent);
 
-
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);
