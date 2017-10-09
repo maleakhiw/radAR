@@ -1,7 +1,7 @@
 package radar.radar;
 
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -10,8 +10,10 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
+import com.google.maps.android.PolyUtil;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.TravelMode;
@@ -19,6 +21,7 @@ import com.google.maps.model.TravelMode;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -53,12 +56,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
-        mMap.addMarker(new MarkerOptions().position(
-                new LatLng(results.routes[0].legs[0].startLocation.lat,
-                        results.routes[0].legs[0].startLocation.lng)).title("Origin"));
-        mMap.addMarker(new MarkerOptions().position(
-                new LatLng(results.routes[0].legs[0].endLocation.lat,
-                        results.routes[0].legs[0].endLocation.lng)).title("Destination"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].startLocation.lat,results.routes[0].legs[0].startLocation.lng)).title(results.routes[0].legs[0].startAddress));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(results.routes[0].legs[0].endLocation.lat,results.routes[0].legs[0].endLocation.lng)).title(results.routes[0].legs[0].endAddress).snippet(getEndLocationTitle(results)));
+    }
+
+    private String getEndLocationTitle(DirectionsResult results) {
+        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+    }
+
+    private void addPolyline(DirectionsResult results, GoogleMap mMap) {
+        List<LatLng> decodedPath = PolyUtil.decode(results.routes[0].overviewPolyline.getEncodedPath());
+        mMap.addPolyline(new PolylineOptions().addAll(decodedPath));
     }
 
 
@@ -96,7 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .destination(dest).departureTime(now)
                     .await();
             addMarkersToMap(results,mMap);
-
+            addPolyline(results, mMap);
             text = "Success";
 
         } catch (ApiException e) {
@@ -114,6 +122,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unimelb,12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unimelb,7));
     }
 }
