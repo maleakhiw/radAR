@@ -6,11 +6,19 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,8 +34,11 @@ import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.Services.AuthService;
 
+import static android.app.Activity.RESULT_OK;
+
 /**
  * Created by kenneth on 3/10/17.
+ * Modified by rtanudjaja on 10/10/17
  */
 
 public class GroupDetailsFragment extends Fragment {
@@ -39,6 +50,9 @@ public class GroupDetailsFragment extends Fragment {
     MapView mapView;
 
     GroupDetailsLifecycleListener listener;
+
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
+    private static final String TAG = "SearchLocationActivity";
 
     public void setListener(GroupDetailsLifecycleListener listener) {
         this.listener = listener;
@@ -125,10 +139,12 @@ public class GroupDetailsFragment extends Fragment {
             double unimelb_lng = Double.parseDouble(getString(R.string.melbourne_university_lng));
 
             LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-            googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-                    .title(getString(R.string.unimelb)));
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
         });
+
+        // Open the autocomplete activity when the button is clicked.
+        Button openButton = (Button) rootView.findViewById(R.id.add_new_location);
+        openButton.setOnClickListener(view -> onAddPlaceButtonClicked());
 
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {
@@ -148,7 +164,51 @@ public class GroupDetailsFragment extends Fragment {
         return rootView;
     }
 
+    /***
+     * Button Click event handler to handle clicking the "Add new location" Button
+     */
+    public void onAddPlaceButtonClicked() {
+        try {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            Intent i = builder.build(getActivity());
+            startActivityForResult(i, REQUEST_CODE_AUTOCOMPLETE);
+        } catch (GooglePlayServicesRepairableException e) {
+            // Indicates that Google Play Services is either not installed or not up to date. Prompt
+            // the user to correct the issue.
+            GoogleApiAvailability.getInstance().getErrorDialog(getActivity(), e.getConnectionStatusCode(),
+                    0 /* requestCode */).show();
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // Indicates that Google Play Services is not available and the problem is not easily
+            // resolvable.
+            String message = "Google Play Services is not available: " +
+                    GoogleApiAvailability.getInstance().getErrorString(e.errorCode);
+            Log.e(TAG, message);
+        }
+    }
 
+    /**
+     * Called after the autocomplete activity has finished to return its result.
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlacePicker.getPlace(getActivity(), data);
+                Log.i(TAG, "Place Selected: " + place.getName());
+                mapView.getMapAsync(googleMap -> {
+                    googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                            .title(getString(R.string.unimelb)));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+                });
+            }
+        }
+    }
 
     public void setMainTextView(String text) {
         if (mainTextView != null) {
