@@ -15,7 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
@@ -48,7 +48,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         fab = findViewById(R.id.fab);
         
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
+                                        .baseUrl("https://radar.fadhilanshar.com/api/")
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
@@ -57,6 +57,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();
+
+        setTitle("Friends");
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,7 +83,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
     @Override
     public void launchSearchFriendsActivity() {
-        Intent intent = new Intent(this, SearchResultActivity.class);
+        Intent intent = new Intent(this, TabbedSearchActivity.class);
         startActivity(intent);
     }
 

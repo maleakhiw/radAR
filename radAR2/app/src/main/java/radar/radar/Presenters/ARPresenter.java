@@ -7,20 +7,16 @@ import android.location.Location;
 
 import com.google.android.gms.location.LocationRequest;
 
-import org.reactivestreams.Subscription;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.Models.MeetingPoint;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.GroupLocationsInfo;
-import radar.radar.Models.Responses.UpdateLocationResponse;
-import radar.radar.Models.User;
-import radar.radar.Models.UserLocation;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Domain.UserLocation;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
@@ -61,7 +57,8 @@ public class ARPresenter {
 
     Observable<GroupLocationsInfo> groupMemberLocationsObservable;
 
-    int activeAnnotationUserID = -1; // TODO remove magic number
+    static final int DESTINATION_ID = -1;
+    int activeAnnotationUserID = DESTINATION_ID;
 
     public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorManager sensorManager, LocationTransformations locationTransformations, int groupID) {
         this.arView = arView;
@@ -72,12 +69,6 @@ public class ARPresenter {
 
         // TODO warn if no location in 5sec
         groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
-
-//        destinationLocation = new UserLocation(79, -37.829293f, 144.956805f, 0.1f, 2, new Date());
-//        arView.inflateARAnnotation(destinationLocation);
-//        arView.setAnnotationMainText(79, "Southbank");
-//        arView.updateDestinationName("Southbank");
-
     }
 
     void render(int userID, double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
@@ -98,35 +89,16 @@ public class ARPresenter {
         activeAnnotationUserID = userID;
     }
 
-    private void updateDataImpl() {
+    private void updateLocationTransformations() {
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
-            System.out.println(azimuth.toString() + " " + location.toString());
-            locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), azimuth).subscribe(new Observer<UpdateLocationResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(UpdateLocationResponse updateLocationResponse) {
-                    System.out.println(updateLocationResponse);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
+//            System.out.println(azimuth.toString() + " " + location.toString());
+            locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), azimuth)
+                    .subscribe();
             return 0;
         }).subscribe(new Observer<Integer>() {
             @Override
@@ -169,6 +141,7 @@ public class ARPresenter {
                 float azimuth = locationAndDeviceData.azimuth;
                 float pitch = locationAndDeviceData.pitch;
 
+
                 // meeting point
                 MeetingPoint meetingPoint = locationAndDeviceData.groupLocationDetails.meetingPoint;
 
@@ -190,21 +163,26 @@ public class ARPresenter {
                     render(userID, latUser, lonUser, userLocation, azimuth, pitch);
                 }
 
-                // render destination location, userID -1
+                // render destination location, userID DESTINATION_ID
                 if (meetingPoint != null) {
                     // TODO new class
-                    UserLocation destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
-                    if (!arView.isInflated(-1)) {
+                    UserLocation destination = new UserLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
+                    if (!arView.isInflated(DESTINATION_ID)) {
                         arView.inflateARAnnotation(destination);
                     }
-                    arView.setAnnotationMainText(-1, meetingPoint.name);
-                    render(-1, latUser, lonUser, destination, azimuth, pitch);
+                    arView.setAnnotationMainText(DESTINATION_ID, meetingPoint.name);
+                    render(DESTINATION_ID, latUser, lonUser, destination, azimuth, pitch);
                 }
 
                 /* render HUD */
                 UserLocation destination;
-                if (activeAnnotationUserID == -1) {
-                    destination = new UserLocation(-1, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
+                if (activeAnnotationUserID == DESTINATION_ID) {
+                    destination = new UserLocation(DESTINATION_ID,
+                            (float) meetingPoint.lat,
+                            (float) meetingPoint.lon,
+                            0,
+                            0,
+                            meetingPoint.timeAdded);
                     arView.updateDestinationName(meetingPoint.name);
                 } else {
                     destination = userLocationsMap.get(activeAnnotationUserID);
@@ -215,12 +193,7 @@ public class ARPresenter {
                 arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
 
                 // update heading
-                double headingAzimuth = azimuth;
-                if (azimuth < 0) {
-                    headingAzimuth += 180;
-                }
-//                System.out.println(azimuth);
-                arView.updateHUDHeading(LocationTransformations.getCompassDirection(headingAzimuth));
+                arView.updateHUDHeading(LocationTransformations.getCompassDirection(azimuth));
 
             }
 
@@ -238,13 +211,12 @@ public class ARPresenter {
 
 
 
-    public void updateData(double hPixelsPerDegree, double vPixelsPerDegree) {
-        System.out.println("presenter updateData");
+    public void updateLocationTransformations(double hPixelsPerDegree, double vPixelsPerDegree) {
         // update number of pixels per degree
         locationTransformations.sethPixelsPerDegree(hPixelsPerDegree);
         locationTransformations.setvPixelsPerDegree(vPixelsPerDegree);
 
-        updateDataImpl();
+        updateLocationTransformations();
     }
 
     // null checks since this function will be called on Activity creation too
@@ -254,7 +226,7 @@ public class ARPresenter {
         if (sensorService != null) {
             sensorService.unregisterSensorEventListener();
         }
-        boolean tracking = true;    // TODO move out
+        boolean tracking = false;    // TODO move out
 
         if (!tracking) {    // do not send location data in the background
             locationPushDisposable.dispose();
@@ -270,6 +242,6 @@ public class ARPresenter {
             sensorService.reregisterSensorEventListener();
         }
 
-        updateDataImpl();
+        updateLocationTransformations();
     }
 }

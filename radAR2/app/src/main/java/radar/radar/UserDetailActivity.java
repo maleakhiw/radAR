@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.UserDetailPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
@@ -46,7 +46,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
 
         // Setup Retrofit Instances
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();

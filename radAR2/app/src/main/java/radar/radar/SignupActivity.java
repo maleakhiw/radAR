@@ -48,7 +48,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
 
         // get a Retrofit instance (this is also called the Builder pattern)
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
+                                        .baseUrl("https://radar.fadhilanshar.com/api/")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .build();

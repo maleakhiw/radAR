@@ -1,2 +1,7 @@
 server.log
+<<<<<<< HEAD
 radar.fadhilanshar.com
+=======
+node_modules/
+radar.fadhilanshar.com/
+>>>>>>> 0f8a076091c79bb6598183e1516213b124ffd3e9

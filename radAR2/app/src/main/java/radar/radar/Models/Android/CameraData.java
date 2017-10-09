@@ -1,4 +1,4 @@
-package radar.radar;
+package radar.radar.Models.Android;
 
 import android.hardware.camera2.CameraCharacteristics;
 import android.util.SizeF;
@@ -21,6 +21,10 @@ public class CameraData {
         return verticalFov;
     }
 
+    public String getCameraID() {
+        return cameraID;
+    }
+
     String cameraID;
     CameraCharacteristics cameraCharacteristics;
     double horizontalFov;
@@ -34,6 +38,16 @@ public class CameraData {
 
         horizontalFov = Math.toDegrees(2 * Math.atan(sensorWidth / (focalLength * 2)));
         verticalFov = Math.toDegrees(2 * Math.atan(sensorHeight / (focalLength * 2)));
+    }
+
+    public float getSensorWidth() {
+        SizeF sensorSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+        return sensorSize.getWidth();
+    }
+
+    public float getSensorHeight() {
+        SizeF sensorSize = cameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE);
+        return sensorSize.getHeight();
     }
 
     public CameraData(String cameraID, CameraCharacteristics cameraCharacteristics) {

@@ -4,16 +4,19 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 
 import java.util.ArrayList;
 
 import radar.radar.Adapters.GroupsAdapter;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.GroupsListPresenter;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
+import radar.radar.Views.GroupsListView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -35,18 +38,24 @@ public class GroupsListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_list);
 
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        setTitle("Groups");
+
         loadViews();
 
-        System.out.println("Group   sListActivity");
 
         // setup recyclerView
         rvAdapter = new GroupsAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(rvAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+
 
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
+                                        .baseUrl("https://radar.fadhilanshar.com/api/")
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .build();
@@ -61,6 +70,17 @@ public class GroupsListActivity extends AppCompatActivity
             startActivity(intent);
         });
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

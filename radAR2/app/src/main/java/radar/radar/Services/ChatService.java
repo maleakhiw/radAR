@@ -2,8 +2,12 @@ package radar.radar.Services;
 
 import android.content.Context;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.SendMessageResponse;
@@ -27,6 +31,38 @@ public class ChatService {
         token = AuthService.getToken(context);
     }
 
+    public Observable<GetChatsResponse> getChats(int pollingPeriod) {
+        return Observable.create(emitter -> {
+            Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
+                    .subscribe(tick -> {
+                        chatApi.getChats(userID, token)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<GetChatsResponse>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(GetChatsResponse getChatsResponse) {
+                                emitter.onNext(getChatsResponse);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                emitter.onError(e);
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+                    });
+        });
+    }
+
     public Observable<GetChatsResponse> getChats() {
         return chatApi.getChats(userID, token)
                 .subscribeOn(Schedulers.io())
@@ -46,10 +82,43 @@ public class ChatService {
                         .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public Observable<MessagesResponse> getMessages(int chatID) {
-        return chatApi.getMessages(userID, token, chatID)
+    /**
+     * Polls the server for new messages
+     * @param chatID chat to get messages for
+     * @param pollingPeriod time in between requests in milliseocnds
+     * @return
+     */
+    public Observable<MessagesResponse> getMessages(int chatID, int pollingPeriod) {
+        return Observable.create(emitter -> {
+            Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
+            .subscribe(tick -> {
+                chatApi
+                .getMessages(userID, token, chatID)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<MessagesResponse>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(MessagesResponse messagesResponse) {
+                        emitter.onNext(messagesResponse);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        emitter.onError(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            });
+        });
     }
 
     // send message

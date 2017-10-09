@@ -29,7 +29,7 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".UserDetailActivity" />
         <activity
-            android:name=".LaunchActivity"
+            android:name=".LaunchActivity">
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,13 +37,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--Tabbed activity-->
+        <activity android:name=".TabbedSearchActivity">
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
         <activity
             android:name=".SearchResultActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
-            android:name=".ARActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -53,18 +60,11 @@
             android:name=".SearchLocationActivity"
             android:label="radAR Search Location">
         </activity>
-      
+
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
-        <activity
-            android:name=".ARActivity2"
+            android:name=".ARActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".GroupActivity"
-            android:label="@string/title_activity_groups"
-            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".GroupsListActivity" />
         <activity

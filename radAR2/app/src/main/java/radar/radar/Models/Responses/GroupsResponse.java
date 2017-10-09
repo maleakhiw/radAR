@@ -1,10 +1,7 @@
 package radar.radar.Models.Responses;
 
 
-import java.util.ArrayList;
-
-import radar.radar.Models.Group;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.Group;
 
 public class GroupsResponse extends Status {
     public Group group;

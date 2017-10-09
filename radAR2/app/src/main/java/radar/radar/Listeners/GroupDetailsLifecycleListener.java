@@ -1,6 +1,8 @@
-package radar.radar;
+package radar.radar.Listeners;
 
 import android.app.Fragment;
+
+import java.io.Serializable;
 
 import radar.radar.Fragments.GroupDetailsFragment;
 
@@ -8,6 +10,6 @@ import radar.radar.Fragments.GroupDetailsFragment;
  * Created by kenneth on 3/10/17.
  */
 
-public interface GroupDetailsLifecycleListener {
+public interface GroupDetailsLifecycleListener extends Serializable {
     void onSetUp(Fragment fragment);
 }
