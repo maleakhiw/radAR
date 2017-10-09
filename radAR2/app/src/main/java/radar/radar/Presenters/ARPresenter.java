@@ -27,7 +27,7 @@ import radar.radar.Views.ARView;
  * Created by kenneth on 28/9/17.
  */
 
-class LocationAndDeviceData {
+class gutLocationAndDeviceData {
     float azimuth;
     float pitch;
     Location location;
@@ -89,13 +89,10 @@ public class ARPresenter {
         activeAnnotationUserID = userID;
     }
 
-    private void updateDataImpl() {
-        // TODO verify
+    private void updateLocationTransformations() {
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
-
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
-
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {

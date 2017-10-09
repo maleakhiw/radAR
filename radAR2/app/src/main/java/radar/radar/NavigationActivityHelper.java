@@ -95,6 +95,10 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 activity.finish();
             }
 
+            if (!activity.getClass().equals(HomeScreenActivity.class)) {
+                activity.finish();
+            }
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
