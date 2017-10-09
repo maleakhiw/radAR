@@ -32,6 +32,10 @@
             android:name=".LaunchActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
             <!-- ORIGINAL LAUNCHER -->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- Tabbed activity -->
@@ -82,11 +86,7 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
