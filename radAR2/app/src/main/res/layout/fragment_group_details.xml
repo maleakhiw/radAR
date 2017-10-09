@@ -17,18 +17,18 @@
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginTop="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
                     android:text="Meeting point"
-                    android:textSize="@dimen/section_text_size"/>
+                    android:textSize="@dimen/section_text_size" />
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
@@ -36,15 +36,14 @@
                     android:layout_margin="16dp">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
                         <com.google.android.gms.maps.MapView
-                            android:layout_width="match_parent"
-                            android:layout_height="200dp"
                             android:id="@+id/group_detail_map"
-                            />
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp" />
 
                         <!--<fragment-->
                         <!--android:id="@+id/group_detail_map"-->
@@ -86,12 +85,33 @@
 
                 </android.support.v7.widget.CardView>
 
-                <Button
-                    android:id="@+id/add_new_location"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="SET" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/add_new_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="SET" />
+
+                    <Button
+                        android:id="@+id/navigate_to_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="NAVIGATE" />
+
+                    <Button
+                        android:id="@+id/track_friend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:text="TRACK" />
+                </LinearLayout>
 
                 <TextView
                     android:id="@+id/group_detail_textview"
