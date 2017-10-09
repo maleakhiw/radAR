@@ -45,7 +45,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *  WriteTimeout: The default write timeout for new connections. */
     private GeoApiContext getGeoContext() {
         GeoApiContext geoApiContext = new GeoApiContext();
-        return geoApiContext.setApiKey(getString(R.string.directionsApiKey));
+        return geoApiContext.setQueryRateLimit(3)
+                .setApiKey(getString(R.string.directionsApiKey))
+                .setConnectTimeout(1, TimeUnit.SECONDS)
+                .setReadTimeout(1, TimeUnit.SECONDS)
+                .setWriteTimeout(1, TimeUnit.SECONDS);
     }
 
     private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
@@ -76,7 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(-34, 151);
 
         // Testing purposes
-        CharSequence text;
+        CharSequence text = "Null";
         int duration = Toast.LENGTH_LONG;
 
         String orig;
@@ -93,18 +97,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .await();
             addMarkersToMap(results,mMap);
 
-            text = orig;
-            Toast toast = Toast.makeText(this, text, duration);
-            toast.show();
+            text = "Success";
 
         } catch (ApiException e) {
             e.printStackTrace();
+            text = "Exception Error";
         } catch (InterruptedException e) {
             e.printStackTrace();
+            text = "Exception Error";
         } catch (IOException e) {
             e.printStackTrace();
+            text = "Exception Error";
+        } finally {
+            Toast toast = Toast.makeText(this, text, duration);
+            toast.show();
         }
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unimelb,12));
     }
 }

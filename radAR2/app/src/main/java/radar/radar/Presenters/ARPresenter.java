@@ -27,7 +27,7 @@ import radar.radar.Views.ARView;
  * Created by kenneth on 28/9/17.
  */
 
-class gutLocationAndDeviceData {
+class LocationAndDeviceData {
     float azimuth;
     float pitch;
     Location location;
