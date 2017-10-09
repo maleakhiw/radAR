@@ -26,13 +26,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.GroupMembersAdapter;
 import radar.radar.ChatActivity;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.MapsActivity;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
+import radar.radar.Models.Responses.Status;
 import radar.radar.R;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.GroupsApi;
+import radar.radar.Services.GroupsService;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,6 +60,8 @@ public class GroupDetailsFragment extends Fragment {
     MapView mapView;
 
     GroupDetailsLifecycleListener listener;
+
+    private Group group = null;
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = "SearchLocationActivity";
@@ -117,7 +129,7 @@ public class GroupDetailsFragment extends Fragment {
                 R.layout.fragment_group_details, container, false);
         Bundle args = getArguments();
 
-        Group group = (Group) args.getSerializable("group");
+        group = (Group) args.getSerializable("group");
 
 //        nameTextView = rootView.findViewById(R.id.fragment_group_details_name);
 //        nameTextView.setText(group.name);
@@ -142,9 +154,17 @@ public class GroupDetailsFragment extends Fragment {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
         });
 
-        // Open the autocomplete activity when the button is clicked.
+        // Make a marker when the button is clicked.
         Button openButton = (Button) rootView.findViewById(R.id.add_new_location);
-        openButton.setOnClickListener(view -> onAddPlaceButtonClicked());
+        openButton.setOnClickListener(view -> onSetButtonClicked());
+
+        // Navigate
+        Button navigateButton = (Button) rootView.findViewById(R.id.navigate_to_location);
+        navigateButton.setOnClickListener(view -> onNavigateButtonClicked());
+
+        // Track
+        Button trackButton = (Button) rootView.findViewById(R.id.track_friend);
+        trackButton.setOnClickListener(view -> onTrackButtonClicked());
 
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {
@@ -164,10 +184,10 @@ public class GroupDetailsFragment extends Fragment {
         return rootView;
     }
 
-    /***
-     * Button Click event handler to handle clicking the "Add new location" Button
+    /**
+     * Click event handler to handle clicking the "Set" Button
      */
-    public void onAddPlaceButtonClicked() {
+    public void onSetButtonClicked() {
         try {
             // The autocomplete activity requires Google Play Services to be available. The intent
             // builder checks this and throws an exception if it is not the case.
@@ -189,6 +209,32 @@ public class GroupDetailsFragment extends Fragment {
     }
 
     /**
+     * Click event handler to handle clicking the "Navigate" Button
+     */
+    public void onNavigateButtonClicked() {
+        try {
+            //open map activity and display navigation
+            Intent intent = new Intent(getActivity(), MapsActivity.class);
+
+
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    /**
+     * Click event handler to handle clicking the "Track" Button
+     */
+    public void onTrackButtonClicked() {
+        try {
+            //open map activity and display friends
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+    }
+
+    /**
      * Called after the autocomplete activity has finished to return its result.
      */
     @Override
@@ -206,6 +252,41 @@ public class GroupDetailsFragment extends Fragment {
                             .title(getString(R.string.unimelb)));
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
                 });
+
+                double latDouble = place.getLatLng().latitude;
+                double lonDouble = place.getLatLng().longitude;
+                String name = place.getName().toString();
+
+                //update group location settings
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl("https://radar.fadhilanshar.com/api/")
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                GroupsService groupsService = new GroupsService(getActivity(), retrofit.create(GroupsApi.class));
+                groupsService.updateMeetingPoint(group.groupID, new MeetingPoint(latDouble, lonDouble, name, "")).subscribe(new Observer<Status>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Status status) {
+                        Toast.makeText(getActivity(), "Update meeting point to " + group.meetingPoint, Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        System.out.println(e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
             }
         }
     }
