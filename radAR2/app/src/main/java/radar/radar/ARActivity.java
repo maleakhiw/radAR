@@ -173,7 +173,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
 
         // setup services
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();

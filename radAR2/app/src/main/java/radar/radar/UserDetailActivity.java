@@ -46,7 +46,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
 
         // Setup Retrofit Instances
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -59,9 +59,14 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         user = (User) getIntent().getSerializableExtra("user");
         fullname.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
-        userDetailsEmail.setText("Hidden email address");
-        userDetailsPhoneNumber.setText("No phone number given");
-        userDetailsProfile.setText("Hello, I am using Radar!");
+        userDetailsEmail.setText(user.email);
+        userDetailsPhoneNumber.setText("This user doesn't provide phone number.");
+        // This is if user doesn't set any profile description
+        if (user.profileDesc != null) {
+            userDetailsProfile.setText(user.profileDesc);
+        } else {
+            userDetailsProfile.setText("Hello, I am using Radar!");
+        }
 
         // initialize presenter
         userDetailPresenter = new UserDetailPresenter(this, usersService);
