@@ -154,6 +154,7 @@ public class LocationTransformations {
     }
 
     public static CompassDirection getCompassDirection(double degree) {
+        System.out.println(degree);
         if (degree < 0) {
             degree += 360;
         }

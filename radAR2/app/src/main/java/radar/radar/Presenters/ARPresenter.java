@@ -89,10 +89,13 @@ public class ARPresenter {
         activeAnnotationUserID = userID;
     }
 
-    private void updateLocationTransformations() {
+    private void updateDataImpl() {
+        // TODO verify
         Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
+
         Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
+
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
