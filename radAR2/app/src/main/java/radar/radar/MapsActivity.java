@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -9,6 +10,16 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.DirectionsApi;
+import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.TravelMode;
+
+import org.joda.time.DateTime;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -17,11 +28,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_google_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+    }
+
+    /** Create a GeoApiContext to set API key and some restrictions
+     *  ConnectTimeout: The default connect timeout for new connections.
+     *  QueryRate: The maximum number of queries that will be executed during a 1 second intervals.
+     *  ReadTimeout: The default read timeout for new connections.
+     *  WriteTimeout: The default write timeout for new connections. */
+    private GeoApiContext getGeoContext() {
+        GeoApiContext geoApiContext = new GeoApiContext();
+        return geoApiContext.setApiKey(getString(R.string.directionsApiKey));
+    }
+
+    private void addMarkersToMap(DirectionsResult results, GoogleMap mMap) {
+        mMap.addMarker(new MarkerOptions().position(
+                new LatLng(results.routes[0].legs[0].startLocation.lat,
+                        results.routes[0].legs[0].startLocation.lng)).title("Origin"));
+        mMap.addMarker(new MarkerOptions().position(
+                new LatLng(results.routes[0].legs[0].endLocation.lat,
+                        results.routes[0].legs[0].endLocation.lng)).title("Destination"));
     }
 
 
@@ -39,8 +71,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
+        LatLng unimelb = new LatLng(-37.7963689,144.9611738);
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        // Testing purposes
+        CharSequence text;
+        int duration = Toast.LENGTH_LONG;
+
+        String orig;
+        String dest;
+        DateTime now = new DateTime();
+        DirectionsResult results;
+        try {
+            orig = String.valueOf(unimelb.latitude) + "," + String.valueOf(unimelb.longitude);
+            dest = String.valueOf(sydney.latitude) + "," + String.valueOf(sydney.longitude);
+
+            results = DirectionsApi.newRequest(getGeoContext())
+                    .mode(TravelMode.DRIVING).origin(orig)
+                    .destination(dest).departureTime(now)
+                    .await();
+            addMarkersToMap(results,mMap);
+
+            text = orig;
+            Toast toast = Toast.makeText(this, text, duration);
+            toast.show();
+
+        } catch (ApiException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }
