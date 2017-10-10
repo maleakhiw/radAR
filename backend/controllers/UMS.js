@@ -84,6 +84,46 @@ var getRequestIDForNewRequest = () => new Promise((resolve, reject) => {
   })
 })
 
+var validateDeleteRequest = (req) => new Promise((resolve, reject) => {
+  let errorKeys = [];
+  let userID = req.params.userID;
+  let requestID = req.params.requestID;
+
+  // userID assumed to be valid due to authentication middleware.
+
+  // find a request
+  Request.findOne({requestID: requestID}).exec()
+  .then((request) => {
+    if (request == null) {
+      errorKeys.push('invalidRequestID');
+    } else {
+      if (request.from != userID) {
+        errorKeys.push('invalidRequestID');
+      }
+    }
+
+    resolve(errorKeys);
+  })
+  .catch(err => {
+    reject(err);
+  });
+
+});
+
+var deleteRequest = (requestID, res) => {
+  Request.remove({requestID: requestID}).exec()
+  .then((result) => {
+    res.json({
+      success: true,
+      errors: []
+    })
+  })
+  .catch((err) => {
+    winston.error(err);
+    common.sendInternalError(res);
+  })
+}
+
 module.exports = class UMS {
   constructor(pUser, pRequest) {
     User = pUser
@@ -184,6 +224,26 @@ module.exports = class UMS {
       })
 
     }
+
+  }
+
+  cancelRequest(req, res) {
+    let userID = req.params.userID;
+    let requestID = req.params.requestID;
+
+    validateDeleteRequest(req)
+    .then((errorKeys) => {
+      // validation: requestID exists, user sent the request
+      if (errorKeys.length) {
+        sendError(res, errorKeys);
+        return;
+      }
+
+      deleteRequest(requestID, res);
+    })
+    .catch((err) => {
+      common.sendInternalError(res);
+    })
 
   }
 
@@ -422,6 +482,9 @@ module.exports = class UMS {
 
           // decline friend request
           else {
+            request.responded = true
+            request.save()
+
             let response = {
               success: true,
               error: []

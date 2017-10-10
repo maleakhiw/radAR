@@ -180,6 +180,7 @@ app.get("/api/auth/:username", svs.login)
 // friends
 app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)
+app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.cancelRequest);
 app.post("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
@@ -239,7 +240,7 @@ app.use(express.static('static'));
 
 const http = require('http');
 // TODO environment variable
-let HTTPS_MODE = true;
+let HTTPS_MODE = false;
 if (!HTTPS_MODE) {
   app.listen(8080, (req, res) => {
     //

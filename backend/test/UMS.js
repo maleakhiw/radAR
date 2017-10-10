@@ -16,7 +16,7 @@ mongoose.Promise = global.Promise
 
 describe('UMS', () => {
 
-  let user1token, user2token
+  let user1token, user2token, user3token;
 
   before((done) => {
     mongoose.connect('mongodb://localhost/radarTest',
@@ -66,10 +66,28 @@ describe('UMS', () => {
           expect(res.body.success).to.equal(true)
           expect(res.body.userID).to.equal(2)
           user2token = res.body.token
-          done()
+          // done()
+
+          chai.request(server)
+          .post('/api/auth')
+          .send({
+              "firstName": "User3",
+              "lastName": "LastName",
+              "email": "email3@example.com",
+              "username": "user3",
+              "profileDesc": "",
+              "password": "hunter2",
+              "deviceID": "memes"
+            })
+          .end((err, res) => {
+            res.should.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.success).to.equal(true)
+            expect(res.body.userID).to.equal(3)
+            user3token = res.body.token
+            done()
+          })
         })
-
-
       })
     })
 
@@ -122,6 +140,56 @@ describe('UMS', () => {
 
 
   })
+
+  describe('DELETE /api/accounts/:userID/friendRequests/:requestID', () => {
+    // cancel an existing friend request
+    it('Before: send a friend request from user1 to user3', (done) => {
+      chai.request(server)
+      .post('/api/accounts/1/friends')
+      .set('token', user1token)
+      .send({
+        invitedUserID: 3,
+      })
+      .end((err, res) => {
+        res.should.have.status(200)
+        expect(res).to.be.json
+        expect(res.body.success).to.equal(true)
+
+        Request.findOne({requestID: 2}).exec()
+        .then((request) => {
+          done() // a request exists
+        })
+        .catch((err) => {
+          throw new Error('Database error')
+        })
+      })
+    })
+
+    it('should be cancelled', (done) => {
+      chai.request(server)
+      .delete('/api/accounts/1/friendRequests/2')
+      .set('token', user1token)
+      .send()
+      .end((err, res) => {
+        res.should.have.status(200)
+        expect(res).to.be.json
+        expect(res.body.success).to.equal(true)
+
+        Request.findOne({requestID: 2}).exec()
+        .then((request) => {
+          if (request != null) {
+            throw new Error('Request should not still exist')
+          } else {
+            done();
+          }
+        })
+        .catch((err) => {
+          throw new Error('Database error')
+        })
+      })
+    })
+
+  });
 
   describe('POST /api/accounts/:userID/friends', () => {
     it('should send a friend request from user1 to userID 10 (and fail - does not exist)', (done) => {

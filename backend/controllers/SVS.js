@@ -357,7 +357,7 @@ module.exports = class SVS {
     })
     .then((user) => {
       response['userInfo'] = common.getAuthUserInfo(user);
-      console.log(response);
+      // console.log(response);
       res.json(response);
     })
     .catch((error) => {
