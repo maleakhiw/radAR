@@ -132,6 +132,23 @@ module.exports = class UMS {
   }
 
   updateProfile(req, res) {
+    /*
+      HTTP PUT {serverURL}/api/accounts/:userID
+
+      Body:
+      {
+        username: String (optional),  // validated
+        firstName: String (optional),
+        lastName: String (optional),
+        email: String (optional), // validated
+        profilePicture: String (optional),  // validated -> needs to point to a valid resource on the server
+        profileDesc: String (optional)
+      }
+
+      Headers:
+      token: (token issued by the server)
+    */
+
     let userID = req.params.userID;
 
     let toUpdate = {};

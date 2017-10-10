@@ -15,7 +15,7 @@ chai.use(chaiHttp)
 
 mongoose.Promise = global.Promise;
 
-describe('SMS', () => {
+describe('GroupSystem', () => {
   let user1token, user2token, user3token;
 
   before((done) => {
@@ -101,10 +101,10 @@ describe('SMS', () => {
 
   })
 
-  describe('POST /api/accounts/:userID/chats (sms.newGroup)', () => {
+  describe('POST /api/accounts/:userID/groups (sms.newGroup)', () => {
     it('should create a new group', (done) => {
       chai.request(server)
-      .post('/api/accounts/1/chats')
+      .post('/api/accounts/1/groups')
       .set('token', user1token)
       .send({
         name: 'test group',
@@ -115,115 +115,41 @@ describe('SMS', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
         expect(res.body.group).to.not.equal(null);
-        // console.log(res.body);
-        done();
+        expect(res.body.group.groupID).to.equal(1);
+
+        Group.findOne({groupID: 1}).exec()
+        .then(group => {
+          expect(group.members).to.include(1);
+          expect(group.members).to.include(2);
+          expect(group.isTrackingGroup).to.equal(true);
+          done();
+        })
       })
     })
 
   })
 
-  describe('GET /api/accounts/:userID/chats (sms.getGroupsForUser)', () => {
-    it('user2 should be in the group (chat, upgradeable to TrackingGroup)', (done) => {
+  describe('PUT /api/accounts/:userID/groups (update group details)', () => {
+    it('should change the group name', done => {
       chai.request(server)
-      .get('/api/accounts/2/chats')
-      .set('token', user2token)
-      .end((err, res) => {
-        res.should.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.success).to.equal(true);
-        console.log(res.body);
-        expect(res.body.groups).to.include(1);
-
-        done();
-      })
-    })
-  })
-
-  describe('POST /api/accounts/:userID/chats/:groupID/messages (sms.sendMessage)', () => {
-    it('should send a message to the group', (done) => {
-      chai.request(server)
-      .post('/api/accounts/1/chats/1/messages') // TODO remove hardcoded group ID
+      .put('/api/accounts/1/groups/1')
       .set('token', user1token)
       .send({
-        message: 'Hello world'
+        name: "New name"
       })
       .end((err, res) => {
-        // console.log(res.body);
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
-        expect(res.body.sentMessage).to.not.equal(null);
-        expect(res.body.sentMessage.text).to.equal('Hello world');
-        expect(res.body.sentMessage.from).to.equal(1);
-        expect(res.body.sentMessage.contentType).to.equal('text');
 
-        done();
-      })
-    })
-  })
-
-  describe('GET /api/accounts/:userID/chats/:groupID/messages (sms.getMessages)', () => {
-    it('should see a message in the group', (done) => {
-      chai.request(server)
-      .get('/api/accounts/2/chats/1/messages') // TODO remove hardcoded group ID
-      .set('token', user2token)
-      .end((err, res) => {
-        // console.log(res.body);
-        res.should.have.status(200);
-        expect(res).to.be.json;
-        expect(res.body.success).to.equal(true);
-        // expect(res.body.groups).to.include(1);
-        expect(res.body.messages.length).to.equal(1);
-        expect(res.body.messages[0].from).to.equal(1);
-        expect(res.body.messages[0].contentType).to.equal('text');
-        expect(res.body.messages[0].text).to.equal('Hello world');
-
-        done();
+        Group.findOne({groupID: 1}).exec()
+        .then(group => {
+          expect(group.name).to.equal("New name");
+          done();
+        })
       })
     })
 
   })
-
-  describe('DELETE /api/accounts/:userID/chats/:groupID', () => {
-    it('should not delete the group (not admin)', done => {
-      chai.request(server)
-      .delete('/api/accounts/2/groups/1')
-      .set('token', user2token)
-      .end((err, res) => {
-        expect(res).to.be.json;
-        expect(res.body.success).to.equal(false);
-
-        Group.findOne({groupID: 2}).exec()
-        .then(group => {
-          if (!group) {
-            done();
-          } else {
-            throw 'Group should not be deleted';
-          }
-        })
-      })
-    });
-
-    it('should delete the group if admin deletes it', done => {
-      chai.request(server)
-      .delete('/api/accounts/1/groups/1')
-      .set('token', user1token)
-      .end((err, res) => {
-        expect(res).to.be.json;
-        expect(res.body.success).to.equal(true);
-        Group.findOne({groupID: 2}).exec()
-        .then(group => {
-          // console.log(group)
-          if (!group) {
-            done();
-          } else {
-            throw 'Group should be deleted';
-          }
-        })
-      })
-    });
-
-  })
-
 
 })

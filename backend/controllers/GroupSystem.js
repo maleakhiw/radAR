@@ -144,6 +144,48 @@ function validateMeetingPoint(req) {
   return errorKeys;
 }
 
+function deleteGroupImpl(req, res) {
+  console.log('deleteGroupImpl()');
+
+  let groupID = parseInt(req.params.groupID);
+  let userID = parseInt(req.params.userID);
+
+  let members = [];
+
+  Group.findOne({groupID: groupID}).exec()
+  .then((group) => {
+    if (group.admins.includes(userID)) {
+      members = group.members;
+      return group.remove();
+    } else {
+      throw 'Unauthorized'
+    }
+  })
+  .then(() => {
+    let promiseAll = members.map(member => {
+      return User.findOne({userID: member}).exec()
+      .then(user => {
+        user.groups = user.groups.filter((group) => group != groupID);
+      })
+    })
+    return Promise.all(promiseAll);
+  })
+  .then(() => {
+    res.json({
+      success: true,
+      errors: []
+    });
+  })
+  .catch((err) => {
+    if (err == 'Unauthorized') {
+      // console.log('Sending unauthorized');
+      common.sendUnauthorizedError(res, ['notGroupAdmin']);
+    } else {
+      common.sendInternalError(res);
+    }
+  });
+}
+
 module.exports = class GroupSystem extends SMS {
 
   constructor(pGroup, pMessage, pUser, pLocation) {
@@ -152,6 +194,46 @@ module.exports = class GroupSystem extends SMS {
     Message = pMessage;
     User = pUser;
     UserLocation = pLocation;
+  }
+
+  updateGroupDetails(req, res) {
+    /*
+      HTTP PUT {serverURL}/api/accounts/:userID/groups/:groupID
+
+      Body:
+      {
+        name: String (optional),  // validated
+      }
+
+      Headers:
+      token: (token issued by the server)
+    */
+
+    let name = req.body.name;
+    let userID = parseInt(req.params.userID);
+    let groupID = req.params.groupID;
+
+    if (name) {
+      Group.findOneAndUpdate({groupID: groupID}, {
+        "$set": {name: name}
+      }).exec((err, group) => {
+        if (err) {
+          common.sendInternalError(res);
+        } else if (!group) {
+          common.sendError(res, ['invalidGroupID']);
+        } else if (!group.members.includes(userID)) {
+          common.sendUnauthorizedError(res, ['unauthorisedGroup']);
+        } else {
+          res.json({
+            success: true,
+            errors: []
+          });
+        }
+
+      });
+
+    }
+
   }
 
   newGroup(req, res) {
@@ -164,7 +246,7 @@ module.exports = class GroupSystem extends SMS {
   }
 
   deleteGroup(req, res) {
-    SMS.deleteGroupImpl(req, res);
+    deleteGroupImpl(req, res);
   }
 
   promoteToTrackingGroup_validateParams(groupID, isTrackingGroup) {

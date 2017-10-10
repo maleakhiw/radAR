@@ -19,51 +19,6 @@ let svs;
 // data models
 let Group, Message, User;
 
-module.exports.newGroupImpl = newGroupImpl;
-module.exports.deleteGroupImpl = deleteGroupImpl;
-
-function deleteGroupImpl(req, res) {
-  console.log('deleteGroupImpl()');
-
-  let groupID = parseInt(req.params.groupID);
-  let userID = parseInt(req.params.userID);
-
-  let members = [];
-
-  Group.findOne({groupID: groupID}).exec()
-  .then((group) => {
-    if (group.admins.includes(userID)) {
-      members = group.members;
-      return group.remove();
-    } else {
-      throw 'Unauthorized'
-    }
-  })
-  .then(() => {
-    let promiseAll = members.map(member => {
-      return User.findOne({userID: member}).exec()
-      .then(user => {
-        user.groups = user.groups.filter((group) => group != groupID);
-      })
-    })
-    return Promise.all(promiseAll);
-  })
-  .then(() => {
-    res.json({
-      success: true,
-      errors: []
-    });
-  })
-  .catch((err) => {
-    if (err == 'Unauthorized') {
-      // console.log('Sending unauthorized');
-      common.sendUnauthorizedError(res, ['notGroupAdmin']);
-    } else {
-      common.sendInternalError(res);
-    }
-  });
-}
-
 /**
  * @param callback callback function. If defined, callback should handle response
  */
@@ -192,9 +147,9 @@ module.exports = class SMS {
       svs = new SVS(pUser)
   }
 
-  deleteGroup(req, res) {
-    deleteGroupImpl(req, res);
-  }
+  // deleteGroup(req, res) {
+  //   deleteGroupImpl(req, res);
+  // }
 
   newGroup(req, res) {
     newGroupImpl(req, res, null);
@@ -412,3 +367,6 @@ module.exports = class SMS {
   }
 
 }
+
+// exports, after the class
+module.exports.newGroupImpl = newGroupImpl;

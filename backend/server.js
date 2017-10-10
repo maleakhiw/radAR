@@ -200,10 +200,11 @@ app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMe
 app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 
 // chats and groups
-app.delete("/api/accounts/:userID/chats/:groupID", authenticate, sms.deleteGroup);
-app.delete("/api/accounts/:userID/groups/:groupID", authenticate, sms.deleteGroup);
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
 
 // groups
+app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
 app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub
 app.get("/api/accounts/:userID/groups/:groupID", authenticate, sms.getGroup);
