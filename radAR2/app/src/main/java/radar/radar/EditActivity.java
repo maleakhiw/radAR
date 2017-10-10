@@ -8,16 +8,21 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.net.URI;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import retrofit2.Retrofit;
@@ -69,7 +74,9 @@ public class EditActivity extends AppCompatActivity {
         pickImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                Intent galleryIntent = new Intent();
+                galleryIntent.setAction(Intent.ACTION_PICK);
+                galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, 0);
             }
         });
@@ -86,17 +93,33 @@ public class EditActivity extends AppCompatActivity {
 
                 // Get the Image from data
                 Uri selectedImage = data.getData();
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
-                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-                assert cursor != null;
-                cursor.moveToFirst();
+                mediaPath = selectedImage.getPath().substring(6);
+                preview.setImageURI(selectedImage);
 
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                mediaPath = cursor.getString(columnIndex);
-                // Set the Image in ImageView for Previewing the Media
-                preview.setImageBitmap(BitmapFactory.decodeFile(mediaPath));
-                cursor.close();
+                Toast.makeText(this, mediaPath, Toast.LENGTH_SHORT).show();
+
+//                Uri selectedImage = data.getData();
+//                file = new File(selectedImage.getPath());
+//
+//                //                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+//
+////                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+////
+//
+////                if (cursor != null) {
+////                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+////                    cursor.moveToFirst();
+////                    mediaPath = cursor.getString(columnIndex);
+////                    cursor.close();
+////                    Toast.makeText(this, mediaPath, Toast.LENGTH_SHORT).show();
+////                }
+////                else {
+////                    Toast.makeText(this, "cursor null", Toast.LENGTH_SHORT).show();
+////                }
+//
+//                // Set the Image in ImageView for Previewing the Media
+//                preview.setImageURI(selectedImage);
 
             } else {
                 Toast.makeText(this, "You haven't picked Image/Video", Toast.LENGTH_LONG).show();
@@ -126,9 +149,54 @@ public class EditActivity extends AppCompatActivity {
         MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 //        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
+        // Make a request
+        resourcesService.uploadFile(fileToUpload).subscribe(new Observer<Status>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
+            }
+
+            @Override
+            public void onNext(Status status) {
+                progressDialog.dismiss();
+                // After we upload File, show success message
+                Toast.makeText(EditActivity.this, "Successfully upload file", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                progressDialog.dismiss();
+                // Display error message
+                Log.d("ANJING", e.getMessage());
+                Toast.makeText(EditActivity.this, "Go to on error.", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
     }
 
+    /** Getting path from uri */
+    public String getImagePath(Uri uri){
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        String document_id = cursor.getString(0);
+        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
+        cursor.close();
+
+        cursor = getContentResolver().query(
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
+        cursor.moveToFirst();
+        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+        cursor.close();
+
+        return path;
+    }
 
 }
