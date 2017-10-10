@@ -199,6 +199,10 @@ app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promot
 app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 
+// chats and groups
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate, sms.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate, sms.deleteGroup);
+
 // groups
 app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub

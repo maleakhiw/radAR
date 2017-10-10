@@ -163,7 +163,6 @@ describe('SMS', () => {
   })
 
   describe('GET /api/accounts/:userID/chats/:groupID/messages (sms.getMessages)', () => {
-    console.log('test')
     it('should see a message in the group', (done) => {
       chai.request(server)
       .get('/api/accounts/2/chats/1/messages') // TODO remove hardcoded group ID
@@ -183,6 +182,48 @@ describe('SMS', () => {
       })
     })
 
+  })
+
+  describe('DELETE /api/accounts/:userID/chats/:groupID', () => {
+    it('should not delete the group (not admin)', done => {
+      chai.request(server)
+      .delete('/api/accounts/2/groups/1')
+      .set('token', user2token)
+      .end((err, res) => {
+        console.log(res.body);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(false);
+
+        Group.findOne({groupID: 2}).exec()
+        .then(group => {
+          if (!group) {
+            done();
+          } else {
+            throw 'Group should not be deleted';
+          }
+        })
+      })
+    });
+
+    it('should delete the group if admin deletes it', done => {
+      chai.request(server)
+      .delete('/api/accounts/1/groups/1')
+      .set('token', user1token)
+      .end((err, res) => {
+        console.log(res.body);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        Group.findOne({groupID: 2}).exec()
+        .then(group => {
+          // console.log(group)
+          if (!group) {
+            done();
+          } else {
+            throw 'Group should be deleted';
+          }
+        })
+      })
+    });
 
   })
 

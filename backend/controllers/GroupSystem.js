@@ -144,7 +144,7 @@ function validateMeetingPoint(req) {
   return errorKeys;
 }
 
-module.exports = class GroupSystem extends SMS{
+module.exports = class GroupSystem extends SMS {
 
   constructor(pGroup, pMessage, pUser, pLocation) {
     super(pGroup, pMessage, pUser);
@@ -163,7 +163,9 @@ module.exports = class GroupSystem extends SMS{
     SMS.newGroupImpl(req, res, callback);
   }
 
-
+  deleteGroup(req, res) {
+    SMS.deleteGroupImpl(req, res);
+  }
 
   promoteToTrackingGroup_validateParams(groupID, isTrackingGroup) {
     let errorKeys = [];
