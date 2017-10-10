@@ -59,7 +59,9 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         user = (User) getIntent().getSerializableExtra("user");
         fullname.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
-        userDetailsEmail.setText(user.email);
+        //TODO: after the server also return email address, we will set this with code below
+//        userDetailsEmail.setText(user.email);
+        userDetailsEmail.setText("This user doesn't provide email address.");
         userDetailsPhoneNumber.setText("This user doesn't provide phone number.");
         // This is if user doesn't set any profile description
         if (user.profileDesc != null) {
