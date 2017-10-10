@@ -340,4 +340,78 @@ describe('UMS', () => {
     })
   })
 
+  describe('PUT /api/accounts/:userID', () => {
+    it("should update firstName", done => {
+      chai.request(server)
+      .put('/api/accounts/3')
+      .send({
+        firstName: "John"
+      })
+      .set('token', user3token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+
+        User.findOne({userID: 3}).exec()
+        .then((user) => {
+          expect(user.firstName).to.equal("John");
+          done();
+        })
+      })
+    })
+
+    it("should update lastName", done => {
+      chai.request(server)
+      .put('/api/accounts/3')
+      .send({
+        lastName: "Doe"
+      })
+      .set('token', user3token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+
+        User.findOne({userID: 3}).exec()
+        .then((user) => {
+          expect(user.lastName).to.equal("Doe");
+          done();
+        })
+      })
+    })
+
+    it("should not update invalid email", done => {
+      chai.request(server)
+      .put('/api/accounts/3')
+      .send({
+        email: "79"
+      })
+      .set('token', user3token)
+      .end((err, res) => {
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(false);
+        done();
+      })
+    })
+
+    it("should update profileDesc", done => {
+      chai.request(server)
+      .put('/api/accounts/3')
+      .send({
+        profileDesc: "Hi! I'm a user."
+      })
+      .set('token', user3token)
+      .end((err, res) => {
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        User.findOne({userID: 3}).exec()
+        .then((user) => {
+          expect(user.profileDesc).to.equal("Hi! I'm a user.");
+          done();
+        })
+      })
+    })
+  })
+
 })

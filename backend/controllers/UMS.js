@@ -131,6 +131,78 @@ module.exports = class UMS {
     svs = new SVS(User)
   }
 
+  updateProfile(req, res) {
+    let userID = req.params.userID;
+
+    let toUpdate = {};
+    let errorKeys = [];
+
+    let username = req.body.username;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    let email = req.body.email;
+    let profilePicture = req.body.profilePicture;
+    let profileDesc = req.body.profileDesc;
+
+    // validation
+    /*
+    1. Valid username -> not taken.
+    2. Valid email -> not taken + correct format
+    */
+
+    if (username) {
+      common.isUsernameUnique(username).then((isUnique) => {
+        if (isUnique) {
+          toUpdate['username'] = username;
+        } else {
+          errorKeys.push('invalidUsername');
+        }
+      });
+    }
+    if (email) {
+      if (common.isValidEmail(email)) {
+        toUpdate['email'] = email;
+      } else {
+        errorKeys.push('invalidEmail');
+      }
+    }
+    if (profilePicture) {
+      if (common.isValidPicture(profilePicture)) {
+        toUpdate['profilePicture'] = profilePicture;
+      } else {
+        errorKeys.push('invalidResourceID');
+        // TODO more descriptive error -> wrong mimetype? missing file?
+      }
+    }
+
+    if (errorKeys.length) {
+      common.sendError(res, errorKeys);
+      return;
+    }
+
+    if (firstName) toUpdate['firstName'] = firstName;
+    if (lastName) toUpdate['lastName'] = lastName;
+    if (profileDesc) toUpdate['profileDesc'] = profileDesc;
+    // NOTE to empty profileDesc, send in a string containing a space character.
+    if (new String(profileDesc).valueOf() == new String(" ".valueOf())) {
+      profileDesc = "";
+    }
+
+    User.findOneAndUpdate({userID: userID}, {
+      "$set": toUpdate
+    }).exec((err, user) => {
+      if (err) {
+        common.sendInternalError(res);
+      } else {
+        res.json({
+          success: true,
+          errors: []
+        });
+      }
+    });
+
+  }
+
   // TODO refactor, write unit tests for isOnline
   isOnline(req, res) {
     let userID = req.params.userID

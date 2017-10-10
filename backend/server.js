@@ -177,6 +177,9 @@ app.get("/api/auth/:username", svs.login)
 //   })
 
 // object: accounts
+// profile
+app.put("/api/accounts/:userID", authenticate, ums.updateProfile);
+
 // friends
 app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)

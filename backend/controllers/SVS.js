@@ -119,16 +119,7 @@ function validateSignUpRequest(obj) {
   return errorKeys;
 }
 
-var isUsernameUnique = (username) => new Promise((resolve, reject) => {
-  User.findOne({ username: username })
-  .then((user) => {
-    if (user) {
-      resolve(false);
-    } else {
-      resolve(true);
-    }
-  })
-})
+var isUsernameUnique = common.isUsernameUnique;
 
 var isEmailUnique = (email) => new Promise((resolve, reject) => {
   User.findOne({ email: email })
