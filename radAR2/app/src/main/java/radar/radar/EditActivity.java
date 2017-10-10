@@ -13,6 +13,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import retrofit2.Retrofit;
@@ -110,7 +115,20 @@ public class EditActivity extends AppCompatActivity {
     }
 
     /** Use for uploading file */
-    
+    private void uploadFile() {
+        progressDialog.show(); // start the progress dialog
+
+        // Used to multipart the file using okhttp3
+        File file = new File(mediaPath);
+
+        // Parsing any Media type file
+        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+//        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
+
+
+
+    }
 
 
 }

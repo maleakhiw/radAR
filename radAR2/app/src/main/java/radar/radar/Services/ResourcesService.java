@@ -8,22 +8,29 @@ import java.io.IOException;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.Okio;
+import radar.radar.Models.Responses.Status;
 import retrofit2.Response;
+import retrofit2.http.Multipart;
 
 /**
- * Created by kenneth on 18/9/17.
+ * Created by maleakhiw on 10/10/2017
  */
 
 public class ResourcesService {
     Context context;
     ResourcesApi resourcesApi;
+    int userID;
+    String token;
 
     public ResourcesService(ResourcesApi resourcesApi, Context context) {
         this.context = context;
         this.resourcesApi = resourcesApi;
+        userID = AuthService.getUserID(context);
+        token = AuthService.getToken(context);
     }
 
     // http://www.codexpedia.com/android/retrofit-2-and-rxjava-for-file-downloading-in-android/
@@ -56,6 +63,16 @@ public class ResourcesService {
                 emitter.onError(e);
             }
         });
+
+    }
+
+    /** This method is used to upload resource to server */
+    public Observable<Status> uploadFile(MultipartBody.Part filePart) {
+        Observable<Status> uploadFileObservable = resourcesApi.uploadResource(userID, token, filePart)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+
+        return uploadFileObservable;
 
     }
 
