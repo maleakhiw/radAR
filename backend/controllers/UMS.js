@@ -167,6 +167,34 @@ module.exports = class UMS {
     2. Valid email -> not taken + correct format
     */
 
+    function updateProfile(errorKeys, toUpdate) {
+      if (errorKeys.length) {
+        common.sendError(res, errorKeys);
+        return;
+      }
+
+      if (firstName) toUpdate['firstName'] = firstName;
+      if (lastName) toUpdate['lastName'] = lastName;
+      if (profileDesc) toUpdate['profileDesc'] = profileDesc;
+      // NOTE to empty profileDesc, send in a string containing a space character.
+      if (new String(profileDesc).valueOf() == new String(" ".valueOf())) {
+        profileDesc = "";
+      }
+
+      User.findOneAndUpdate({userID: userID}, {
+        "$set": toUpdate
+      }).exec((err, user) => {
+        if (err) {
+          common.sendInternalError(res);
+        } else {
+          res.json({
+            success: true,
+            errors: []
+          });
+        }
+      });
+    }
+
     if (username) {
       common.isUsernameUnique(username).then((isUnique) => {
         if (isUnique) {
@@ -183,40 +211,27 @@ module.exports = class UMS {
         errorKeys.push('invalidEmail');
       }
     }
+
     if (profilePicture) {
-      if (common.isValidPicture(profilePicture)) {
+      common.isValidPicture(profilePicture)
+      .then(() => {
         toUpdate['profilePicture'] = profilePicture;
-      } else {
-        errorKeys.push('invalidResourceID');
-        // TODO more descriptive error -> wrong mimetype? missing file?
-      }
+        updateProfile(errorKeys, toUpdate);
+      })
+      .catch((err) => {
+        if (err == 'invalidResourceID') {
+          errorKeys.push('invalidResourceID');
+        }
+        if (err == 'invalidMimetype') {
+          errorKeys.push('invalidResourceID');
+        }
+        updateProfile(errorKeys, toUpdate);
+      })
+    } else {
+      updateProfile(errorKeys, toUpdate);
     }
 
-    if (errorKeys.length) {
-      common.sendError(res, errorKeys);
-      return;
-    }
 
-    if (firstName) toUpdate['firstName'] = firstName;
-    if (lastName) toUpdate['lastName'] = lastName;
-    if (profileDesc) toUpdate['profileDesc'] = profileDesc;
-    // NOTE to empty profileDesc, send in a string containing a space character.
-    if (new String(profileDesc).valueOf() == new String(" ".valueOf())) {
-      profileDesc = "";
-    }
-
-    User.findOneAndUpdate({userID: userID}, {
-      "$set": toUpdate
-    }).exec((err, user) => {
-      if (err) {
-        common.sendInternalError(res);
-      } else {
-        res.json({
-          success: true,
-          errors: []
-        });
-      }
-    });
 
   }
 

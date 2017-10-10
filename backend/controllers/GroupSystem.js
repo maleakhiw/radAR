@@ -213,9 +213,36 @@ module.exports = class GroupSystem extends SMS {
     let userID = parseInt(req.params.userID);
     let groupID = req.params.groupID;
 
+    let profilePicture = req.body.profilePicture;
+
+    let toUpdate = {};
+    let errorKeys = [];
+
     if (name) {
+      toUpdate['name'] = name;
+    }
+    if (profilePicture) {
+      common.isValidPicture(profilePicture)
+      .then(() => {
+        toUpdate['profilePicture'] = profilePicture;
+        updateGroup(errorKeys, toUpdate);
+      })
+      .catch((err) => {
+        if (err == 'invalidResourceID') {
+          errorKeys.push('invalidResourceID');
+        }
+        if (err == 'invalidMimetype') {
+          errorKeys.push('invalidResourceID');
+        }
+        updateGroup(errorKeys, toUpdate);
+      })
+    } else {
+      updateGroup(errorKeys, toUpdate);
+    }
+
+    function updateGroup(errorKeys, toUpdate) {
       Group.findOneAndUpdate({groupID: groupID}, {
-        "$set": {name: name}
+        "$set": toUpdate
       }).exec((err, group) => {
         if (err) {
           common.sendInternalError(res);
@@ -231,7 +258,6 @@ module.exports = class GroupSystem extends SMS {
         }
 
       });
-
     }
 
   }

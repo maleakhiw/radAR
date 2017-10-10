@@ -21,6 +21,7 @@ const footprintSchema = new Schema({
 
 const groupSchema = new Schema({
   name: String,
+  profilePicture: String,
   groupID: {type: Number, unique: true},
   createdOn: {type: Date, default: Date.now},
   members: [Number],
