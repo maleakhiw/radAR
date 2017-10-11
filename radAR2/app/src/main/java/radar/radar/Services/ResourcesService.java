@@ -41,10 +41,13 @@ public class ResourcesService {
         // take a response and transform it into an observable which emits when the file is saved
         // to disk
         return Observable.create(emitter -> {
+            System.out.println("saveToDiskRx");
             try {
                 // get header and filename from response
-                String header = response.headers().get("Content-Disposition");
+                String header = response.headers().get("Content-Type");
+                System.out.println(header);
                 String filename = header.replace("attachment; filename=", "");
+                System.out.println(filename);
 
                 // create a temp file
                 // TODO randomly generate filename to avoid conflicts.
@@ -78,6 +81,7 @@ public class ResourcesService {
     }
 
     public Observable<File> getResource(String resourceID) {
+        System.out.println(resourceID);
         int userID = AuthService.getUserID(context);
         String token = AuthService.getToken(context);
         return resourcesApi.getResource(userID, resourceID, token)

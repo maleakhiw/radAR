@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,6 +18,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.net.URI;
@@ -87,6 +90,30 @@ public class EditActivity extends AppCompatActivity {
                 galleryIntent.setAction(Intent.ACTION_PICK);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, 0);
+            }
+        });
+
+        Context that = this;
+        resourcesService.getResource("ff7978b8e2b882321e0d1f03c7d2972e").subscribe(new Observer<File>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(File file) {
+                System.out.println(file);
+                Picasso.with(that).load(file).into(preview);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+            }
+
+            @Override
+            public void onComplete() {
+
             }
         });
 
@@ -187,7 +214,7 @@ public class EditActivity extends AppCompatActivity {
         File file = new File(mediaPath);
 
         // Parsing any Media type file
-        RequestBody requestBody = RequestBody.create(MediaType.parse("*/*"), file);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 //        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
