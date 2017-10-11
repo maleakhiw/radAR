@@ -74,16 +74,16 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
 
-        //BUTTON
+        // BUTTON
         FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);
+        FloatingActionButton fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_current_loc.setAlpha(0f);
+                fab_current_loc.setVisibility(View.INVISIBLE);
             }
         });
-
 
     }
 

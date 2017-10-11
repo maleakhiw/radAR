@@ -12,55 +12,145 @@
     tools:showIn="@layout/app_bar_home_screen">
 
     <fragment
-        android:id="@+id/place_autocomplete_powered_by_google"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="0dp"
-        android:layout_height="48dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/home_screen_map"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/place_autocomplete_powered_by_google" />
-
-    <fragment
         android:id="@+id/home_screen_map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button4"
         tools:context="radar.radar.HomeScreenActivity" />
 
-    <android.support.design.widget.CoordinatorLayout
+    <fragment
+        android:id="@+id/fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="@dimen/place_autocomplete_powered_by_google_height"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_current_loc"
-            android:layout_width="70dp"
-            android:layout_height="53dp"
-            android:layout_gravity="bottom|end"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="16dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_my_location_white_48dp"
-            android:alpha="1"
-            app:elevation="6dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:pressedTranslationZ="12dp"
-            tools:layout_editor_absoluteX="298dp"
-            tools:layout_editor_absoluteY="442dp" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_current_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_my_location_white_48dp"
+        android:visibility="visible"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_add_white_48px"
+        android:visibility="visible"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_remove_circle_outline_white_48dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fab_remove"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_person_add_white_48dp" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:gravity="end"
+        android:inputType="textPersonName"
+        android:text="@string/new_friend"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_friend"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_friend" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/fab_new_friend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_group_add_white_48dp" />
+
+    <EditText
+        android:id="@+id/editText3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:gravity="end"
+        android:inputType="textPersonName"
+        android:text="@string/new_group"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton5"
+        app:layout_constraintTop_toTopOf="@+id/floatingActionButton5" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/floatingActionButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_message_white_48dp" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:ems="10"
+        android:gravity="end"
+        android:inputType="textPersonName"
+        android:text="@string/new_chat"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton2"
+        app:layout_constraintTop_toTopOf="@+id/floatingActionButton2" />
 
 </android.support.constraint.ConstraintLayout>
