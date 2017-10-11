@@ -21,9 +21,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
@@ -88,7 +90,11 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
+                googleMap.clear();
                 Log.i(TAG, "Place: " + place.getName());
+                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                        .title((String) place.getName()));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
             }
 
             @Override
@@ -108,41 +114,66 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         TextView test = null;
 
+
         // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                
+                if(presenter.getCurrent() != null) {
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(presenter.getCurrent(), 15));
+                }
             }
         });
 
-        fab_current_loc.setOnClickListener(new View.OnClickListener() {
+        fab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_current_loc.setVisibility(View.INVISIBLE);
+                fab_add.setVisibility(View.INVISIBLE);
+                fab_remove.setVisibility(View.VISIBLE);
+                fab_new_chat.setVisibility(View.VISIBLE);
+                fab_new_friend.setVisibility(View.VISIBLE);
+                fab_new_group.setVisibility(View.VISIBLE);
             }
         });
 
-        fab_current_loc.setOnClickListener(new View.OnClickListener() {
+        fab_remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_current_loc.setVisibility(View.INVISIBLE);
+                fab_add.setVisibility(View.VISIBLE);
+                fab_remove.setVisibility(View.INVISIBLE);
+                fab_new_chat.setVisibility(View.INVISIBLE);
+                fab_new_friend.setVisibility(View.INVISIBLE);
+                fab_new_group.setVisibility(View.INVISIBLE);
             }
         });
 
 
-        fab_current_loc.setOnClickListener(new View.OnClickListener() {
+        fab_new_friend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_current_loc.setVisibility(View.INVISIBLE);
+                fab_new_friend.setVisibility(View.INVISIBLE);
             }
         });
 
+        fab_new_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                fab_new_group.setVisibility(View.INVISIBLE);
+            }
+        });
 
+        fab_new_chat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                fab_new_chat.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     @Override

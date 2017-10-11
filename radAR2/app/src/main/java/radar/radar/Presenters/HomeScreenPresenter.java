@@ -1,5 +1,8 @@
 package radar.radar.Presenters;
 
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,7 +31,7 @@ public class HomeScreenPresenter {
     LocationCallback locationCallback;
 
     private boolean first = true;
-
+    private LatLng current = null;
 
     public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
         this.homeScreenView = homeScreenView;
@@ -41,7 +44,7 @@ public class HomeScreenPresenter {
 
             googleMap.clear();
 
-            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
+            current = new LatLng(location.getLatitude(), location.getLongitude());
             googleMap.addCircle(new CircleOptions()
                     .center(current)
                     .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
@@ -89,6 +92,10 @@ public class HomeScreenPresenter {
         } catch (SecurityException e) {
             homeScreenView.requestLocationPermissions();
         }
+    }
+
+    public LatLng getCurrent() {
+        return current;
     }
 
 }
