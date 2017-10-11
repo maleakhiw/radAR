@@ -9,13 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import radar.radar.Models.Requests.SignUpRequest;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Presenters.SignupPresenter;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
