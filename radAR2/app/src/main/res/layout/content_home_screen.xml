@@ -11,25 +11,21 @@
     tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/app_bar_home_screen">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="default text ..."
-        app:layout_constraintBottom_toTopOf="@+id/button4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <fragment
+        android:id="@+id/place_autocomplete_powered_by_google"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <Button
         android:id="@+id/button4"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/home_screen_map"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/place_autocomplete_powered_by_google" />
 
     <fragment
         android:id="@+id/home_screen_map"
@@ -41,6 +37,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4"
         tools:context="radar.radar.HomeScreenActivity" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_current_loc"
+            android:layout_width="70dp"
+            android:layout_height="53dp"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_my_location_white_48dp"
+            android:alpha="1f"
+            app:elevation="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:pressedTranslationZ="12dp"
+            tools:layout_editor_absoluteX="298dp"
+            tools:layout_editor_absoluteY="442dp" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
 
 </android.support.constraint.ConstraintLayout>

@@ -3,11 +3,13 @@ package radar.radar;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -34,7 +36,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
-
     private HomeScreenPresenter presenter;
 
     FusedLocationProviderClient fusedLocationClient;
@@ -74,6 +75,14 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
 
         //BUTTON
+        FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);
+        fab_current_loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+            }
+        });
+
 
     }
 
