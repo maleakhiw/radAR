@@ -269,7 +269,11 @@ public class GroupDetailsFragment extends Fragment {
 
                     @Override
                     public void onNext(Status status) {
-                        Toast.makeText(getActivity(), "Update meeting point to " + group.meetingPoint.name, Toast.LENGTH_SHORT).show();
+                        if (status.success) {
+                            Toast.makeText(getActivity(), "Update meeting point", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d(TAG, "Error update");
+                        }
                     }
 
                     @Override

@@ -83,8 +83,6 @@ public class HomeScreenPresenter {
         }
     }
 
-
-
     public void locationUpdates() {
         try {
             locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);

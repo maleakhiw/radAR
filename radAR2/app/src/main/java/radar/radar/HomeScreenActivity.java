@@ -42,8 +42,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
     static final int REQUEST_FOR_LOCATION = 1;
 
-    private boolean first = true;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +72,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         // set up mapView
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
+
+        //BUTTON
 
     }
 
