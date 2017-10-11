@@ -16,6 +16,9 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="progressbar_login">Logging in...</string>
+    <string name="onerror_login">Internal Error. Failed to login.</string>
+    <string name="fail_login">Login failed.Please check your username or password.</string>
 
     <!-- Strings related to the navigation drawer -->
     <string name="title_activity_drawer">DrawerActivity</string>

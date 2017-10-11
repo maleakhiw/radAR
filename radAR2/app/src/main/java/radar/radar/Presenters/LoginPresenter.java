@@ -1,34 +1,39 @@
 package radar.radar.Presenters;
 
-import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
+import android.content.res.Resources;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.HomeScreenActivity;
-import radar.radar.LoginActivity;
 import radar.radar.Models.Responses.AuthResponse;
-import radar.radar.Services.AuthApi;
+import radar.radar.R;
 import radar.radar.Services.AuthService;
 import radar.radar.Views.LoginView;
 
 /**
- * Created by keyst on 26/09/2017.
+ * Presenter class for Login functionality to support MVP model
  */
-
 public class LoginPresenter {
     LoginView loginView;
     AuthService authService;
 
+    /**
+     * Constructor method for the presenter
+     * @param loginView LoginActivity context
+     * @param authService services that have been initialised on LoginActivity.java
+     */
     public LoginPresenter(LoginView loginView, AuthService authService) {
         this.loginView = loginView;
         this.authService = authService;
     }
 
+    /**
+     * Specifying the logic after login button is clicked
+     * Follow the MVP model to make the view as dumb as possible while all logic is on the presenter
+     * so that it can be easily tested and deployed.
+     */
     public void onLoginButtonClicked() {
         // Start loading the process
-        loginView.setProgressBarMessage("Logging in...");
+        loginView.setProgressBarMessage(Resources.getSystem().getString(R.string.progressbar_login));
         loginView.showProgressBar();
 
         // Login using a username and password
@@ -47,7 +52,7 @@ public class LoginPresenter {
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                loginView.showToastLong("Unexpected error");
+                loginView.showToastLong(Resources.getSystem().getString(R.string.onerror_login));
                 loginView.dismissProgressBar();
             }
 
@@ -58,11 +63,18 @@ public class LoginPresenter {
         });
     }
 
+    /**
+     * Method to jump to signup activity if user click signup link
+     */
     public void onSignUpClicked() {
         loginView.startSignUpActivity();
         loginView.finishActivity();
     }
 
+    /**
+     * Core method that are used to check if the login is successful or error
+     * @param authResponse
+     */
     public void respondToLoginResponse(AuthResponse authResponse) {
         loginView.dismissProgressBar();
 
@@ -72,7 +84,7 @@ public class LoginPresenter {
             loginView.finishActivity();
         }
         else {
-            loginView.showToastLong("Login failed. Please check your username or password.");
+            loginView.showToastLong(Resources.getSystem().getString(R.string.fail_login));
         }
     }
 
