@@ -46,7 +46,8 @@ public class ResourcesService {
                 // get header and filename from response
                 String header = response.headers().get("Content-Type");
                 System.out.println(header);
-                String filename = header.replace("attachment; filename=", "");
+                String filename = response.headers().get("filename");
+//                String filename = header.replace("attachment; filename=", "");
                 System.out.println(filename);
 
                 // create a temp file
