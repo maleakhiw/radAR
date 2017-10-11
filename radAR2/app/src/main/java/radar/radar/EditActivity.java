@@ -28,6 +28,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import radar.radar.Models.Android.CameraData;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Models.Responses.UploadFileResponse;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import retrofit2.Retrofit;
@@ -191,15 +192,16 @@ public class EditActivity extends AppCompatActivity {
 //        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
         // Make a request
-        resourcesService.uploadFile(fileToUpload).subscribe(new Observer<Status>() {
+        resourcesService.uploadFile(fileToUpload).subscribe(new Observer<UploadFileResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(Status status) {
+            public void onNext(UploadFileResponse response) {
                 progressDialog.dismiss();
+                System.out.println(response.resourceID);
                 // After we upload File, show success message
                 Toast.makeText(EditActivity.this, "Successfully upload file", Toast.LENGTH_SHORT).show();
 
