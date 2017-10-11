@@ -22,7 +22,7 @@
         tools:context="radar.radar.HomeScreenActivity" />
 
     <fragment
-        android:id="@+id/fragment"
+        android:id="@+id/place_autocomplete_fragment"
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="@dimen/place_autocomplete_powered_by_google_height"
@@ -35,12 +35,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
         android:clickable="true"
         android:focusable="true"
         android:src="@drawable/ic_my_location_white_48dp"
         android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary"
         app:elevation="6dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -57,6 +58,7 @@
         android:focusable="true"
         android:src="@drawable/ic_add_white_48px"
         android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary"
         app:elevation="6dp"
         app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -71,6 +73,7 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_remove_circle_outline_white_48dp" />
@@ -84,25 +87,29 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible"
+        app:backgroundTint="@color/colorSuperAppBar"
         app:layout_constraintBottom_toTopOf="@+id/fab_remove"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_person_add_white_48dp" />
 
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_new_friend"
+        android:textSize="@dimen/section_text_size"
+        android:textAlignment="center"
+        android:layout_width="@dimen/home_screen_fab_text"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorWhite"
         android:ems="10"
         android:gravity="end"
-        android:inputType="textPersonName"
         android:text="@string/new_friend"
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/fab_new_friend"
         app:layout_constraintTop_toTopOf="@+id/fab_new_friend" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton5"
+        android:id="@+id/fab_new_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -110,25 +117,29 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible"
+        app:backgroundTint="@color/colorSuperAppBar"
         app:layout_constraintBottom_toTopOf="@+id/fab_new_friend"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_group_add_white_48dp" />
 
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_new_group"
+        android:textSize="@dimen/section_text_size"
+        android:textAlignment="center"
+        android:layout_width="@dimen/home_screen_fab_text"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorWhite"
         android:ems="10"
         android:gravity="end"
-        android:inputType="textPersonName"
         android:text="@string/new_group"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton5"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButton5" />
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_group"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_group" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/fab_new_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
@@ -136,21 +147,25 @@
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/floatingActionButton5"
+        app:backgroundTint="@color/colorSuperAppBar"
+        app:layout_constraintBottom_toTopOf="@+id/fab_new_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_message_white_48dp" />
 
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/text_new_chat"
+        android:textSize="@dimen/section_text_size"
+        android:textAlignment="center"
+        android:layout_width="@dimen/home_screen_fab_text"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/colorWhite"
         android:ems="10"
         android:gravity="end"
-        android:inputType="textPersonName"
         android:text="@string/new_chat"
         android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton2"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButton2" />
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_chat"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_chat" />
 
 </android.support.constraint.ConstraintLayout>

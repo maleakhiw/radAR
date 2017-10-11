@@ -9,13 +9,18 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -32,6 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
+    private static final String TAG = "Home Screen Activity";
     NavigationActivityHelper helper;
 
     private GoogleMap googleMap;
@@ -74,9 +80,35 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
 
-        // BUTTON
+        // set up place autocomplete
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                Log.i(TAG, "Place: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        // set up floating action button
         FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);
         FloatingActionButton fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        FloatingActionButton fab_remove = (FloatingActionButton) findViewById(R.id.fab_remove);
+        FloatingActionButton fab_new_friend = (FloatingActionButton) findViewById(R.id.fab_new_friend);
+        FloatingActionButton fab_new_group = (FloatingActionButton) findViewById(R.id.fab_new_group);
+        FloatingActionButton fab_new_chat = (FloatingActionButton) findViewById(R.id.fab_new_chat);
+
+        TextView test = null;
+
+        // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
