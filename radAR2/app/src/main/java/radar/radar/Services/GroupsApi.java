@@ -2,7 +2,7 @@ package radar.radar.Services;
 
 
 import io.reactivex.Observable;
-import radar.radar.Models.MeetingPoint;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Requests.NewGroupBody;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;

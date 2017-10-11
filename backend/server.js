@@ -1,7 +1,11 @@
 // Imports
 // Express
-const express = require('express')
+const express = require('express');
+const https = require('https');
+const fs = require('fs');
+
 const mongoose = require('mongoose')
+
 const bodyParser = require('body-parser')
 const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
 const cors = require('cors')
@@ -25,9 +29,9 @@ const Message = require('./models/message')
 const Resource = require('./models/resource')
 const LocationModel = require('./models/location');
 
-const app = express()
-app.use(bodyParser.json())
-app.use(cors())
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
 
 // Common constants/variables
 const common = require('./common')
@@ -173,9 +177,13 @@ app.get("/api/auth/:username", svs.login)
 //   })
 
 // object: accounts
+// profile
+app.put("/api/accounts/:userID", authenticate, ums.updateProfile);
+
 // friends
 app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)
+app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.cancelRequest);
 app.post("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
@@ -191,7 +199,12 @@ app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promot
 app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 
+// chats and groups
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
+
 // groups
+app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
 app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub
 app.get("/api/accounts/:userID/groups/:groupID", authenticate, sms.getGroup);
@@ -228,9 +241,31 @@ app.get("/api/groups", (req, res) => {
 // app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
 // app.post("/api/groups", authenticate, gms.newGroup)
 
-app.listen(3000, function(req, res) {
-  // console.log("Listening at port 3000.")
-})
+
+// for Let's Encrypt
+app.get('/health-check', (req, res) => res.sendStatus(200));
+app.use(express.static('static'));
+
+const http = require('http');
+// TODO environment variable
+let HTTPS_MODE = true;
+if (!HTTPS_MODE) {
+  app.listen(8080, (req, res) => {
+    //
+  });
+} else {
+  const options = {
+      cert: fs.readFileSync('./radar.fadhilanshar.com/fullchain.pem'),
+      key: fs.readFileSync('./radar.fadhilanshar.com/privkey.pem')
+  }
+  http.createServer((req, res) => {
+      res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+      res.end();
+  }).listen(8080);
+  https.createServer(options, app).listen(8443);
+}
+
+
 
 // export the app, for testing
 module.exports = app

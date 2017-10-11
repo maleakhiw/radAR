@@ -1,8 +1,8 @@
-package radar.radar.Models;
+package radar.radar.Models.Domain;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 /**
  * Created by kenneth on 20/9/17.
@@ -16,7 +16,7 @@ public class Group implements Serializable {
     public ArrayList<Object> footprints;
     public Object meetingPoint;
     public boolean isTrackingGroup;
-    public ArrayList<User> usersDetails;
+    public HashMap<Integer, User> usersDetails;
 
     public Group(String name, boolean isTrackingGroup) {
         this.name = name;

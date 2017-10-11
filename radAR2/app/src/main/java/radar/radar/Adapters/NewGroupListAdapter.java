@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
-import radar.radar.Models.UserWithCheckbox;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.R;
 
 /**

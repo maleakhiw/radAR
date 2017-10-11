@@ -1,6 +1,7 @@
 const errorValues = require('./consts').errors
 const metas = require('./consts').metas
 const User = require('./models/user') // TODO refactor so User is plug and play
+const Resource = require('./models/resource');  // TODO as above
 
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
@@ -14,6 +15,17 @@ module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
       reject('invalidUserID');
     } else {
       resolve();
+    }
+  })
+})
+
+module.exports.isUsernameUnique = (username) => new Promise((resolve, reject) => {
+  User.findOne({ username: username })
+  .then((user) => {
+    if (user) {
+      resolve(false);
+    } else {
+      resolve(true);
     }
   })
 })
@@ -108,6 +120,21 @@ module.exports.getAuthUserInfo = function(user) {
   return retVal
 }
 
+module.exports.isValidPicture = (resourceID) => new Promise((resolve, reject) => {
+  Resource.findOne({fileID: resourceID}).exec()
+  .then((resource) => {
+    if (!resource) {
+      reject('invalidResourceID');
+    } else {
+      if (resource.mimetype.includes('image')) {
+        resolve();
+      } else {
+        reject('invalidMimetype');
+      }
+    }
+  })
+});
+
 module.exports.isString = (object) => {
   return (typeof object === 'string' || object instanceof String)
 }
@@ -125,3 +152,24 @@ module.exports.isValidEmail = (email) => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
+
+module.exports.getUsersDetails = (members) => new Promise((resolve, reject) => {
+  let userDetails = {};
+  let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+    User.findOne({userID: memberUserID}).exec()
+    .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
+      if (user) {
+        userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
+      }
+      resolve();
+    })
+  }))
+
+  // when all info loaded, resolve the promise
+  Promise.all(promiseAll).then(() => {
+    resolve(userDetails);
+  })
+  .catch((err) => {
+    reject(err);
+  })
+});

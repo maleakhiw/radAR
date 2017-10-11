@@ -1,7 +1,6 @@
 package radar.radar;
 
 import android.content.Intent;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,12 +14,11 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.NewGroupListAdapter;
-import radar.radar.Models.Group;
-import radar.radar.Models.GroupDetails;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
-import radar.radar.Models.User;
-import radar.radar.Models.UserWithCheckbox;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.UsersApi;
@@ -55,7 +53,7 @@ public class NewGroupActivity extends AppCompatActivity {
         // TODO refactor to MVP
 
         Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("http://35.185.35.117/api/")
+                                    .baseUrl("https://radar.fadhilanshar.com/api/")
                                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                     .addConverterFactory(GsonConverterFactory.create())
                                     .build();
@@ -120,6 +118,7 @@ public class NewGroupActivity extends AppCompatActivity {
 
                             @Override
                             public void onError(Throwable e) {
+                                System.out.println(e);
                                 button.setEnabled(true);
                             }
 

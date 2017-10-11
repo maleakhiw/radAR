@@ -1,6 +1,6 @@
 package radar.radar.Models.Responses;
 
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 
 /**
  * Created by kenneth on 20/9/17.

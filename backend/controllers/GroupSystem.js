@@ -144,7 +144,49 @@ function validateMeetingPoint(req) {
   return errorKeys;
 }
 
-module.exports = class GroupSystem extends SMS{
+function deleteGroupImpl(req, res) {
+  console.log('deleteGroupImpl()');
+
+  let groupID = parseInt(req.params.groupID);
+  let userID = parseInt(req.params.userID);
+
+  let members = [];
+
+  Group.findOne({groupID: groupID}).exec()
+  .then((group) => {
+    if (group.admins.includes(userID)) {
+      members = group.members;
+      return group.remove();
+    } else {
+      throw 'Unauthorized'
+    }
+  })
+  .then(() => {
+    let promiseAll = members.map(member => {
+      return User.findOne({userID: member}).exec()
+      .then(user => {
+        user.groups = user.groups.filter((group) => group != groupID);
+      })
+    })
+    return Promise.all(promiseAll);
+  })
+  .then(() => {
+    res.json({
+      success: true,
+      errors: []
+    });
+  })
+  .catch((err) => {
+    if (err == 'Unauthorized') {
+      // console.log('Sending unauthorized');
+      common.sendUnauthorizedError(res, ['notGroupAdmin']);
+    } else {
+      common.sendInternalError(res);
+    }
+  });
+}
+
+module.exports = class GroupSystem extends SMS {
 
   constructor(pGroup, pMessage, pUser, pLocation) {
     super(pGroup, pMessage, pUser);
@@ -152,6 +194,72 @@ module.exports = class GroupSystem extends SMS{
     Message = pMessage;
     User = pUser;
     UserLocation = pLocation;
+  }
+
+  updateGroupDetails(req, res) {
+    /*
+      HTTP PUT {serverURL}/api/accounts/:userID/groups/:groupID
+
+      Body:
+      {
+        name: String (optional),  // validated
+      }
+
+      Headers:
+      token: (token issued by the server)
+    */
+
+    let name = req.body.name;
+    let userID = parseInt(req.params.userID);
+    let groupID = req.params.groupID;
+
+    let profilePicture = req.body.profilePicture;
+
+    let toUpdate = {};
+    let errorKeys = [];
+
+    if (name) {
+      toUpdate['name'] = name;
+    }
+    if (profilePicture) {
+      common.isValidPicture(profilePicture)
+      .then(() => {
+        toUpdate['profilePicture'] = profilePicture;
+        updateGroup(errorKeys, toUpdate);
+      })
+      .catch((err) => {
+        if (err == 'invalidResourceID') {
+          errorKeys.push('invalidResourceID');
+        }
+        if (err == 'invalidMimetype') {
+          errorKeys.push('invalidResourceID');
+        }
+        updateGroup(errorKeys, toUpdate);
+      })
+    } else {
+      updateGroup(errorKeys, toUpdate);
+    }
+
+    function updateGroup(errorKeys, toUpdate) {
+      Group.findOneAndUpdate({groupID: groupID}, {
+        "$set": toUpdate
+      }).exec((err, group) => {
+        if (err) {
+          common.sendInternalError(res);
+        } else if (!group) {
+          common.sendError(res, ['invalidGroupID']);
+        } else if (!group.members.includes(userID)) {
+          common.sendUnauthorizedError(res, ['unauthorisedGroup']);
+        } else {
+          res.json({
+            success: true,
+            errors: []
+          });
+        }
+
+      });
+    }
+
   }
 
   newGroup(req, res) {
@@ -163,7 +271,9 @@ module.exports = class GroupSystem extends SMS{
     SMS.newGroupImpl(req, res, callback);
   }
 
-
+  deleteGroup(req, res) {
+    deleteGroupImpl(req, res);
+  }
 
   promoteToTrackingGroup_validateParams(groupID, isTrackingGroup) {
     let errorKeys = [];

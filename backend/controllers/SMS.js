@@ -17,9 +17,7 @@ const SVS = require('./SVS')
 let svs;
 
 // data models
-let Group
-let Message
-let User
+let Group, Message, User;
 
 /**
  * @param callback callback function. If defined, callback should handle response
@@ -64,7 +62,7 @@ function newGroupImpl(req, res, callback) {
   let groupID
   let group;
 
-  let userDetails = [];
+  let usersDetails = {};
 
   User.find( { userID: { $in: participantUserIDs } } ).exec()
 
@@ -103,7 +101,7 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
-          userDetails.push(common.getPublicUserInfo(user));
+          usersDetails[userID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
           user.save() .then(() => resolve());
@@ -113,15 +111,11 @@ function newGroupImpl(req, res, callback) {
 
     return Promise.all(promiseAll);
   })
-
-  .then(() => {
-
-  })
   .then(() => {
     if (callback) {
-      callback(groupID, userDetails);
+      callback(groupID, usersDetails);
     } else {
-      group['usersDetails'] = userDetails;
+      group['usersDetails'] = usersDetails;
 
       res.json({
         success: true,
@@ -153,6 +147,9 @@ module.exports = class SMS {
       svs = new SVS(pUser)
   }
 
+  // deleteGroup(req, res) {
+  //   deleteGroupImpl(req, res);
+  // }
 
   newGroup(req, res) {
     newGroupImpl(req, res, null);
@@ -187,23 +184,15 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
-      let group, userDetails;
+      let group, usersDetails;
       Group.findOne({ groupID: groupID }).exec()
       .then((groupRes) => {
         group = groupRes;
-        let promiseAll = group.members.map((memberUserID) => new Promise((resolve, reject) => {
-          User.findOne({userID: memberUserID}).exec().then((user) => {
-            if (user) {
-              resolve(user);
-            } else {
-              resolve();
-            }
-          })
-        }));
-        return Promise.all(promiseAll);
+
+        return common.getUsersDetails(groupRes.members);
       })
-      .then((userDetailsRes) => {
-        userDetails = userDetailsRes.map(common.getPublicUserInfo);
+      .then((pUserDetails) => {
+        usersDetails = pUserDetails;
       })
       .then(() => {
         if (group) {
@@ -213,7 +202,7 @@ module.exports = class SMS {
             admins: group.admins,
             members: group.members,
             isTrackingGroup: group.isTrackingGroup,
-            usersDetails: userDetails
+            usersDetails: usersDetails
           }
 
           res.json({
@@ -238,6 +227,9 @@ module.exports = class SMS {
       let groupID = parseInt(req.query.groupID) || parseInt(req.params.groupID)
       let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
 
+      let usersDetails;
+
+
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
@@ -257,7 +249,12 @@ module.exports = class SMS {
           return
         }
 
-        return Message.find({groupID: groupID})
+        return common.getUsersDetails(group.members);
+      })
+
+      .then((pUsersDetails) => {
+        usersDetails = pUsersDetails;
+        return Message.find({groupID: groupID});
       })
 
       .then((messages) => {
@@ -267,14 +264,15 @@ module.exports = class SMS {
             time: message.time,
             contentType: message.contentType,
             text: message.text,
-            contentResourceID: message.contentResourceID
+            contentResourceID: message.contentResourceID,
           }
         })
 
         res.send({
           success: true,
           errors: [],
-          messages: messagesRes
+          messages: messagesRes,
+          usersDetails: usersDetails
         })
       })
 
@@ -347,6 +345,8 @@ module.exports = class SMS {
       })
 
       .then((message) => {
+        sentMessage.time = message.time;
+
         res.json({
           success: true,
           errors: null,
@@ -368,4 +368,5 @@ module.exports = class SMS {
 
 }
 
+// exports, after the class
 module.exports.newGroupImpl = newGroupImpl;

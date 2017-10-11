@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.MapView;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ARActivity2;
-import radar.radar.GroupDetailsLifecycleListener;
-import radar.radar.Models.Group;
-import radar.radar.Models.MeetingPoint;
+import radar.radar.ARActivity;
+import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.Status;
 import radar.radar.R;
 import radar.radar.Services.GroupsApi;
@@ -34,9 +32,20 @@ public class GroupLocationsFragment extends Fragment {
     private GroupDetailsLifecycleListener listener;
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("listener", listener);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // The last two arguments ensure LayoutParams are inflated
-        // properly.
+        // The last two arguments ensure LayoutParams are inflated properly.
+
+        // restore the listener
+        if (savedInstanceState != null) {
+            listener = (GroupDetailsLifecycleListener) savedInstanceState.getSerializable("listener");
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
 
@@ -51,7 +60,7 @@ public class GroupLocationsFragment extends Fragment {
         if (args != null) {
             Group group = (Group) args.getSerializable("group");
             rootView.findViewById(R.id.start_tracking_in_AR).setOnClickListener(view -> {
-                Intent intent = new Intent(getActivity(), ARActivity2.class);
+                Intent intent = new Intent(getActivity(), ARActivity.class);
                 intent.putExtra("groupID", group.groupID);
                 startActivity(intent);
             });
@@ -71,7 +80,7 @@ public class GroupLocationsFragment extends Fragment {
 
                 if (name != null && latDouble != null && lonDouble != null) {
                     Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("http://35.185.35.117/api/")
+                            .baseUrl("https://radar.fadhilanshar.com/api/")
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .addConverterFactory(GsonConverterFactory.create())
                             .build();
@@ -85,7 +94,7 @@ public class GroupLocationsFragment extends Fragment {
 
                         @Override
                         public void onNext(Status status) {
-                            Toast.makeText(getActivity(), "Updated meeting point", Toast.LENGTH_SHORT);
+                            Toast.makeText(getActivity(), "Updated meeting point", Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

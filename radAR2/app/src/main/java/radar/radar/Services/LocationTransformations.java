@@ -1,9 +1,7 @@
 package radar.radar.Services;
 
-import android.util.Log;
-
-import radar.radar.CompassDirection;
-import static radar.radar.CompassDirection.*;
+import radar.radar.Models.Android.CompassDirection;
+import static radar.radar.Models.Android.CompassDirection.*;
 
 /**
  * Created by kenneth on 30/9/17.
@@ -156,7 +154,6 @@ public class LocationTransformations {
     }
 
     public static CompassDirection getCompassDirection(double degree) {
-        System.out.println(degree);
         if (degree < 0) {
             degree += 360;
         }
@@ -176,6 +173,29 @@ public class LocationTransformations {
             return WEST;
         } else {
             return NORTHWEST;
+        }
+    }
+    
+    public static String getRelativeDestinationString(CompassDirection compassDirection) {
+        switch (compassDirection) {
+            case NORTH:
+                return "front";
+            case NORTHEAST:
+                return "front";
+            case EAST:
+                return "right";
+            case SOUTHEAST:
+                return "right";
+            case SOUTH:
+                return "back";
+            case SOUTHWEST:
+                return "left";
+            case WEST:
+                return "left";
+            case NORTHWEST:
+                return "front";
+            default:
+                return "invalid";
         }
     }
 }

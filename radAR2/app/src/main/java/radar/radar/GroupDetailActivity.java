@@ -9,21 +9,17 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import java.util.ArrayList;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import radar.radar.Fragments.GroupDetailsFragment;
 import radar.radar.Fragments.GroupLocationsFragment;
-import radar.radar.Models.Group;
-import radar.radar.Models.Responses.GroupsResponse;
+import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GroupDetailActivity extends AppCompatActivity implements GroupDetailsLifecycleListener {
+public class GroupDetailActivity extends AppCompatActivity {
 
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
@@ -33,6 +29,18 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
     // fragment2
 
     GroupsService groupsService;
+
+    static GroupDetailsLifecycleListener lifecycleListener = new GroupDetailsLifecycleListener() {
+        @Override
+        public void onSetUp(Fragment fragment) {
+            if (fragment instanceof GroupDetailsFragment) {
+
+            } else if (fragment instanceof GroupLocationsFragment) {
+
+            }
+        }
+    };  // so that we know when the Fragment is fully inflated
+    // and ready to have its UI elements modified
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,7 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
         }
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -55,8 +63,6 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 
         viewPager = findViewById(R.id.groupDetailPager);
 
-        GroupDetailsLifecycleListener that = this;  // so that we know when the Fragment is fully inflated
-                                                    // and ready to have its UI elements modified
 
         pagerAdapter = new FragmentPagerAdapter(getFragmentManager()) {
             @Override
@@ -66,12 +72,12 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
                 if (position == 0) {
                     groupDetailsFragment = new GroupDetailsFragment();
                     groupDetailsFragment.setArguments(bundle);
-                    groupDetailsFragment.setListener(that);
+                    groupDetailsFragment.setListener(lifecycleListener);
                     return groupDetailsFragment;
                 } else {
                     groupLocationsFragment = new GroupLocationsFragment();
                     groupLocationsFragment.setArguments(bundle);
-                    groupLocationsFragment.setListener(that);
+                    groupLocationsFragment.setListener(lifecycleListener);
                     return groupLocationsFragment;
                 }
 
@@ -94,7 +100,7 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 //            }
 //        });
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setText("Details");
+        tabLayout.getTabAt(0).setText("Info");
         tabLayout.getTabAt(1).setText("Location Tracking");
 
         // set up back button on the toolbar
@@ -114,12 +120,5 @@ public class GroupDetailActivity extends AppCompatActivity implements GroupDetai
 
     }
 
-    @Override
-    public void onSetUp(Fragment fragment) {
-        if (fragment instanceof GroupDetailsFragment) {
 
-        } else if (fragment instanceof GroupLocationsFragment) {
-
-        }
-    }
 }

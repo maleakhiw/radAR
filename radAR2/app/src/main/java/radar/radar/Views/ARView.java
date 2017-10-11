@@ -1,8 +1,7 @@
 package radar.radar.Views;
 
-import io.reactivex.Observable;
-import radar.radar.CompassDirection;
-import radar.radar.Models.UserLocation;
+import radar.radar.Models.Android.CompassDirection;
+import radar.radar.Models.Domain.UserLocation;
 
 /**
  * Created by kenneth on 28/9/17.

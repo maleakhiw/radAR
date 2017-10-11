@@ -4,6 +4,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -11,10 +12,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import radar.radar.Adapters.ChatAdapter;
-import radar.radar.Models.Group;
-import radar.radar.Models.Responses.GetChatInfoResponse;
-import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Adapters.ChatListAdapter;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
@@ -26,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ChatListActivity extends AppCompatActivity implements ChatListView {
     private ChatService chatService;
     private RecyclerView chatRecyclerView;
-    private ChatAdapter chatAdapter;
+    private ChatListAdapter chatListAdapter;
 
     private ArrayList<Integer> chatIDs;
     private ArrayList<Group> groups;
@@ -47,18 +46,22 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
+        setTitle("Chats");
+
         // Setup groups
         groups = new ArrayList<>();
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatAdapter = new ChatAdapter(ChatListActivity.this, groups);
-        chatRecyclerView.setAdapter(chatAdapter);
+        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups);
+        chatRecyclerView.setAdapter(chatListAdapter);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
+        chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -102,12 +105,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
     @Override
     public void setArrayListInAdapter(ArrayList<Group> groups) {
-        chatAdapter.setChatList(groups);
+        chatListAdapter.setChatList(groups);
     }
 
     @Override
     public void notifyAdapterChange() {
-        chatAdapter.notifyDataSetChanged();
+        chatListAdapter.notifyDataSetChanged();
     }
 
 }

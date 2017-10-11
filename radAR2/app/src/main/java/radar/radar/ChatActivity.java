@@ -1,15 +1,12 @@
 package radar.radar;
 
-import android.app.ActionBar;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -19,16 +16,12 @@ import java.util.ArrayList;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
-import radar.radar.Models.Group;
-import radar.radar.Models.Requests.NewChatRequest;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.MessageResponse;
-import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
-import radar.radar.Models.Responses.NewChatResponse;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.ChatPresenter;
-import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
@@ -63,6 +56,11 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        Group group = (Group) getIntent().getSerializableExtra("group");
+        if (group != null) {
+            setTitle(group.name);
+        }
+
         // Setup UI
         setupUI();
         messages = new ArrayList<>();
@@ -74,7 +72,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
         // Create instance of retrofit
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://35.185.35.117/api/")
+                .baseUrl("https://radar.fadhilanshar.com/api/")
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
@@ -100,6 +98,18 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        chatPresenter.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        chatPresenter.onStop();
     }
 
     @Override

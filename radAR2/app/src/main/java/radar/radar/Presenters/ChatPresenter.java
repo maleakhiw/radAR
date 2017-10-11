@@ -1,19 +1,13 @@
 package radar.radar.Presenters;
 
-import android.view.View;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ChatActivity;
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Requests.NewChatRequest;
-import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
-import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
@@ -25,6 +19,8 @@ import radar.radar.Views.ChatView;
 public class ChatPresenter {
     private ChatView chatView;
     private ChatService chatService;
+
+    private Integer lastGroupID;
 
     /** Constructor */
     public ChatPresenter(ChatView chatView, ChatService chatService) {
@@ -39,6 +35,7 @@ public class ChatPresenter {
             Group chat = chatView.getChatFromIntent();
             chatView.setGroupID(chat.groupID);
             loadMessages(chat.groupID);
+            lastGroupID = chat.groupID;
             chatView.embedSendMessage();
         } else {
             generateNewChat();
@@ -46,19 +43,21 @@ public class ChatPresenter {
         }
     }
 
+    Disposable loadMessagesDisposable;
+
     /** Used to get messages */
     public void loadMessages(int chatID) {
-        chatService.getMessages(chatID).subscribe(new Observer<MessagesResponse>() {
+        chatService.getMessages(chatID, 2000).subscribe(new Observer<MessagesResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                loadMessagesDisposable = d;
             }
 
             @Override
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
                 chatView.setMessages(messagesResponse.messages);
-                chatView.getMessageListAdapter().setMessageList(chatView.getMessages());
+                chatView.getMessageListAdapter().setMessageList(chatView.getMessages(), messagesResponse.usersDetails);
                 chatView.getMessageListAdapter().notifyDataSetChanged();
             }
 
@@ -81,6 +80,18 @@ public class ChatPresenter {
         participant.add(id2);
 
         return (new NewChatRequest(participant, name));
+    }
+
+    public void onStop() {
+        if (loadMessagesDisposable != null) {
+            loadMessagesDisposable.dispose();
+        }
+    }
+
+    public void onStart() {
+        if (lastGroupID != null) {
+            loadMessages(lastGroupID);
+        }
     }
 
     /** Used to generate a new chat for a particular user */

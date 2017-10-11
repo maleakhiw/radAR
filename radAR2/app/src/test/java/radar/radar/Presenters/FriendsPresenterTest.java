@@ -13,11 +13,10 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.StatusError;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.FriendsView;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 

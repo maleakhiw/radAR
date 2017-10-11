@@ -1,14 +1,12 @@
 package radar.radar;
 
 import android.content.Intent;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 import radar.radar.Services.AuthService;
@@ -55,11 +53,13 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
-            if (id == R.id.nav_maps) {
-                //TODO: Go to maps
-                Intent intent = new Intent(activity, MapsActivity.class);
-                activity.startActivity(intent);
-            } else if (id == R.id.nav_chats) {
+//            if (id == R.id.nav_maps) {
+//                //TODO: Go to maps
+//                Intent intent = new Intent(activity, MapsActivity.class);
+//                activity.startActivity(intent);
+//            } else
+
+            if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
                 activity.startActivity(intent);
@@ -72,14 +72,16 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 // launch Login activity
                 Intent intent = new Intent(activity, LoginActivity.class);
                 AuthService.signOut(activity);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
-
+                activity.finish();
+                return true;
 
             } else if (id == R.id.nav_settings) {
                 // TODO - Define settings
                 // TODO for now used for AR
 
-                Intent intent = new Intent(activity, ARActivity2.class);
+                Intent intent = new Intent(activity, ARActivity.class);
                 activity.startActivity(intent);
 
             } else if (id == R.id.nav_tracking_groups) {
@@ -87,6 +89,14 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 activity.startActivity(intent);
 
 
+            }
+
+            if (!activity.getClass().equals(HomeScreenActivity.class)) {
+                activity.finish();
+            }
+
+            if (!activity.getClass().equals(HomeScreenActivity.class)) {
+                activity.finish();
             }
 
             drawerLayout.closeDrawer(GravityCompat.START);

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp">
+    android:paddingTop="@dimen/recyclerView_padding_small"
+    android:paddingBottom="@dimen/recyclerView_padding_small">
 
     <TextView
         android:id="@+id/text_message_body_send"

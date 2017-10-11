@@ -84,11 +84,155 @@ var getRequestIDForNewRequest = () => new Promise((resolve, reject) => {
   })
 })
 
+var validateDeleteRequest = (req) => new Promise((resolve, reject) => {
+  let errorKeys = [];
+  let userID = req.params.userID;
+  let requestID = req.params.requestID;
+
+  // userID assumed to be valid due to authentication middleware.
+
+  // find a request
+  Request.findOne({requestID: requestID}).exec()
+  .then((request) => {
+    if (request == null) {
+      errorKeys.push('invalidRequestID');
+    } else {
+      if (request.from != userID) {
+        errorKeys.push('invalidRequestID');
+      }
+    }
+
+    resolve(errorKeys);
+  })
+  .catch(err => {
+    reject(err);
+  });
+
+});
+
+var deleteRequest = (requestID, res) => {
+  Request.remove({requestID: requestID}).exec()
+  .then((result) => {
+    res.json({
+      success: true,
+      errors: []
+    })
+  })
+  .catch((err) => {
+    winston.error(err);
+    common.sendInternalError(res);
+  })
+}
+
 module.exports = class UMS {
   constructor(pUser, pRequest) {
     User = pUser
     Request = pRequest
     svs = new SVS(User)
+  }
+
+  updateProfile(req, res) {
+    /*
+      HTTP PUT {serverURL}/api/accounts/:userID
+
+      Body:
+      {
+        username: String (optional),  // validated
+        firstName: String (optional),
+        lastName: String (optional),
+        email: String (optional), // validated
+        profilePicture: String (optional),  // validated -> needs to point to a valid resource on the server
+        profileDesc: String (optional)
+      }
+
+      Headers:
+      token: (token issued by the server)
+    */
+
+    let userID = req.params.userID;
+
+    let toUpdate = {};
+    let errorKeys = [];
+
+    let username = req.body.username;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    let email = req.body.email;
+    let profilePicture = req.body.profilePicture;
+    let profileDesc = req.body.profileDesc;
+
+    // validation
+    /*
+    1. Valid username -> not taken.
+    2. Valid email -> not taken + correct format
+    */
+
+    function updateProfile(errorKeys, toUpdate) {
+      if (errorKeys.length) {
+        common.sendError(res, errorKeys);
+        return;
+      }
+
+      if (firstName) toUpdate['firstName'] = firstName;
+      if (lastName) toUpdate['lastName'] = lastName;
+      if (profileDesc) toUpdate['profileDesc'] = profileDesc;
+      // NOTE to empty profileDesc, send in a string containing a space character.
+      if (new String(profileDesc).valueOf() == new String(" ".valueOf())) {
+        profileDesc = "";
+      }
+
+      User.findOneAndUpdate({userID: userID}, {
+        "$set": toUpdate
+      }).exec((err, user) => {
+        if (err) {
+          common.sendInternalError(res);
+        } else {
+          res.json({
+            success: true,
+            errors: []
+          });
+        }
+      });
+    }
+
+    if (username) {
+      common.isUsernameUnique(username).then((isUnique) => {
+        if (isUnique) {
+          toUpdate['username'] = username;
+        } else {
+          errorKeys.push('invalidUsername');
+        }
+      });
+    }
+    if (email) {
+      if (common.isValidEmail(email)) {
+        toUpdate['email'] = email;
+      } else {
+        errorKeys.push('invalidEmail');
+      }
+    }
+
+    if (profilePicture) {
+      common.isValidPicture(profilePicture)
+      .then(() => {
+        toUpdate['profilePicture'] = profilePicture;
+        updateProfile(errorKeys, toUpdate);
+      })
+      .catch((err) => {
+        if (err == 'invalidResourceID') {
+          errorKeys.push('invalidResourceID');
+        }
+        if (err == 'invalidMimetype') {
+          errorKeys.push('invalidResourceID');
+        }
+        updateProfile(errorKeys, toUpdate);
+      })
+    } else {
+      updateProfile(errorKeys, toUpdate);
+    }
+
+
+
   }
 
   // TODO refactor, write unit tests for isOnline
@@ -184,6 +328,26 @@ module.exports = class UMS {
       })
 
     }
+
+  }
+
+  cancelRequest(req, res) {
+    let userID = req.params.userID;
+    let requestID = req.params.requestID;
+
+    validateDeleteRequest(req)
+    .then((errorKeys) => {
+      // validation: requestID exists, user sent the request
+      if (errorKeys.length) {
+        sendError(res, errorKeys);
+        return;
+      }
+
+      deleteRequest(requestID, res);
+    })
+    .catch((err) => {
+      common.sendInternalError(res);
+    })
 
   }
 
@@ -422,6 +586,9 @@ module.exports = class UMS {
 
           // decline friend request
           else {
+            request.responded = true
+            request.save()
+
             let response = {
               success: true,
               error: []

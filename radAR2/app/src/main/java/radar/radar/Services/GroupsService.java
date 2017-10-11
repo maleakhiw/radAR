@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Models.MeetingPoint;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Requests.NewGroupBody;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;

@@ -26,6 +26,7 @@ public class ChatListPresenter {
 
     public void getChatIDs() {
         // Getting the chat id that are related to a particular user
+        // TODO make way for continuous updates.
         chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -58,7 +59,7 @@ public class ChatListPresenter {
     public void displayChatList() {
         // Using the id that we have get display the chat
         // Iterate through all ids
-        for (int i=0; i < chatListView.getChatIDs().size(); i++) {
+        for (int i=0; i<chatListView.getChatIDs().size(); i++) {
             chatService.getChatInfo(chatListView.getChatIDs().get(i)).subscribe(new Observer<GetChatInfoResponse>() {
                 @Override
                 public void onSubscribe(Disposable d) {
