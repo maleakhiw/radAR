@@ -80,6 +80,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
+                fab_current_loc.setAlpha(0f);
             }
         });
 
