@@ -1,11 +1,8 @@
 package radar.radar.Presenters;
 
-import android.content.res.Resources;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.AuthResponse;
-import radar.radar.R;
 import radar.radar.Services.AuthService;
 import radar.radar.Views.LoginView;
 
@@ -33,7 +30,7 @@ public class LoginPresenter {
      */
     public void onLoginButtonClicked() {
         // Start loading the process
-        loginView.setProgressBarMessage(Resources.getSystem().getString(R.string.progressbar_login));
+        loginView.setProgressBarMessage("Logging in...");
         loginView.showProgressBar();
 
         // Login using a username and password
@@ -52,7 +49,7 @@ public class LoginPresenter {
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                loginView.showToastLong(Resources.getSystem().getString(R.string.onerror_login));
+                loginView.showToastLong("Internal Error. Failed to login.");
                 loginView.dismissProgressBar();
             }
 
@@ -84,7 +81,7 @@ public class LoginPresenter {
             loginView.finishActivity();
         }
         else {
-            loginView.showToastLong(Resources.getSystem().getString(R.string.fail_login));
+            loginView.showToastLong("Login failed.Please check your username or password.");
         }
     }
 
