@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,7 +128,6 @@ public class LoginActivity extends AppCompatActivity
     public void finishActivity() {
         finish();
     }
-
 
     /** Use to connect UI with java */
     public void setupUI() {
