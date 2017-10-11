@@ -70,7 +70,7 @@ public class LoginPresenter {
 
     /**
      * Core method that are used to check if the login is successful or error
-     * @param authResponse
+     * @param authResponse object that will be send after getting response from server
      */
     public void respondToLoginResponse(AuthResponse authResponse) {
         loginView.dismissProgressBar();
