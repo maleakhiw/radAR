@@ -13,6 +13,7 @@ import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.Okio;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Models.Responses.UploadFileResponse;
 import retrofit2.Response;
 import retrofit2.http.Multipart;
 
@@ -67,8 +68,8 @@ public class ResourcesService {
     }
 
     /** This method is used to upload resource to server */
-    public Observable<Status> uploadFile(MultipartBody.Part filePart) {
-        Observable<Status> uploadFileObservable = resourcesApi.uploadResource(userID, token, filePart)
+    public Observable<UploadFileResponse> uploadFile(MultipartBody.Part filePart) {
+        Observable<UploadFileResponse> uploadFileObservable = resourcesApi.uploadResource(userID, token, filePart)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
