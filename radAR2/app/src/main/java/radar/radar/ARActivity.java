@@ -283,8 +283,9 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
     }
 
     @Override
-    public void getAnnotation(int userID) {
+    public ARAnnotation getAnnotation(int userID) {
         arAnnotations.get(userID);
+        return null;
     }
 
 
@@ -501,7 +502,24 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
     }
 
     @Override
+    public int getAnnotationHeight(int userID) {
+        ARAnnotation annotation = arAnnotations.get(userID);
+        if (annotation != null) {
+            return annotation.getLayout().getMeasuredHeight();
+        } else return -1;
+    }
+
+    @Override
+    public int getAnnotationWidth(int userID) {
+        ARAnnotation annotation = arAnnotations.get(userID);
+        if (annotation != null) {
+            return annotation.getLayout().getMeasuredWidth();
+        } else return -1;
+    }
+
+    @Override
     public void updateHUDHeading(CompassDirection direction) {
+        // TODO move to LocationTransformations
         switch (direction) {
             case NORTH:
                 heading.setText("N");
