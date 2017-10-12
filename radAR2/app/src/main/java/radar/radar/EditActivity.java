@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,7 +43,9 @@ public class EditActivity extends AppCompatActivity {
     private ImageView preview;
     private Button pickImage;
     private Button upload;
-    String[] mediaColumns = { MediaStore.Video.Media._ID };
+    private EditText name;
+    private EditText email;
+    private EditText description;
     ProgressDialog progressDialog;
     String mediaPath;
 
@@ -147,33 +150,10 @@ public class EditActivity extends AppCompatActivity {
                 // Get the Image from data
                 Uri selectedImage = data.getData();
 
-//                mediaPath = selectedImage.getPath().substring(6);
                 mediaPath = getRealPathFromURI(selectedImage);
                 preview.setImageURI(selectedImage);
 
                 Toast.makeText(this, mediaPath, Toast.LENGTH_SHORT).show();
-
-//                Uri selectedImage = data.getData();
-//                file = new File(selectedImage.getPath());
-//
-//                //                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//
-////                Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-////
-//
-////                if (cursor != null) {
-////                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-////                    cursor.moveToFirst();
-////                    mediaPath = cursor.getString(columnIndex);
-////                    cursor.close();
-////                    Toast.makeText(this, mediaPath, Toast.LENGTH_SHORT).show();
-////                }
-////                else {
-////                    Toast.makeText(this, "cursor null", Toast.LENGTH_SHORT).show();
-////                }
-//
-//                // Set the Image in ImageView for Previewing the Media
-//                preview.setImageURI(selectedImage);
 
             } else {
                 Toast.makeText(this, "You haven't picked Image/Video", Toast.LENGTH_LONG).show();
@@ -216,7 +196,6 @@ public class EditActivity extends AppCompatActivity {
         // Parsing any Media type file
         RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
         MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-//        RequestBody filename = RequestBody.create(MediaType.parse("text/plain"), file.getName());
 
         // Make a request
         resourcesService.uploadFile(fileToUpload).subscribe(new Observer<UploadFileResponse>() {
@@ -238,7 +217,7 @@ public class EditActivity extends AppCompatActivity {
             public void onError(Throwable e) {
                 progressDialog.dismiss();
                 // Display error message
-                Log.d("ANJING", e.getMessage());
+                System.out.println(e.getMessage());
                 Toast.makeText(EditActivity.this, "Go to on error.", Toast.LENGTH_SHORT).show();
 
             }
@@ -249,24 +228,6 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    /** Getting path from uri */
-    public String getImagePath(Uri uri){
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        String document_id = cursor.getString(0);
-        document_id = document_id.substring(document_id.lastIndexOf(":")+1);
-        cursor.close();
-
-        cursor = getContentResolver().query(
-                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                null, MediaStore.Images.Media._ID + " = ? ", new String[]{document_id}, null);
-        cursor.moveToFirst();
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-        cursor.close();
-
-        return path;
     }
 
 }
