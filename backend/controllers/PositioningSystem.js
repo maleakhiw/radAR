@@ -122,20 +122,29 @@ module.exports = class PositioningSystem {
       sendError(res, errorKeys);
       return;
     }
-
-    LocationModel.create({
-      userID: userID,
-      lat: lat,
-      lon: lon,
-      heading: heading,
-      accuracy: accuracy
-    })
+    LocationModel.findOne({userID: userID}).exec()
     .then((location) => {
-      res.json({
-        success: true,
-        errors: []
+      if (location) {
+        location.remove();
+      }
+
+      LocationModel.create({
+        userID: userID,
+        lat: lat,
+        lon: lon,
+        heading: heading,
+        accuracy: accuracy
+      })
+      .then((location) => {
+        res.json({
+          success: true,
+          errors: []
+        })
       })
     })
+    .catch((err) => common.sendInternalError(res));
+
+
 
   }
 
