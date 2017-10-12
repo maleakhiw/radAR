@@ -4,25 +4,25 @@ require('dotenv-safe').load();
 
 // Express
 const express = require('express');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
-
-const mongoose = require('mongoose')
-
 const bodyParser = require('body-parser')
-const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
 const cors = require('cors')
 const _ = require('lodash');
+const multer = require('multer')  // for multipart/form-data
+const upload = multer({
+  dest: 'uploads/'  // automatically gives unique filename
+})
+
+// mongoose
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise   // Use JS Promises library for Mongoose
 
 // logging framework
 const winston = require('winston');
 winston.add(winston.transports.File, { filename: 'server.log' });
 winston.level = 'debug';  // TODO use environment variable
-
-// multer
-const upload = multer({
-  dest: 'uploads/'  // automatically gives unique filename
-})
 
 // data models
 const Group = require('./models/group')
@@ -40,15 +40,17 @@ app.use(cors());
 const common = require('./common')
 const addMetas = common.addMetas
 
-// Use JS Promises library for Mongoose
-mongoose.Promise = global.Promise
-
-// Error handling for invalid JSON
+// Error handling
 app.use(function (error, req, res, next) {
-  res.json({
-    success: false,
-    errors: common.errorObjectBuilder(['invalidJSON'])
-  })
+  if (err instanceof SyntaxError) {
+    res.json({
+      success: false,
+      errors: common.errorObjectBuilder(['invalidJSON'])
+    })
+  } else {
+    winston.error(err);
+    res.status(500).send();
+  }
 });
 
 var DEV = 'dev';
@@ -63,24 +65,31 @@ if (!server_environment) {
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
-const connection = mongoose.connect('mongodb://localhost/radarTest',
+let mongoURL;
+if (server_environment == DEV) {
+  mongoURL = 'mongodb://localhost/radarTest'
+} else {
+  mongoURL = 'mongodb://localhost/radar'
+}
+
+const connection = mongoose.connect(mongoURL,
   { useMongoClient: true },
-  (err) => { // TODO: see if this breaks
-    // if (!err) console.log('Connected to mongoDB')
-    // else console.log('Failed to connect to mongoDB')
+  (err) => {
     if (err) {
-      winston.error(err)
+      winston.error(err);
+      // TODO force exit
     }
 })
+
 module.exports.connection = connection
 
 // Systems
 const UMS = require('./controllers/UMS')
 const ums = new UMS(User, Request)
-// const svs = require('./controllers/SVS')
+
 const SVS = require('./controllers/SVS')
 const svs = new SVS(User)
-const authenticate = svs.authenticate
+const authenticate = svs.authenticate // authentication middleware
 
 const SMS = require('./controllers/SMS')
 const sms = new SMS(Group, Message, User)
@@ -94,13 +103,8 @@ const positioningSystem = new PositioningSystem(LocationModel, User);
 const GroupSystem = require('./controllers/GroupSystem');
 const groupSystem = new GroupSystem(Group, Message, User, LocationModel);
 
-// export the mongoose object so it is accessible by other subsystems
-// module.exports.mongoose = mongoose
 
-// Functions
-// app.post("/SVS/signUp", svs.signUp)
-// app.post("/SVS/login", svs.login)
-
+/* Routes */
 app.get("/", (req, res) => {
   res.json(addMetas({}, "/"))
 })
@@ -117,18 +121,6 @@ app.get("/api/accounts/:userID", (req, res) => {
 // signup and login
 app.post("/api/auth", svs.signUp)
 app.get("/api/auth/:username", svs.login)
-
-// app.get("/api/auth/:username", svs.login)
-// app.post("/api/login",
-//   passport.authenticate('local', { session: false }),
-//   (req, res) => {
-//     // authentication successful, send token back
-//     res.json({
-//       success: true,
-//       token: "79",
-//       userID: req.query.userID
-//     })
-//   })
 
 // object: accounts
 // profile
@@ -200,14 +192,10 @@ app.get("/api/groups", (req, res) => {
 app.get('/health-check', (req, res) => res.sendStatus(200));
 app.use(express.static('static'));
 
-const http = require('http');
-// TODO environment variable
-let HTTPS_MODE = false;
-if (!HTTPS_MODE) {
-  app.listen(8080, (req, res) => {
-    //
-  });
-} else {
+
+if (server_environment == DEV) {  // serve over HTTP
+  app.listen(8080, (req, res) => {});
+} else {  // serve over HTTPS
   const options = {
       cert: fs.readFileSync('./radar.fadhilanshar.com/fullchain.pem'),
       key: fs.readFileSync('./radar.fadhilanshar.com/privkey.pem')
@@ -219,7 +207,5 @@ if (!HTTPS_MODE) {
   https.createServer(options, app).listen(8443);
 }
 
-
-
-// export the app, for testing
+// export the app, for Mocha tests
 module.exports = app
