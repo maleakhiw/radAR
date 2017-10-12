@@ -26,7 +26,8 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 /**
- * Created by keyst on 27/09/2017.
+ * Unit testing for SignupPresenter class
+ * This class is used to test the application logic of signup functionality
  */
 public class SignupPresenterTest {
 
@@ -182,7 +183,7 @@ public class SignupPresenterTest {
                     throw new SocketTimeoutException("fake socket timeout exception");
                 });
         Mockito.when(authService.signUp(any(SignUpRequest.class))).thenReturn(authResponseObservable);
-        
+
         // Call the method that will be tested
         presenter.processSignup();
 
