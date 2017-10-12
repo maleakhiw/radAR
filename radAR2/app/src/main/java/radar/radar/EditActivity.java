@@ -23,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 import java.net.URI;
@@ -81,13 +83,27 @@ public class EditActivity extends AppCompatActivity {
         resourcesService = new ResourcesService(resourcesApi, this);
 
         // Setup onclick listener for picking image
-        edit.setOnClickListener(new View.OnClickListener() {
+        preview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_PICK);
+                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
                 startActivityForResult(galleryIntent, 0);
+            }
+        });
+
+        // Setup onclick listener for upload
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Uploading the image
+                int permissionCheck = ContextCompat.checkSelfPermission(EditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                    uploadFile();
+                } else {    // PERMISSION_DENIED
+                    ActivityCompat.requestPermissions(EditActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                }
             }
         });
 
@@ -148,24 +164,29 @@ public class EditActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         try {
             // When an Image is picked
-            if (requestCode == 0 && resultCode == RESULT_OK && null != data) {
+            if (requestCode == 0 && resultCode == RESULT_OK) {
                 // Get the Image from data
                 Uri selectedImage = data.getData();
-                mediaPath = getRealPathFromURI(selectedImage);
-                preview.setImageURI(selectedImage);
 
-                // Uploading the image
-                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                    uploadFile();
-                } else {    // PERMISSION_DENIED
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                }
-
-
-            } else {
-                Toast.makeText(this, "You haven't picked Image/Video", Toast.LENGTH_LONG).show();
+                // start picker to get image for cropping and then use the image in cropping activity
+                CropImage.activity(selectedImage)
+                        .setAspectRatio(1, 1)
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .start(this);
             }
+
+            // Process the cropped image
+            if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
+                if (resultCode == RESULT_OK) {
+                    Uri resultUri = result.getUri();
+                    preview.setImageURI(resultUri);
+                    mediaPath = getRealPathFromURI(resultUri);
+                } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                    Exception error = result.getError();
+                }
+            }
+
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG).show();
         }
