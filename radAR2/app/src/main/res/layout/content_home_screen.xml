@@ -25,8 +25,8 @@
         android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
         android:layout_width="match_parent"
         android:layout_height="@dimen/place_autocomplete_powered_by_google_height"
-        android:layout_marginLeft="24dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -139,35 +139,5 @@
         android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/fab_new_group"
         app:layout_constraintTop_toTopOf="@+id/fab_new_group" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_new_chat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="16dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="invisible"
-        app:backgroundTint="@color/colorSuperAppBar"
-        app:layout_constraintBottom_toTopOf="@+id/fab_new_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_message_white_48dp" />
-
-    <TextView
-        android:id="@+id/text_new_chat"
-        android:layout_width="@dimen/home_screen_fab_text"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/colorWhite"
-        android:ems="10"
-        android:gravity="end"
-        android:text="@string/new_chat"
-        android:textAlignment="center"
-        android:textSize="@dimen/section_text_size"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toStartOf="@+id/fab_new_chat"
-        app:layout_constraintTop_toTopOf="@+id/fab_new_chat" />
 
 </android.support.constraint.ConstraintLayout>

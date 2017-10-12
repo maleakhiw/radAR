@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ import com.google.android.gms.tasks.Task;
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Presenters.HomeScreenPresenter;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
@@ -116,7 +118,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         FloatingActionButton fab_remove = (FloatingActionButton) findViewById(R.id.fab_remove);
         FloatingActionButton fab_new_friend = (FloatingActionButton) findViewById(R.id.fab_new_friend);
         FloatingActionButton fab_new_group = (FloatingActionButton) findViewById(R.id.fab_new_group);
-        FloatingActionButton fab_new_chat = (FloatingActionButton) findViewById(R.id.fab_new_chat);
 
         // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
@@ -149,7 +150,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 // FAB Action
                 fab_add.setVisibility(View.INVISIBLE);
                 fab_remove.setVisibility(View.VISIBLE);
-                fab_new_chat.setVisibility(View.VISIBLE);
                 fab_new_friend.setVisibility(View.VISIBLE);
                 fab_new_group.setVisibility(View.VISIBLE);
             }
@@ -161,7 +161,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 // FAB Action
                 fab_add.setVisibility(View.VISIBLE);
                 fab_remove.setVisibility(View.INVISIBLE);
-                fab_new_chat.setVisibility(View.INVISIBLE);
                 fab_new_friend.setVisibility(View.INVISIBLE);
                 fab_new_group.setVisibility(View.INVISIBLE);
             }
@@ -172,7 +171,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_new_friend.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(getApplicationContext(), TabbedSearchActivity.class);
+                startActivity(intent);
             }
         });
 
@@ -180,15 +180,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
-                fab_new_group.setVisibility(View.INVISIBLE);
-            }
-        });
-
-        fab_new_chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                fab_new_chat.setVisibility(View.INVISIBLE);
+                Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                startActivity(intent);
             }
         });
     }
