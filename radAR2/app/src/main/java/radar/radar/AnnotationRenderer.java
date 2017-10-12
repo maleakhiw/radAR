@@ -10,6 +10,8 @@ import radar.radar.Models.Domain.UserLocation;
 import radar.radar.Services.LocationTransformations;
 import radar.radar.Views.ARView;
 
+import static radar.radar.Presenters.ARPresenter.DESTINATION_ID;
+
 /**
  * Created by kenneth on 12/10/17.
  */
@@ -55,8 +57,7 @@ public class AnnotationRenderer {
                 && currentLevel == checkedLevel;
     }
 
-
-    public void renderOne(int userID, double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
+    AnnotationData getAnnotationData(int userID, double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
         double bearing = LocationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
 
         // get xOffset and yOffset
@@ -65,23 +66,39 @@ public class AnnotationRenderer {
         int height = arView.getAnnotationHeight(userID);
         int width = arView.getAnnotationWidth(userID);
 
-        AnnotationData current = new AnnotationData(xOffset, yOffset, width, height, 0);
+        return new AnnotationData(userID, xOffset, yOffset, width, height, 0);
+    }
 
-        // iterate over all the existing annotations and check for overlaps
-        boolean overlapping = true;
-        while (overlapping == true) {   // TODO infinite loops are a bad idea, give a maximum number, say, 100
-            for (AnnotationData annotation : annotations.values()) {
-                if (checkIfOverlapping(current, annotation)) {
-                    yOffset -= height;  // negative goes towards top of screen
-                    current.stackingLevel += 1;
-                }
-                continue;   // go back to start of while loop
+
+    void renderOne(int userID) {
+
+        AnnotationData current = annotations.get(userID);
+        int xOffset = current.offsetX;
+        int yOffset = current.offsetY;
+        int height = current.height;
+
+        // iterate over existing annotations, check for overlaps
+        for (AnnotationData annotation : annotations.values()) {
+            System.out.println("Checking " + ((Integer) userID).toString() + " against " + ((Integer) annotation.userID).toString());
+            if (userID == annotation.userID) {
+                continue;   // don't check against yourself!
             }
-            overlapping = false;
+            boolean overlapping = true;
+            while (overlapping) {   // until we do not overlap, keep moving up
+                if (checkIfOverlapping(current, annotation)) {
+                    yOffset -= 1.5 * height;  // negative goes towards top of screen
+                    current.stackingLevel += 1;
+                } else {
+                    overlapping = false;
+                }
+            }
         }
 
+        System.out.println(((Integer) userID).toString() + ": " + ((Integer) current.stackingLevel).toString());
+
         arView.setAnnotationOffsets(userID, xOffset, yOffset);
-        annotations.put(userID, current);
+
+        annotations.put(userID, current);   // update the current "memory"
 
     }
 
@@ -95,20 +112,25 @@ public class AnnotationRenderer {
     }
 
     public void render() {
-        // put all the annotations into place
-        for (UserLocation annotationLatLon: userLocations) {
-            int userID = annotationLatLon.getUserID();
-            setAnnotationText(userID, annotationLatLon);
+        for (UserLocation annotationLocation: userLocations) {
+            int userID = annotationLocation.getUserID();
+            setAnnotationText(userID, annotationLocation);
 
             // TODO profile pictures
 
             // inflate the view, if it has not been inflated
             if (!arView.isInflated(userID)) {
-                arView.inflateARAnnotation(annotationLatLon);
-                setAnnotationText(userID, annotationLatLon);
+                arView.inflateARAnnotation(annotationLocation);
+                setAnnotationText(userID, annotationLocation);
             }
-//            render(userID, latCurrent, lonCurrent, annotationLatLon, azimuth, pitch);
-            renderOne(userID, latCurrent, lonCurrent, annotationLatLon, azimuth, pitch);
+
+            annotations.put(userID, getAnnotationData(userID, latCurrent, lonCurrent, annotationLocation, azimuth, pitch));
+
+        }
+
+        for (UserLocation annotationLatLon: userLocations) {
+            int userID = annotationLatLon.getUserID();
+            renderOne(userID);
         }
     }
 }

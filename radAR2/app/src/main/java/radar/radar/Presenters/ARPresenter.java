@@ -41,7 +41,7 @@ public class ARPresenter {
     private Disposable locationPushDisposable;
     private Disposable combinedDataDisposable;
 
-    private static final int DESTINATION_ID = -1;
+    public static final int DESTINATION_ID = -1;
 
     private int activeAnnotationUserID = DESTINATION_ID;
 
@@ -144,13 +144,16 @@ public class ARPresenter {
                 MeetingPoint meetingPoint = locationAndDeviceData.groupLocationDetails.meetingPoint;
 
                 // group members locations
-                ArrayList<UserLocation> userLocations = locationAndDeviceData.groupLocationDetails.locations;
+                ArrayList<UserLocation> userLocations = new ArrayList<>();
                 HashMap<Integer, User> usersDetails = locationAndDeviceData.groupLocationDetails.userDetails;
                 HashMap<Integer, UserLocation> userLocationsMap = new HashMap<>();
 
                 if (meetingPoint != null) {
                     userLocations.add(new DestinationLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded, meetingPoint.name));
 //                    renderDestinationLocation(meetingPoint, latCurrent, lonCurrent, azimuth, pitch);
+                }
+                for (UserLocation userLocation: locationAndDeviceData.groupLocationDetails.locations) {
+                    userLocations.add(userLocation);
                 }
 
                 for (UserLocation annotationLatLon: userLocations) {
