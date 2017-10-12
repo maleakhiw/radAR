@@ -51,15 +51,6 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <!--Tabbed activity-->
-        <activity android:name=".TabbedSearchActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-
         <activity
             android:name=".SearchResultActivity"
             android:screenOrientation="portrait"
@@ -71,13 +62,14 @@
 
         <activity
             android:name=".SearchLocationActivity"
-            android:label="radAR Search Location"></activity>
+            android:label="radAR Search Location" />
         <activity
             android:name=".ARActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".GroupsListActivity" />
+        <activity android:name=".GroupsListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
