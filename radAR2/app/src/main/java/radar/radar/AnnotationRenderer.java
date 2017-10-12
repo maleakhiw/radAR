@@ -85,24 +85,27 @@ public class AnnotationRenderer {
 
     }
 
+    public void setAnnotationText(int userID, UserLocation annotationLatLon) {
+        if (annotationLatLon instanceof DestinationLocation) {
+            arView.setAnnotationMainText(userID, ((DestinationLocation) annotationLatLon).name);
+        } else {
+            // set view properties (labels, profile pictures)
+            arView.setAnnotationMainText(userID, usersDetails.get(userID).firstName);
+        }
+    }
+
     public void render() {
         // put all the annotations into place
         for (UserLocation annotationLatLon: userLocations) {
             int userID = annotationLatLon.getUserID();
-            if (annotationLatLon instanceof DestinationLocation) {
-                arView.setAnnotationMainText(userID, ((DestinationLocation) annotationLatLon).name);
-            } else {
-                // set view properties (labels, profile pictures)
-                arView.setAnnotationMainText(userID, usersDetails.get(userID).firstName);
-            }
-
+            setAnnotationText(userID, annotationLatLon);
 
             // TODO profile pictures
 
             // inflate the view, if it has not been inflated
             if (!arView.isInflated(userID)) {
                 arView.inflateARAnnotation(annotationLatLon);
-                arView.setAnnotationMainText(userID, usersDetails.get(userID).firstName);
+                setAnnotationText(userID, annotationLatLon);
             }
 //            render(userID, latCurrent, lonCurrent, annotationLatLon, azimuth, pitch);
             renderOne(userID, latCurrent, lonCurrent, annotationLatLon, azimuth, pitch);
