@@ -13,6 +13,7 @@ import java.util.HashMap;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Models.Domain.DestinationLocation;
 import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.LocationAndDeviceData;
 import radar.radar.Models.Responses.GroupLocationsInfo;
@@ -147,6 +148,11 @@ public class ARPresenter {
                 HashMap<Integer, User> usersDetails = locationAndDeviceData.groupLocationDetails.userDetails;
                 HashMap<Integer, UserLocation> userLocationsMap = new HashMap<>();
 
+                if (meetingPoint != null) {
+                    userLocations.add(new DestinationLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded, meetingPoint.name));
+//                    renderDestinationLocation(meetingPoint, latCurrent, lonCurrent, azimuth, pitch);
+                }
+
                 for (UserLocation annotationLatLon: userLocations) {
                     int userID = annotationLatLon.getUserID();
                     userLocationsMap.put(userID, annotationLatLon);
@@ -155,10 +161,6 @@ public class ARPresenter {
                 AnnotationRenderer renderer = new AnnotationRenderer(latCurrent, lonCurrent, azimuth, pitch, userLocations, usersDetails, locationTransformations, arView);
 
                 renderer.render();
-
-                if (meetingPoint != null) { // TODO this should move to renderer
-                    renderDestinationLocation(meetingPoint, latCurrent, lonCurrent, azimuth, pitch);
-                }
 
                 /* render HUD */
                 UserLocation destination;

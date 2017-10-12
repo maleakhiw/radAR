@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import radar.radar.Models.Domain.AnnotationData;
+import radar.radar.Models.Domain.DestinationLocation;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Domain.UserLocation;
 import radar.radar.Services.LocationTransformations;
@@ -88,9 +89,14 @@ public class AnnotationRenderer {
         // put all the annotations into place
         for (UserLocation annotationLatLon: userLocations) {
             int userID = annotationLatLon.getUserID();
+            if (annotationLatLon instanceof DestinationLocation) {
+                arView.setAnnotationMainText(userID, ((DestinationLocation) annotationLatLon).name);
+            } else {
+                // set view properties (labels, profile pictures)
+                arView.setAnnotationMainText(userID, usersDetails.get(userID).firstName);
+            }
 
-            // set view properties (labels, profile pictures)
-            arView.setAnnotationMainText(userID, usersDetails.get(userID).firstName);
+
             // TODO profile pictures
 
             // inflate the view, if it has not been inflated
