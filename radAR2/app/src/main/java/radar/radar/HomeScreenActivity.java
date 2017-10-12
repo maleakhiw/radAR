@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -117,17 +118,28 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         FloatingActionButton fab_new_group = (FloatingActionButton) findViewById(R.id.fab_new_group);
         FloatingActionButton fab_new_chat = (FloatingActionButton) findViewById(R.id.fab_new_chat);
 
-        TextView test = null;
-
         // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(currentLocation.getLatitude(),
-                                currentLocation.getLongitude()), DEFAULT_ZOOM));
-
+                getDeviceLocation();
+                if(currentLocation != null) {
+                    googleMap.clear();
+                    LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(currentPosition));
+                    googleMap.addCircle(new CircleOptions()
+                            .center(currentPosition)
+                            .strokeColor(getColorRes(R.color.colorPrimary))
+                            .radius(currentLocation.getAccuracy()));
+                    googleMap.addCircle(new CircleOptions()
+                            .center(currentPosition)
+                            .fillColor(getColorRes(R.color.colorPrimaryDark))
+                            .strokeColor(getColorRes(R.color.colorPrimaryDark))
+                            .radius(1));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            currentPosition, DEFAULT_ZOOM));
+                }
             }
         });
 
@@ -267,8 +279,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");
                         Log.e(TAG, "Exception: %s", task.getException());
-                        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                        //googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                 }
             });

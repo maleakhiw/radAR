@@ -45,7 +45,7 @@ public class HomeScreenPresenter {
             googleMap.clear();
 
             current = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.addCircle(new CircleOptions()
+            /*googleMap.addCircle(new CircleOptions()
                     .center(current)
                     .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
                     .radius(location.getAccuracy()));
@@ -54,15 +54,7 @@ public class HomeScreenPresenter {
                     .center(current)
                     .fillColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
                     .strokeColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                    .radius(1));
-
-            // Add a marker in Melbourne Uni and move the camera
-            double unimelb_lat = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lat));
-            double unimelb_lng = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lng));
-
-            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-            googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-                    .title(homeScreenView.getStringRes(R.string.unimelb)));
+                    .radius(1));*/
 
             if (first) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
