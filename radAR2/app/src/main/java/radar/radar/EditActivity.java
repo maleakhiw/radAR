@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -59,6 +60,10 @@ public class EditActivity extends AppCompatActivity {
 
         // Setup UI
         setupUI();
+
+        // Enable back action bar
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup progress dialog
         progressDialog = new ProgressDialog(this);
@@ -110,6 +115,13 @@ public class EditActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+    /** Method that are used for the back */
+    public boolean onOptionsItemSelected(MenuItem item){
+        finish();
+        return true;
     }
 
     /** Permission for getting image from gallery and uploading it */
