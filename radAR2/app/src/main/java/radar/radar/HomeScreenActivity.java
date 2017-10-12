@@ -33,6 +33,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.w3c.dom.Text;
+
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Presenters.HomeScreenPresenter;
@@ -119,6 +121,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         FloatingActionButton fab_new_friend = (FloatingActionButton) findViewById(R.id.fab_new_friend);
         FloatingActionButton fab_new_group = (FloatingActionButton) findViewById(R.id.fab_new_group);
 
+        TextView text_new_friend = (TextView) findViewById(R.id.text_new_friend);
+        TextView text_new_group = (TextView) findViewById(R.id.text_new_group);
+
         // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +156,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 fab_add.setVisibility(View.INVISIBLE);
                 fab_remove.setVisibility(View.VISIBLE);
                 fab_new_friend.setVisibility(View.VISIBLE);
+                text_new_friend.setVisibility(View.VISIBLE);
                 fab_new_group.setVisibility(View.VISIBLE);
+                text_new_group.setVisibility(View.VISIBLE);
             }
         });
 
@@ -162,7 +169,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 fab_add.setVisibility(View.VISIBLE);
                 fab_remove.setVisibility(View.INVISIBLE);
                 fab_new_friend.setVisibility(View.INVISIBLE);
+                text_new_friend.setVisibility(View.INVISIBLE);
                 fab_new_group.setVisibility(View.INVISIBLE);
+                text_new_group.setVisibility(View.INVISIBLE);
             }
         });
 
