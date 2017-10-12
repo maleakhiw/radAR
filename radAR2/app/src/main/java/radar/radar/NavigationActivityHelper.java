@@ -78,10 +78,13 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 return true;
 
             } else if (id == R.id.nav_settings) {
-                // TODO - Define settings
-                // TODO for now used for AR
-
-                Intent intent = new Intent(activity, ARActivity.class);
+//                // TODO - Define settings
+//                // TODO for now used for AR
+//
+//                Intent intent = new Intent(activity, ARActivity.class);
+//                activity.startActivity(intent);
+                // The settings is used to set profile picture
+                Intent intent = new Intent(activity, EditActivity.class);
                 activity.startActivity(intent);
 
             } else if (id == R.id.nav_tracking_groups) {

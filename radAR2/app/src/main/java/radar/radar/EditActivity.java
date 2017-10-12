@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -33,6 +34,7 @@ import okhttp3.RequestBody;
 import radar.radar.Models.Android.CameraData;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UploadFileResponse;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import retrofit2.Retrofit;
@@ -41,11 +43,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EditActivity extends AppCompatActivity {
     private ImageView preview;
-    private Button pickImage;
-    private Button upload;
     private EditText name;
     private EditText email;
     private EditText description;
+    private TextView edit;
     ProgressDialog progressDialog;
     String mediaPath;
 
@@ -74,19 +75,8 @@ public class EditActivity extends AppCompatActivity {
         ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
         resourcesService = new ResourcesService(resourcesApi, this);
 
-        // Setup onclick listener for button
-        upload.setOnClickListener(view -> {
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                uploadFile();
-            } else {    // PERMISSION_DENIED
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            }
-
-        });
-
         // Setup onclick listener for picking image
-        pickImage.setOnClickListener(new View.OnClickListener() {
+        edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent galleryIntent = new Intent();
@@ -122,6 +112,7 @@ public class EditActivity extends AppCompatActivity {
 
     }
 
+    /** Permission for getting image from gallery and uploading it */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == 1) {
@@ -132,7 +123,7 @@ public class EditActivity extends AppCompatActivity {
 
             } else {
                 // permission denied!
-                // TODO show TextView in activity, say that permission was not granted
+                Toast.makeText(this, "Permission not granted", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -146,14 +137,19 @@ public class EditActivity extends AppCompatActivity {
         try {
             // When an Image is picked
             if (requestCode == 0 && resultCode == RESULT_OK && null != data) {
-
                 // Get the Image from data
                 Uri selectedImage = data.getData();
-
                 mediaPath = getRealPathFromURI(selectedImage);
                 preview.setImageURI(selectedImage);
 
-                Toast.makeText(this, mediaPath, Toast.LENGTH_SHORT).show();
+                // Uploading the image
+                int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                    uploadFile();
+                } else {    // PERMISSION_DENIED
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                }
+
 
             } else {
                 Toast.makeText(this, "You haven't picked Image/Video", Toast.LENGTH_LONG).show();
@@ -167,10 +163,18 @@ public class EditActivity extends AppCompatActivity {
     /** Setup UI */
     public void setupUI() {
         preview = findViewById(R.id.preview);
-        pickImage = findViewById(R.id.pick_img);
-        upload = findViewById(R.id.upload);
+        name = findViewById(R.id.name);
+        email = findViewById(R.id.email);
+        description = findViewById(R.id.description_text);
+        edit = findViewById(R.id.edit);
+
+        // For now setup the name, email using default
+        name.setText(AuthService.getFirstName(this) + " " + AuthService.getLastName(this));
+        email.setText(AuthService.getEmail(this));
+        description.setText("Hello, I am using Radar!");
     }
 
+    /** Get real path from gallery that are used to initiate a new file */
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);

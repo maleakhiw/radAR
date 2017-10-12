@@ -33,11 +33,11 @@
         <activity android:name=".UserDetailActivity" />
         <activity android:name=".LaunchActivity">
             android:theme="@style/Theme.AppCompat.Translucent">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
 
         <!-- Tabbed activity -->
@@ -69,11 +69,6 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewGroupActivity" />
         <activity android:name=".EditActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
