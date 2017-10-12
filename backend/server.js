@@ -1,4 +1,7 @@
 // Imports
+// load variables from .env to process.env
+require('dotenv-safe').load();
+
 // Express
 const express = require('express');
 const https = require('https');
@@ -48,64 +51,15 @@ app.use(function (error, req, res, next) {
   })
 });
 
-// handle rapid-fire duplicate requests
-var lastRequests = [];
-var REQ_TIME_THRES = 1000;
-var DELAY_BASE = 100;
+var DEV = 'dev';
+var PRODUCTION = 'production';
 
-// Fibonacci delay
-// function fibo(n) {
-//   if (n==0) {
-//     return 0; // special case: no entries in queue
-//   }
-//   if (n==1) {
-//     return 5;
-//   }
-//   if (n==2) {
-//     return 11;
-//   }
-//   else {
-//     return fibo(n-1) + fibo(n-2);
-//   }
-// }
+console.log(process.env.ENVIRONMENT);
 
-// app.use(function(req, res, next) {
-//   // give a little delay so the array has time to be updated
-//   // let time = Date.now();
-//   // while (Date.now() - time < 10*fibo(lastRequests.length)) {
-//   //   ;
-//   // }
-//
-//   // remove requests older than threshold
-//   lastRequests = lastRequests.filter((entry) => {
-//    return (Date.now() - entry.time) < REQ_TIME_THRES;
-//   })
-//
-//   console.log(lastRequests.length);
-//
-//   // check if req.body is in array
-//   let isInArray = false;
-//   lastRequests.map((entry) => {
-//    if (_.isEqual(entry.reqBody, req.body)) {
-//      isInArray = true;
-//    }
-//   });
-//   console.log('isInArray', isInArray);
-//
-//   lastRequests.push({
-//    reqBody: req.body,
-//    time: Date.now()
-//   });
-//
-//   if (!isInArray) {
-//     console.log('accepted');
-//     next(); // let the handlers handle it
-//   } else {
-//     console.log('rejected');
-//     // block the request
-//   }
-//
-// })
+var server_environment = process.env.ENVIRONMENT;
+if (!server_environment) {
+  server_environment = DEV;
+}
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production

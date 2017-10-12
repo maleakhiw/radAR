@@ -15,6 +15,7 @@
     "body-parser": "^1.17.2",
     "cors": "^2.8.4",
     "del": "^3.0.0",
+    "dotenv-safe": "^4.0.4",
     "express": "^4.15.4",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
