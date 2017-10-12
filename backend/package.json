@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon",
-    "test": "mocha --timeout 10000"
+    "test": "mocha --timeout 10000",
+    "unit": "mocha --grep unit --timeout 10000"
   },
   "author": "krusli",
   "license": "ISC",

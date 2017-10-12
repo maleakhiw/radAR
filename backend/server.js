@@ -248,7 +248,7 @@ app.use(express.static('static'));
 
 const http = require('http');
 // TODO environment variable
-let HTTPS_MODE = true;
+let HTTPS_MODE = false;
 if (!HTTPS_MODE) {
   app.listen(8080, (req, res) => {
     //
