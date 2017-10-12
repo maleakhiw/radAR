@@ -49,7 +49,7 @@ public class EditActivity extends AppCompatActivity {
     private EditText name;
     private EditText email;
     private EditText description;
-    private TextView edit;
+    private TextView upload;
     ProgressDialog progressDialog;
     String mediaPath;
 
@@ -94,7 +94,7 @@ public class EditActivity extends AppCompatActivity {
         });
 
         // Setup onclick listener for upload
-        edit.setOnClickListener(new View.OnClickListener() {
+        upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Uploading the image
@@ -199,7 +199,7 @@ public class EditActivity extends AppCompatActivity {
         name = findViewById(R.id.name);
         email = findViewById(R.id.email);
         description = findViewById(R.id.description_text);
-        edit = findViewById(R.id.edit);
+        upload = findViewById(R.id.upload);
 
         // For now setup the name, email using default
         name.setText(AuthService.getFirstName(this) + " " + AuthService.getLastName(this));
