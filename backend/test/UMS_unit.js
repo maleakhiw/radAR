@@ -13,15 +13,15 @@ const Request = require('../models/request');
 const sinon = require('sinon');
 
 describe('UMS unit tests', () => {
-  let ums, findOneStub;
+  let ums, stub;
 
   before(() => {
     ums = new UMS(User, Request);
   });
 
   afterEach(() => {
-    if (findOneStub) {
-      findOneStub.restore();
+    if (stub) {
+      stub.restore();
     }
   })
 
@@ -79,7 +79,7 @@ describe('UMS unit tests', () => {
           friends: [2, 3]
         }))
       };
-      findOneStub = sinon.stub(User, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(User, 'findOne').returns(mockFindOne);
 
       ums.checkIfAlreadyFriends(1, 2)
       .then(() => {
@@ -101,7 +101,7 @@ describe('UMS unit tests', () => {
           friends: [3]
         }))
       };
-      findOneStub = sinon.stub(User, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(User, 'findOne').returns(mockFindOne);
 
       ums.checkIfAlreadyFriends(1, 2)
       .then(() => {
@@ -120,7 +120,7 @@ describe('UMS unit tests', () => {
         equals: () => this,
         exec: () => new Promise((resolve, reject) => resolve({}))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
 
       ums.checkIfRequestAlreadySent(1, 2)
       .then(() => {})
@@ -135,7 +135,7 @@ describe('UMS unit tests', () => {
         equals: () => this,
         exec: () => new Promise((resolve, reject) => resolve(null))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
 
       ums.checkIfRequestAlreadySent(1, 2)
       .then(() => done());
@@ -148,7 +148,7 @@ describe('UMS unit tests', () => {
         sort: () => mockFindOne,
         exec: () => new Promise((resolve, reject) => resolve(null))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
 
       ums.getRequestIDForNewRequest().then((requestID) => {
         expect(requestID).to.equal(1);
@@ -163,7 +163,7 @@ describe('UMS unit tests', () => {
           requestID: 79
         }))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
 
       ums.getRequestIDForNewRequest().then((requestID) => {
         expect(requestID).to.equal(80);
@@ -177,7 +177,7 @@ describe('UMS unit tests', () => {
       var mockFindOne = { // pretends to be the latest request (already sorted by requestID, returning only 1)
         exec: () => new Promise((resolve, reject) => resolve(null))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
       ums.validateDeleteRequest({
         params: {userID: 1, requestID: 1}
       }).then()
@@ -193,7 +193,7 @@ describe('UMS unit tests', () => {
           from: 79
         }))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
       ums.validateDeleteRequest({
         params: {userID: 1, requestID: 1}
       }).then()
@@ -209,12 +209,57 @@ describe('UMS unit tests', () => {
           from: 1
         }))
       };
-      findOneStub = sinon.stub(Request, 'findOne').returns(mockFindOne);
+      stub = sinon.stub(Request, 'findOne').returns(mockFindOne);
       ums.validateDeleteRequest({
         params: {userID: 1, requestID: 1}
       }).then(() => done());
     });
   });
+
+  describe('deleteRequest', () => {
+    it('should send a success Status', done => {
+      var mockRemove = {
+        // simulate Promise rejection due to database error
+        exec: () => new Promise((resolve, reject) => resolve())
+      }
+      stub = sinon.stub(Request, 'remove').returns(mockRemove);
+
+      var mockRes = {
+        json: (obj) => {
+          expect(obj.success).to.equal(true);
+          expect(obj.errors.length).to.equal(0);
+          done();
+        }
+      }
+
+      ums.deleteRequest(1, mockRes);
+
+    })
+
+    it('should send an InternalError', done => {
+      var mockRemove = {
+        // simulate Promise rejection due to database error
+        exec: () => new Promise((resolve, reject) => reject('Random error'))
+      }
+      stub = sinon.stub(Request, 'remove').returns(mockRemove);
+
+      var mockRes = {
+        status: (int) => {
+          expect(int).to.equal(500);
+          return mockRes;
+        },  // 500 internal error
+        json: (obj) => {
+          expect(obj.success).to.equal(false);
+          expect(obj.errors.length).to.equal(1);
+          done();
+        }
+      }
+
+      ums.deleteRequest(1, mockRes);
+
+
+    })
+  })
 
 
 });
