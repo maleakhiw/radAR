@@ -3,6 +3,7 @@ package radar.radar;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -25,7 +26,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
@@ -40,16 +44,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
     private static final String TAG = "Home Screen Activity";
-    NavigationActivityHelper helper;
+    private static final float DEFAULT_ZOOM = 15;
+    private static final int REQUEST_FOR_LOCATION = 1;
 
+    private Location currentLocation;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
     private HomeScreenPresenter presenter;
 
+    NavigationActivityHelper helper;
     FusedLocationProviderClient fusedLocationClient;
     LocationCallback locationCallback;
-
-    static final int REQUEST_FOR_LOCATION = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +99,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                         .title((String) place.getName()));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),DEFAULT_ZOOM));
             }
 
             @Override
@@ -114,15 +119,15 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         TextView test = null;
 
-
         // set up floating action button behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // FAB Action
-                if(presenter.getCurrent() != null) {
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(presenter.getCurrent(), 15));
-                }
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(currentLocation.getLatitude(),
+                                currentLocation.getLongitude()), DEFAULT_ZOOM));
+
             }
         });
 
@@ -180,6 +185,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         presenter.onMapReady(googleMap);
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
     }
 
 
@@ -239,6 +246,35 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
         return locationCallback;
+    }
+
+    private void getDeviceLocation() {
+    /*
+     * Get the best and most recent location of the device, which may be null in rare
+     * cases when a location is not available.
+     */
+        try {
+            Task locationResult = fusedLocationClient.getLastLocation();
+            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        currentLocation = (Location) task.getResult();
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(currentLocation.getLatitude(),
+                                        currentLocation.getLongitude()), DEFAULT_ZOOM));
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                        //googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+                        //googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                    }
+                }
+            });
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 }
 
