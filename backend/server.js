@@ -47,9 +47,6 @@ app.use(function (error, req, res, next) {
       success: false,
       errors: common.errorObjectBuilder(['invalidJSON'])
     })
-  } else {
-    winston.error(err);
-    res.status(500).send();
   }
 });
 
