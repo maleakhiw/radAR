@@ -204,7 +204,10 @@ if (server_environment == DEV) {  // serve over HTTP
       res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
       res.end();
   }).listen(8080);
-  https.createServer(options, app).listen(8443);
+  https.createServer(options, app).listen(8443, () => {
+    console.log(this.address());
+    console.log('Listening on port 8443');
+  });
 }
 
 // export the app, for Mocha tests
