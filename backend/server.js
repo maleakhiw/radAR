@@ -205,7 +205,6 @@ if (server_environment == DEV) {  // serve over HTTP
       res.end();
   }).listen(8080);
   https.createServer(options, app).listen(8443, () => {
-    console.log(this.address());
     console.log('Listening on port 8443');
   });
 }
