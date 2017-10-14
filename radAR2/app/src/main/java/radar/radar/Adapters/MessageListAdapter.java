@@ -152,9 +152,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             // set am or pm
             int hourOfDay = hour;
             if (hourOfDay >= 12) {
-                return hourString + ":" + minuteString + " pm";
+                return hourString + ":" + minuteString + " PM";
             } else {
-                return hourString + ":" + minuteString + " am";
+                return hourString + ":" + minuteString + " AM";
             }
 
         } catch (ParseException e) {
