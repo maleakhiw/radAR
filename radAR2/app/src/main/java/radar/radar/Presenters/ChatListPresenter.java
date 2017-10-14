@@ -44,7 +44,7 @@ public class ChatListPresenter {
                     displayChatList();
                 }
                 else {
-                    chatListView.showToastMessage("Unsuccessful getting chatIDs");
+                    chatListView.showToastMessage("Unsuccessful getting chatIDs.");
                 }
             }
 

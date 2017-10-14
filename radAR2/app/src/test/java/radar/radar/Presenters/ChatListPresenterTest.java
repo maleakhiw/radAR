@@ -17,6 +17,7 @@ import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Unit testing class to check application logic of ChatList Presenter
@@ -68,6 +69,37 @@ public class ChatListPresenterTest {
         // Verify the method is called
         Mockito.verify(chatListView).setChatIDs(groups);
         Mockito.verify(presenter).displayChatList();
+    }
+
+    /**
+     * When status false, notify error message to user
+     * @throws Exception
+     */
+    @Test
+    public void getChatIDs_StatusFalse() throws Exception {
+        // Mock necessary object
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create spied presenter
+        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
+        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+
+        // Create Observable that will be return
+        int group1 = 1;
+        ArrayList<Integer> groups = new ArrayList<>();
+        groups.add(group1);
+        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
+        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
+
+        // Define the behaviour of getChats
+        Mockito.when(chatService.getChats()).thenReturn(observable);
+
+        // Call the method that will be tested
+        presenter.getChatIDs();
+
+        // Verify to display error message to user
+        Mockito.verify(chatListView).showToastMessage(anyString());
     }
 
 }
