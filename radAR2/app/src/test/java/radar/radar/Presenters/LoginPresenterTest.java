@@ -27,7 +27,6 @@ import static org.mockito.Matchers.anyString;
  * This class is used to test the application logic of login
  */
 public class LoginPresenterTest {
-
     /**
      * Method to setup class that are used when unit testing retrofit rxjava
      */

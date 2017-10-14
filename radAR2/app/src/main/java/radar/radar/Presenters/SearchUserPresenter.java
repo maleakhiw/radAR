@@ -1,12 +1,7 @@
 package radar.radar.Presenters;
 
-import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.widget.Toast;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.SearchUserView;
