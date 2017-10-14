@@ -15,6 +15,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.AuthResponse;
+import radar.radar.Models.Responses.FriendRequest;
 import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Services.UsersService;
@@ -91,25 +92,26 @@ public class PendingRequestsPresenterTest {
     @Test
     public void displayFriendRequest_Success() throws Exception {
         // Setup necessary mock
-        SearchUserView searchUserView = Mockito.mock(SearchUserView.class);
+        PendingRequestsView pendingRequestsView = Mockito.mock(PendingRequestsView.class);
         UsersService usersService = Mockito.mock(UsersService.class);
 
-        // Control the behaviour of user service to return error
-        // Mock user object
-        User user1 = Mockito.mock(User.class);
-        ArrayList<User> results = new ArrayList<>();
-        results.add(user1);
-        UsersSearchResult usersSearchResult = new UsersSearchResult(results);
-        Observable<UsersSearchResult> observable = Observable.just(usersSearchResult);
+        // Create observable that will return success
+        FriendRequest friendRequest = Mockito.mock(FriendRequest.class);
+        ArrayList<FriendRequest> request = new ArrayList<>();
+        request.add(friendRequest);
+        FriendRequestsResponse response = new FriendRequestsResponse(request);
+        response.success = true; // initiate to true request
+        Observable<FriendRequestsResponse> observable = Observable.just(response);
 
-        Mockito.when(usersService.searchForUsers("maleakhi", "name")).thenReturn(observable);
+        // Throw success
+        Mockito.when(usersService.getFriendRequests()).thenReturn(observable);
 
         // Test the method
-        SearchUserPresenter presenter = new SearchUserPresenter(searchUserView, usersService);
-        presenter.doSearch("maleakhi");
+        PendingRequestsPresenter presenter = new PendingRequestsPresenter(pendingRequestsView, usersService);
+        presenter.displayFriendsRequest();
 
-        // Make sure displaying users to recycler view
-        Mockito.verify(searchUserView).bindAdapterToRecyclerView(usersSearchResult);
+        // Make sure binding to recycler view and display view
+        Mockito.verify(pendingRequestsView).bindAdapterToRecyclerView(response);
     }
 
 }

@@ -7,4 +7,12 @@ import java.util.ArrayList;
  */
 public class FriendRequestsResponse extends Status {
     public ArrayList<FriendRequest> requestDetails;
+
+    /**
+     * Constructor for FriendRequestsResponse
+     * @param requestDetails list of friend requests
+     */
+    public FriendRequestsResponse(ArrayList<FriendRequest> requestDetails) {
+        this.requestDetails = requestDetails;
+    }
 }
