@@ -86,6 +86,7 @@ public class ChatListPresenter {
 
                 @Override
                 public void onError(Throwable e) {
+                    chatListView.showToastMessage("Internal Error. Failed to display chat list.");
 
                 }
 
