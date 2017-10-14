@@ -42,6 +42,8 @@ public interface ChatView {
 
     void processRecyclerView(MessagesResponse messagesResponse);
 
+    int getCurrentUserID();
+
     void embedSendMessage();
 
     Context getChatContext();

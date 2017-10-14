@@ -23,6 +23,7 @@ import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.ChatPresenter;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
@@ -245,6 +246,24 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     }
 
     /**
+     * Getting context of the activity
+     * @return Context of this activity
+     */
+    @Override
+    public Context getChatContext() {
+        return this;
+    }
+
+    /**
+     * Getting current user id
+     * @return userid of the current user
+     */
+    @Override
+    public int getCurrentUserID() {
+        return AuthService.getUserID(getChatContext());
+    }
+
+    /**
      * Used to embed the send message
      * More appropriate to put into the view as it only contains minimum amount of logic while
      * having so much dependency with the view, i.e. manipulating the onclicklistener
@@ -294,15 +313,6 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                 });
             }
         });
-    }
-
-    /**
-     * Getting context of the activity
-     * @return Context of this activity
-     */
-    @Override
-    public Context getChatContext() {
-        return this;
     }
 
     /**

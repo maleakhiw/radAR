@@ -15,12 +15,15 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessagesResponse;
+import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -180,6 +183,44 @@ public class ChatPresenterTest {
 
         // Verify
         Mockito.verify(chatView).showToast(anyString());
+    }
+
+    /**
+     * Used to check if the method really generate new chat when successful
+     */
+    @Test
+    public void generateNewChat_Success() {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Define behaviour
+        Mockito.when(chatView.getUsername()).thenReturn("maleakhiw");
+        Mockito.when(chatView.getUserID()).thenReturn(1);
+        Mockito.when(chatView.getCurrentUserID()).thenReturn(2);
+
+        // Create presenter object
+        ChatPresenter chatPresenter = new ChatPresenter(chatView, chatService);
+        ChatPresenter presenter = Mockito.spy(chatPresenter);
+
+        // Create observable and necessary dependency
+        NewChatRequest newChatRequest = Mockito.mock(NewChatRequest.class);
+        Mockito.when(presenter.generateNewChatRequest(1,2, "maleakhiw")).thenReturn(newChatRequest);
+        NewChatResponse newChatResponse = Mockito.mock(NewChatResponse.class);
+        Group group = Mockito.mock(Group.class);
+        newChatResponse.group = group;
+        group.groupID = 10;
+        newChatResponse.success = true;
+        Observable<NewChatResponse> observable = Observable.just(newChatResponse);
+
+        // Return that observable
+        Mockito.when(chatService.newChat(newChatRequest)).thenReturn(observable);
+
+        // Call the method
+        presenter.generateNewChat();
+
+        // Verify
+        Mockito.verify(chatView).setGroupID(10);
     }
 
 }
