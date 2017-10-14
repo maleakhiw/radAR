@@ -1,32 +1,35 @@
 package radar.radar.Presenters;
 
-import android.widget.Toast;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ChatListActivity;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
 /**
- * Created by keyst on 3/10/2017.
+ * Presenter class of ChatListActivity.
+ * Contains application logic related to displaying chat list
  */
-
 public class ChatListPresenter {
     ChatListView chatListView;
     ChatService chatService;
 
-    /** Constructor */
+    /**
+     * Constructor
+     * @param chatListView ChatListActivity
+     * @param  chatService service that are instantiated on ChatListActivity
+     */
     public ChatListPresenter(ChatListView chatListView, ChatService chatService) {
         this.chatListView = chatListView;
         this.chatService = chatService;
     }
 
+    /**
+     * Get chat ids that are related to a particular user
+     */
     public void getChatIDs() {
         // Getting the chat id that are related to a particular user
-        // TODO make way for continuous updates.
         chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
@@ -47,6 +50,7 @@ public class ChatListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                chatListView.showToastMessage("Internal error. Failed to get chat ids.");
             }
 
             @Override
@@ -55,12 +59,14 @@ public class ChatListPresenter {
         });
     }
 
-    /** Method that are used to display chat list */
+    /**
+     * Used to display chat list (getting the chat information)
+     */
     public void displayChatList() {
         // Using the id that we have get display the chat
         // Iterate through all ids
-        for (int i=0; i<chatListView.getChatIDs().size(); i++) {
-            chatService.getChatInfo(chatListView.getChatIDs().get(i)).subscribe(new Observer<GetChatInfoResponse>() {
+        for (int i=0; i<chatListView.getChatIDsSize(); i++) {
+            chatService.getChatInfo(chatListView.getChatId(i)).subscribe(new Observer<GetChatInfoResponse>() {
                 @Override
                 public void onSubscribe(Disposable d) {
 
@@ -70,10 +76,7 @@ public class ChatListPresenter {
                 public void onNext(GetChatInfoResponse getChatInfoResponse) {
                     // If the response successful display on the recycler view
                     if (getChatInfoResponse.success) {
-                        // Add to groups
-                        chatListView.getGroups().add(getChatInfoResponse.group);
-                        chatListView.setArrayListInAdapter(chatListView.getGroups());
-                        chatListView.notifyAdapterChange();
+                        chatListView.processDisplayChatList(getChatInfoResponse);
                     }
                     else {
                         chatListView.showToastMessage("Failed to display chat information.");
