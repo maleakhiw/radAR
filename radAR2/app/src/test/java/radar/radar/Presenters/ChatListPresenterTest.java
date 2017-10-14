@@ -168,4 +168,34 @@ public class ChatListPresenterTest {
         Mockito.verify(chatListView).processDisplayChatList(getChatInfoResponse);
     }
 
+    /**
+     * Unit testing to check when status false to display error message
+     */
+    @Test
+    public void displayChatList_StatusFalse() {
+        // Mock necessary object
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Mock the behaviour
+        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
+        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
+
+        // Create Observable returning valid object
+        Group group = Mockito.mock(Group.class);
+        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
+        getChatInfoResponse.success = false;
+        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
+
+        // Behaviour of the function
+        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
+
+        // Call the method and create the presenter
+        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
+        presenter.displayChatList();
+
+        // Verify error message is called
+        Mockito.verify(chatListView).showToastMessage(anyString());
+    }
+
 }
