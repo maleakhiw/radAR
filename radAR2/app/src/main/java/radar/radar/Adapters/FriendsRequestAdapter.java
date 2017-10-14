@@ -97,6 +97,8 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                     // Accept friend request
                     FriendRequest friendRequest = friendRequests.get(getAdapterPosition());
                     processFriendRequest(friendRequest.requestID, UsersService.REQUEST_ACTION.ACCEPT);
+                    friendRequests.remove(getAdapterPosition()); // removing friend request after processes
+                    notifyDataSetChanged();
                 }
             });
 
@@ -106,6 +108,8 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                     // Decline friend request
                     FriendRequest friendRequest = friendRequests.get(getAdapterPosition());
                     processFriendRequest(friendRequest.requestID, UsersService.REQUEST_ACTION.DECLINE);
+                    friendRequests.remove(getAdapterPosition()); // removing friend request after processes
+                    notifyDataSetChanged();
                 }
             });
         }
@@ -123,8 +127,6 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
                 // If success
                 if (status.success) {
                     Toast.makeText(context, "Successfully process friend request", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(context, TabbedSearchActivity.class);
-                    context.startActivity(intent);
                 }
                 else {
                     Toast.makeText(context, "Failure process friend request", Toast.LENGTH_LONG).show();
