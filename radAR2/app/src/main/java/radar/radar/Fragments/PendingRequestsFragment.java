@@ -15,7 +15,6 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.FriendsRequestAdapter;
 import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.R;
-import radar.radar.SearchResultActivity;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;

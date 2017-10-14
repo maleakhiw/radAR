@@ -18,7 +18,6 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.FriendRequest;
 import radar.radar.Models.Responses.Status;
 import radar.radar.R;
-import radar.radar.SearchResultActivity;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.TabbedSearchActivity;
