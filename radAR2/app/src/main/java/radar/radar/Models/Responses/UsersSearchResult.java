@@ -9,4 +9,12 @@ import radar.radar.Models.Domain.User;
  */
 public class UsersSearchResult extends Status {
     public ArrayList<User> results;
+
+    /**
+     * Constructor for UsersSearchResult
+     * @param results list of users
+     */
+    public UsersSearchResult(ArrayList<User> results) {
+        this.results = results;
+    }
 }

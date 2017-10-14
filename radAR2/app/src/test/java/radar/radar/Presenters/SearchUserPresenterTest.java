@@ -13,6 +13,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Services.AuthService;
@@ -80,6 +81,35 @@ public class SearchUserPresenterTest {
 
         // Make sure displaying error message
         Mockito.verify(searchUserView).showToast(anyString());
+    }
+
+    /**
+     * Unit test doSearch() to make sure that when user search successfully, the application
+     * will bind it to the recycler view adapter and display list of users for particular
+     * keyword
+     */
+    @Test
+    public void doSearch_Success() throws Exception {
+        // Setup necessary mock
+        SearchUserView searchUserView = Mockito.mock(SearchUserView.class);
+        UsersService usersService = Mockito.mock(UsersService.class);
+
+        // Control the behaviour of user service to return error
+        // Mock user object
+        User user1 = Mockito.mock(User.class);
+        ArrayList<User> results = new ArrayList<>();
+        results.add(user1);
+        UsersSearchResult usersSearchResult = new UsersSearchResult(results);
+        Observable<UsersSearchResult> observable = Observable.just(usersSearchResult);
+
+        Mockito.when(usersService.searchForUsers("maleakhi", "name")).thenReturn(observable);
+
+        // Test the method
+        SearchUserPresenter presenter = new SearchUserPresenter(searchUserView, usersService);
+        presenter.doSearch("maleakhi");
+
+        // Make sure displaying users to recycler view
+        Mockito.verify(searchUserView).bindAdapterToRecyclerView(usersSearchResult);
     }
 
 }
