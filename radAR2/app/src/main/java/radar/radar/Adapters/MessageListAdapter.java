@@ -22,9 +22,8 @@ import radar.radar.R;
 import radar.radar.Services.AuthService;
 
 /**
- * Created by keyst on 1/10/2017.
+ * Adapter for chat (messages)
  */
-
 public class MessageListAdapter extends RecyclerView.Adapter {
     private Context context;
     private List<MessageResponse> messageList;
@@ -34,16 +33,29 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     public static final int MESSAGE_SENT = 1;
     public static final int MESSAGE_RECEIVED = 2;
 
+    /**
+     * Constructor for the adapter
+     * @param context ChatActivity
+     * @param messageList messages to be displayed
+     */
     public MessageListAdapter(Context context, List<MessageResponse> messageList) {
         this.messageList = messageList;
         this.context = context;
     }
 
+    /**
+     * Setting the message list to new message lsit
+     * @param messageList new message list
+     */
     public void setMessageList(List<MessageResponse> messageList) {
         this.messageList = messageList;
-        // TODO to be added in backend: send userDetails back too
     }
 
+    /**
+     * Updated version of message list (include user details)
+     * @param messageList new message list
+     * @param userDetails
+     */
     public void setMessageList(List<MessageResponse> messageList, HashMap<Integer, User> userDetails) {
         this.messageList = messageList;
         this.usersDetails = userDetails;
@@ -64,7 +76,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         return null;
     }
 
-    // Determines the appropriate ViewType according to the sender of the message.
+    /**
+     * Determining which use who sent
+     * @param position
+     * @return integer indicating which user sending message
+     */
     @Override
     public int getItemViewType(int position) {
         MessageResponse message = (MessageResponse) messageList.get(position);
@@ -103,6 +119,10 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         return messageList.size();
     }
 
+    /**
+     * Parse time
+     * @return string to be displayed in user interface
+     */
     private String parseTimeString(String timeString) {
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -129,15 +149,23 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 minuteString = minute.toString();
             }
 
-            return hourString + ":" + minuteString;
+            // set am or pm
+            int hourOfDay = hour;
+            if (hourOfDay >= 12) {
+                return hourString + ":" + minuteString + " PM";
+            } else {
+                return hourString + ":" + minuteString + " AM";
+            }
+
         } catch (ParseException e) {
             e.printStackTrace();
             return "";
         }
     }
 
-    // TODO ViewHolder for date separator
-
+    /**
+     * Inner class for ReceivedMessageHolder (layout for receive message row)
+     */
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
 
@@ -156,11 +184,12 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 nameText.setText(message.userDetails.firstName + " " + message.userDetails.lastName);
             }
             timeText.setText(parseTimeString(message.time));
-            //timeText.setText(message.time);
-            //nameText.setText(message.)
         }
     }
 
+    /**
+     * Inner class for SentMessageHolder (layout for sent message row)
+     */
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
 
@@ -175,8 +204,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         void bind(MessageResponseWithDetails message) {
             messageText.setText(message.text);
             timeText.setText(parseTimeString(message.time));
-            //timeText.setText(message.time);
-            //nameText.setText(message.)
         }
     }
 }

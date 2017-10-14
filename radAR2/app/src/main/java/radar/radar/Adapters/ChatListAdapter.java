@@ -14,16 +14,27 @@ import radar.radar.ChatActivity;
 import radar.radar.Models.Domain.Group;
 import radar.radar.R;
 
+/**
+ * Adapter for chat list, used to connect data to display and recycler view
+ */
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
-
     ArrayList<Group> groups;
-    Context context;    // TODO remove, not used?
+    Context context;
 
+    /**
+     * Constructor for ChatListAdapter
+     * @param context context of the activity that calls the adapter
+     * @param groups list of chats/ groups/ tracking groups
+     */
     public ChatListAdapter(Context context, ArrayList<Group> groups) {
         this.context = context;
         this.groups = groups;
     }
 
+    /**
+     * Set the array list groups with new arraylist/ updated array list
+     * @param groups arraylist of Group
+     */
     public void setChatList(ArrayList<Group> groups) {
         this.groups = groups;
     }
@@ -51,7 +62,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         if (group.isTrackingGroup) {
             holder.chatType.setText("Tracking Group");
         } else {
-            holder.chatType.setText("Group");
+            holder.chatType.setText("Chat");
         }
     }
 
@@ -60,6 +71,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         return groups.size();
     }
 
+    /**
+     * Inner class for ViewHolder
+     * Connecting row xml file with the application logic
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView chatName;
         TextView chatType;

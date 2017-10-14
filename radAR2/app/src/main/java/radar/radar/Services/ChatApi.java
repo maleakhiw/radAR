@@ -15,9 +15,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 /**
- * Created by keyst on 20/9/17.
+ * Interface that are used for Retrofit call for chat functionality
  */
-
 public interface ChatApi {
     @GET("accounts/{userID}/chats")
     Observable<GetChatsResponse> getChats(@Path(value="userID", encoded=true) int userID, @Header("token") String token);
