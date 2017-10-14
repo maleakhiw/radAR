@@ -11,7 +11,9 @@ import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.FriendsResponse;
+import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
@@ -134,6 +136,36 @@ public class ChatListPresenterTest {
 
         // Verify to display error message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
+    }
+
+    /**
+     * Unit testing to check if displayChatList is displaying chat list successfully
+     */
+    @Test
+    public void displayChatList_Success() {
+        // Mock necessary object
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Mock the behaviour
+        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
+        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
+
+        // Create Observable returning valid object
+        Group group = Mockito.mock(Group.class);
+        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
+        getChatInfoResponse.success = true;
+        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
+
+        // Behaviour of the function
+        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
+
+        // Call the method and create the presenter
+        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
+        presenter.displayChatList();
+
+        // Verify
+        Mockito.verify(chatListView).processDisplayChatList(getChatInfoResponse);
     }
 
 }

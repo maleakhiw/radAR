@@ -7,4 +7,8 @@ import radar.radar.Models.Domain.Group;
  */
 public class GetChatInfoResponse extends Status {
     public Group group;
+
+    public GetChatInfoResponse(Group group) {
+        this.group = group;
+    }
 }
