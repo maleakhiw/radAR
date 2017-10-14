@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
@@ -258,6 +259,47 @@ public class ChatPresenterTest {
         presenter.generateNewChat();
 
         // Verify
+        Mockito.verify(chatView).showToast(anyString());
+    }
+
+    /**
+     * Used to check if the method return error if there is on error
+     */
+    @Test
+    public void generateNewChat_Failure() {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Define behaviour
+        Mockito.when(chatView.getUsername()).thenReturn("maleakhiw");
+        Mockito.when(chatView.getUserID()).thenReturn(1);
+        Mockito.when(chatView.getCurrentUserID()).thenReturn(2);
+
+        // Create presenter object
+        ChatPresenter chatPresenter = new ChatPresenter(chatView, chatService);
+        ChatPresenter presenter = Mockito.spy(chatPresenter);
+
+        // Create observable and necessary dependency
+        NewChatRequest newChatRequest = Mockito.mock(NewChatRequest.class);
+        Mockito.when(presenter.generateNewChatRequest(1,2, "maleakhiw")).thenReturn(newChatRequest);
+        NewChatResponse newChatResponse = Mockito.mock(NewChatResponse.class);
+        Group group = Mockito.mock(Group.class);
+        newChatResponse.group = group;
+        group.groupID = 10;
+        newChatResponse.success = false;
+        Observable<NewChatResponse> observable = Observable.just(newChatResponse)
+                .map(newChatResponse1 -> {
+                    throw new TimeoutException("error");
+                });
+
+        // Return that observable
+        Mockito.when(chatService.newChat(newChatRequest)).thenReturn(observable);
+
+        // Call the method
+        presenter.generateNewChat();
+
+        // Verify that error message is given if there is error
         Mockito.verify(chatView).showToast(anyString());
     }
 
