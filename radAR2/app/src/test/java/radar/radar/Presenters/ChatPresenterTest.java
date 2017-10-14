@@ -223,4 +223,42 @@ public class ChatPresenterTest {
         Mockito.verify(chatView).setGroupID(10);
     }
 
+    /**
+     * Used to check if the method return error if status false
+     */
+    @Test
+    public void generateNewChat_StatusFalse() {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Define behaviour
+        Mockito.when(chatView.getUsername()).thenReturn("maleakhiw");
+        Mockito.when(chatView.getUserID()).thenReturn(1);
+        Mockito.when(chatView.getCurrentUserID()).thenReturn(2);
+
+        // Create presenter object
+        ChatPresenter chatPresenter = new ChatPresenter(chatView, chatService);
+        ChatPresenter presenter = Mockito.spy(chatPresenter);
+
+        // Create observable and necessary dependency
+        NewChatRequest newChatRequest = Mockito.mock(NewChatRequest.class);
+        Mockito.when(presenter.generateNewChatRequest(1,2, "maleakhiw")).thenReturn(newChatRequest);
+        NewChatResponse newChatResponse = Mockito.mock(NewChatResponse.class);
+        Group group = Mockito.mock(Group.class);
+        newChatResponse.group = group;
+        group.groupID = 10;
+        newChatResponse.success = false;
+        Observable<NewChatResponse> observable = Observable.just(newChatResponse);
+
+        // Return that observable
+        Mockito.when(chatService.newChat(newChatRequest)).thenReturn(observable);
+
+        // Call the method
+        presenter.generateNewChat();
+
+        // Verify
+        Mockito.verify(chatView).showToast(anyString());
+    }
+
 }
