@@ -126,6 +126,8 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         userDetailsEmail = findViewById(R.id.user_details_email);
         userDetailsPhoneNumber = findViewById(R.id.user_details_phone_number);
         add = findViewById(R.id.userAddFriend);
+
+        setTitle("User Information");
     }
 
 }
