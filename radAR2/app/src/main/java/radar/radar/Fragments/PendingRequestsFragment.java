@@ -13,21 +13,27 @@ import android.widget.Toast;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.FriendsRequestAdapter;
+import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.FriendRequestsResponse;
+import radar.radar.Models.Responses.UsersSearchResult;
+import radar.radar.Presenters.PendingRequestsPresenter;
 import radar.radar.R;
-import radar.radar.SearchResultActivity;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
+import radar.radar.Views.PendingRequestsView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by keyst on 8/10/2017.
+ * Fragment that are used to display pending friend request that a user have
  */
-
-public class PendingRequestsFragment extends Fragment {
+public class PendingRequestsFragment extends Fragment implements PendingRequestsView {
+    /** UI variable */
     private RecyclerView recyclerView2;
+
+    /** Variable for service and presenter */
+    private PendingRequestsPresenter presenter;
     private UsersService usersService;
 
     @Nullable
@@ -47,45 +53,31 @@ public class PendingRequestsFragment extends Fragment {
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);
 
-        // Display pending friend requests for particular user
-        displayFriendsRequest();
-
+        // Initiate presenter
+        presenter = new PendingRequestsPresenter(this, usersService);
+        presenter.displayFriendsRequest(); // call display pending request method
 
         return view;
     }
 
-    public void displayFriendsRequest() {
-        // just display all of the friend request for a given user
-        usersService.getFriendRequests().subscribe(new Observer<FriendRequestsResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+    /**
+     * Displaying message in the form of toast to user
+     * @param message message to be sent to user screen in toast
+     */
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
 
-            }
-
-            @Override
-            public void onNext(FriendRequestsResponse friendRequestsResponse) {
-                // Check status of the response
-                if (friendRequestsResponse.success) {
-//                     Display on the recycler view
-                    FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
-                    recyclerView2.setAdapter(adapter);
-                    recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    adapter.notifyDataSetChanged();
-                }
-                else {
-                    Toast.makeText(getActivity(), "Error generating requests.", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getActivity(), "Internal error", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    /**
+     * Displaying pending requests
+     * @param friendRequestsResponse representing the response when displaying pending request
+     */
+    @Override
+    public void bindAdapterToRecyclerView(FriendRequestsResponse friendRequestsResponse) {
+        FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
+        recyclerView2.setAdapter(adapter);
+        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter.notifyDataSetChanged();
     }
 }

@@ -41,29 +41,7 @@
         </activity>
 
         <!-- Tabbed activity -->
-        <activity android:name=".TabbedSearchActivity">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
-
-        <!--Tabbed activity-->
-        <activity android:name=".TabbedSearchActivity">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        </activity>
-
-        <activity
-            android:name=".SearchResultActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity android:name=".TabbedSearchActivity"></activity>
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

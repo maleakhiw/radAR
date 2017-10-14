@@ -1,9 +1,8 @@
 package radar.radar.Models.Responses;
 
 /**
- * Created by kenneth on 18/9/17.
+ * Data model representing response when user add another users
  */
-
 public class AddFriendResponse extends Status {
     public int requestID;
 }

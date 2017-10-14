@@ -10,16 +10,19 @@ import android.view.MenuItem;
 import radar.radar.Fragments.PendingRequestsFragment;
 import radar.radar.Fragments.SearchUserFragment;
 
+/**
+ * Main Activity that are used to display search user functionality and also pending friend requests
+ */
 public class TabbedSearchActivity extends AppCompatActivity {
-
-    private SectionsPageAdapter mSectionsPageAdapter;
     private ViewPager mViewPager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_request);
+
+        // Setup title of the page
+        setTitle("Search");
 
         // Enable back action bar
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
@@ -31,15 +34,20 @@ public class TabbedSearchActivity extends AppCompatActivity {
         // setup tab layout
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
     }
 
-    /** Method that are used for the back */
+    /**
+     * Enable back button functionality to previous activity
+     */
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;
     }
 
+    /**
+     * Setup the pager to connect pending friend request and search user functionality using tab
+     * @param viewPager
+     */
     private void setupViewPager(ViewPager viewPager) {
         SectionsPageAdapter adapter = new SectionsPageAdapter(getSupportFragmentManager());
         adapter.addFragment(new SearchUserFragment(), "Search Users");
