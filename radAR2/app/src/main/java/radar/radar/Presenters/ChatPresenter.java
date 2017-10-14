@@ -62,7 +62,12 @@ public class ChatPresenter {
             @Override
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
-                chatView.processRecyclerView(messagesResponse);
+                if (messagesResponse.success) {
+                    chatView.processRecyclerView(messagesResponse);
+                }
+                else {
+                    chatView.showToast("Failure to load messages.");
+                }
             }
 
             @Override
@@ -90,7 +95,8 @@ public class ChatPresenter {
         participant.add(id1);
         participant.add(id2);
 
-        return (new NewChatRequest(participant, name));
+        NewChatRequest object = new NewChatRequest(participant, name);
+        return (object);
     }
 
     public void onStop() {

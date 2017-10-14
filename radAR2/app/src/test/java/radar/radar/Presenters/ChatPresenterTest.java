@@ -4,10 +4,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+
+import io.reactivex.Observable;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
@@ -65,13 +69,60 @@ public class ChatPresenterTest {
         Mockito.verify(chatView).embedSendMessage();
     }
 
+    /**
+     * Used to test determine message creation when a chat haven't existed.
+     * It will generate new chat
+     * @throws Exception
+     */
     @Test
-    public void loadMessages() throws Exception {
+    public void determineMessageCreation_New() throws Exception {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Behaviour of the mocking object
+        Mockito.when(chatView.getLoad()).thenReturn(false); // indicate not to load
+
+        // Create presenter to be spied
+        ChatPresenter presenterBeforeSpied = new ChatPresenter(chatView, chatService);
+        ChatPresenter presenter = Mockito.spy(presenterBeforeSpied);
+
+        // Make sure that load does nothing
+        Mockito.doNothing().when(presenter).generateNewChat();
+
+        // Call the method
+        presenter.determineMessageCreation();
+
+        // Verify that new chat is created
+        Mockito.verify(presenter).generateNewChat();
+        Mockito.verify(chatView).embedSendMessage();
     }
 
+    /**
+     * Used to check if message is really loaded when success
+     * @throws Exception
+     */
     @Test
-    public void generateNewChatRequest() throws Exception {
+    public void loadMessages_Success() throws Exception {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create observable
+        MessagesResponse messagesResponse = Mockito.mock(MessagesResponse.class);
+        messagesResponse.success = true;
+        Observable<MessagesResponse> observable = Observable.just(messagesResponse);
+
+        Mockito.when(chatService.getMessages(1, 2000)).thenReturn(observable);
+        
+        // Create presenter
+        ChatPresenter presenter = new ChatPresenter(chatView, chatService);
+        presenter.loadMessages(1);
+
+        // Verify
+        Mockito.verify(chatView).processRecyclerView(messagesResponse);
     }
+
 
     @Test
     public void generateNewChat() throws Exception {
