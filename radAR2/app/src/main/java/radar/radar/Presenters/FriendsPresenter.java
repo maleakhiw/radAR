@@ -51,7 +51,8 @@ public class FriendsPresenter {
 
             @Override
             public void onError(Throwable e) {
-                friendsView.showToast("Unauthorized token. Please login again");
+                System.out.println(e.getMessage());
+                friendsView.showToast("Internal Error. Failed to load friends.");
             }
 
             @Override
