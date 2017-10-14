@@ -19,7 +19,11 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Class that handle displaying user details and information (profile)
+ */
 public class UserDetailActivity extends AppCompatActivity implements UserDetailView {
+    /** UI variable */
     private TextView fullname;
     private TextView username;
     private TextView userDetailsProfile;
@@ -27,10 +31,10 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     private TextView userDetailsPhoneNumber;
     private FloatingActionButton messageFab;
     private ImageView add;
-
     private User user;
-    private UsersService usersService;
 
+    /** Service and Presenter variable */
+    private UsersService usersService;
     private UserDetailPresenter userDetailPresenter;
 
     @Override
@@ -38,6 +42,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_detail);
 
+        // Setup the User Interface
         setupUI();
 
         // Enable back action bar
@@ -55,7 +60,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(this, usersApi);
 
-        // Get the information
+        // Get the information for user to display
         user = (User) getIntent().getSerializableExtra("user");
         fullname.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
@@ -68,7 +73,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             userDetailsProfile.setText("Hello, I am using Radar!");
         }
 
-        // initialize presenter
+        // Initialise presenter
         userDetailPresenter = new UserDetailPresenter(this, usersService);
 
 
@@ -87,26 +92,32 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // add friend
+                // Add friend
                 userDetailPresenter.generateFriendRequest(user.userID);
             }
         });
 
     }
 
-    /** Method that are used for the back */
+    /**
+     * Method that are used for the back button
+     */
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;
     }
 
-    /** Will be used to show message on the form of toast on the presenter class */
+    /**
+     * Will be used to show message on the form of toast on the presenter class
+     */
     @Override
     public void showToastLong(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
-    /** Setup ui by connecting layout item with java */
+    /**
+     * Setup ui by connecting layout item with java
+     */
     public void setupUI() {
         messageFab = findViewById(R.id.fab_message);
         fullname = findViewById(R.id.fullname);

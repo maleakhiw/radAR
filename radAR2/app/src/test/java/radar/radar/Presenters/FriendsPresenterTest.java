@@ -122,4 +122,38 @@ public class FriendsPresenterTest {
         Mockito.verify(friendsView).bindAdapterToRecyclerView(friendsForFriendsResponse);
     }
 
+    /**
+     * Unit test making making sure toast is displayed when status of the request is false
+     * @throws Exception
+     */
+    @Test
+    public void loadFriends_StatusFalse() throws Exception {
+        // Mock necessary objects
+        UsersService usersService = Mockito.mock(UsersService.class);
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
+
+        // Define behaviours
+        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
+        friendsResponse.success = false;
+        friendsResponse.errors = new ArrayList<>();
+
+        // List of friends for friendsResponse
+        ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
+        friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user", "keystorm@rocketmail.com"));
+        friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too", "dragonica@gmail.com"));
+        friendsResponse.friends = friendsForFriendsResponse;
+
+        // Model the behaviour of the users service by pretending that it will give successful request
+        Mockito.when(usersService.getFriends()).thenReturn(
+                Observable.just(friendsResponse)
+        );
+
+        // Test the appropriate method
+        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
+        friendsPresenter.loadFriends();
+
+        // Make sure that it display toast error message
+        Mockito.verify(friendsView).showToast(anyString());
+    }
+
 }

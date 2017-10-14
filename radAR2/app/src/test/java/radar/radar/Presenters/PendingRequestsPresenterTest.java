@@ -23,6 +23,7 @@ import radar.radar.Views.PendingRequestsView;
 import radar.radar.Views.SearchUserView;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -112,6 +113,34 @@ public class PendingRequestsPresenterTest {
 
         // Make sure binding to recycler view and display view
         Mockito.verify(pendingRequestsView).bindAdapterToRecyclerView(response);
+    }
+
+    /**
+     * Unit test for to make sure that when status false, will display error message
+     */
+    @Test
+    public void displayFriendRequest_StatusFalse() throws Exception {
+        // Setup necessary mock
+        PendingRequestsView pendingRequestsView = Mockito.mock(PendingRequestsView.class);
+        UsersService usersService = Mockito.mock(UsersService.class);
+
+        // Create observable that will return success
+        FriendRequest friendRequest = Mockito.mock(FriendRequest.class);
+        ArrayList<FriendRequest> request = new ArrayList<>();
+        request.add(friendRequest);
+        FriendRequestsResponse response = new FriendRequestsResponse(request);
+        response.success = false; // false request
+        Observable<FriendRequestsResponse> observable = Observable.just(response);
+
+        // Throw success
+        Mockito.when(usersService.getFriendRequests()).thenReturn(observable);
+
+        // Test the method
+        PendingRequestsPresenter presenter = new PendingRequestsPresenter(pendingRequestsView, usersService);
+        presenter.displayFriendsRequest();
+
+        // Make sure display error message
+        Mockito.verify(pendingRequestsView).showToast(anyString());
     }
 
 }
