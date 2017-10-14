@@ -162,10 +162,6 @@ public class GroupDetailsFragment extends Fragment {
         Button navigateButton = (Button) rootView.findViewById(R.id.navigate_to_location);
         navigateButton.setOnClickListener(view -> onNavigateButtonClicked());
 
-        // Track
-        Button trackButton = (Button) rootView.findViewById(R.id.track_friend);
-        trackButton.setOnClickListener(view -> onTrackButtonClicked());
-
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -273,7 +269,11 @@ public class GroupDetailsFragment extends Fragment {
 
                     @Override
                     public void onNext(Status status) {
-                        Toast.makeText(getActivity(), "Update meeting point to " + group.meetingPoint, Toast.LENGTH_SHORT).show();
+                        if (status.success) {
+                            Toast.makeText(getActivity(), "Update meeting point", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d(TAG, "Error update");
+                        }
                     }
 
                     @Override

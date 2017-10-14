@@ -14,7 +14,7 @@ public class Group implements Serializable {
     public ArrayList<Integer> members;
     public ArrayList<Integer> admins;
     public ArrayList<Object> footprints;
-    public Object meetingPoint;
+    public MeetingPoint meetingPoint;
     public boolean isTrackingGroup;
     public HashMap<Integer, User> usersDetails;
 
