@@ -18,6 +18,7 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Domain.User;
@@ -29,23 +30,24 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Classes to display chat to user (ChatActivity)
+ */
 public class ChatActivity extends AppCompatActivity implements ChatView {
-    private ChatService chatService;
+    /** UI and additional variables */
     private User user;
     private int groupID;
     private ArrayList<MessageResponse> messages;
     private ArrayList<Integer> chatIDs;
-
     private EditText chatText;
     private ImageButton send;
-
-    // recyclerView
     private RecyclerView messageRecyclerView;
     private MessageListAdapter messageListAdapter;
-
     private Boolean load;
 
+    /** Variable for presenter and services */
     private ChatPresenter chatPresenter;
+    private ChatService chatService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
 
+        // Getting data from previous activity
         Group group = (Group) getIntent().getSerializableExtra("group");
         if (group != null) {
             setTitle(group.name);
@@ -94,7 +97,9 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         chatPresenter.determineMessageCreation();
     }
 
-    /** Method that are used for the back */
+    /**
+     * Method that are used for the back button
+     */
     public boolean onOptionsItemSelected(MenuItem item){
         finish();
         return true;
@@ -112,62 +117,118 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         chatPresenter.onStop();
     }
 
+    /**
+     * Set the load status
+     * @param load boolean value representing new chat object or loading old chat object
+     */
     @Override
     public void setLoad(Boolean load) {
         this.load = load;
     }
 
+    /**
+     * Get the load status
+     * @return boolean value representing load status
+     */
     @Override
     public Boolean getLoad() {
         return load;
     }
 
+    /**
+     * Getting the group from previous activity
+     * @return Group
+     */
     @Override
     public Group getChatFromIntent() {
         return ((Group) getIntent().getSerializableExtra("group"));
     }
 
+    /**
+     * Setter for group id
+     * @param groupID the id of the group
+     */
     @Override
     public void setGroupID(int groupID) {
         this.groupID = groupID;
     }
 
+    /**
+     * Getter for group id
+     * @return group id
+     */
     @Override
     public int getGroupID() {
         return groupID;
     }
 
+    /**
+     * Setter for array list messages
+     * @param messages new array list messages
+     */
     @Override
     public void setMessages(ArrayList<MessageResponse> messages) {
         this.messages = messages;
     }
 
+    /**
+     * Getter for array list messages
+     * @return array list messages
+     */
     @Override
     public ArrayList<MessageResponse> getMessages() {
         return messages;
     }
 
+    /**
+     * Get the adapter
+     * @return adapter
+     */
     @Override
     public MessageListAdapter getMessageListAdapter() {
         return messageListAdapter;
     }
 
+    /**
+     * Getter for user
+     * @return user
+     */
     @Override
     public User getUser() {
         return user;
     }
 
+    /**
+     * Setter for user
+     * @param user new user
+     */
     @Override
     public void setUser(User user) {
         this.user = user;
     }
 
+    /**
+     * Used to  display toast to user
+     * @param message message to be sent in toast
+     */
     @Override
     public void showToast(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
-    /** More appropriate to put into the view as it only contains minimum amount of logic whil
+    /**
+     * Used to process displaying messages and connecting to recycler view
+     */
+    @Override
+    public void processRecyclerView(MessagesResponse messagesResponse) {
+        setMessages(messagesResponse.messages);
+        getMessageListAdapter().setMessageList(getMessages(), messagesResponse.usersDetails);
+        getMessageListAdapter().notifyDataSetChanged();
+    }
+
+    /**
+     * Used to embed the send message
+     * More appropriate to put into the view as it only contains minimum amount of logic while
      * having so much dependency with the view, i.e. manipulating the onclicklistener
      */
     @Override
@@ -217,11 +278,18 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         });
     }
 
+    /**
+     * Getting context of the activity
+     * @return Context of this activity
+     */
     @Override
     public Context getChatContext() {
         return this;
     }
 
+    /**
+     * Method to connect UI element with java
+     */
     public void setupUI() {
         chatText = findViewById(R.id.chat_text_field);
         send = findViewById(R.id.button_send);

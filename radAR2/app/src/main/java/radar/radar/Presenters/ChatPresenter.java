@@ -13,22 +13,27 @@ import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
 /**
- * Created by keyst on 3/10/2017.
+ * Application logic for chat (Presenter part of the MVP model)
  */
-
 public class ChatPresenter {
     private ChatView chatView;
     private ChatService chatService;
-
+    Disposable loadMessagesDisposable;
     private Integer lastGroupID;
 
-    /** Constructor */
+    /**
+     * Constructor for ChatPresenter
+     * @param chatView ChatActivity
+     * @param chatService instance of ChatService object
+     */
     public ChatPresenter(ChatView chatView, ChatService chatService) {
         this.chatView = chatView;
         this.chatService = chatService;
     }
 
-    /** Method that are used to determine whether we load messages or create new chat */
+    /**
+     * Method that are used to determine whether we load messages or create new chat
+     */
     public void determineMessageCreation() {
         // If there exist the message, just load the message
         if (chatView.getLoad()) {
@@ -43,9 +48,10 @@ public class ChatPresenter {
         }
     }
 
-    Disposable loadMessagesDisposable;
-
-    /** Used to get messages */
+    /**
+     * Used to load messages
+     * @param chatID id of the chat to load the messages
+     */
     public void loadMessages(int chatID) {
         chatService.getMessages(chatID, 2000).subscribe(new Observer<MessagesResponse>() {
             @Override
@@ -56,13 +62,12 @@ public class ChatPresenter {
             @Override
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
-                chatView.setMessages(messagesResponse.messages);
-                chatView.getMessageListAdapter().setMessageList(chatView.getMessages(), messagesResponse.usersDetails);
-                chatView.getMessageListAdapter().notifyDataSetChanged();
+                chatView.processRecyclerView(messagesResponse);
             }
 
             @Override
             public void onError(Throwable e) {
+                chatView.showToast("Internal Error. Failed to load messages.");
 
             }
 
@@ -73,7 +78,13 @@ public class ChatPresenter {
         });
     }
 
-    /** Create new chat request object */
+    /**
+     * Create new chat request object
+     * @param id1 user id 1
+     * @param id2 user id 2
+     * @param name name of the group/ chat
+     * @return new chat request object
+     */
     public NewChatRequest generateNewChatRequest(int id1, int id2, String name) {
         ArrayList<Integer> participant = new ArrayList<>();
         participant.add(id1);
@@ -94,7 +105,9 @@ public class ChatPresenter {
         }
     }
 
-    /** Used to generate a new chat for a particular user */
+    /**
+     * Used to generate a new chat for a particular user
+     */
     public void generateNewChat() {
         // Create an object for new chat request which includes the participant of the chat
         // and also the name of the chat
@@ -115,12 +128,13 @@ public class ChatPresenter {
                     chatView.setGroupID(newChatResponse.group.groupID);
                 }
                 else {
-                    chatView.showToast("Error to create new chat");
+                    chatView.showToast("Failed to create new chat");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
+                chatView.showToast("Internal error. Failed to generate new chat.");
             }
 
             @Override
