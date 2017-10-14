@@ -16,7 +16,17 @@ This Android application is built to target Android Lollipop (5.0) and above. To
 
 The backend runs on top of Node.js and requires a MongoDB server to be running on the same machine as the server. To point it towards another MongoDB server, simply change the line containing `mongoose.connect()`
 
+## Dependencies
+### Backend
+The backend assumes that Node and NPM has been installed on the computer/server running it.
+
+### Android Application
+The source code is implemented using Android Studio Beta 3.0. While this should not cause any issues with the stable version of Android Studio, this is currently not tested. Binaries of the Android application would be attached to the latest releases, but any rebuilding should be done through Android Studio.
+
+This application is best experienced through a real device, as there are some issues with the AR component which may overload and crash the Android Emulator.
+
 ## How to run
+
 ### Backend
 - Open a terminal and point it towards the `backend` directory.
 - Run `npm install` to install the required Node.js dependencies.
