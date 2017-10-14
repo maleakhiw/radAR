@@ -23,10 +23,13 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 /**
- * Created by keyst on 26/09/2017.
+ * Unit testing for LoginPresenter class
+ * This class is used to test the application logic of login
  */
 public class LoginPresenterTest {
-
+    /**
+     * Method to setup class that are used when unit testing retrofit rxjava
+     */
     @BeforeClass
     public static void setupClass() {
         // set all schedulers to trampoline scheduler - to run on the "main thread"
@@ -51,6 +54,12 @@ public class LoginPresenterTest {
     public void tearDown() throws Exception {
     }
 
+    /**
+     * This method is used to test and get the behaviour when there is a timeout on the server
+     * If there is a timeout we want to check whether the method on the presenter log the error
+     * and does not log in the user
+     * @throws Exception
+     */
     @Test
     public void onLoginButtonClicked_Failure() throws Exception {
         // set up the LoginView mock
@@ -61,7 +70,8 @@ public class LoginPresenterTest {
 
         /* simulate a failure (can be a connection error, etc.) */
         // set up an observable that throws an error
-        Observable<AuthResponse> errorThrowingObservable = Observable.just(new AuthResponse(false, null, null, 0))
+        Observable<AuthResponse> errorThrowingObservable = Observable.just(new AuthResponse(false,
+                null, null, 0))
                 .map(fakeResponse -> {
            throw new SocketTimeoutException("Fake internet timeout error.");
         });
@@ -81,9 +91,14 @@ public class LoginPresenterTest {
         // let's make sure feedback is displayed to the user and the progressBar is dismissed
         Mockito.verify(loginView).showToastLong(anyString());
         Mockito.verify(loginView).dismissProgressBar();
-
     }
 
+    /**
+     * This method is used to check whether when login button is clicked, it will call
+     * the method respondToLoginResponse to handle the login process. It will used to check
+     * successful condition of login.
+     * @throws Exception
+     */
     @Test
     public void onLoginButtonClicked_Success() throws Exception {
         // set up the LoginView mock
@@ -93,7 +108,8 @@ public class LoginPresenterTest {
         AuthService authService = Mockito.mock(AuthService.class);
 
         // return an actual response! This is a success, not a failure
-        Observable<AuthResponse> authResponseObservable = Observable.just(new AuthResponse(true, new ArrayList<>(), "fakeToken", 42));
+        Observable<AuthResponse> authResponseObservable = Observable.just(new
+                AuthResponse(true, new ArrayList<>(), "fakeToken", 42));
 
         Mockito.when(authService.login(anyString(), anyString())).thenReturn(authResponseObservable);
 
@@ -110,8 +126,13 @@ public class LoginPresenterTest {
         Mockito.verify(presenter).respondToLoginResponse(any(AuthResponse.class));
     }
 
+    /**
+     * This method is used to unit test responding to login request successfully
+     * It will go to HomeScreen activity
+     * @throws Exception
+     */
     @Test
-    public void respondToLoginResponse_success() throws Exception {
+    public void respondToLoginResponse_Success() throws Exception {
         // set up the LoginView mock
         LoginView loginView = Mockito.mock(LoginView.class);
 
@@ -121,14 +142,20 @@ public class LoginPresenterTest {
         // set up a new presenter, not with the real dependencies but the mocks
         LoginPresenter presenterToBeSpied = new LoginPresenter(loginView, authService);
         LoginPresenter presenter = Mockito.spy(presenterToBeSpied);
-        presenter.respondToLoginResponse(new AuthResponse(true, new ArrayList<>(), "3.141592653589793ispi", 42));
+        presenter.respondToLoginResponse(new AuthResponse(true, new ArrayList<>(),
+                "3.141592653589793ispi", 42));
 
         Mockito.verify(loginView).startHomeScreenActivity();
         Mockito.verify(loginView).finishActivity();
     }
 
+    /**
+     * This method is used to unit test responding to login request when failure
+     * It will show toast that the credentials are wrong
+     * @throws Exception
+     */
     @Test
-    public void respondToLoginResponse_failure() throws Exception {
+    public void respondToLoginResponse_Failure() throws Exception {
         // set up the LoginView mock
         LoginView loginView = Mockito.mock(LoginView.class);
 
@@ -138,12 +165,11 @@ public class LoginPresenterTest {
         // set up a new presenter, not with the real dependencies but the mocks
         LoginPresenter presenterToBeSpied = new LoginPresenter(loginView, authService);
         LoginPresenter presenter = Mockito.spy(presenterToBeSpied);
-        presenter.respondToLoginResponse(new AuthResponse(false, new ArrayList<>(), null, 0));
+        presenter.respondToLoginResponse(new AuthResponse(false, new ArrayList<>(),
+                null, 0));
 
         // make sure feedback is shown to the user
         Mockito.verify(loginView).showToastLong(anyString());
-
-
     }
 
 }

@@ -15,16 +15,27 @@ import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 
+/**
+ * Adapter for FriendsActivity that are used to display friend list of a user
+ */
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHolder> {
-
     ArrayList<User> friends;
     Context context;
 
+    /**
+     * Constructor for FriendsAdapter
+     * @param context context of the activity which call this class
+     * @param friends array list of users
+     */
     public FriendsAdapter(Context context, ArrayList<User> friends) {
         this.context = context;
         this.friends = friends;
     }
 
+    /**
+     * Used to update the friend list of the adapter
+     * @param friends new friend list for this adapter
+     */
     public void updateFriends(ArrayList<User> friends) {
         this.friends = friends;
     }
@@ -47,7 +58,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         // load stuff
         holder.tvName.setText(user.firstName + " " + user.lastName);
-//        holder.tvUsername.setText(" @" + user.username);
         if (user.profileDesc == null) {
             holder.tvOnlineStatus.setText("Hello, I am using Radar!");
         } else {
@@ -66,14 +76,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProfilePic;
         TextView tvName;
-//        TextView tvUsername;
         TextView tvOnlineStatus;
 
         public ViewHolder(View itemView) {
             super(itemView);
             ivProfilePic = itemView.findViewById(R.id.row_friends_profile_picture);
             tvName = itemView.findViewById(R.id.row_friends_name);
-//            tvUsername = itemView.findViewById(R.id.row_friends_username);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
 
             // Setup on click listener on the view

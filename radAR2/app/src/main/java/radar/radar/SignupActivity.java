@@ -9,13 +9,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import radar.radar.Models.Requests.SignUpRequest;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Presenters.SignupPresenter;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
@@ -24,7 +17,11 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * View part of the MVP model for signup activity/ screen
+ */
 public class SignupActivity extends AppCompatActivity implements SignupView {
+    /** Variable for UI element */
     private EditText email;
     private EditText username;
     private EditText password;
@@ -34,8 +31,8 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
     private EditText firstName;
     private EditText lastName;
 
-    private AuthService authService;  // service for making requests to our API
-
+    /** Variable for service and presenter */
+    private AuthService authService;
     private SignupPresenter presenter;
 
     @Override
@@ -62,7 +59,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
         authService = new AuthService(authApi, this);
 
         // Initialized presenter
-        SignupPresenter presenter = new SignupPresenter(this, authService);
+        presenter = new SignupPresenter(this, authService);
 
         // Create on click listener for link login
         link_login.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +79,9 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
         });
     }
 
-    /** Setting up the User Interface */
+    /**
+     * Setting up the User Interface by connecting UI element with Java
+     */
     public void setupUI() {
         username = findViewById(R.id.username);
         email = findViewById(R.id.email);
@@ -94,48 +93,84 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
         mProgress = new ProgressDialog(SignupActivity.this);
     }
 
-    // Some setter and getter for the private variable
+    /**
+     * Method to get username from text input/ edit text that user have inputted
+     * @return String returning the username that the user have entered on the signup screen
+     */
     @Override
     public String getUsernameText() {
         return username.getText().toString();
     }
 
+    /**
+     * Method to get email from text input/ edit text that user have inputted
+     * @return String returning the email that the user have entered on the signup screen
+     */
     @Override
     public String getEmailText() {
         return email.getText().toString();
     }
 
+    /**
+     * Method to get password from text input/ edit text that user have inputted
+     * @return String returning the password that the user have entered on the signup screen
+     */
     @Override
     public String getPassword() {
         return password.getText().toString();
     }
 
+    /**
+     * Method to get first name from text input/ edit text that user have inputted
+     * @return String returning the first name that the user have entered on the signup screen
+     */
     @Override
     public String getFirstName() { return firstName.getText().toString(); }
 
+    /**
+     * Method to get last name from text input/ edit text that user have inputted
+     * @return String returning the last name that the user have entered on the signup screen
+     */
     @Override
     public String getLastName() { return lastName.getText().toString(); }
 
+    /**
+     * Method to set Progress bar (loading animation)
+     * @param message the message to display when loading the screen
+     */
     @Override
     public void setProgressBarMessage(String message) {
         mProgress.setMessage(message);
     }
 
+    /**
+     * Method to display the Progress bar (loading animation)
+     */
     @Override
     public void showProgressBar() {
         mProgress.show();
     }
 
+    /**
+     * Method to dismiss the Progress bar (loading animation)
+     */
     @Override
     public void dismissProgressBar() {
         mProgress.dismiss();
     }
 
+    /**
+     * Method to display a toast and set a message to it.
+     * @param message the message that will be display using toast
+     */
     @Override
     public void showToastLong(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Method to jump from this activity to homescreen after user click login
+     */
     @Override
     public void startHomeScreenActivity() {
         Intent intent = new Intent(this,
@@ -143,12 +178,18 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
         startActivity(intent);
     }
 
+    /**
+     * Method to jump from this activity to login if user click login link
+     */
     @Override
     public void startLoginActivity() {
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Method to terminate this activity
+     */
     @Override
     public void finishActivity() {
         finish();

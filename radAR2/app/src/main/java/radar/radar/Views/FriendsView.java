@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import radar.radar.Models.Domain.User;
 
 /**
- * Created by kenneth on 19/9/17.
+ * Interface for FriendsActivity to support MVP models.
  */
-
 public interface FriendsView {
     void showToast(String toast);
 
