@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -16,6 +17,7 @@ import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.anyString;
 
 /**
  * Used to unit test the main Chat functionality in Chat Presenter
@@ -114,13 +116,66 @@ public class ChatPresenterTest {
         Observable<MessagesResponse> observable = Observable.just(messagesResponse);
 
         Mockito.when(chatService.getMessages(1, 2000)).thenReturn(observable);
-        
+
         // Create presenter
         ChatPresenter presenter = new ChatPresenter(chatView, chatService);
         presenter.loadMessages(1);
 
         // Verify
         Mockito.verify(chatView).processRecyclerView(messagesResponse);
+    }
+
+
+    /**
+     * Used to check if error message is displayed when status is false
+     * @throws Exception
+     */
+    @Test
+    public void loadMessages_StatusFalse() throws Exception {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create observable
+        MessagesResponse messagesResponse = Mockito.mock(MessagesResponse.class);
+        messagesResponse.success = false;
+        Observable<MessagesResponse> observable = Observable.just(messagesResponse);
+
+        Mockito.when(chatService.getMessages(1, 2000)).thenReturn(observable);
+
+        // Create presenter
+        ChatPresenter presenter = new ChatPresenter(chatView, chatService);
+        presenter.loadMessages(1);
+
+        // Verify
+        Mockito.verify(chatView).showToast(anyString());
+    }
+
+    /**
+     * Used to check if error message is displayed when error i.e. connection is occurred
+     * @throws Exception
+     */
+    @Test
+    public void loadMessages_Failure() throws Exception {
+        // Mock necessary object
+        ChatView chatView = Mockito.mock(ChatView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create observable
+        MessagesResponse messagesResponse = Mockito.mock(MessagesResponse.class);
+        Observable<MessagesResponse> observable = Observable.just(messagesResponse)
+                .map(messagesResponse1 -> {
+                    throw new SocketTimeoutException("Fake timeout exception");
+                });
+
+        Mockito.when(chatService.getMessages(1, 2000)).thenReturn(observable);
+
+        // Create presenter
+        ChatPresenter presenter = new ChatPresenter(chatView, chatService);
+        presenter.loadMessages(1);
+
+        // Verify
+        Mockito.verify(chatView).showToast(anyString());
     }
 
 
