@@ -32,6 +32,10 @@ public interface ChatView {
 
     User getUser();
 
+    String getUsername();
+
+    int getUserID();
+
     void setUser(User user);
 
     void showToast(String message);

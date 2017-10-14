@@ -199,6 +199,24 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     }
 
     /**
+     * Getter for username
+     * @return string username
+     */
+    @Override
+    public String getUsername() {
+        return user.username;
+    }
+
+    /**
+     * Getter for user id
+     * @return integer user id
+     */
+    @Override
+    public int getUserID() {
+        return user.userID;
+    }
+
+    /**
      * Setter for user
      * @param user new user
      */

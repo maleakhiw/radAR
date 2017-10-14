@@ -1,7 +1,10 @@
 package radar.radar.Presenters;
 
+import android.content.Context;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 
 import java.net.SocketTimeoutException;
@@ -13,6 +16,7 @@ import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.MessagesResponse;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
@@ -176,11 +180,6 @@ public class ChatPresenterTest {
 
         // Verify
         Mockito.verify(chatView).showToast(anyString());
-    }
-
-
-    @Test
-    public void generateNewChat() throws Exception {
     }
 
 }

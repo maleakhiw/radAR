@@ -117,8 +117,8 @@ public class ChatPresenter {
     public void generateNewChat() {
         // Create an object for new chat request which includes the participant of the chat
         // and also the name of the chat
-        String name = chatView.getUser().username; // name of the chat is the username
-        NewChatRequest newChatRequest = generateNewChatRequest(chatView.getUser().userID, AuthService.getUserID(chatView.getChatContext()), name);
+        String name = chatView.getUsername(); // name of the chat is the username
+        NewChatRequest newChatRequest = generateNewChatRequest(chatView.getUserID(), AuthService.getUserID(chatView.getChatContext()), name);
 
         chatService.newChat(newChatRequest).subscribe(new Observer<NewChatResponse>() {
             @Override
