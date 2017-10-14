@@ -102,4 +102,38 @@ public class ChatListPresenterTest {
         Mockito.verify(chatListView).showToastMessage(anyString());
     }
 
+    /**
+     * When there is error, notify error message to user
+     * @throws Exception
+     */
+    @Test
+    public void getChatIDs_Failure() throws Exception {
+        // Mock necessary object
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create spied presenter
+        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
+        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+
+        // Create observable that will return error message
+        int group1 = 1;
+        ArrayList<Integer> groups = new ArrayList<>();
+        groups.add(group1);
+        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
+        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse)
+                .map(chatResponse1 -> {
+                    throw new SocketTimeoutException("Fake timeout exception");
+                });
+
+        // Define the behaviour of getChats
+        Mockito.when(chatService.getChats()).thenReturn(observable);
+
+        // Call the method that will be tested
+        presenter.getChatIDs();
+
+        // Verify to display error message to user
+        Mockito.verify(chatListView).showToastMessage(anyString());
+    }
+
 }
