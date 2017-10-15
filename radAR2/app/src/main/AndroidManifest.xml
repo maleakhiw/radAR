@@ -45,11 +45,6 @@
         </activity>
 
         <!-- Tabbed activity -->
-
-        <activity
-            android:name=".SearchResultActivity"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
       
         <activity android:name=".TabbedSearchActivity"></activity>
 
