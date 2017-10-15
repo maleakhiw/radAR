@@ -68,7 +68,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 Intent intent = new Intent(activity, FriendsActivity.class);
                 activity.startActivity(intent);
                 activity.finish();
-
             } else if (id == R.id.nav_logout) {
                 // launch Login activity
                 Intent intent = new Intent(activity, LoginActivity.class);
