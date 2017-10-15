@@ -1,9 +1,8 @@
 package radar.radar.Models.Responses;
 
 /**
- * Created by kenneth on 18/9/17.
+ * Data model for FriendRequest
  */
-
 public class FriendRequest {
     public int requestID;
     public int from;

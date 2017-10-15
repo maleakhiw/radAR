@@ -8,11 +8,11 @@ import radar.radar.Adapters.MessageListAdapter;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.MessageResponse;
 import radar.radar.Models.Domain.User;
+import radar.radar.Models.Responses.MessagesResponse;
 
 /**
- * Created by keyst on 3/10/2017.
+ * Interface for ChatActivity
  */
-
 public interface ChatView {
     void setLoad(Boolean load);
 
@@ -32,9 +32,17 @@ public interface ChatView {
 
     User getUser();
 
+    String getUsername();
+
+    int getUserID();
+
     void setUser(User user);
 
     void showToast(String message);
+
+    void processRecyclerView(MessagesResponse messagesResponse);
+
+    int getCurrentUserID();
 
     void embedSendMessage();
 

@@ -10,19 +10,27 @@ import radar.radar.Services.UsersService;
 import radar.radar.Views.UserDetailView;
 
 /**
- * Created by keyst on 30/09/2017.
+ * Presenter for UserDetailActivity
+ * This class contains application logic of UserDetailActivity
  */
-
 public class UserDetailPresenter {
     UserDetailView userDetailView;
     UsersService usersService;
 
+    /**
+     * Constructor for UserDetailPresenter
+     * @param userDetailView view for which the presenter is called
+     * @param usersService service that are instantiated on UserDetailActivity
+     */
     public UserDetailPresenter(UserDetailView userDetailView, UsersService usersService) {
         this.userDetailView = userDetailView;
         this.usersService = usersService;
     }
 
-    /** This method is used to create friend request */
+    /**
+     * Generating friend requests
+     * @param id id of the user we want to request friend with
+     */
     public void generateFriendRequest(int id) {
         usersService.addFriend(id).subscribe(new Observer<AddFriendResponse>() {
             @Override
@@ -44,7 +52,7 @@ public class UserDetailPresenter {
             @Override
             public void onError(Throwable e) {
                 // Throw message if add friend fails
-                userDetailView.showToastLong("Error adding friends.");
+                userDetailView.showToastLong("Internal error. Failed to add friends.");
             }
 
             @Override

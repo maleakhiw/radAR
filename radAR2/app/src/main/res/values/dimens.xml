@@ -17,4 +17,5 @@
     <dimen name="profile_width">75dp</dimen>
     <dimen name="profile_height">75dp</dimen>
     <dimen name="section_text_size">20sp</dimen>
+    <dimen name="home_screen_fab_text">110dp</dimen>
 </resources>

@@ -1,9 +1,8 @@
 package radar.radar.Views;
 
 /**
- * Created by keyst on 30/09/2017.
+ * Interface for UserDetailActivity to support MVP model.
  */
-
 public interface UserDetailView {
     void showToastLong(String message);
 }

@@ -177,9 +177,13 @@ app.get("/api/auth/:username", svs.login)
 //   })
 
 // object: accounts
+// profile
+app.put("/api/accounts/:userID", authenticate, ums.updateProfile);
+
 // friends
 app.post("/api/accounts/:userID/friends", authenticate, ums.addFriend)
 app.get("/api/accounts/:userID/friendRequests", authenticate, ums.getFriendRequests)
+app.delete("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.cancelRequest);
 app.post("/api/accounts/:userID/friendRequests/:requestID", authenticate, ums.respondToRequest)
 app.get("/api/accounts/:userID/friends", authenticate, ums.getFriends)
 
@@ -195,7 +199,12 @@ app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promot
 app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 
+// chats and groups
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
+
 // groups
+app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
 app.post("/api/accounts/:userID/groups", authenticate, groupSystem.newGroup);
 app.get("/api/accounts/:userID/groups", authenticate, groupSystem.getGroupsForUser);  // TODO stub
 app.get("/api/accounts/:userID/groups/:groupID", authenticate, sms.getGroup);

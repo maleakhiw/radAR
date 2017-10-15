@@ -5,19 +5,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by kenneth on 20/9/17.
+ * Data model for Group (used in tracking group or chat)
  */
-
 public class Group implements Serializable {
     public String name;
     public int groupID;
     public ArrayList<Integer> members;
     public ArrayList<Integer> admins;
     public ArrayList<Object> footprints;
-    public Object meetingPoint;
+    public MeetingPoint meetingPoint;
     public boolean isTrackingGroup;
     public HashMap<Integer, User> usersDetails;
 
+    /**
+     * Constructor for groupo
+     * @param name name of the group/ chat
+     * @param isTrackingGroup type of the instance (group/ chat) represented with true/false
+     */
     public Group(String name, boolean isTrackingGroup) {
         this.name = name;
         this.isTrackingGroup = isTrackingGroup;

@@ -17,9 +17,7 @@ const SVS = require('./SVS')
 let svs;
 
 // data models
-let Group
-let Message
-let User
+let Group, Message, User;
 
 /**
  * @param callback callback function. If defined, callback should handle response
@@ -149,6 +147,9 @@ module.exports = class SMS {
       svs = new SVS(pUser)
   }
 
+  // deleteGroup(req, res) {
+  //   deleteGroupImpl(req, res);
+  // }
 
   newGroup(req, res) {
     newGroupImpl(req, res, null);
@@ -367,4 +368,5 @@ module.exports = class SMS {
 
 }
 
+// exports, after the class
 module.exports.newGroupImpl = newGroupImpl;

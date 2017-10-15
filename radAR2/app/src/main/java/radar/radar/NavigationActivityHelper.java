@@ -53,12 +53,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
-//            if (id == R.id.nav_maps) {
-//                //TODO: Go to maps
-//                Intent intent = new Intent(activity, MapsActivity.class);
-//                activity.startActivity(intent);
-//            } else
-
             if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
@@ -78,11 +72,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 return true;
 
             } else if (id == R.id.nav_settings) {
-//                // TODO - Define settings
-//                // TODO for now used for AR
-//
-//                Intent intent = new Intent(activity, ARActivity.class);
-//                activity.startActivity(intent);
                 // The settings is used to set profile picture
                 Intent intent = new Intent(activity, EditActivity.class);
                 activity.startActivity(intent);
@@ -91,6 +80,11 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 Intent intent = new Intent(activity, GroupsListActivity.class);
                 activity.startActivity(intent);
 
+
+            }
+
+            if (!activity.getClass().equals(HomeScreenActivity.class)) {
+                activity.finish();
             }
 
             if (!activity.getClass().equals(HomeScreenActivity.class)) {

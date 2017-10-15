@@ -6,9 +6,8 @@ import java.util.HashMap;
 import radar.radar.Models.Domain.User;
 
 /**
- * Created by kenneth on 20/9/17.
+ * Data model for message response
  */
-
 public class MessagesResponse extends Status {
     public ArrayList<MessageResponse> messages;
     public HashMap<Integer, User> usersDetails;

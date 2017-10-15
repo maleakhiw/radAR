@@ -11,13 +11,14 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
- * Created by kenneth on 17/9/17.
+ * Authentication API class for Retrofit that are used to handle authentication kind of activity
+ * such as login and signup
  */
-
 public interface AuthApi {
     @POST("auth")
     Observable<AuthResponse> signUp(@Body SignUpRequest body);
 
     @GET("auth/{username}")
-    Observable<AuthResponse> login(@Path(value = "username", encoded = true) String username, @Query("password") String password);
+    Observable<AuthResponse> login(@Path(value = "username", encoded = true) String username,
+                                   @Query("password") String password);
 }

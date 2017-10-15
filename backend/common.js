@@ -1,6 +1,7 @@
 const errorValues = require('./consts').errors
 const metas = require('./consts').metas
 const User = require('./models/user') // TODO refactor so User is plug and play
+const Resource = require('./models/resource');  // TODO as above
 
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
@@ -14,6 +15,17 @@ module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
       reject('invalidUserID');
     } else {
       resolve();
+    }
+  })
+})
+
+module.exports.isUsernameUnique = (username) => new Promise((resolve, reject) => {
+  User.findOne({ username: username })
+  .then((user) => {
+    if (user) {
+      resolve(false);
+    } else {
+      resolve(true);
     }
   })
 })
@@ -107,6 +119,21 @@ module.exports.getAuthUserInfo = function(user) {
   }
   return retVal
 }
+
+module.exports.isValidPicture = (resourceID) => new Promise((resolve, reject) => {
+  Resource.findOne({fileID: resourceID}).exec()
+  .then((resource) => {
+    if (!resource) {
+      reject('invalidResourceID');
+    } else {
+      if (resource.mimetype.includes('image')) {
+        resolve();
+      } else {
+        reject('invalidMimetype');
+      }
+    }
+  })
+});
 
 module.exports.isString = (object) => {
   return (typeof object === 'string' || object instanceof String)
