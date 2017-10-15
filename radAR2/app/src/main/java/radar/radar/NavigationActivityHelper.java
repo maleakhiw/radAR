@@ -77,14 +77,11 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 activity.finish();
                 return true;
 
-            } else if (id == R.id.nav_settings) {
-                // TODO - Define settings
-                // TODO for now used for AR
-
-                Intent intent = new Intent(activity, ARActivity.class);
-                activity.startActivity(intent);
-
-            } else if (id == R.id.nav_tracking_groups) {
+            }
+//            else if (id == R.id.nav_settings) {
+//
+//            }
+            else if (id == R.id.nav_tracking_groups) {
                 Intent intent = new Intent(activity, GroupsListActivity.class);
                 activity.startActivity(intent);
 

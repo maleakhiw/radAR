@@ -1,26 +1,44 @@
 package radar.radar;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
+import org.w3c.dom.Text;
 
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Presenters.HomeScreenPresenter;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
@@ -30,19 +48,18 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
-    NavigationActivityHelper helper;
+    private static final String TAG = "Home Screen Activity";
+    private static final float DEFAULT_ZOOM = 15;
+    private static final int REQUEST_FOR_LOCATION = 1;
 
+    private Location currentLocation;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
-
     private HomeScreenPresenter presenter;
 
+    NavigationActivityHelper helper;
     FusedLocationProviderClient fusedLocationClient;
     LocationCallback locationCallback;
-
-    static final int REQUEST_FOR_LOCATION = 1;
-
-    private boolean first = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +92,115 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
 
+        // set up place autocomplete
+        PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
+                getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
+
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // TODO: Get info about the selected place.
+                googleMap.clear();
+                Log.i(TAG, "Place: " + place.getName());
+                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                        .title((String) place.getName()));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),DEFAULT_ZOOM));
+            }
+
+            @Override
+            public void onError(Status status) {
+                // TODO: Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
+
+        // set up floating action button
+        FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);
+        FloatingActionButton fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        FloatingActionButton fab_remove = (FloatingActionButton) findViewById(R.id.fab_remove);
+        FloatingActionButton fab_new_friend = (FloatingActionButton) findViewById(R.id.fab_new_friend);
+        FloatingActionButton fab_new_group = (FloatingActionButton) findViewById(R.id.fab_new_group);
+
+        TextView text_new_friend = (TextView) findViewById(R.id.text_new_friend);
+        TextView text_new_group = (TextView) findViewById(R.id.text_new_group);
+
+        // set up floating action button behaviour
+        fab_current_loc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                getDeviceLocation();
+                if(currentLocation != null) {
+                    googleMap.clear();
+                    LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                    googleMap.addMarker(new MarkerOptions().position(currentPosition));
+                    googleMap.addCircle(new CircleOptions()
+                            .center(currentPosition)
+                            .strokeColor(getColorRes(R.color.colorPrimary))
+                            .radius(currentLocation.getAccuracy()));
+                    googleMap.addCircle(new CircleOptions()
+                            .center(currentPosition)
+                            .fillColor(getColorRes(R.color.colorPrimaryDark))
+                            .strokeColor(getColorRes(R.color.colorPrimaryDark))
+                            .radius(1));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            currentPosition, DEFAULT_ZOOM));
+                }
+            }
+        });
+
+        fab_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                fab_add.setVisibility(View.INVISIBLE);
+                fab_remove.setVisibility(View.VISIBLE);
+                fab_new_friend.setVisibility(View.VISIBLE);
+                text_new_friend.setVisibility(View.VISIBLE);
+                fab_new_group.setVisibility(View.VISIBLE);
+                text_new_group.setVisibility(View.VISIBLE);
+            }
+        });
+
+        fab_remove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                fab_add.setVisibility(View.VISIBLE);
+                fab_remove.setVisibility(View.INVISIBLE);
+                fab_new_friend.setVisibility(View.INVISIBLE);
+                text_new_friend.setVisibility(View.INVISIBLE);
+                fab_new_group.setVisibility(View.INVISIBLE);
+                text_new_group.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
+        fab_new_friend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                Intent intent = new Intent(getApplicationContext(), TabbedSearchActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        fab_new_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // FAB Action
+                Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         presenter.onMapReady(googleMap);
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
     }
 
 
@@ -140,6 +260,33 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
         return locationCallback;
+    }
+
+    private void getDeviceLocation() {
+    /*
+     * Get the best and most recent location of the device, which may be null in rare
+     * cases when a location is not available.
+     */
+        try {
+            Task locationResult = fusedLocationClient.getLastLocation();
+            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        // Set the map's camera position to the current location of the device.
+                        currentLocation = (Location) task.getResult();
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(currentLocation.getLatitude(),
+                                        currentLocation.getLongitude()), DEFAULT_ZOOM));
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                    }
+                }
+            });
+        } catch(SecurityException e)  {
+            Log.e("Exception: %s", e.getMessage());
+        }
     }
 }
 

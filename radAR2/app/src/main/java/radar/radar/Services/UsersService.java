@@ -12,17 +12,21 @@ import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
 
-
 /**
- * Created by kenneth on 18/9/17.
+ * Service for users that served as layer of abstraction for retrofit. The methods here
+ * will call UsersApi.java
  */
-
 public class UsersService {
     UsersApi usersApi;
     Context context;
     int userID;
     String token;
 
+    /**
+     * Constructor for UsersService
+     * @param context context from where the activity called the service
+     * @param usersApi api regarding users that have been initiated on the activity
+     */
     public UsersService(Context context, UsersApi usersApi) {
         this.context = context;
         this.usersApi = usersApi;
@@ -30,6 +34,9 @@ public class UsersService {
         token = AuthService.getToken(context);
     }
 
+    /**
+     * Representing possible value of processing request
+     */
     public static enum REQUEST_ACTION {
         ACCEPT, DECLINE
     };
@@ -90,6 +97,12 @@ public class UsersService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    /**
+     * Search for users using keyword
+     * @param query keyword that are used for search
+     * @param searchType search type (i.e. email, username, full name)
+     * @return
+     */
     public Observable<UsersSearchResult> searchForUsers(String query, String searchType) {
         return usersApi.searchForUsers(userID, token, query, searchType)
                 .subscribeOn(Schedulers.io())

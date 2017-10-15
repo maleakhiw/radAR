@@ -16,29 +16,35 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.UsersSearchResult;
+import radar.radar.Presenters.SearchUserPresenter;
 import radar.radar.R;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
+import radar.radar.Views.SearchUserView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by keyst on 8/10/2017.
+ * Class representing fragments that have design and functionality to search another users on the
+ * application.
  */
-
-public class SearchUserFragment extends Fragment {
+public class SearchUserFragment extends Fragment implements SearchUserView {
+    /** User interface variable */
     private RecyclerView recyclerView;
     private EditText query;
+
+    /** Presenter and service */
     private UsersService usersService;
+    private SearchUserPresenter searchUserPresenter;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_user_fragment, container, false);
 
-        recyclerView = view.findViewById(R.id.searchRecyclerView);
-        query = view.findViewById(R.id.search_bar);
+        // Setup UI
+        setupUI(view);
 
         // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
@@ -50,56 +56,52 @@ public class SearchUserFragment extends Fragment {
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);
 
+        // Initiate the presenter
+        searchUserPresenter = new SearchUserPresenter(this, usersService);
+
         // When edit text is entered do search
         query.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
                 if ((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (keyEvent.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     // if entered do search
-                    doSearch(query.getText().toString());
+                    searchUserPresenter.doSearch(query.getText().toString());
                     return true;
                 }
                 return false;
             }
         });
 
-
         return view;
     }
 
-    /** This search method will search the appropriate user using the user's query */
-    public void doSearch(String query) {
-        // By default search type is name
-        usersService.searchForUsers(query, "name").subscribe(new Observer<UsersSearchResult>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(UsersSearchResult usersSearchResult) {
-                // After we get the search result, it will be array list of Users
-                // We need to somehow display this user result to a recycler view
-                if (usersSearchResult.results.size() != 0) {
-                    SearchAdapter searchAdapter = new SearchAdapter(getActivity(), usersSearchResult.results);
-                    recyclerView.setAdapter(searchAdapter);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                    searchAdapter.notifyDataSetChanged();
-                } else {
-                    Toast.makeText(getActivity(), "No user with this name found.", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Toast.makeText(getActivity(), "Error occurred.", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void onComplete() {
-
-            }
-        });
+    /**
+     * Connecting UI element with the java class
+     */
+    public void setupUI(View view) {
+        recyclerView = view.findViewById(R.id.searchRecyclerView);
+        query = view.findViewById(R.id.search_bar);
     }
+
+    /**
+     * Displaying message in the form of toast to user
+     * @param message message to be sent to user screen in toast
+     */
+    @Override
+    public void showToast(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * Displaying search result and bind adapter to the recycler view
+     * @param usersSearchResult representing the response when searching user
+     */
+    @Override
+    public void bindAdapterToRecyclerView(UsersSearchResult usersSearchResult) {
+        SearchAdapter searchAdapter = new SearchAdapter(getActivity(), usersSearchResult.results);
+        recyclerView.setAdapter(searchAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        searchAdapter.notifyDataSetChanged();
+    }
+
 }

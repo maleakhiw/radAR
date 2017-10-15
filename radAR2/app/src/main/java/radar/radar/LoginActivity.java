@@ -4,17 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import okhttp3.OkHttpClient;
-import radar.radar.Models.Responses.AuthResponse;
 import radar.radar.Presenters.LoginPresenter;
 import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
@@ -23,17 +17,19 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class LoginActivity extends AppCompatActivity
-                           implements LoginView {
-
+/**
+ * View part of the MVP model for Login activity/ screen
+ */
+public class LoginActivity extends AppCompatActivity implements LoginView {
+    /** Variable capturing elements of the user interface in the xml file */
     private EditText username;
     private EditText password;
     private Button btn_login;
     private TextView link_signup;
     private ProgressDialog mProgress;
 
-    private AuthService authService;  // service for making requests to our API
-
+    /** Service and presenter variable */
+    private AuthService authService;
     private LoginPresenter presenter;
 
     @Override
@@ -43,8 +39,6 @@ public class LoginActivity extends AppCompatActivity
 
         // Setup UI
         setupUI();
-
-//        OkHttpClient okHttpClient = new OkHttpClient.Builder().retryOnConnectionFailure(false).build();
 
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
@@ -72,6 +66,7 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
+        // Setup on click listener for login button
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,36 +75,61 @@ public class LoginActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Method to set Progress bar (loading animation)
+     * @param message the message to display when loading the screen
+     */
     @Override
     public void setProgressBarMessage(String message) {
         mProgress.setMessage(message);
     }
 
+    /**
+     * Method to display the Progress bar (loading animation)
+     */
     @Override
     public void showProgressBar() {
         mProgress.show();
     }
 
+    /**
+     * Method to dismiss the Progress bar (loading animation)
+     */
     @Override
     public void dismissProgressBar() {
         mProgress.dismiss();
     }
 
+    /**
+     * Method to get username from text input/ edit text that user have inputted
+     * @return String returning the username that the user have entered on the login screen
+     */
     @Override
     public String getUsernameText() {
         return username.getText().toString();
     }
 
+    /**
+     * Method to get password from text input/ edit text that user have inputted
+     * @return String returning the password that the user have entered on the login screen
+     */
     @Override
     public String getPasswordText() {
         return password.getText().toString();
     }
 
+    /**
+     * Method to display a toast and set a message to it.
+     * @param message the message that will be display using toast
+     */
     @Override
     public void showToastLong(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Method to jump from this activity to homescreen after user click login
+     */
     @Override
     public void startHomeScreenActivity() {
         Intent intent = new Intent(this,
@@ -117,24 +137,32 @@ public class LoginActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    /**
+     * Method to jump from this activity to signup if user click sign up link
+     */
     @Override
     public void startSignUpActivity() {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
     }
 
+    /**
+     * Finish the LoginActivity
+     */
     @Override
     public void finishActivity() {
         finish();
     }
 
 
-    /** Use to connect UI with java */
+    /**
+     * Method to connect user interface components on the screen/xml to java
+     */
     public void setupUI() {
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        btn_login = (Button) findViewById(R.id.btn_login);
-        link_signup = (TextView) findViewById(R.id.link_signup);
+        username = findViewById(R.id.username);
+        password = findViewById(R.id.password);
+        btn_login = findViewById(R.id.btn_login);
+        link_signup = findViewById(R.id.link_signup);
 
         mProgress = new ProgressDialog(LoginActivity.this);
     }

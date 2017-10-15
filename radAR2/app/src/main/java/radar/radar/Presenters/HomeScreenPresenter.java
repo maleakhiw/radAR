@@ -1,5 +1,8 @@
 package radar.radar.Presenters;
 
+import android.support.design.widget.FloatingActionButton;
+import android.view.View;
+
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -28,7 +31,7 @@ public class HomeScreenPresenter {
     LocationCallback locationCallback;
 
     private boolean first = true;
-
+    private LatLng current = null;
 
     public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
         this.homeScreenView = homeScreenView;
@@ -41,8 +44,8 @@ public class HomeScreenPresenter {
 
             googleMap.clear();
 
-            LatLng current = new LatLng(location.getLatitude(), location.getLongitude());
-            googleMap.addCircle(new CircleOptions()
+            current = new LatLng(location.getLatitude(), location.getLongitude());
+            /*googleMap.addCircle(new CircleOptions()
                     .center(current)
                     .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
                     .radius(location.getAccuracy()));
@@ -51,15 +54,7 @@ public class HomeScreenPresenter {
                     .center(current)
                     .fillColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
                     .strokeColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                    .radius(1));
-
-            // Add a marker in Melbourne Uni and move the camera
-            double unimelb_lat = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lat));
-            double unimelb_lng = Double.parseDouble(homeScreenView.getStringRes(R.string.melbourne_university_lng));
-
-            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-            googleMap.addMarker(new MarkerOptions().position(melbourne_university)
-                    .title(homeScreenView.getStringRes(R.string.unimelb)));
+                    .radius(1));*/
 
             if (first) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
@@ -83,14 +78,16 @@ public class HomeScreenPresenter {
         }
     }
 
-
-
     public void locationUpdates() {
         try {
             locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);
         } catch (SecurityException e) {
             homeScreenView.requestLocationPermissions();
         }
+    }
+
+    public LatLng getCurrent() {
+        return current;
     }
 
 }

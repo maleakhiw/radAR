@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout6"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="radar.radar.HomeScreenActivity"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/app_bar_home_screen">
 
     <fragment
@@ -14,8 +16,130 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="radar.radar.HomeScreenActivity" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/place_autocomplete_powered_by_google_height"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_current_loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_my_location_white_48dp"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
 
-</LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_add_white_48px"
+        android:visibility="visible"
+        app:backgroundTint="@color/colorPrimary"
+        app:elevation="6dp"
+        app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorPrimary"
+        app:layout_constraintBottom_toTopOf="@+id/fab_current_loc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_remove_circle_outline_white_48dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorSuperAppBar"
+        app:layout_constraintBottom_toTopOf="@+id/fab_remove"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_person_add_white_48dp" />
+
+    <TextView
+        android:id="@+id/text_new_friend"
+        android:layout_width="@dimen/home_screen_fab_text"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorWhite"
+        android:ems="10"
+        android:gravity="end"
+        android:text="@string/new_friend"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/section_text_size"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_friend"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_friend" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_new_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="invisible"
+        app:backgroundTint="@color/colorSuperAppBar"
+        app:layout_constraintBottom_toTopOf="@+id/fab_new_friend"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_group_add_white_48dp" />
+
+    <TextView
+        android:id="@+id/text_new_group"
+        android:layout_width="@dimen/home_screen_fab_text"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/colorWhite"
+        android:ems="10"
+        android:gravity="end"
+        android:text="@string/new_group"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/section_text_size"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/fab_new_group"
+        app:layout_constraintTop_toTopOf="@+id/fab_new_group" />
+
+</android.support.constraint.ConstraintLayout>

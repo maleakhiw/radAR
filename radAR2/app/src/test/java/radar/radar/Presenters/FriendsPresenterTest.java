@@ -37,8 +37,14 @@ public class FriendsPresenterTest {
 
     }
 
+    /**
+     * Unit test to make sure that when the add friend fab is clicked it will send to appropriate
+     * activity
+     * @throws Exception
+     */
     @Test
     public void respondToFABClick() throws Exception {
+        // Mock necessary object
         FriendsView friendsView = Mockito.mock(FriendsView.class);
         UsersService usersService = Mockito.mock(UsersService.class);
 
@@ -50,8 +56,15 @@ public class FriendsPresenterTest {
         Mockito.verify(friendsView).launchSearchFriendsActivity();
     }
 
+
+    /**
+     * Unit test to make sure when user have error in calling the service method will display appropriate
+     * message.
+     * @throws Exception
+     */
     @Test
-    public void loadFriends_connectionError() throws Exception {
+    public void loadFriends_Failure() throws Exception {
+        // Mock necessary object
         UsersService usersService = Mockito.mock(UsersService.class);
         FriendsView friendsView = Mockito.mock(FriendsView.class);
 
@@ -65,71 +78,82 @@ public class FriendsPresenterTest {
 
         Mockito.when(usersService.getFriends()).thenReturn(observable);
 
-        // system under test
+        // Test the system
         FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
         friendsPresenter.loadFriends();
 
-        // assertions
+        // Make sure that user will get notified that an error has occurred
         Mockito.verify(friendsView).showToast(anyString());
 
     }
 
+    /**
+     * Unit test making sure that loadFriends() will load friends of a particular user\
+     * and bind that to appropriate adapter.
+     * @throws Exception
+     */
     @Test
-    public void loadFriends_loginFailure() throws Exception {
+    public void loadFriends_Success() throws Exception {
+        // Mock necessary objects
         UsersService usersService = Mockito.mock(UsersService.class);
         FriendsView friendsView = Mockito.mock(FriendsView.class);
 
-        // define behaviours
-        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
-        friendsResponse.success = false;
-        ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
-        friendsResponse.friends = friendsForFriendsResponse;
-        friendsResponse.errors = new ArrayList<>();
-        friendsResponse.errors.add(new StatusError("fakeReason", 42));
-
-        Mockito.when(usersService.getFriends()).thenReturn(
-                Observable.just(friendsResponse)    // return an object similar to one encountered
-                // in a successful request
-        );
-
-        // system under test
-        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
-        friendsPresenter.loadFriends();
-
-        // make sure the View is told to inform that the login failed
-        Mockito.verify(friendsView).showToast(anyString());
-
-    }
-
-    @Test
-    public void loadFriends_success() throws Exception {
-        UsersService usersService = Mockito.mock(UsersService.class);
-        FriendsView friendsView = Mockito.mock(FriendsView.class);
-
-        // define behaviours
+        // Define behaviours
         FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
         friendsResponse.success = true;
         friendsResponse.errors = new ArrayList<>();
 
-        // list of friends for friendsResponse
+        // List of friends for friendsResponse
         ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
         friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user", "keystorm@rocketmail.com"));
         friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too", "dragonica@gmail.com"));
-
         friendsResponse.friends = friendsForFriendsResponse;
 
+        // Model the behaviour of the users service by pretending that it will give successful request
         Mockito.when(usersService.getFriends()).thenReturn(
-                Observable.just(friendsResponse)    // return an object similar to one encountered
-                                                    // in a successful request
+                Observable.just(friendsResponse)
         );
 
-        // system under test
+        // Test the appropriate method
         FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
         friendsPresenter.loadFriends();
 
-        // assertions
+        // Make sure that it display the data and bind that to recycler view
         Mockito.verify(friendsView).bindAdapterToRecyclerView(friendsForFriendsResponse);
+    }
 
+    /**
+     * Unit test making making sure toast is displayed when status of the request is false
+     * @throws Exception
+     */
+    @Test
+    public void loadFriends_StatusFalse() throws Exception {
+        // Mock necessary objects
+        UsersService usersService = Mockito.mock(UsersService.class);
+        FriendsView friendsView = Mockito.mock(FriendsView.class);
+
+        // Define behaviours
+        FriendsResponse friendsResponse = new FriendsResponse(new ArrayList<>());
+        friendsResponse.success = false;
+        friendsResponse.errors = new ArrayList<>();
+
+        // List of friends for friendsResponse
+        ArrayList<User> friendsForFriendsResponse = new ArrayList<>();
+        friendsForFriendsResponse.add(new User(1, "user1", "Fake User", "1", "I'm a fake user", "keystorm@rocketmail.com"));
+        friendsForFriendsResponse.add(new User(2, "user2", "Fake User", "2", "I'm a fake user too", "dragonica@gmail.com"));
+        friendsResponse.friends = friendsForFriendsResponse;
+
+        // Model the behaviour of the users service by pretending that it will give successful request
+        Mockito.when(usersService.getFriends()).thenReturn(
+                Observable.just(friendsResponse)
+        );
+
+        // Test the appropriate method
+        FriendsPresenter friendsPresenter = new FriendsPresenter(friendsView, usersService);
+        friendsPresenter.loadFriends();
+
+        // Make sure that it display toast error message
+        Mockito.verify(friendsView).showToast(anyString());
     }
 
 }
