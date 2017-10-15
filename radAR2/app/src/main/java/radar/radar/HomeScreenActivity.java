@@ -27,6 +27,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -263,23 +265,31 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         currentLocation = (Location) task.getResult();
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(currentLocation.getLatitude(),
-                                        currentLocation.getLongitude()), DEFAULT_ZOOM));
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(new LatLng(currentLocation.getLatitude(),
+                                        currentLocation.getLongitude()))
+                                .zoom(DEFAULT_ZOOM).build();
+                        googleMap.animateCamera(CameraUpdateFactory
+                                .newCameraPosition(cameraPosition));
+
+                        googleMap.setMyLocationEnabled(true);
+
 
                         if (currentLocation != null) {
                             googleMap.clear();
                             // TODO do not remove PoI
                             LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                            googleMap.addCircle(new CircleOptions()
-                                    .center(currentPosition)
-                                    .strokeColor(getColorRes(R.color.colorPrimary))
-                                    .radius(currentLocation.getAccuracy()));
-                            googleMap.addCircle(new CircleOptions()
-                                    .center(currentPosition)
-                                    .fillColor(getColorRes(R.color.colorPrimaryDark))
-                                    .strokeColor(getColorRes(R.color.colorPrimaryDark))
-                                    .radius(1));
+
+//                            googleMap.addCircle(new CircleOptions()
+//                                    .center(currentPosition)
+//                                    .strokeColor(getColorRes(R.color.colorPrimary))
+//                                    .radius(currentLocation.getAccuracy()));
+//                            googleMap.addCircle(new CircleOptions()
+//                                    .center(currentPosition)
+//                                    .fillColor(getColorRes(R.color.colorPrimaryDark))
+//                                    .strokeColor(getColorRes(R.color.colorPrimaryDark))
+//                                    .radius(1));
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     currentPosition, DEFAULT_ZOOM));
                         }

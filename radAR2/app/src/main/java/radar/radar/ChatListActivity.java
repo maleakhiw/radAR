@@ -175,6 +175,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     protected void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
 
+        System.out.println("onSaveInstanceState");
+
         // save RV state
         Parcelable listState = chatRecyclerView.getLayoutManager().onSaveInstanceState();
         state.putParcelable(KEY_RECYCLER_STATE, listState);
@@ -185,7 +187,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     protected void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
 
-       if (state != null) {
+        System.out.println("onRestoreInstanceState");
+
+        if (state != null) {
            listState = state.getParcelable(KEY_RECYCLER_STATE);
         }
 
