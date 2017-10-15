@@ -31,6 +31,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         this.groups = groups;
     }
 
+    public ArrayList<Group> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(ArrayList<Group> groups) {
+        this.groups = groups;
+    }
+
     /**
      * Set the array list groups with new arraylist/ updated array list
      * @param groups arraylist of Group

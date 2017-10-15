@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.ChatListAdapter;
@@ -46,6 +47,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
+        System.out.println("onCreate()");
+
         // Setup groups
         groups = new ArrayList<>();
 
@@ -69,7 +72,23 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         chatListPresenter = new ChatListPresenter(this, chatService);
 
         // Call the method to display chat list
-        chatListPresenter.getChatIDs();
+        if (savedInstanceState != null) {
+            Parcelable listState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
+            ArrayList<Group> groups = (ArrayList<Group>) savedInstanceState.getSerializable("GROUPS_LIST");
+
+            if (listState != null) {
+                chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+            }
+
+            if (groups != null) {
+                chatListAdapter.setGroups(groups);
+            } else {
+                chatListPresenter.getChatIDs();
+            }
+
+        } else {
+            chatListPresenter.getChatIDs();
+        }
     }
 
     /**
@@ -179,29 +198,31 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         // save RV state
         Parcelable listState = chatRecyclerView.getLayoutManager().onSaveInstanceState();
+        ArrayList<Group> groups = chatListAdapter.getGroups();
         state.putParcelable(KEY_RECYCLER_STATE, listState);
+        state.putSerializable("GROUPS_LIST", groups);
     }
 
-    Parcelable listState;
-    @Override
-    protected void onRestoreInstanceState(Bundle state) {
-        super.onRestoreInstanceState(state);
-
-        System.out.println("onRestoreInstanceState");
-
-        if (state != null) {
-           listState = state.getParcelable(KEY_RECYCLER_STATE);
-        }
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (listState != null) {
-            chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
-        }
-    }
+//    Parcelable listState;
+//    @Override
+//    protected void onRestoreInstanceState(Bundle state) {
+//        super.onRestoreInstanceState(state);
+//
+//        System.out.println("onRestoreInstanceState");
+//
+//        if (state != null) {
+//           listState = state.getParcelable(KEY_RECYCLER_STATE);
+//        }
+//
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        if (listState != null) {
+//            chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+//        }
+//    }
 
 }

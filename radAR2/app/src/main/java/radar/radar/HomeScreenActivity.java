@@ -51,7 +51,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
     private static final String TAG = "Home Screen Activity";
-    private static final float DEFAULT_ZOOM = 15;
+    private static final float DEFAULT_ZOOM = 16;
     private static final int REQUEST_FOR_LOCATION = 1;
 
     private Location currentLocation;
