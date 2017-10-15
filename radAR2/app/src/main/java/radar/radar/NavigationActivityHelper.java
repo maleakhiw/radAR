@@ -57,14 +57,17 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 //TODO: Go to maps
                 Intent intent = new Intent(activity, HomeScreenActivity.class);
                 activity.startActivity(intent);
+                activity.finish();
             } else if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
                 activity.startActivity(intent);
+                activity.finish();
             } else if (id == R.id.nav_friends) {
                 // launch Friends activity
                 Intent intent = new Intent(activity, FriendsActivity.class);
                 activity.startActivity(intent);
+                activity.finish();
 
             } else if (id == R.id.nav_logout) {
                 // launch Login activity
