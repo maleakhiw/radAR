@@ -88,6 +88,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         presenter = new HomeScreenPresenter(this, locationService);
 
+        getDeviceLocation();
+
         // set up mapView
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
         mapFragment.getMapAsync(this);
@@ -100,6 +102,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
+
+                // TODO New Activity to create a new Group with that meeting point.
                 googleMap.clear();
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
@@ -130,22 +134,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View v) {
                 // FAB Action
                 getDeviceLocation();
-                if(currentLocation != null) {
-                    googleMap.clear();
-                    LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(currentPosition));
-                    googleMap.addCircle(new CircleOptions()
-                            .center(currentPosition)
-                            .strokeColor(getColorRes(R.color.colorPrimary))
-                            .radius(currentLocation.getAccuracy()));
-                    googleMap.addCircle(new CircleOptions()
-                            .center(currentPosition)
-                            .fillColor(getColorRes(R.color.colorPrimaryDark))
-                            .strokeColor(getColorRes(R.color.colorPrimaryDark))
-                            .radius(1));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            currentPosition, DEFAULT_ZOOM));
-                }
             }
         });
 
@@ -278,6 +266,23 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(currentLocation.getLatitude(),
                                         currentLocation.getLongitude()), DEFAULT_ZOOM));
+
+                        if (currentLocation != null) {
+                            googleMap.clear();
+                            // TODO do not remove PoI
+                            LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+                            googleMap.addCircle(new CircleOptions()
+                                    .center(currentPosition)
+                                    .strokeColor(getColorRes(R.color.colorPrimary))
+                                    .radius(currentLocation.getAccuracy()));
+                            googleMap.addCircle(new CircleOptions()
+                                    .center(currentPosition)
+                                    .fillColor(getColorRes(R.color.colorPrimaryDark))
+                                    .strokeColor(getColorRes(R.color.colorPrimaryDark))
+                                    .radius(1));
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    currentPosition, DEFAULT_ZOOM));
+                        }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");
                         Log.e(TAG, "Exception: %s", task.getException());
