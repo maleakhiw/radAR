@@ -1,8 +1,4 @@
 server.log
-<<<<<<< HEAD
 node_modules
 radar.fadhilanshar.com
-=======
-node_modules/
-radar.fadhilanshar.com/
->>>>>>> origin/general-improvements
+.env

@@ -334,7 +334,7 @@ module.exports = class GroupSystem extends SMS {
     .then((group) => {
       // TODO refactor to function isAuthorized()
 
-      console.log(group);
+      // console.log(group);
       members = group.members;
       meetingPoint = group.meetingPoint;
 

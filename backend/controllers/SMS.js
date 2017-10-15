@@ -316,7 +316,6 @@ module.exports = class SMS {
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
-        console.log(group);
         if (!group) {
           res.json({
             success: false,

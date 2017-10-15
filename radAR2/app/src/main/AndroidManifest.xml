@@ -45,6 +45,7 @@
         </activity>
 
         <!-- Tabbed activity -->
+      
         <activity android:name=".TabbedSearchActivity"></activity>
 
         <meta-data
@@ -59,7 +60,8 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".GroupsListActivity" />
+        <activity android:name=".GroupsListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
