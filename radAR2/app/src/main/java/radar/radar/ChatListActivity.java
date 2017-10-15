@@ -3,6 +3,7 @@ package radar.radar;
 import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import radar.radar.Adapters.ChatListAdapter;
@@ -38,6 +38,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     private ChatListPresenter chatListPresenter;
     NavigationActivityHelper helper;
 
+    SwipeRefreshLayout swipeRefreshLayout;
 
     Bundle recyclerViewStateBundle;
     private final String KEY_RECYCLER_STATE = "recycler_state";
@@ -71,6 +72,13 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                chatListPresenter.getChats();
+            }
+        });
+
         // Call the method to display chat list
         if (savedInstanceState != null) {
             Parcelable listState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
@@ -83,11 +91,11 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
             if (groups != null) {
                 chatListAdapter.setGroups(groups);
             } else {
-                chatListPresenter.getChatIDs();
+                chatListPresenter.getChats();
             }
 
         } else {
-            chatListPresenter.getChatIDs();
+            chatListPresenter.getChats();
         }
     }
 
@@ -111,8 +119,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+        swipeRefreshLayout = findViewById(R.id.chat_list_swipeRefreshLayout);
 
         setTitle("Chats");
+    }
+
+    @Override
+    public void stopRefreshIndicator() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     /**

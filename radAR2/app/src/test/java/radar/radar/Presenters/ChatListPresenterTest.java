@@ -12,13 +12,11 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
-import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -66,7 +64,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.getChats()).thenReturn(observable);
 
         // Call the method that will be tested
-        presenter.getChatIDs();
+        presenter.getChats();
 
         // Verify the method is called
         Mockito.verify(chatListView).setChatIDs(groups);
@@ -98,7 +96,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.getChats()).thenReturn(observable);
 
         // Call the method that will be tested
-        presenter.getChatIDs();
+        presenter.getChats();
 
         // Verify to display error message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
@@ -132,7 +130,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.getChats()).thenReturn(observable);
 
         // Call the method that will be tested
-        presenter.getChatIDs();
+        presenter.getChats();
 
         // Verify to display error message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
