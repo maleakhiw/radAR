@@ -53,13 +53,11 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             // Handle navigation view item clicks here.
             int id = item.getItemId();
 
-//            if (id == R.id.nav_maps) {
-//                //TODO: Go to maps
-//                Intent intent = new Intent(activity, MapsActivity.class);
-//                activity.startActivity(intent);
-//            } else
-
-            if (id == R.id.nav_chats) {
+            if (id == R.id.nav_maps) {
+                //TODO: Go to maps
+                Intent intent = new Intent(activity, HomeScreenActivity.class);
+                activity.startActivity(intent);
+            } else if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
                 activity.startActivity(intent);

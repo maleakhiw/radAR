@@ -161,7 +161,6 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 } else {
                     return hourString + ":" + minuteString + " AM";
                 }
-
             }
 
 
