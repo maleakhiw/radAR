@@ -152,6 +152,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             }
 
             if (!DateFormat.is24HourFormat(context)) {
+                return hourString + ":" + minuteString;
+            } else {
                 // set am or pm
                 int hourOfDay = hour;
                 if (hourOfDay >= 12) {
@@ -159,8 +161,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 } else {
                     return hourString + ":" + minuteString + " AM";
                 }
-            } else {
-                return hourString + ":" + minuteString;
+
             }
 
 
