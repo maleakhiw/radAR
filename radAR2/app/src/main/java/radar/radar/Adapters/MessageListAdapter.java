@@ -2,6 +2,7 @@ package radar.radar.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,6 +138,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             Integer minute = calendar.get(Calendar.MINUTE);
 
             String hourString, minuteString;
+
             if (hour < 10) {
                 hourString = "0" + hour.toString();
             } else {
@@ -149,13 +151,19 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 minuteString = minute.toString();
             }
 
-            // set am or pm
-            int hourOfDay = hour;
-            if (hourOfDay >= 12) {
-                return hourString + ":" + minuteString + " PM";
+            if (!DateFormat.is24HourFormat(context)) {
+                // set am or pm
+                int hourOfDay = hour;
+                if (hourOfDay >= 12) {
+                    return hourString + ":" + minuteString + " PM";
+                } else {
+                    return hourString + ":" + minuteString + " AM";
+                }
             } else {
-                return hourString + ":" + minuteString + " AM";
+                return hourString + ":" + minuteString;
             }
+
+
 
         } catch (ParseException e) {
             e.printStackTrace();
