@@ -1,25 +1,28 @@
 // Imports
+// load variables from .env to process.env
+require('dotenv-safe').load();
+
 // Express
 const express = require('express');
+const http = require('http');
 const https = require('https');
 const fs = require('fs');
-
-const mongoose = require('mongoose')
-
 const bodyParser = require('body-parser')
-const multer = require('multer')  // for multipart/form-data, https://github.com/expressjs/multer
 const cors = require('cors')
 const _ = require('lodash');
+const multer = require('multer')  // for multipart/form-data
+const upload = multer({
+  dest: 'uploads/'  // automatically gives unique filename
+})
+
+// mongoose
+const mongoose = require('mongoose')
+mongoose.Promise = global.Promise   // Use JS Promises library for Mongoose
 
 // logging framework
 const winston = require('winston');
 winston.add(winston.transports.File, { filename: 'server.log' });
 winston.level = 'debug';  // TODO use environment variable
-
-// multer
-const upload = multer({
-  dest: 'uploads/'  // automatically gives unique filename
-})
 
 // data models
 const Group = require('./models/group')
@@ -37,96 +40,53 @@ app.use(cors());
 const common = require('./common')
 const addMetas = common.addMetas
 
-// Use JS Promises library for Mongoose
-mongoose.Promise = global.Promise
-
-// Error handling for invalid JSON
+// Error handling
 app.use(function (error, req, res, next) {
-  res.json({
-    success: false,
-    errors: common.errorObjectBuilder(['invalidJSON'])
-  })
+  if (err instanceof SyntaxError) {
+    res.json({
+      success: false,
+      errors: common.errorObjectBuilder(['invalidJSON'])
+    })
+  }
 });
 
-// handle rapid-fire duplicate requests
-var lastRequests = [];
-var REQ_TIME_THRES = 1000;
-var DELAY_BASE = 100;
+var DEV = 'dev';
+var PRODUCTION = 'production';
 
-// Fibonacci delay
-// function fibo(n) {
-//   if (n==0) {
-//     return 0; // special case: no entries in queue
-//   }
-//   if (n==1) {
-//     return 5;
-//   }
-//   if (n==2) {
-//     return 11;
-//   }
-//   else {
-//     return fibo(n-1) + fibo(n-2);
-//   }
-// }
+console.log(process.env.ENVIRONMENT);
 
-// app.use(function(req, res, next) {
-//   // give a little delay so the array has time to be updated
-//   // let time = Date.now();
-//   // while (Date.now() - time < 10*fibo(lastRequests.length)) {
-//   //   ;
-//   // }
-//
-//   // remove requests older than threshold
-//   lastRequests = lastRequests.filter((entry) => {
-//    return (Date.now() - entry.time) < REQ_TIME_THRES;
-//   })
-//
-//   console.log(lastRequests.length);
-//
-//   // check if req.body is in array
-//   let isInArray = false;
-//   lastRequests.map((entry) => {
-//    if (_.isEqual(entry.reqBody, req.body)) {
-//      isInArray = true;
-//    }
-//   });
-//   console.log('isInArray', isInArray);
-//
-//   lastRequests.push({
-//    reqBody: req.body,
-//    time: Date.now()
-//   });
-//
-//   if (!isInArray) {
-//     console.log('accepted');
-//     next(); // let the handlers handle it
-//   } else {
-//     console.log('rejected');
-//     // block the request
-//   }
-//
-// })
+var server_environment = process.env.ENVIRONMENT;
+if (!server_environment) {
+  server_environment = DEV;
+}
 
 // connect to mongoDB
 // mongoose.connect('mongodb://localhost/radar', // production
-const connection = mongoose.connect('mongodb://localhost/radarTest',
+let mongoURL;
+if (server_environment == DEV) {
+  mongoURL = 'mongodb://localhost/radarTest'
+} else {
+  mongoURL = 'mongodb://localhost/radar'
+}
+
+const connection = mongoose.connect(mongoURL,
   { useMongoClient: true },
-  (err) => { // TODO: see if this breaks
-    // if (!err) console.log('Connected to mongoDB')
-    // else console.log('Failed to connect to mongoDB')
+  (err) => {
     if (err) {
-      winston.error(err)
+      winston.error(err);
+      // TODO force exit
     }
 })
+
 module.exports.connection = connection
 
 // Systems
 const UMS = require('./controllers/UMS')
 const ums = new UMS(User, Request)
-// const svs = require('./controllers/SVS')
+
 const SVS = require('./controllers/SVS')
 const svs = new SVS(User)
-const authenticate = svs.authenticate
+const authenticate = svs.authenticate // authentication middleware
 
 const SMS = require('./controllers/SMS')
 const sms = new SMS(Group, Message, User)
@@ -140,13 +100,8 @@ const positioningSystem = new PositioningSystem(LocationModel, User);
 const GroupSystem = require('./controllers/GroupSystem');
 const groupSystem = new GroupSystem(Group, Message, User, LocationModel);
 
-// export the mongoose object so it is accessible by other subsystems
-// module.exports.mongoose = mongoose
 
-// Functions
-// app.post("/SVS/signUp", svs.signUp)
-// app.post("/SVS/login", svs.login)
-
+/* Routes */
 app.get("/", (req, res) => {
   res.json(addMetas({}, "/"))
 })
@@ -163,18 +118,6 @@ app.get("/api/accounts/:userID", (req, res) => {
 // signup and login
 app.post("/api/auth", svs.signUp)
 app.get("/api/auth/:username", svs.login)
-
-// app.get("/api/auth/:username", svs.login)
-// app.post("/api/login",
-//   passport.authenticate('local', { session: false }),
-//   (req, res) => {
-//     // authentication successful, send token back
-//     res.json({
-//       success: true,
-//       token: "79",
-//       userID: req.query.userID
-//     })
-//   })
 
 // object: accounts
 // profile
@@ -246,14 +189,10 @@ app.get("/api/groups", (req, res) => {
 app.get('/health-check', (req, res) => res.sendStatus(200));
 app.use(express.static('static'));
 
-const http = require('http');
-// TODO environment variable
-let HTTPS_MODE = true;
-if (!HTTPS_MODE) {
-  app.listen(8080, (req, res) => {
-    //
-  });
-} else {
+
+if (server_environment == DEV) {  // serve over HTTP
+  app.listen(8080, (req, res) => {});
+} else {  // serve over HTTPS
   const options = {
       cert: fs.readFileSync('./radar.fadhilanshar.com/fullchain.pem'),
       key: fs.readFileSync('./radar.fadhilanshar.com/privkey.pem')
@@ -262,10 +201,10 @@ if (!HTTPS_MODE) {
       res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
       res.end();
   }).listen(8080);
-  https.createServer(options, app).listen(8443);
+  https.createServer(options, app).listen(8443, () => {
+    console.log('Listening on port 8443');
+  });
 }
 
-
-
-// export the app, for testing
+// export the app, for Mocha tests
 module.exports = app

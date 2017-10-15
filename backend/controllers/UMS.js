@@ -51,7 +51,7 @@ function validateAddFriend(req) {
 }
 
 var checkIfAlreadyFriends = (userID, invitedUserID) => new Promise((resolve, reject) => {
-  User.findOne({userID: userID}).then((user) => {
+  User.findOne({userID: userID}).exec().then((user) => {
     if (user.friends.includes(invitedUserID)) {
       reject('invitedUserIDAlreadyAdded');
     } else {
@@ -64,7 +64,7 @@ var checkIfRequestAlreadySent = (userID, invitedUserID) => new Promise((resolve,
   Request.findOne({$and: [
     {from: userID},
     {to: invitedUserID}
-  ]}).then((request) => {
+  ]}).exec().then((request) => {
     if (request) {
       reject('friendRequestAlreadyExists');
     } else {
@@ -95,14 +95,14 @@ var validateDeleteRequest = (req) => new Promise((resolve, reject) => {
   Request.findOne({requestID: requestID}).exec()
   .then((request) => {
     if (request == null) {
-      errorKeys.push('invalidRequestID');
+      reject('invalidRequestID');
     } else {
       if (request.from != userID) {
-        errorKeys.push('invalidRequestID');
+        reject('invalidRequestID');
       }
     }
 
-    resolve(errorKeys);
+    resolve();
   })
   .catch(err => {
     reject(err);
@@ -129,6 +129,13 @@ module.exports = class UMS {
     User = pUser
     Request = pRequest
     svs = new SVS(User)
+
+    this.validateAddFriend = validateAddFriend;
+    this.checkIfAlreadyFriends = checkIfAlreadyFriends;
+    this.checkIfRequestAlreadySent = checkIfRequestAlreadySent;
+    this.getRequestIDForNewRequest = getRequestIDForNewRequest;
+    this.validateDeleteRequest = validateDeleteRequest;
+    this.deleteRequest = deleteRequest;
   }
 
   updateProfile(req, res) {
@@ -336,16 +343,13 @@ module.exports = class UMS {
     let requestID = req.params.requestID;
 
     validateDeleteRequest(req)
-    .then((errorKeys) => {
-      // validation: requestID exists, user sent the request
-      if (errorKeys.length) {
-        sendError(res, errorKeys);
-        return;
-      }
-
+    .then(() => {
       deleteRequest(requestID, res);
     })
     .catch((err) => {
+      if (err == 'invalidRequestID') {
+        sendError(res, ['invalidRequestID']);
+      }
       common.sendInternalError(res);
     })
 
