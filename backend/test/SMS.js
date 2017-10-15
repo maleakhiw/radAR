@@ -131,7 +131,7 @@ describe('SMS', () => {
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
-        console.log(res.body);
+        // console.log(res.body);
         expect(res.body.groups).to.include(1);
 
         done();
@@ -182,6 +182,25 @@ describe('SMS', () => {
       })
     })
 
+  })
+
+  describe('GET /api/accounts/:userID/chats (sms.getGroupsForUser)', () => {
+    it('user2 should see the last sent message', (done) => {
+      chai.request(server)
+      .get('/api/accounts/2/chats')
+      .set('token', user2token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        // console.log(res.body);
+        expect(res.body.groupsDetails['1']).to.not.equal(null);
+        expect(res.body.groupsDetails['1'].text).to.equal('Hello world');
+        expect(res.body.groups).to.include(1);
+
+        done();
+      })
+    })
   })
 
   describe('DELETE /api/accounts/:userID/chats/:groupID', () => {

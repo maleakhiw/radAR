@@ -158,16 +158,45 @@ module.exports = class SMS {
   getGroupsForUser(req, res) {
       let userID = req.params.userID
 
+      let groupsDetails = {};
+      let groups;
+
       User.findOne({ userID: userID }).exec()
 
       .then((user) => {
+        groups = user.groups;
+        let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+          Message.findOne({groupID: groupID}).sort({time: -1}).exec()
+          .then((message) => {
+            if (message) {
+              groupsDetails[groupID] = {
+                from: message.from,
+                time: message.time,
+                contentType: message.contentType,
+                text: message.text
+              }
+              resolve(message);
+            } else {
+              resolve(null);
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+
+        }));
+        return Promise.all(promiseAll);
+
+      })
+
+      .then(() => {
         let response = {
           success: true,
           errors: [],
-          groups: user.groups
+          groups: groups,
+          groupsDetails: groupsDetails
         }
         res.json(addMetas(response, "/api/accounts/:userID/chats"))
-
       })
 
       .catch((err) => {
