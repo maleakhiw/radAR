@@ -1,12 +1,13 @@
 package radar.radar.Models.Domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by kenneth on 3/10/17.
  */
 
-public class MeetingPoint {
+public class MeetingPoint implements Serializable {
     public double lat;
     public double lon;
     public String name;
