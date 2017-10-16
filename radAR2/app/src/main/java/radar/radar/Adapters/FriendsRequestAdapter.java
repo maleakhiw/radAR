@@ -1,7 +1,6 @@
 package radar.radar.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +20,7 @@ import radar.radar.R;
 import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
-import radar.radar.TabbedSearchActivity;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Adapter for FriendRequest

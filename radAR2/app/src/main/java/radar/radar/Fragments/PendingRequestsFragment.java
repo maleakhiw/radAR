@@ -1,10 +1,12 @@
 package radar.radar.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,9 +76,16 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
      */
     @Override
     public void bindAdapterToRecyclerView(FriendRequestsResponse friendRequestsResponse) {
-        FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
-        recyclerView2.setAdapter(adapter);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter.notifyDataSetChanged();
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
+            recyclerView2.setAdapter(adapter);
+            recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.w("PendingRequests", "Activity is null");
+        }
+
     }
 }

@@ -92,9 +92,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
      */
     @Override
     public void launchSearchFriendsActivity() {
-        Intent intent = new Intent(this, TabbedSearchActivity.class);
+        Intent intent = new Intent(this, FriendRequestActivity.class);
         startActivity(intent);
-        finish();
     }
 
     /**
