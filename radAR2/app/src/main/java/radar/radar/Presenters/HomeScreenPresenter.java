@@ -39,23 +39,8 @@ public class HomeScreenPresenter {
         // NOTE locationCallback just has to be instantiated in constructor! Moving it to method call
         // makes it unable to be unregistered.
         locationCallback = ((LocationCallbackProvider) homeScreenView).getLocationCallback(location -> {
-//            System.out.println(location.getLatitude());
-//            System.out.println(location.getLongitude());
-
-            googleMap.clear();
 
             current = new LatLng(location.getLatitude(), location.getLongitude());
-            /*googleMap.addCircle(new CircleOptions()
-                    .center(current)
-                    .strokeColor(homeScreenView.getColorRes(R.color.colorPrimary))
-                    .radius(location.getAccuracy()));
-
-            googleMap.addCircle(new CircleOptions()
-                    .center(current)
-                    .fillColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                    .strokeColor(homeScreenView.getColorRes(R.color.colorPrimaryDark))
-                    .radius(1));*/
-
             if (first) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
                 first = false;
