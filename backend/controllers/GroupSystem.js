@@ -145,8 +145,6 @@ function validateMeetingPoint(req) {
 }
 
 function deleteGroupImpl(req, res) {
-  console.log('deleteGroupImpl()');
-
   let groupID = parseInt(req.params.groupID);
   let userID = parseInt(req.params.userID);
 
@@ -166,6 +164,7 @@ function deleteGroupImpl(req, res) {
       return User.findOne({userID: member}).exec()
       .then(user => {
         user.groups = user.groups.filter((group) => group != groupID);
+        user.save();
       })
     })
     return Promise.all(promiseAll);
