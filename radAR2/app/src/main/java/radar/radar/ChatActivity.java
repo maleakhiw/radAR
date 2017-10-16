@@ -108,19 +108,6 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
             if (messages != null && usersDetails != null) {
                 messageListAdapter.setMessageList(messages, usersDetails);
             }
-            
-//            Parcelable listState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
-//            ArrayList<Group> groups = (ArrayList<Group>) savedInstanceState.getSerializable("GROUPS_LIST");
-//
-//            if (listState != null) {
-//                chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
-//            }
-//
-//            if (groups != null) {
-//                chatListAdapter.setGroups(groups);
-//            } else {
-//                chatListPresenter.getChats();
-//            }
 
         } else {
 //            chatListPresenter.getChats();
@@ -306,6 +293,9 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // disable the button
+                send.setEnabled(false);
+
                 // If send is clicked then send the message
                 // Extract string from edit text
                 MessageBody messageBody = new MessageBody(chatText.getText().toString());
@@ -329,6 +319,8 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
                             // Remove the text on the edit view
                             chatText.setText("");
+
+                            send.setEnabled(true);
                         }
                     }
 
@@ -336,6 +328,8 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                     public void onError(Throwable e) {
                         System.out.println(e);
                         Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_SHORT).show();
+
+                        send.setEnabled(true);
                     }
 
                     @Override
