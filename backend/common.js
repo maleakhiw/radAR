@@ -99,6 +99,7 @@ module.exports.getPublicUserInfo = function(user) {
   let retVal = {
     userID: user.userID,
     username: user.username,
+    email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
     profilePicture: user.profilePicture,
