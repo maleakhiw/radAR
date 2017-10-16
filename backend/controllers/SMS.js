@@ -101,8 +101,8 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
-          console.log(userID)
-          usersDetails[userID] = (common.getPublicUserInfo(user));
+          console.log(participantUserID)
+          usersDetails[participantUserID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
           user.save().then(() => resolve());
