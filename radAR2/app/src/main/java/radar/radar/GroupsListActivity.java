@@ -53,7 +53,7 @@ public class GroupsListActivity extends AppCompatActivity
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
-        toolbar.setTitle("Groups"); // TODO replace with string resource
+        setTitle("Groups");  // TODO replace with String resource
 
         loadViews();
 

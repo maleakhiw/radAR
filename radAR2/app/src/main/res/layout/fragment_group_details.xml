@@ -24,9 +24,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
                     android:text="Meeting point"
                     android:textSize="@dimen/section_text_size" />
 
@@ -121,7 +121,8 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/group_details_members_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"/>
 
 
             </LinearLayout>
