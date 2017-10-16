@@ -64,8 +64,8 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 //TODO: Go to maps
                 Intent intent = new Intent(activity, HomeScreenActivity.class);
                 activity.startActivity(intent);
-                finishIfNotHomeScreen(activity);
-
+//                finishIfNotHomeScreen(activity);
+                activity.finish();  // finish anyway.
             } else if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
@@ -93,7 +93,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 finishIfNotHomeScreen(activity);
             }
 
-            
+
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
