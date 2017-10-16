@@ -26,6 +26,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static radar.radar.RetrofitFactory.*;
+
 /**
  * Fragment that are used to display pending friend request that a user have
  */
@@ -45,7 +47,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
 
         // Create retrofit instance
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = getRetrofit();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);
