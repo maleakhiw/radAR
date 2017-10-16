@@ -101,10 +101,11 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
+          console.log(userID)
           usersDetails[userID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
-          user.save() .then(() => resolve());
+          user.save().then(() => resolve());
         })
         .catch((err) => winston.error(err));  // TODO send fail
     }));
