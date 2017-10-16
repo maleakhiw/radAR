@@ -13,10 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import radar.radar.Adapters.ChatListAdapter;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;

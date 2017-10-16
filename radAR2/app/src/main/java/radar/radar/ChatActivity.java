@@ -1,6 +1,7 @@
 package radar.radar;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +12,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -89,6 +93,38 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
         // Check whether we should load or generate new message
         load = getIntent().getExtras().getBoolean("load");
+
+        // Call the method to display chat list
+        if (savedInstanceState != null) {
+            // save RV state
+            Parcelable listState = savedInstanceState.getParcelable("LIST_STATE");
+            ArrayList<MessageResponse> messages = (ArrayList<MessageResponse>) savedInstanceState.getSerializable("MESSAGES");
+            HashMap<Integer, User> usersDetails = (HashMap<Integer, User>) savedInstanceState.getSerializable("USERS_DETAILS");
+
+            if (listState != null) {
+                messageRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+            }
+
+            if (messages != null && usersDetails != null) {
+                messageListAdapter.setMessageList(messages, usersDetails);
+            }
+            
+//            Parcelable listState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
+//            ArrayList<Group> groups = (ArrayList<Group>) savedInstanceState.getSerializable("GROUPS_LIST");
+//
+//            if (listState != null) {
+//                chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+//            }
+//
+//            if (groups != null) {
+//                chatListAdapter.setGroups(groups);
+//            } else {
+//                chatListPresenter.getChats();
+//            }
+
+        } else {
+//            chatListPresenter.getChats();
+        }
 
         // Process loading message or determine message creation
         chatPresenter.determineMessageCreation();
@@ -309,6 +345,21 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        System.out.println("onSaveInstanceState");
+
+        // save RV state
+        Parcelable listState = messageRecyclerView.getLayoutManager().onSaveInstanceState();
+        ArrayList<MessageResponse> messages = messageListAdapter.getMessageList();
+        HashMap<Integer, User> usersDetails = messageListAdapter.getUsersDetails();
+        state.putParcelable("LIST_STATE", listState);
+        state.putSerializable("MESSAGES", messages);
+        state.putSerializable("USERS_DETAILS", usersDetails);
     }
 
     /**
