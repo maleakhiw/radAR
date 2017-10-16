@@ -61,7 +61,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             int id = item.getItemId();
 
             if (id == R.id.nav_maps) {
-                //TODO: Go to maps
                 Intent intent = new Intent(activity, HomeScreenActivity.class);
                 activity.startActivity(intent);
 //                finishIfNotHomeScreen(activity);
@@ -100,14 +99,6 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         });
 
     }
-
-    private void uncheckAllItems() {
-        int size = navigationView.getMenu().size();
-        for (int i = 0; i < size; i++) {
-            navigationView.getMenu().getItem(i).setChecked(false);
-        }
-    }
-
 
 
 
