@@ -158,7 +158,7 @@ module.exports = class SMS {
   getGroupsForUser(req, res) {
       let userID = req.params.userID
 
-      let groupsDetails = {};
+      let groupsLastMessages = {};
       let groups;
 
       User.findOne({ userID: userID }).exec()
@@ -169,7 +169,7 @@ module.exports = class SMS {
           Message.findOne({groupID: groupID}).sort({time: -1}).exec()
           .then((message) => {
             if (message) {
-              groupsDetails[groupID] = {
+              groupsLastMessages[groupID] = {
                 from: message.from,
                 time: message.time,
                 contentType: message.contentType,
@@ -194,7 +194,7 @@ module.exports = class SMS {
           success: true,
           errors: [],
           groups: groups,
-          groupsDetails: groupsDetails
+          groupsLastMessages: groupsLastMessages
         }
         res.json(addMetas(response, "/api/accounts/:userID/chats"))
       })
@@ -213,7 +213,8 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
-      let group, usersDetails;
+      let group, usersDetails, lastMessage;
+
       Group.findOne({ groupID: groupID }).exec()
       .then((groupRes) => {
         group = groupRes;
@@ -222,8 +223,20 @@ module.exports = class SMS {
       })
       .then((pUserDetails) => {
         usersDetails = pUserDetails;
+
+        return Message.findOne({groupID: groupID}).sort({time: -1});
       })
-      .then(() => {
+
+      .then((message) => {
+        if (message) {
+          lastMessage = {
+            from: message.from,
+            time: message.time,
+            contentType: message.contentType,
+            text: message.text
+          }
+        }
+
         if (group) {
           let groupObj = {
             name: group.name,
@@ -231,7 +244,8 @@ module.exports = class SMS {
             admins: group.admins,
             members: group.members,
             isTrackingGroup: group.isTrackingGroup,
-            usersDetails: usersDetails
+            usersDetails: usersDetails,
+            lastMessage: lastMessage
           }
 
           res.json({
@@ -245,10 +259,10 @@ module.exports = class SMS {
           res.status(404).json({
             success: false,
             error: common.errorObjectBuilder(['invalidGroupID'])
-          })
+          });
         }
       })
-
+      .catch(err => common.sendInternalError(res));
 
   }
 

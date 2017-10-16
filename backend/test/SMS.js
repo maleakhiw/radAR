@@ -194,10 +194,27 @@ describe('SMS', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
         // console.log(res.body);
-        expect(res.body.groupsDetails['1']).to.not.equal(null);
-        expect(res.body.groupsDetails['1'].text).to.equal('Hello world');
+        expect(res.body.groupsLastMessages['1']).to.not.equal(null);
+        expect(res.body.groupsLastMessages['1'].text).to.equal('Hello world');
         expect(res.body.groups).to.include(1);
 
+        done();
+      })
+    })
+  })
+
+  describe('GET /api/accounts/:userID/chats/:chatID (sms.getGroup)', () => {
+    it('user2 should be able to access group details', (done) => {
+      chai.request(server)
+      .get('/api/accounts/2/chats/1')
+      .set('token', user2token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.group).to.not.equal(null);
+        expect(res.body.group.lastMessage).to.not.equal(null);
+        // TODO more assertions
         done();
       })
     })
