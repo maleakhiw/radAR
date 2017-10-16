@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // make a new AuthApi using our current Retrofit *instance*
         AuthApi authApi = retrofit.create(AuthApi.class);

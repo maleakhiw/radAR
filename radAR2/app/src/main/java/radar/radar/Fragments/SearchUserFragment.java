@@ -50,7 +50,7 @@ public class SearchUserFragment extends Fragment implements SearchUserView {
         setupUI(view);
 
         // Create retrofit instance
-        Retrofit retrofit = getRetrofit();
+        Retrofit retrofit = getRetrofit().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

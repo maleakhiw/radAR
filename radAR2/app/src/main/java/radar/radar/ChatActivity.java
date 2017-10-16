@@ -75,7 +75,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
         // Create instance of retrofit
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // Create instance of chat service
         ChatApi chatApi = retrofit.create(ChatApi.class);

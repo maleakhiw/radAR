@@ -57,7 +57,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
 
         // Create retrofit instance
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // Create chat api
         ChatApi chatApi = retrofit.create(ChatApi.class);

@@ -53,7 +53,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             finish();   // nothing to do here
         }
 
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         groupsService = new GroupsService(this, groupsApi);
 

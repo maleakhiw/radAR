@@ -78,7 +78,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);

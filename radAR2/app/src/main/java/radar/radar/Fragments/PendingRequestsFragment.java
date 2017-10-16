@@ -47,7 +47,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
 
         // Create retrofit instance
-        Retrofit retrofit = getRetrofit();
+        Retrofit retrofit = getRetrofit().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

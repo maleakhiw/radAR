@@ -172,7 +172,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         // setup services
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);

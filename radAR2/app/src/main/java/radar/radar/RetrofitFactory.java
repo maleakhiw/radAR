@@ -9,16 +9,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class RetrofitFactory {
-    private static Retrofit retrofit;
+    private static Retrofit.Builder retrofit;
 
-    public static Retrofit getRetrofit() {
-        if (retrofit != null) {
+    public static Retrofit.Builder getRetrofit() {
+        if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("https://radar.fadhilanshar.com/api/")
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
+                    .addConverterFactory(GsonConverterFactory.create());
+            return retrofit;
         }
         return retrofit;
+
     }
 }

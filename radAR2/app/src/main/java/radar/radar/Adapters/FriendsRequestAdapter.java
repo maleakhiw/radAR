@@ -45,7 +45,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         this.friendRequests = friendRequests;
 
         // Create retrofit instance
-        Retrofit retrofit = RetrofitFactory.getRetrofit();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(context, usersApi);
