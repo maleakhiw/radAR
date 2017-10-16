@@ -104,7 +104,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                         .title((String) place.getName()));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
                 googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     /**
                      * handle marker click event
@@ -284,7 +284,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                             googleMap.setMyLocationEnabled(true);
                             // TODO do not remove PoI
                             LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                     currentPosition, DEFAULT_ZOOM));
                         }
                     } else {
