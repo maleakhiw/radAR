@@ -209,6 +209,7 @@ describe('SMS', () => {
       .get('/api/accounts/2/chats/1')
       .set('token', user2token)
       .end((err, res) => {
+        // console.log(res.body.group.usersDetails[1].commonGroups);
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);

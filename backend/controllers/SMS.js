@@ -219,7 +219,7 @@ module.exports = class SMS {
       .then((groupRes) => {
         group = groupRes;
 
-        return common.getUsersDetails(groupRes.members);
+        return common.getUsersDetails(groupRes.members, userID);
       })
       .then((pUserDetails) => {
         usersDetails = pUserDetails;
