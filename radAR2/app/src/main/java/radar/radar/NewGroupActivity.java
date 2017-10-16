@@ -112,7 +112,7 @@ public class NewGroupActivity extends AppCompatActivity {
                                     launchGroup(groupsResponse.group);
 
                                 } else {
-                                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_LONG);
+                                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
                                 }
                             }
 

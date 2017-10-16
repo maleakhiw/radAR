@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 import radar.radar.Adapters.ChatListAdapter;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
@@ -53,15 +54,10 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         // Setup groups
         groups = new ArrayList<>();
 
-        // Setup UI
-        setupUI();
+
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         // Create chat api
         ChatApi chatApi = retrofit.create(ChatApi.class);
@@ -69,8 +65,9 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         // Create the service
         chatService = new ChatService(this, chatApi);
 
-        // Create a presenter object
-        chatListPresenter = new ChatListPresenter(this, chatService);
+        // Setup UI
+        setupUI();
+
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -78,6 +75,13 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
                 chatListPresenter.getChats();
             }
         });
+
+        // Create a presenter object
+        chatListPresenter = new ChatListPresenter(this, chatService);
+
+        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups, chatListPresenter);
+        chatRecyclerView.setAdapter(chatListAdapter);
+
 
         // Call the method to display chat list
         if (savedInstanceState != null) {
@@ -114,8 +118,6 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups);
-        chatRecyclerView.setAdapter(chatListAdapter);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
@@ -171,7 +173,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
      */
     @Override
     public void showToastMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -215,6 +217,19 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         ArrayList<Group> groups = chatListAdapter.getGroups();
         state.putParcelable(KEY_RECYCLER_STATE, listState);
         state.putSerializable("GROUPS_LIST", groups);
+    }
+
+    @Override
+    public void removeGroup(int groupID) {
+        if (groups != null) {
+            ArrayList<Group> newGroups = new ArrayList<>();
+            for (Group group : groups) {
+                if (group.groupID != groupID) {
+                    newGroups.add(group);
+                }
+            }
+            groups = newGroups;
+        }
     }
 
 //    Parcelable listState;

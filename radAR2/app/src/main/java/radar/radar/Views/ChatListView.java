@@ -26,4 +26,6 @@ public interface ChatListView {
     int getChatId(int index);
 
     void processDisplayChatList(GetChatInfoResponse getChatInfoResponse);
+
+    void removeGroup(int groupID);
 }

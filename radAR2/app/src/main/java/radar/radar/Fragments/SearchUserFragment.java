@@ -18,6 +18,7 @@ import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Presenters.SearchUserPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.SearchUserView;
@@ -47,11 +48,7 @@ public class SearchUserFragment extends Fragment implements SearchUserView {
         setupUI(view);
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

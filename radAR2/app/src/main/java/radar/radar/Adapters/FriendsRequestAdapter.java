@@ -18,6 +18,7 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.FriendRequest;
 import radar.radar.Models.Responses.Status;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.TabbedSearchActivity;
@@ -44,11 +45,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
         this.friendRequests = friendRequests;
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(context, usersApi);
@@ -138,10 +135,10 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
             public void onNext(Status status) {
                 // If success
                 if (status.success) {
-                    Toast.makeText(context, "Successfully process friend request.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Successfully process friend request.", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(context, "Failure to process friend request.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Failure to process friend request.", Toast.LENGTH_SHORT).show();
                 }
 
                 // Remove particular card
@@ -151,7 +148,7 @@ public class FriendsRequestAdapter extends RecyclerView.Adapter<FriendsRequestAd
 
             @Override
             public void onError(Throwable e) {
-                Toast.makeText(context, "Internal Error. Failure to process friend request.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Internal Error. Failure to process friend request.", Toast.LENGTH_SHORT).show();
             }
 
             @Override

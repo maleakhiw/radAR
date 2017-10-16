@@ -3,7 +3,11 @@ package radar.radar.Adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -12,7 +16,9 @@ import java.util.ArrayList;
 
 import radar.radar.ChatActivity;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.R;
+import radar.radar.Services.AuthService;
 
 /**
  * Adapter for chat list, used to connect data to display and recycler view
@@ -20,15 +26,18 @@ import radar.radar.R;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
     ArrayList<Group> groups;
     Context context;
+    ChatListPresenter presenter;
 
     /**
      * Constructor for ChatListAdapter
      * @param context context of the activity that calls the adapter
      * @param groups list of chats/ groups/ tracking groups
+     * @param presenter presenter for the Activity
      */
-    public ChatListAdapter(Context context, ArrayList<Group> groups) {
+    public ChatListAdapter(Context context, ArrayList<Group> groups, ChatListPresenter presenter) {
         this.context = context;
         this.groups = groups;
+        this.presenter = presenter;
     }
 
     public ArrayList<Group> getGroups() {
@@ -66,12 +75,22 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         // load stuff
         holder.chatName.setText(group.name);
 
-        // Check type of group
-        if (group.isTrackingGroup) {
-            holder.chatType.setText("Tracking Group");
-        } else {
-            holder.chatType.setText("Chat");
+        if (group.lastMessage != null) {
+            int sender = group.lastMessage.from;
+            if (AuthService.getUserID(holder.context) == sender) {
+                holder.lastMessageFrom.setText("Me: ");
+            } else {
+                holder.lastMessageFrom.setText(group.usersDetails.get(group.lastMessage.from).firstName + ": ");
+            }
+            holder.lastMessage.setText(group.lastMessage.text);
         }
+
+//        // Check type of group
+//        if (group.isTrackingGroup) {
+//
+//        } else {
+//            holder.lastMessage.setText("Chat");
+//        }
     }
 
     @Override
@@ -83,15 +102,29 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
      * Inner class for ViewHolder
      * Connecting row xml file with the application logic
      */
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements MenuItem.OnMenuItemClickListener, View.OnCreateContextMenuListener {
         TextView chatName;
-        TextView chatType;
+        TextView lastMessage;
+        TextView lastMessageFrom;
+
+        Context context;
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+            menu.setHeaderTitle("Select Action");
+            MenuItem delete = menu.add(Menu.NONE,1,1,"Delete chat");
+
+            delete.setOnMenuItemClickListener(this);
+        }
 
         public ViewHolder(View itemView) {
             super(itemView);
 
+            context = itemView.getContext();
+
             chatName = itemView.findViewById(R.id.row_chat_name);
-            chatType = itemView.findViewById(R.id.row_type_value);
+            lastMessageFrom = itemView.findViewById(R.id.row_last_message_from);
+            lastMessage = itemView.findViewById(R.id.row_last_message);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +138,25 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     context.startActivity(intent);
                 }
             });
+
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case 1:
+                    System.out.println(groups.get(getAdapterPosition()));
+                    Group group = groups.get(getAdapterPosition());
+                    if (group != null) {
+                        presenter.deleteGroup(group.groupID);
+                    } else {
+                        Log.w("onMenuItemClick", "Group missing");
+                    }
+//                    presenter.deleteGroup(groups.get(getAdapterPosition()).groupID);
+                    return true;
+            }
+            return false;
         }
     }
 }

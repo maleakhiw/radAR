@@ -75,7 +75,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
             super(itemView);
 
             chatName = itemView.findViewById(R.id.row_chat_name);
-            chatType = itemView.findViewById(R.id.row_type_value);
+            chatType = itemView.findViewById(R.id.row_last_message);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {

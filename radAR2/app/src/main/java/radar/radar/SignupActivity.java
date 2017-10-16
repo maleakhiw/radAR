@@ -165,7 +165,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
      */
     @Override
     public void showToastLong(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
-import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessageResponseWithDetails;
 import radar.radar.Models.Domain.User;
 import radar.radar.R;

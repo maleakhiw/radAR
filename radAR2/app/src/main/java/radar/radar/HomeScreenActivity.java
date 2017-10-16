@@ -78,11 +78,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);

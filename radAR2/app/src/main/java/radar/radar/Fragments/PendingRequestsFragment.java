@@ -18,6 +18,7 @@ import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Presenters.PendingRequestsPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.PendingRequestsView;
@@ -44,11 +45,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

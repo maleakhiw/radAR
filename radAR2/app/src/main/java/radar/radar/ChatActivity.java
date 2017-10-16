@@ -17,7 +17,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
 import radar.radar.Models.Domain.Group;
-import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
@@ -75,11 +75,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
         // Create instance of retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         // Create instance of chat service
         ChatApi chatApi = retrofit.create(ChatApi.class);
@@ -232,7 +228,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
      */
     @Override
     public void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -303,7 +299,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
-                        Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

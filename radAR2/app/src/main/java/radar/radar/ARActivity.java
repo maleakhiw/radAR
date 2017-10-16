@@ -172,11 +172,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         // setup services
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
@@ -212,7 +208,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
 
     @Override
     public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_LONG);
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT);
     }
 
     /**

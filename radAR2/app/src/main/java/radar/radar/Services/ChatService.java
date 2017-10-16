@@ -17,6 +17,7 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
+import radar.radar.Models.Responses.Status;
 
 /**
  * Layer of abstraction which methods will call ChatApi and used for chat functionality
@@ -162,6 +163,12 @@ public class ChatService {
             System.out.println(message.sentMessage);
             return message;
         });
+    }
+
+    public Observable<Status> deleteGroup(int groupID) {
+        return chatApi.deleteGroup(userID, token, groupID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
