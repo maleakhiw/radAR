@@ -11,9 +11,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.UserDetailPresenter;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.UserDetailView;
@@ -30,6 +34,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     private TextView userDetailsEmail;
     private FloatingActionButton messageFab;
     private ImageView add;
+    private ImageView profilePicture;
     private User user;
 
     /** Service and Presenter variable */
@@ -65,11 +70,21 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(this, usersApi);
 
+
         // Get the information for user to display
         user = (User) getIntent().getSerializableExtra("user");
         fullName.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
         userDetailsEmail.setText(user.email);
+
+        // profile picture
+        ResourcesService resourcesService = new ResourcesService(this, retrofit.create(ResourcesApi.class));
+        profilePicture = findViewById(R.id.tracking_group_details_profile);
+        if (user.profilePicture != null) {
+            resourcesService.getResourceWithCache(user.profilePicture, this)
+                    .subscribe(file -> Picasso.with(this).load(file).into(profilePicture),
+                            error -> Toast.makeText(this, "Unexpected error", Toast.LENGTH_SHORT));
+        }
 
         if (user.isFriend) {
             add.setVisibility(View.GONE);
