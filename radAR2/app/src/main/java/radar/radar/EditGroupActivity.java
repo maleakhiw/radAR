@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -80,6 +81,9 @@ public class EditGroupActivity extends AppCompatActivity implements EditGroupVie
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         groupsService = new GroupsService(this, groupsApi);
         resourcesService = new ResourcesService(this, retrofit.create(ResourcesApi.class));
+
+        // load existing image
+        resourcesService.getResourceWithCache(group.profilePicture, this).subscribe(file -> Picasso.with(this).load(file).into(picture), error -> System.out.println(error));
 
         deleteGroup = findViewById(R.id.delete_group);
         deleteGroup.setOnClickListener(view -> {
@@ -147,6 +151,7 @@ public class EditGroupActivity extends AppCompatActivity implements EditGroupVie
 
             @Override
             public void onNext(Status status) {
+                // TODO loading bar
                 if (status.success) {
                     System.out.println("Updated profile picture");
                     finish();

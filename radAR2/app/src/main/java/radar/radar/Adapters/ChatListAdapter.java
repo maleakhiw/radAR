@@ -117,36 +117,29 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
 //        System.out.println(holder.profPicLoaded);
         if (group.profilePicture != null) {
-            if (!holder.profPicLoaded) {
-                // TODO inject service using method from Activity
-//            System.out.println(position);
-//            System.out.println(group.name);
-//            System.out.println(group.profilePicture);
+            holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-                holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+                }
 
-                    }
+                @Override
+                public void onNext(File file) {
+                    System.out.println("Update profile picture for: " + group.name);
+                    Picasso.with(holder.context).load(file).into(holder.profilePic);
+                    holder.profPicLoaded = true;
+                }
 
-                    @Override
-                    public void onNext(File file) {
-                        System.out.println("Update profile picture for: " + group.name);
-                        Picasso.with(holder.context).load(file).into(holder.profilePic);
-                        holder.profPicLoaded = true;
-                    }
+                @Override
+                public void onError(Throwable e) {
 
-                    @Override
-                    public void onError(Throwable e) {
+                }
 
-                    }
+                @Override
+                public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-            }
+                }
+            });
         } else {
             holder.profilePic.setImageResource(R.mipmap.ic_launcher_round);
         }

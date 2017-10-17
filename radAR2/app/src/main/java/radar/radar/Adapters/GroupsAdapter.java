@@ -76,32 +76,30 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
 
         // load profile picture
         if (group.profilePicture != null) {
-            if (!holder.profPicLoaded) {
 
-                holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-                    }
+                }
 
-                    @Override
-                    public void onNext(File file) {
-                        System.out.println("Update profile picture for: " + group.name);
-                        Picasso.with(holder.context).load(file).into(holder.img);
-                        holder.profPicLoaded = true;
-                    }
+                @Override
+                public void onNext(File file) {
+                    System.out.println("Update profile picture for: " + group.name);
+                    Picasso.with(holder.context).load(file).into(holder.img);
+                    holder.profPicLoaded = true;
+                }
 
-                    @Override
-                    public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-                    }
+                }
 
-                    @Override
-                    public void onComplete() {
+                @Override
+                public void onComplete() {
 
-                    }
-                });
-            }
+                }
+            });
         } else {
             holder.img.setImageResource(R.mipmap.ic_launcher_round);
         }
