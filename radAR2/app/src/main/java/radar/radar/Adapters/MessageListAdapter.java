@@ -207,50 +207,20 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      */
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
-        ImageView profilePic;
 
-        ResourcesService resourcesService;
 
         public SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body_send);
             timeText = itemView.findViewById(R.id.text_message_time);
-            profilePic = itemView.findViewById(R.id.image_message_profile);
-
             Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
-            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
         }
 
         // Bind method
         void bind(MessageResponseWithDetails message) {
             messageText.setText(message.text);
             timeText.setText(TimeFormatService.parseTimeString(message.time, context));
-
-            // load profile picture
-            if (message.userDetails.profilePicture != null) {
-                resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(File file) {
-                        Picasso.with(context).load(file).into(profilePic);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-            }
         }
     }
 }
