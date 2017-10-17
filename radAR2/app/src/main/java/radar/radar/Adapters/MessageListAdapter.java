@@ -170,6 +170,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
 
         // Bind method
         void bind(MessageResponseWithDetails message) {
+            // NOTE reset to original state - clean up since the View might have been recycled
+            profilePic.setImageResource(R.mipmap.ic_launcher);
+
             messageText.setText(message.text);
             if (message.userDetails != null) {
                 nameText.setText(message.userDetails.firstName + " " + message.userDetails.lastName);

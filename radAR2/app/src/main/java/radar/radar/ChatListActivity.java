@@ -57,15 +57,16 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         setupUI();
 
-        // refresh the list of chats on refresh. TODO polling.
+        // refresh the list of chats on refresh.
         swipeRefreshLayout.setOnRefreshListener(() -> chatListPresenter.loadData());
 
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
 
+
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, NewGroupActivity.class);
-            intent.putExtra("newGroup", true);
+            intent.putExtra("newChat", true);
             startActivity(intent);
         });
 
@@ -98,6 +99,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
         NavigationView navigationView = findViewById(R.id.nav_view);
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        fab = findViewById(R.id.new_chat_fab);
+
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         ImageView img = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);

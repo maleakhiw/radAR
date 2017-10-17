@@ -90,8 +90,11 @@ public class GroupsListActivity extends AppCompatActivity
         }
 
         FloatingActionButton fab = findViewById(R.id.new_group_fab);
+
+
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+            Intent intent = new Intent(this, NewGroupActivity.class);
+            intent.putExtra("newGroup", true);
             startActivity(intent);
         });
 

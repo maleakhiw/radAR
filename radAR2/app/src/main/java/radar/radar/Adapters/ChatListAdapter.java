@@ -73,9 +73,24 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         return new ViewHolder(titleView);
     }
 
+    private void resetHolder(ViewHolder holder) {
+        holder.profilePic.setImageResource(R.mipmap.ic_launcher_round);
+        holder.isTrackingGroup.setVisibility(View.GONE);
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         Group group = groups.get(position);
+
+        // NOTE have to reset. Views might have been recycled.
+        /*
+         * When the page is reloaded, and the contents of the RecyclerView is invalidated, Android
+         * might allocate what used to be the 2nd row to the 1st row, or so on.
+
+         * If we don't clean the rows back up to a fresh state, we might end up with
+         * wrong profile pictures and tracking group indicators between the rows.
+         */
+        resetHolder(holder);
 
         // load stuff
         holder.chatName.setText(group.name);
@@ -96,12 +111,16 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         }
 
         if (group.isTrackingGroup) {
+            System.out.println("Show tracking group symbol for: " + group.name);
             holder.isTrackingGroup.setVisibility(View.VISIBLE);
         }
 
 //        System.out.println(holder.profPicLoaded);
         if (group.profilePicture != null && !holder.profPicLoaded) {
             // TODO inject service using method from Activity
+//            System.out.println(position);
+//            System.out.println(group.name);
+//            System.out.println(group.profilePicture);
 
             holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
                 @Override
@@ -111,6 +130,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
                 @Override
                 public void onNext(File file) {
+                    System.out.println("Update profile picture for: " + group.name);
                     Picasso.with(holder.context).load(file).into(holder.profilePic);
                     holder.profPicLoaded = true;
                 }

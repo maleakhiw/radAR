@@ -95,6 +95,7 @@ public class ChatPresenter {
      * @param name name of the group/ chat
      * @return new chat request object
      */
+    @Deprecated
     public NewChatRequest generateNewChatRequest(int id1, int id2, String name) {
         ArrayList<Integer> participant = new ArrayList<>();
         participant.add(id1);
@@ -122,7 +123,9 @@ public class ChatPresenter {
 
     /**
      * Used to generate a new chat for a particular user
+     * DEPRECATED - use the new API route for this purpose.
      */
+    @Deprecated
     public void generateNewChat() {
         // Create an object for new chat request which includes the participant of the chat
         // and also the name of the chat

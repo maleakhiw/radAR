@@ -45,6 +45,15 @@ public class NewGroupActivity extends AppCompatActivity {
         finish();
     }
 
+    void launchChat(Group group) {
+        Intent chatListIntent = new Intent(this, ChatListActivity.class);
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("group", group);
+        intent.putExtra("load", true);
+        startActivities(new Intent[]{chatListIntent, intent});
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +124,6 @@ public class NewGroupActivity extends AppCompatActivity {
                             newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
                         }
 
-
                     }
 
                 });
@@ -136,19 +144,18 @@ public class NewGroupActivity extends AppCompatActivity {
 
 
     public void newChat(String groupName, ArrayList<Integer> selectedUsers) {
-        groupsService.newGroup(groupName, selectedUsers).subscribe(new Observer<GroupsResponse>() {
+        groupsService.newChat(groupName, selectedUsers).subscribe(new Observer<NewChatResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(GroupsResponse groupsResponse) {
+            public void onNext(NewChatResponse groupsResponse) {
                 System.out.println(groupsResponse);
 
                 if (groupsResponse.success) {
-                    launchGroup(groupsResponse.group);
-
+                    launchChat(groupsResponse.group);
                 } else {
                     Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
                 }
@@ -168,14 +175,14 @@ public class NewGroupActivity extends AppCompatActivity {
     }
 
     public void newGroup(String groupName, ArrayList<Integer> selectedUsers) {
-        groupsService.newChat(groupName, selectedUsers).subscribe(new Observer<NewChatResponse>() {
+        groupsService.newGroup(groupName, selectedUsers).subscribe(new Observer<GroupsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(NewChatResponse groupsResponse) {
+            public void onNext(GroupsResponse groupsResponse) {
                 System.out.println(groupsResponse);
 
                 if (groupsResponse.success) {
