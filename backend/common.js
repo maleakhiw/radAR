@@ -188,7 +188,7 @@ module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reje
     .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
       if (user) {
         userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
-        userDetails[memberUserID].isFriend = user.friends.includes(userID);
+        userDetails[memberUserID].isFriend = user.friends.includes(parseInt(userID));
       }
       resolve();
     })
