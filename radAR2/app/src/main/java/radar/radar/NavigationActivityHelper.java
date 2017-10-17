@@ -100,6 +100,8 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
         email.setText(AuthService.getEmail(activity));
 
+
+
         if (name != null) {
             // TODO pass this in as a dependency
             Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
@@ -107,6 +109,16 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             UsersApi usersApi = retrofit.create(UsersApi.class);
             ResourcesService resourcesService = new ResourcesService(activity, resourcesApi);
             UsersService usersService = new UsersService(activity, usersApi);
+
+            // load the last known profile picture from cache
+            String resID = UsersService.getProfilePictureResID(activity);
+            if (resID != null) {
+                resourcesService.getResourceWithCache(resID, activity).subscribe(file -> {
+                    if (file != null && profilePicture != null) {
+                        Picasso.with(activity).load(file).into(profilePicture);
+                    }
+                }, System.out::println);
+            }
 
             // get userID
             int userID = AuthService.getUserID(activity);
@@ -133,6 +145,8 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
                 }
             });
+
+
 
 
         }

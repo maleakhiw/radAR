@@ -1,6 +1,7 @@
 package radar.radar.Services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import java.io.File;
 
@@ -66,6 +67,8 @@ public class UsersService {
     public Observable<File> getProfilePicture(int queryUserID, ResourcesService resourcesService, Context context) {
         return getProfile(queryUserID).switchMap(searchUserResponse -> {
             if (searchUserResponse.details != null && searchUserResponse.details.profilePicture != null) {
+                SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+                prefs.edit().putString("profilePicture", searchUserResponse.details.profilePicture).apply();
                 // check if the fileID is in cache
                 return resourcesService.getResourceWithCache(searchUserResponse.details.profilePicture, context);
             } else {
@@ -153,5 +156,15 @@ public class UsersService {
         return usersApi.updateProfile(userID, token, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Retrieves the last known profile picture resource ID from SharedPreferences. Returns null if unset.
+     * @param context Android Context
+     * @return resource ID
+     */
+    public static String getProfilePictureResID(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("profilePicture", null);
     }
 }
