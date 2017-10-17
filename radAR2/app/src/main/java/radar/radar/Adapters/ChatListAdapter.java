@@ -99,7 +99,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.isTrackingGroup.setVisibility(View.VISIBLE);
         }
 
-        if (group.profilePicture != null) {
+        if (group.profilePicture != null && !holder.profPicLoaded) {
 //            System.out.println("group has profilePicture");
 //            System.out.println(group.profilePicture);
             // TODO inject service using method from Activity
@@ -113,6 +113,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 @Override
                 public void onNext(File file) {
                     Picasso.with(holder.context).load(file).into(holder.profilePic);
+                    holder.profPicLoaded = true;
                 }
 
                 @Override
@@ -144,12 +145,12 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         TextView lastMessageFrom;
         ImageView profilePic;
         ImageView isTrackingGroup;
-//        TextView isChat;
         TextView timestamp;
 
         ResourcesService resourcesService;
-
         Context context;
+
+        private boolean profPicLoaded = false;
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
