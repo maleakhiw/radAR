@@ -11,6 +11,8 @@ import radar.radar.Models.Responses.GetChatInfoResponse;
 public interface ChatListView {
     void stopRefreshIndicator();
 
+    void startRefreshIndicator();
+
     void setGroups(ArrayList<Group> groups);
 
     void setChatIDs(ArrayList<Integer> chatIDs);

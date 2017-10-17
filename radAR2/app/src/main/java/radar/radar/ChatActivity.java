@@ -12,10 +12,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -32,8 +30,6 @@ import radar.radar.Services.ChatApi;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Classes to display chat to user (ChatActivity)
@@ -79,7 +75,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
         // Create instance of retrofit
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         // Create instance of chat service
         ChatApi chatApi = retrofit.create(ChatApi.class);

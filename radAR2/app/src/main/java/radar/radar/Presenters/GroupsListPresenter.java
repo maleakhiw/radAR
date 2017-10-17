@@ -29,33 +29,13 @@ public class GroupsListPresenter {
         System.out.println("loadData()");
 
         groupsService.getGroups()
-                .map(response -> {
-                    System.out.println("got groupIDs");
-                    ArrayList<Observable<GroupsResponse>> observablesArrayList = new ArrayList<>();
-
-                    if (response.success != true) {
-                        System.out.println("response.success is false");
-//                        Log.w("loadData()", "response.success is false");
+                .map(getChatsResponse -> {
+                    if (getChatsResponse.success) {
+                        return getChatsResponse.groups;
                     } else {
-                        for (int groupID: response.groups) {
-                            observablesArrayList.add(groupsService.getGroup(groupID));
-                        }
+                        return new ArrayList<Group>();
                     }
-                    return observablesArrayList;
                 })
-                .switchMap(observables ->
-                    Observable.zip(observables, responses -> {
-                        ArrayList<Group> groupsArrayListTmp = new ArrayList<>();
-                        for (Object obj: responses) {
-                            GroupsResponse response = (GroupsResponse) obj;
-                            if (response.success && response.group.isTrackingGroup) {
-                                groupsArrayListTmp.add(response.group);
-                            }
-                        }
-                        System.out.println(groupsArrayListTmp);
-                        return groupsArrayListTmp;
-                    })
-                )
                 .subscribe(new Observer<ArrayList<Group>>() {
                     @Override
                     public void onSubscribe(Disposable d) {

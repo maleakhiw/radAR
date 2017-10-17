@@ -22,8 +22,6 @@ import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Views.GroupsListView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GroupsListActivity extends AppCompatActivity
                                 implements GroupsListView {
@@ -69,7 +67,7 @@ public class GroupsListActivity extends AppCompatActivity
                 DividerItemDecoration.VERTICAL));
 
 
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         GroupsService groupsService = new GroupsService(this, groupsApi);

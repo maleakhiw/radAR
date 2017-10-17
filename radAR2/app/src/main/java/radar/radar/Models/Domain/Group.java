@@ -11,6 +11,7 @@ import java.util.HashMap;
  */
 public class Group implements Serializable {
     public String name;
+    public String profilePicture;
     public int groupID;
     public ArrayList<Integer> members;
     public ArrayList<Integer> admins;

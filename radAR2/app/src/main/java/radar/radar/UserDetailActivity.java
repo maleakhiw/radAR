@@ -59,7 +59,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup Retrofit Instances
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         // Setup user api that will be used to generate a service so that we can add friends
         UsersApi usersApi = retrofit.create(UsersApi.class);

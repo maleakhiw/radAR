@@ -11,7 +11,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitFactory {
     private static Retrofit.Builder retrofit;
 
-    public static Retrofit.Builder getRetrofit() {
+    public static Retrofit.Builder getRetrofitBuilder() {
         if (retrofit == null) {
             retrofit = new Retrofit.Builder()
                     .baseUrl("https://radar.fadhilanshar.com/api/")

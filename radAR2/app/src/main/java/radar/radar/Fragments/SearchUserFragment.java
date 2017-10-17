@@ -12,19 +12,14 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Presenters.SearchUserPresenter;
 import radar.radar.R;
-import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.SearchUserView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import static radar.radar.RetrofitFactory.*;
 
@@ -50,7 +45,7 @@ public class SearchUserFragment extends Fragment implements SearchUserView {
         setupUI(view);
 
         // Create retrofit instance
-        Retrofit retrofit = getRetrofit().build();
+        Retrofit retrofit = getRetrofitBuilder().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

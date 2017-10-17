@@ -2,7 +2,6 @@ package radar.radar.Presenters;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ChatService;
@@ -12,6 +11,9 @@ import radar.radar.Views.ChatListView;
  * Presenter class of ChatListActivity.
  * Contains application logic related to displaying chat list
  */
+
+// TODO @maleakhiw class has been refactored - rewrite unit tests
+
 public class ChatListPresenter {
     ChatListView chatListView;
     ChatService chatService;
@@ -26,80 +28,37 @@ public class ChatListPresenter {
         this.chatService = chatService;
     }
 
-    Disposable getChatListDisposable;
+//    Disposable getChatListDisposable;
 
-    /**
-     * Get chat ids that are related to a particular user
-     */
-    public void getChats() {
+    public void getGroups() {
+        chatListView.startRefreshIndicator();
         // Getting the chat id that are related to a particular user
-        chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-                getChatListDisposable = d;
-            }
+       chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
+           @Override
+           public void onSubscribe(Disposable d) {
 
-            @Override
-            public void onNext(GetChatsResponse getChatsResponse) {
-                // If we successfully get chat ids
-                if (getChatsResponse.success) {
-                    chatListView.setChatIDs(getChatsResponse.groups);
-                    displayChatList();
-                }
-                else {
-                    chatListView.showToastMessage("Unsuccessful getting chatIDs.");
-                }
-            }
+           }
 
-            @Override
-            public void onError(Throwable e) {
-                chatListView.showToastMessage("Internal error. Failed to get chat ids.");
-            }
+           @Override
+           public void onNext(GetChatsResponse getChatsResponse) {
+               System.out.println("got response");
+               if (getChatsResponse.success) {
+                   chatListView.setGroups(getChatsResponse.groups);
+               }
+               chatListView.stopRefreshIndicator();
+           }
 
-            @Override
-            public void onComplete() {
-            }
-        });
-    }
+           @Override
+           public void onError(Throwable e) {
+               System.out.println(e);
+               chatListView.stopRefreshIndicator();
+           }
 
-    /**
-     * Used to display chat list (getting the chat information)
-     */
-    public void displayChatList() {
-        // Using the id that we have get display the chat
-        // Iterate through all ids
-        for (int i=0; i<chatListView.getChatIDsSize(); i++) {
-            chatService.getChatInfo(chatListView.getChatId(i)).subscribe(new Observer<GetChatInfoResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
+           @Override
+           public void onComplete() {
 
-                }
-
-                @Override
-                public void onNext(GetChatInfoResponse getChatInfoResponse) {
-                    // If the response successful display on the recycler view
-                    if (getChatInfoResponse.success) {
-                        chatListView.processDisplayChatList(getChatInfoResponse);
-                        chatListView.stopRefreshIndicator();
-                    }
-                    else {
-                        chatListView.showToastMessage("Failed to display chat information.");
-                    }
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    System.out.println(e);
-                    chatListView.showToastMessage("Internal Error. Failed to display chat list.");
-
-                }
-
-                @Override
-                public void onComplete() {
-                }
-            });
-        }
+           }
+       });
     }
 
     public void deleteGroup(int groupID) {
@@ -115,8 +74,7 @@ public class ChatListPresenter {
                     chatListView.showToastMessage("Group deleted");
                     chatListView.removeGroup(groupID);
                 }
-                getChats();
-//                displayChatList();  // update chat list - group has been deleted
+                getGroups();
             }
 
             @Override
@@ -132,8 +90,8 @@ public class ChatListPresenter {
     }
 
     public void onStop() {
-        if (getChatListDisposable != null) {
-            getChatListDisposable.dispose();
-        }
+//        if (getChatListDisposable != null) {
+//            getChatListDisposable.dispose();
+//        }
     }
 }

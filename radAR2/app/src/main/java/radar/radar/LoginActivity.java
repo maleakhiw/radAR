@@ -2,7 +2,6 @@ package radar.radar;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,8 +14,6 @@ import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
 import radar.radar.Views.LoginView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * View part of the MVP model for Login activity/ screen
@@ -43,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         // make a new AuthApi using our current Retrofit *instance*
         AuthApi authApi = retrofit.create(AuthApi.class);

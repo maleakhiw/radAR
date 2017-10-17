@@ -110,8 +110,6 @@ public class ResourcesService {
 
     }
 
-
-
     /**
      * Gets a resource from the server.
      * @param resourceID resource to get
@@ -169,32 +167,4 @@ public class ResourcesService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-
-
-
-//    private Observer<File> handleResult() {
-//        return new Observer<File>() {
-//
-//            @Override
-//            public void onError(Throwable e) {
-//                e.printStackTrace();
-////                Log.d(TAG, "Error " + e.getMessage());
-//            }
-//
-//            @Override
-//            public void onComplete() {
-////                Log.d(TAG, "onCompleted");
-//            }
-//
-//            @Override
-//            public void onSubscribe(Disposable d) {
-//
-//            }
-//
-//            @Override
-//            public void onNext(File file) {
-////                Log.d(TAG, "File downloaded to " + file.getAbsolutePath());
-//            }
-//        };
-//    }
 }

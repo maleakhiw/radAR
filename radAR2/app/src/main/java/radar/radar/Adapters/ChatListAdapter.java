@@ -10,15 +10,27 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.ChatActivity;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
+import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
+import retrofit2.Retrofit;
 
 /**
  * Adapter for chat list, used to connect data to display and recycler view
@@ -45,14 +57,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     }
 
     public void setGroups(ArrayList<Group> groups) {
-        this.groups = groups;
-    }
-
-    /**
-     * Set the array list groups with new arraylist/ updated array list
-     * @param groups arraylist of Group
-     */
-    public void setChatList(ArrayList<Group> groups) {
         this.groups = groups;
     }
 
@@ -83,14 +87,38 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 holder.lastMessageFrom.setText(group.usersDetails.get(group.lastMessage.from).firstName + ": ");
             }
             holder.lastMessage.setText(group.lastMessage.text);
+        } else {
+            holder.lastMessage.setText("No messages yet.");
         }
 
-//        // Check type of group
-//        if (group.isTrackingGroup) {
-//
-//        } else {
-//            holder.lastMessage.setText("Chat");
-//        }
+        if (group.profilePicture != null) {
+            System.out.println("group has profilePicture");
+            System.out.println(group.profilePicture);
+            // TODO inject service using method from Activity
+
+            holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(File file) {
+                    Picasso.with(holder.context).load(file).into(holder.profilePic);
+                }
+
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        }
+
     }
 
     @Override
@@ -106,12 +134,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         TextView chatName;
         TextView lastMessage;
         TextView lastMessageFrom;
+        ImageView profilePic;
+
+        ResourcesService resourcesService;
 
         Context context;
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Select Action");
+//            menu.setHeaderTitle("Select Action");
             MenuItem delete = menu.add(Menu.NONE,1,1,"Delete chat");
 
             delete.setOnMenuItemClickListener(this);
@@ -122,9 +153,13 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
             context = itemView.getContext();
 
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService. Make RetrofitFactory a ServicesFactory
+
             chatName = itemView.findViewById(R.id.row_chat_name);
             lastMessageFrom = itemView.findViewById(R.id.row_last_message_from);
             lastMessage = itemView.findViewById(R.id.row_last_message);
+            profilePic = itemView.findViewById(R.id.row_profile_picture);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {

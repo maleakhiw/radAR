@@ -16,8 +16,6 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GroupDetailActivity extends AppCompatActivity {
 
@@ -53,7 +51,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             finish();   // nothing to do here
         }
 
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         groupsService = new GroupsService(this, groupsApi);
 

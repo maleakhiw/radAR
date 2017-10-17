@@ -101,7 +101,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
         if (name != null) {
             // TODO pass this in as a dependency
-            Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
             ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
             UsersApi usersApi = retrofit.create(UsersApi.class);
             ResourcesService resourcesService = new ResourcesService(activity, resourcesApi);
