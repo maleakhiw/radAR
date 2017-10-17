@@ -32,5 +32,8 @@ public class GroupDetailsPresenter {
         view.setMeetingPointName(meetingPoint.name);
         view.setMeetingPointLatLon(meetingPoint.lat, meetingPoint.lon);
         view.updateDistanceToMeetingPoint();
+
+        // TODO redundant
+        view.setMeetingPoint(meetingPoint);
     }
 }

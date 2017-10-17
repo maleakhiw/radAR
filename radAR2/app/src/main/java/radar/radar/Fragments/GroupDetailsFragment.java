@@ -253,7 +253,8 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
         try {
             //open map activity and display navigation
             Intent intent = new Intent(getActivity(), MapsActivity.class);
-
+            intent.putExtra("meetingPoint", meetingPoint);
+            intent.putExtra("group", group);
 
             startActivity(intent);
         } catch (Exception e) {
@@ -268,6 +269,12 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
         destinationTV.setText(name);
         lastMeetingPointLat = lat;
         lastMeetingPointLon = lon;
+    }
+
+    MeetingPoint meetingPoint;
+    @Override
+    public void setMeetingPoint(MeetingPoint meetingPoint) {
+        this.meetingPoint = meetingPoint;
     }
 
     DecimalFormat df = new DecimalFormat();
@@ -400,6 +407,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     }
 
     @Override
+    @Deprecated
     public void setMeetingPointLatLon(double lat, double lon) {
         System.out.println(lat);
         System.out.println(lon);
@@ -408,6 +416,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     }
 
     @Override
+    @Deprecated
     public void setMeetingPointName(String name) {
         if (destinationTV != null) {
             destinationTV.setText(name);
