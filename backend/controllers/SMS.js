@@ -228,18 +228,18 @@ module.exports = class SMS {
           if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
             let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
             if (timeDifference < 0) {
-              return -1;
+              return 1;
             } else if (timeDifference == 0) {
               return 0;
             } else {
-              return 1;
+              return -1;
             }
             return timeDifference;
 
           } else if (groupsLastMessages[group1ID] && !groupsLastMessages[group2ID]) {
-            return 1;
-          } else if (!groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
             return -1;
+          } else if (!groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
+            return 1;
           } else {
             if (group1.name < group2.name) {
               winston.debug("group1.name < group2.name");
