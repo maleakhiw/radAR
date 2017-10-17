@@ -22,6 +22,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,13 +40,16 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Presenters.GroupDetailsPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
+import radar.radar.Views.GroupDetailView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -57,7 +61,7 @@ import static android.app.Activity.RESULT_OK;
  * Modified by rtanudjaja on 10/10/17
  */
 
-public class GroupDetailsFragment extends Fragment {
+public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     TextView nameTextView;
     TextView mainTextView;
     RecyclerView recyclerView;
@@ -71,6 +75,8 @@ public class GroupDetailsFragment extends Fragment {
     GroupDetailsLifecycleListener listener;
 
     LocationService locationService;
+
+    GroupDetailsPresenter presenter;
 
     private Group group = null;
 
@@ -126,10 +132,13 @@ public class GroupDetailsFragment extends Fragment {
         mapView.onLowMemory();
     }
 
+    private GoogleMap googleMap;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
+
 
         if (savedInstanceState != null) {
             // restore the listener
@@ -157,15 +166,17 @@ public class GroupDetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         friendsAdapter.updateFriends(group.usersDetails);
 
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
+        LocationApi locationApi = retrofit.create(LocationApi.class);
+        LocationService locationService = new LocationService(locationApi, getActivity(), LocationServices.getFusedLocationProviderClient(getActivity()));
+
         mapView = rootView.findViewById(R.id.group_detail_map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(googleMap -> {
-            // Add a marker in Melbourne Uni and move the camera
-            double unimelb_lat = Double.parseDouble(getString(R.string.melbourne_university_lat));
-            double unimelb_lng = Double.parseDouble(getString(R.string.melbourne_university_lng));
-
-            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
+            // UI now ready
+            this.googleMap = googleMap;
+            presenter = new GroupDetailsPresenter(this, group, locationService);
         });
 
         // Make a marker when the button is clicked.
@@ -176,6 +187,7 @@ public class GroupDetailsFragment extends Fragment {
         Button navigateButton = (Button) rootView.findViewById(R.id.navigate_to_location);
         navigateButton.setOnClickListener(view -> onNavigateButtonClicked());
 
+        // go to the group chat
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -187,9 +199,7 @@ public class GroupDetailsFragment extends Fragment {
         });
 
         // notify main activity that we have done initiating
-
         listener.onSetUp(this);
-
 
         return rootView;
     }
@@ -233,30 +243,19 @@ public class GroupDetailsFragment extends Fragment {
         }
     }
 
-    /**
-     * Click event handler to handle clicking the "Track" Button
-     */
-    public void onTrackButtonClicked() {
-        try {
-            //open map activity and display friends
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
-    }
-
-    double lastLat;
-    double lastLon;
+    double lastMeetingPointLat;
+    double lastMeetingPointLon;
 
     public void updateLabels(String name, double lat, double lon) {
         destinationTV.setText(name);
-        lastLat = lat;
-        lastLon = lon;
+        lastMeetingPointLat = lat;
+        lastMeetingPointLon = lon;
     }
 
     DecimalFormat df = new DecimalFormat();
 
     public void updateDistance(double currentLat, double currentLon) {
-        double distance = LocationTransformations.distance(currentLat, currentLon, lastLat, lastLon, 'K');
+        double distance = LocationTransformations.distance(currentLat, currentLon, lastMeetingPointLat, lastMeetingPointLon, 'K');
 
         if (distance >= 1) {
 //            distance = distance/1000;
@@ -284,7 +283,7 @@ public class GroupDetailsFragment extends Fragment {
                 mapView.getMapAsync(googleMap -> {
                     googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                             .title(getString(R.string.unimelb)));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
                 });
 
                 double latDouble = place.getLatLng().latitude;
@@ -360,6 +359,73 @@ public class GroupDetailsFragment extends Fragment {
     public void setMainTextView(String text) {
         if (mainTextView != null) {
             mainTextView.setText(text);
+        }
+    }
+
+    @Override
+    public void moveCameraTo(double lat, double lon) {
+        if (googleMap != null) {
+            LatLng latLng = new LatLng(lat, lon);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
+    }
+
+    @Override
+    public void dropPinAt(double lat, double lon, String name) {
+        if (googleMap != null) {
+            googleMap.clear();  // TODO
+            LatLng latLng = new LatLng(lat, lon);
+            googleMap.addMarker(new MarkerOptions().position(latLng)
+                    .title(name));
+        }
+    }
+
+    @Override
+    public void setMeetingPointLatLon(double lat, double lon) {
+        System.out.println(lat);
+        System.out.println(lon);
+        lastMeetingPointLat = lat;
+        lastMeetingPointLon = lon;
+    }
+
+    @Override
+    public void setMeetingPointName(String name) {
+        if (destinationTV != null) {
+            destinationTV.setText(name);
+        }
+    }
+
+    @Override
+    public void updateDistanceToMeetingPoint() {
+        if (distanceTV != null) {
+            //update group location settings
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
+            LocationApi locationApi = retrofit.create(LocationApi.class);
+            LocationService locationService = new LocationService(locationApi, getActivity(), LocationServices.getFusedLocationProviderClient(getActivity()));
+
+            locationService.getLastLocation().subscribe(new Observer<Location>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(Location location) {
+                    updateDistance(location.getLatitude(), location.getLongitude());
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    // TODO ask for location permissions - assume asked in home screen
+                    Log.w("GroupDetailsFragment", "Grant location permissions!");
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
         }
     }
 }
