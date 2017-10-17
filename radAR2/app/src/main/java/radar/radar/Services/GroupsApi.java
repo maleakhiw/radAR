@@ -9,6 +9,7 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Models.UpdateGroupBody;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -30,9 +31,15 @@ public interface GroupsApi {
     @PUT("accounts/{userID}/groups/{groupID}/meetingPoint")
     public Observable<Status> updateMeetingPoint(@Path(value="userID", encoded=true) int userID, @Path(value="groupID", encoded=true) int groupID, @Header("token") String token, @Body MeetingPoint meetingPoint);
 
+    @PUT("accounts/{userID}/groups/{groupID}")
+    public Observable<Status> updateGroup(@Path(value="userID", encoded=true) int userID, @Path(value="groupID", encoded=true) int groupID, @Header("token") String token, @Body UpdateGroupBody body);
+
     @GET("accounts/{userID}/groups")
     public Observable<GetChatsResponse> getGroupIDs(@Path(value="userID", encoded=true) int userID, @Header("token") String token);
 
     @DELETE("accounts/{userID}/groups/{groupID}")
     Observable<Status> deleteGroup(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
+
+    @DELETE("accounts/{userID}/groups/{groupID}/members/{memberUserID}")
+    Observable<Status> removeMember(@Path(value="userID", encoded=true) int userID, @Path(value="memberUserID", encoded=true) int memberUserID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
 }

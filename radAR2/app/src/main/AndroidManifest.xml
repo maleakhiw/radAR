@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -38,16 +38,17 @@
             <!-- ORIGINAL LAUNCHER -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!--Activity for cropping -->
+        <!-- Activity for cropping -->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" /> <!-- optional (needed if default theme has no action bar) -->
 
-        <activity android:name=".FriendRequestActivity"
+        <activity
+            android:name=".FriendRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".SearchLocationActivity"
             android:label="radAR Search Location" />
@@ -56,7 +57,8 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".GroupsListActivity"
+        <activity
+            android:name=".GroupsListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupDetailActivity"
@@ -65,8 +67,7 @@
             android:name=".ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewGroupActivity" />
-        <activity android:name=".EditProfileActivity">
-        </activity>
+        <activity android:name=".EditProfileActivity"></activity>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -74,6 +75,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity android:name=".EditGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

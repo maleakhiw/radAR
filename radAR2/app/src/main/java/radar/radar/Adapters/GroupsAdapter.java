@@ -10,14 +10,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.GroupDetailActivity;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.GroupsListPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
+import retrofit2.Retrofit;
 
 /**
  * Created by kenneth on 3/10/17.
@@ -63,6 +73,38 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         } else {
             holder.chatType.setText("Group");
         }
+
+        // load profile picture
+        if (group.profilePicture != null) {
+            if (!holder.profPicLoaded) {
+
+                holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(File file) {
+                        System.out.println("Update profile picture for: " + group.name);
+                        Picasso.with(holder.context).load(file).into(holder.img);
+                        holder.profPicLoaded = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
+        } else {
+            holder.img.setImageResource(R.mipmap.ic_launcher_round);
+        }
     }
 
     @Override
@@ -77,12 +119,24 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder implements MenuItem.OnMenuItemClickListener, View.OnCreateContextMenuListener {
         TextView chatName;
         TextView chatType;
+        ImageView img;
+        boolean profPicLoaded;
+        ResourcesService resourcesService;
+
+        Context context;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             chatName = itemView.findViewById(R.id.row_chat_name);
             chatType = itemView.findViewById(R.id.row_last_message);
+            img = itemView.findViewById(R.id.row_profile_picture);
+
+            context = itemView.getContext();
+
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
+
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {

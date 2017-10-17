@@ -46,7 +46,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // inflate custom layout
-        View titleView = inflater.inflate(R.layout.row_friends, parent, false);
+        View titleView = inflater.inflate(R.layout.row_friends_large, parent, false);
 
         // return a new VH instance
         return new ViewHolder(titleView);

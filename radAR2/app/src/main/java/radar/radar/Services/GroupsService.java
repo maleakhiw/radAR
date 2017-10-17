@@ -15,6 +15,7 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Models.UpdateGroupBody;
 
 public class GroupsService {
     GroupsApi groupsApi;
@@ -63,8 +64,20 @@ public class GroupsService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<Status> updateGroup(int groupID, UpdateGroupBody body) {
+        return groupsApi.updateGroup(userID, groupID, token, body)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Observable<Status> deleteGroup(int groupID) {
         return groupsApi.deleteGroup(userID, token, groupID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<Status> removeMember(int groupID, int memberUserID) {
+        return groupsApi.removeMember(userID, memberUserID, token, groupID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

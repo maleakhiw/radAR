@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Pager that are used for FriendRequestActivity
+ * Pager that is used for FriendRequestActivity
  */
 public class SectionsPageAdapter extends FragmentPagerAdapter {
     /** Variable to keep track of the fragments and title */

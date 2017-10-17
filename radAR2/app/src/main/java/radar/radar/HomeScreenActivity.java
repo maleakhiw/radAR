@@ -256,6 +256,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         return locationCallback;
     }
 
+    private boolean first = true;
     private void getDeviceLocation() {
     /*
      * Get the best and most recent location of the device, which may be null in rare
@@ -275,9 +276,15 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                                     .target(new LatLng(currentLocation.getLatitude(),
                                             currentLocation.getLongitude()))
                                     .zoom(DEFAULT_ZOOM).build();
-                            googleMap.animateCamera(CameraUpdateFactory
-                                    .newCameraPosition(cameraPosition));
+                            if (first) {
+                                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                first = false;
+                            } else {
+                                googleMap.animateCamera(CameraUpdateFactory
+                                        .newCameraPosition(cameraPosition));
+                            }
                             googleMap.setMyLocationEnabled(true);
+
                             // TODO do not remove PoI
                             LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(

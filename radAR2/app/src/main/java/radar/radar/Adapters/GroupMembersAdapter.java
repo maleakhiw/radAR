@@ -30,7 +30,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         this.friends = friends;
 
         friendsList = new ArrayList<>();
-        for (Object entry: friends.entrySet()) {
+        for (Object entry: friends.values()) {
             User user = (User) entry;
             friendsList.add(user);
         }

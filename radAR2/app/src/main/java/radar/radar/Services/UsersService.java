@@ -14,6 +14,12 @@ import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Models.SearchUserResponse;
+import radar.radar.Models.UpdateGroupBody;
+import radar.radar.Models.UpdateProfileBody;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 /**
  * Service for users that served as layer of abstraction for retrofit. The methods here
@@ -124,14 +130,27 @@ public class UsersService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+
+
     /**
      * Search for users using keyword
      * @param query keyword that are used for search
      * @param searchType search type (i.e. email, username, full name)
-     * @return
+     * @return search results
      */
     public Observable<UsersSearchResult> searchForUsers(String query, String searchType) {
         return usersApi.searchForUsers(userID, token, query, searchType)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Updates the user profile for the signed in user.
+     * @param body fields to be changed from the profile
+     * @return success or failure + reasons
+     */
+    public Observable<Status> updateProfile(UpdateProfileBody body) {
+        return usersApi.updateProfile(userID, token, body)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

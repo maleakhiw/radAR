@@ -79,7 +79,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         if (user.profileDesc != null) {
             userDetailsProfile.setText(user.profileDesc);
         } else {
-            userDetailsProfile.setText("Hello, I am using Radar!");
+            userDetailsProfile.setText("No description set.");
         }
 
         if (isSelf(this, user.userID)) {

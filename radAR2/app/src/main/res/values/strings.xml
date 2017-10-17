@@ -167,10 +167,17 @@
     <!-- Data related to Home Screen Activity -->
     <string name="new_group">New Group</string>
     <string name="new_chat">New Chat</string>
-    <string name="new_friend">New Friend</string>
+    <string name="new_friend">Add Friend</string>
     <string name="tracking_group">Tracking Group</string>
     <string name="name">Name</string>
     <string name="chat">Chat</string>
     <string name="ar">AR</string>
+    <string name="not_tracking">Currently not tracking (sharing and receiving location updates). Tap to start tracking.</string>
+    <string name="start_tracking">Start tracking</string>
+    <string name="off_caps">OFF</string>
+    <string name="group_name">Group name</string>
+    <string name="delete_group">Delete Group</string>
+    <string name="edit">Edit</string>
+    <string name="done">Done</string>
 
 </resources>
