@@ -146,6 +146,7 @@ app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.send
 // chats and groups
 app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
 app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate, groupSystem.removeMember);
 
 // groups
 app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);

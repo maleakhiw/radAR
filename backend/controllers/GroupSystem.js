@@ -200,6 +200,45 @@ module.exports = class GroupSystem extends SMS {
     SMS.getGroupsForUserImpl(req, res, true);
   }
 
+  removeMember(req, res) {
+    let userID  = parseInt(req.params.userID);
+    let groupID = parseInt(req.params.groupID);
+    let memberUserID = parseInt(req.params.memberUserID);
+
+    groupExists(groupID).then(() => {
+      return Group.findOne({groupID: groupID})
+    })
+    .then(group => {
+      if (!group.admins.includes(memberUserID)) {
+        group.members = group.members.filter(userId => userId != memberUserID);
+        group.save();
+      } else {
+        throw 'cannotRemoveAdmin';
+      }
+
+      return User.findOne({userID: memberUserID});
+    })
+    .then(user => {
+      // TODO check if no users filtered, throw error
+      user.groups = user.groups.filter(groupId => groupId != groupID);
+      return user.save();
+    })
+    .then(() => {
+      res.json({
+        success: true,
+        errors: []
+      });
+    })
+    .catch(err => {
+      if (err == 'cannotRemoveAdmin') {
+        winston.debug(err);
+        common.sendUnauthorizedError(res);
+      } else {
+        winston.error(err);
+      }
+    })
+  }
+
   updateGroupDetails(req, res) {
     /*
       HTTP PUT {serverURL}/api/accounts/:userID/groups/:groupID

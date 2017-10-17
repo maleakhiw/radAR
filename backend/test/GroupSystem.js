@@ -195,6 +195,25 @@ describe('GroupSystem', () => {
     })
   })
 
+  describe('DELETE /api/accounts/:userID/groups/:groupID/members/:memberUserID', () => {
+    it('should delete the other member', done => {
+      chai.request(server)
+      .delete('/api/accounts/1/groups/' + newChatID + '/members/2')
+      .set('token', user1token)
+      .send()
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        Group.findOne({groupID: newChatID}).exec()
+        .then(group => {
+          expect(group.members.includes(2)).to.equal(false);
+          done();
+        })
+      })
+    })
+  })
+
 
 
 })
