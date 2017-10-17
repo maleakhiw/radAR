@@ -209,12 +209,16 @@ module.exports = class SMS {
       })
 
       .then(() => {
-        // sort groupDetails - TODO refactor to individual functions
+        // sort groupDetails - TODO refactor to individual functions; test cases
         groupDetails.sort((group1, group2) => { // custom sort function
           let group1ID = group1.groupID;
           let group2ID = group2.groupID;
 
-          return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+          if (groupsLastMessages[group1ID].time && groupsLastMessages[group2ID].time) {
+            return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+          } else {
+            return group1.createdOn - group2.createdOn;
+          }
         });
 
         let response = {
