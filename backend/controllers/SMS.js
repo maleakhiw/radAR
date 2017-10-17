@@ -230,7 +230,7 @@ module.exports = class SMS {
 
             // -2 is for taking into account decimal point, also to make it larger than -1 <= x <= 1
             winston.debug(timeDifference);
-            timeDifference = timeDifference / Math.pow(10, common.getNumLength(timeDifference - 2));
+            timeDifference = timeDifference / Math.pow(10, common.getNumLength(timeDifference) - 2);
             winston.debug(timeDifference);
 
             return timeDifference;
