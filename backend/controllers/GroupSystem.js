@@ -160,6 +160,7 @@ function deleteGroupImpl(req, res) {
     }
   })
   .then(() => {
+    winston.debug('Group deleted');
     let promiseAll = members.map(member => {
       return User.findOne({userID: member}).exec()
       .then(user => {

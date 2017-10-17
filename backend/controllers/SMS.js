@@ -35,6 +35,7 @@ function newGroupImpl(req, res, callback) {
   let userID = parseInt(req.params.userID); // TODO validate
   let participantUserIDs = req.body.participantUserIDs
   let name = req.body.name
+  let meetingPoint = req.body.meetingPoint;
 
   let errorKeys = []
   // TODO: get rid of code duplication, move sendError() to common.js
@@ -55,6 +56,19 @@ function newGroupImpl(req, res, callback) {
   if (errorKeys.length) {
     sendError();
     return;
+  }
+
+  let isMeetingPointValid = false;
+  if (meetingPoint) {
+    let lat = meetingPoint.lat;
+    let lon = meetingPoint.lon;
+    let name = meetingPoint.name;
+    let updatedBy = userID;
+    if (common.isValidLat(lat) && common.isValidLon(lon) && name) {
+      meetingPoint.updatedBy = userID;
+      isMeetingPointValid = true;
+    }
+
   }
 
   if (!isArray(participantUserIDs)) {
@@ -90,6 +104,7 @@ function newGroupImpl(req, res, callback) {
     } else {
       groupID = 1;
     }
+
     group = {
       name: name,
       groupID: groupID,
@@ -98,6 +113,10 @@ function newGroupImpl(req, res, callback) {
       footprints: [],
       meetingPoint: null,
       isTrackingGroup: false
+    }
+
+    if (isMeetingPointValid) {
+      group.meetingPoint = meetingPoint;
     }
 
     return Group.create(group);
