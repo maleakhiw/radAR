@@ -165,7 +165,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             context = itemView.getContext();
 
             Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
-            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService. Make RetrofitFactory a ServicesFactory
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
 
             chatName = itemView.findViewById(R.id.row_chat_name);
             lastMessageFrom = itemView.findViewById(R.id.row_last_message_from);

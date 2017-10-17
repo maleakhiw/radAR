@@ -6,8 +6,12 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,12 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessageResponseWithDetails;
 import radar.radar.Models.Domain.User;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
 import radar.radar.Services.TimeFormatService;
+import retrofit2.Retrofit;
 
 /**
  * Adapter for chat (messages)
@@ -139,6 +149,9 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      */
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
+        ImageView profilePic;
+        ResourcesService resourcesService;
+
 
         public ReceivedMessageHolder(View itemView) {
             super(itemView);
@@ -146,6 +159,11 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText = itemView.findViewById(R.id.text_message_body);
             nameText = itemView.findViewById(R.id.text_message_name);
             timeText = itemView.findViewById(R.id.text_message_time);
+            profilePic = itemView.findViewById(R.id.image_message_profile);
+
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
+
         }
 
         // Bind method
@@ -153,7 +171,33 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText.setText(message.text);
             if (message.userDetails != null) {
                 nameText.setText(message.userDetails.firstName + " " + message.userDetails.lastName);
+
+                // load profile picture
+                if (message.userDetails.profilePicture != null) {
+                    resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+
+                        }
+
+                        @Override
+                        public void onNext(File file) {
+                            Picasso.with(context).load(file).into(profilePic);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+                }
             }
+
             timeText.setText(TimeFormatService.parseTimeString(message.time, context));
         }
     }
@@ -163,18 +207,50 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      */
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
+        ImageView profilePic;
+
+        ResourcesService resourcesService;
 
         public SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body_send);
             timeText = itemView.findViewById(R.id.text_message_time);
+            profilePic = itemView.findViewById(R.id.image_message_profile);
+
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
         }
 
         // Bind method
         void bind(MessageResponseWithDetails message) {
             messageText.setText(message.text);
             timeText.setText(TimeFormatService.parseTimeString(message.time, context));
+
+            // load profile picture
+            if (message.userDetails.profilePicture != null) {
+                resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(File file) {
+                        Picasso.with(context).load(file).into(profilePic);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
         }
     }
 }
