@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -135,6 +136,6 @@ public class GroupsListActivity extends AppCompatActivity
 
     @Override
     public void showToast(String s) {
-
+        Toast.makeText(this, s, Toast.LENGTH_SHORT);
     }
 }
