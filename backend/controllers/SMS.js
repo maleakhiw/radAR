@@ -93,7 +93,7 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
   })
 
   .then(groupsAreTrackingGroups => {
-    console.log(groupsAreTrackingGroups);
+    // console.log(groupsAreTrackingGroups);
     let groupsAndToKeep = _.zip(groupsTmp, groupsAreTrackingGroups);
 
     // filter off non-tracking groups
