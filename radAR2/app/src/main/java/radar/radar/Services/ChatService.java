@@ -48,6 +48,7 @@ public class ChatService {
      * @param pollingPeriod time ellapse before automatically call
      * @return Observable<GetChatsResponse>
      */
+    @Deprecated
     public Observable<GetChatsResponse> getChats(int pollingPeriod) {
         return Observable.create(emitter -> {
             Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
@@ -113,8 +114,10 @@ public class ChatService {
     }
 
     private boolean receiving = false;
+
     /**
-     * Polls the server for new messages
+     * Polls the server for new messages.
+     * A call to getMessages() should be paired with a subsequent call to stopPollingMessages()
      * @param chatID chat to get messages for
      * @param pollingPeriod time in between requests in milliseocnds
      * @return Observable<MessagesResponse>
@@ -129,11 +132,12 @@ public class ChatService {
                                 .observeOn(AndroidSchedulers.mainThread()));
     }
 
+    /**
+     * Stop polling for new messages.
+     */
     public void stopPollingMessages() {
         receiving = false;
     }
-
-
 
     /**
      * Sending message to particular chat id

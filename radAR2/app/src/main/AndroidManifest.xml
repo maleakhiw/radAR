@@ -45,10 +45,6 @@
         <!--Activity for cropping -->
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" /> <!-- optional (needed if default theme has no action bar) -->
 
-        <!-- Tabbed activity -->
-        <activity android:name=".TabbedSearchActivity">
-        </activity>
-
         <activity android:name=".FriendRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 

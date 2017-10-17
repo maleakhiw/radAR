@@ -54,12 +54,14 @@ public class UsersService {
      * Gets the profile picture for a user
      * @param queryUserID user to get the profile picture for
      * @param resourcesService Service, required to access profile picture
+     * @param context Android Context, to load data from SharedPreferences and internal storage
      * @return
      */
-    public Observable<File> getProfilePicture(int queryUserID, ResourcesService resourcesService) {
+    public Observable<File> getProfilePicture(int queryUserID, ResourcesService resourcesService, Context context) {
         return getProfile(queryUserID).switchMap(searchUserResponse -> {
             if (searchUserResponse.details != null && searchUserResponse.details.profilePicture != null) {
-                return resourcesService.getResource(searchUserResponse.details.profilePicture);
+                // check if the fileID is in cache
+                return resourcesService.getResourceWithCache(searchUserResponse.details.profilePicture, context);
             } else {
                 throw new Exception("User has no profile picture"); // to go to onError
             }

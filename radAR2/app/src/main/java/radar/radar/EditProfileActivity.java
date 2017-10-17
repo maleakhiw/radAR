@@ -103,7 +103,7 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
         Context that = this;
-        resourcesService.getResource("ff7978b8e2b882321e0d1f03c7d2972e").subscribe(new Observer<File>() {
+        resourcesService.getResource("ff7978b8e2b882321e0d1f03c7d2972e", this).subscribe(new Observer<File>() {
             @Override
             public void onSubscribe(Disposable d) {
 

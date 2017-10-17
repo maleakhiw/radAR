@@ -109,7 +109,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
             // get userID
             int userID = AuthService.getUserID(activity);
-            usersService.getProfilePicture(userID, resourcesService).subscribe(new Observer<File>() {
+            usersService.getProfilePicture(userID, resourcesService, activity).subscribe(new Observer<File>() {
                 @Override
                 public void onSubscribe(Disposable d) {
 

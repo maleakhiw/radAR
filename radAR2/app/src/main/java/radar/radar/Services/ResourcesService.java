@@ -1,9 +1,17 @@
 package radar.radar.Services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -34,6 +42,28 @@ public class ResourcesService {
 
     // http://www.codexpedia.com/android/retrofit-2-and-rxjava-for-file-downloading-in-android/
     // adapted for RxJava2
+
+    private Observable<File> saveToDiskRxWithCache(final Response<ResponseBody> response, String fileID) {
+        return saveToDiskRx(response).map(file -> {
+            // copy to FileOutputStream
+            FileOutputStream fos = context.openFileOutput(fileID, Context.MODE_PRIVATE);
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            int c = 0;
+            byte[] buf = new byte[8192];
+
+            while ((c = fileInputStream.read(buf, 0, buf.length)) > 0) {
+                fos.write(buf, 0, c);
+                fos.flush();
+            }
+
+            fos.close();
+            System.out.println("stop");
+            fileInputStream.close();
+
+            return file;
+        });
+    }
 
     private Observable<File> saveToDiskRx(final Response<ResponseBody> response) {
         // take a response and transform it into an observable which emits when the file is saved
@@ -82,7 +112,15 @@ public class ResourcesService {
 
     }
 
-    public Observable<File> getResource(String resourceID) {
+
+
+    /**
+     * Gets a resource from the server.
+     * @param resourceID resource to get
+     * @param context Android Context, to load data from SharedPreferences and internal storage
+     * @return
+     */
+    public Observable<File> getResource(String resourceID, Context context) {
         System.out.println(resourceID);
         int userID = AuthService.getUserID(context);
         String token = AuthService.getToken(context);
@@ -91,6 +129,49 @@ public class ResourcesService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    /**
+     * Gets a resource from the server with caching enabled. Ideally only use these for images.
+     * @param resourceID resource to get
+     * @param context Android Context, to load data from SharedPreferences and internal storage
+     * @return
+     */
+    public Observable<File> getResourceWithCache(String resourceID, Context context) {
+        System.out.println(resourceID);
+
+        // Restore preferences
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+
+        if (prefs.contains(resourceID)) {  // TODO for now false
+            try {
+                FileInputStream fis = context.openFileInput(resourceID);
+
+                File tempFile = File.createTempFile("tmp", "suffix");
+                FileOutputStream tempFileOutputStream = new FileOutputStream(tempFile);
+                IOUtils.copy(fis, tempFileOutputStream);
+                
+                return Observable.just(tempFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                prefs.edit().putBoolean("resourceID", true).commit();
+                // pass
+            } catch (IOException e) {
+                e.printStackTrace();
+                prefs.edit().putBoolean("resourceID", true).commit();
+            }
+        } else {
+            prefs.edit().putBoolean("resourceID", true).commit();
+        }
+
+        int userID = AuthService.getUserID(context);
+        String token = AuthService.getToken(context);
+        return resourcesApi.getResource(userID, resourceID, token)
+                .flatMap(responseBodyResponse -> saveToDiskRxWithCache(responseBodyResponse, resourceID))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
 
 
 //    private Observer<File> handleResult() {
