@@ -48,8 +48,20 @@ public class GroupLocationsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            Group group = (Group) args.getSerializable("group");
+            rootView.findViewById(R.id.start_tracking_in_AR).setOnClickListener(view -> {
+                if (group != null) {
+                    Intent intent = new Intent(getActivity(), ARActivity.class);
+                    intent.putExtra("groupID", group.groupID);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT);
+                }
+                }
 
-
+            });
 
 
         // notify main activity that we have done initiating
