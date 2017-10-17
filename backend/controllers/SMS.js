@@ -224,8 +224,10 @@ module.exports = class SMS {
           let group2ID = group2.groupID;
 
           if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
+            winston.debug(groupsLastMessages[group1ID].time, groupsLastMessages[group2ID].time, groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time)
             return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
           } else {
+            winston.debug(group1.createdOn, group2.createdOn, group1.createdOn - group2.createdOn)
             return group1.createdOn - group2.createdOn;
           }
         });
