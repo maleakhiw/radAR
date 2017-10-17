@@ -132,7 +132,7 @@ describe('SMS', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
         // console.log(res.body);
-        expect(res.body.groups).to.include(1);
+        expect(res.body.groups[0].groupID).to.equal(1);
 
         done();
       })
@@ -196,7 +196,7 @@ describe('SMS', () => {
         // console.log(res.body);
         expect(res.body.groupsLastMessages['1']).to.not.equal(null);
         expect(res.body.groupsLastMessages['1'].text).to.equal('Hello world');
-        expect(res.body.groups).to.include(1);
+        expect(res.body.groups[0].groupID).to.equal(1);
 
         done();
       })

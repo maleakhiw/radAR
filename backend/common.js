@@ -31,6 +31,18 @@ module.exports.isUsernameUnique = (username) => new Promise((resolve, reject) =>
   })
 })
 
+module.exports.formatGroupInfo = (group) => {
+  return {
+    name: group.name,
+    groupID: group.groupID,
+    admins: group.admins,
+    members: group.members,
+    isTrackingGroup: group.isTrackingGroup,
+    // usersDetails: usersDetails,  // TODO pass it in
+    // lastMessage: lastMessage // TODO pass it in
+  }
+}
+
 module.exports.isValidLat = (val) => {
   // latitude can only be +/- 90 degrees.
   // longitude can be +/- 180 deg.

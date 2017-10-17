@@ -161,15 +161,18 @@ module.exports = class SMS {
 
       let groupsLastMessages = {};
       let groups;
+      let groupDetails = [];
 
       User.findOne({ userID: userID }).exec()
 
       .then((user) => {
         groups = user.groups;
         let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+
           Message.findOne({groupID: groupID}).sort({time: -1}).exec()
           .then((message) => {
             if (message) {
+              // TODO deprecate/move under GroupsDetails?
               groupsLastMessages[groupID] = {
                 from: message.from,
                 time: message.time,
@@ -191,10 +194,33 @@ module.exports = class SMS {
       })
 
       .then(() => {
+        let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+
+          Group.findOne({groupID: groupID}).exec()
+          .then(group => {
+            groupDetails.push(common.formatGroupInfo(group));
+            resolve();
+          })
+          .catch(err => reject(err));
+
+        }))
+
+        return Promise.all(promiseAll);
+      })
+
+      .then(() => {
+        // sort groupDetails - TODO refactor to individual functions
+        groupDetails.sort((group1, group2) => { // custom sort function
+          let group1ID = group1.groupID;
+          let group2ID = group2.groupID;
+
+          return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+        });
+
         let response = {
           success: true,
           errors: [],
-          groups: groups,
+          groups: groupDetails,
           groupsLastMessages: groupsLastMessages
         }
         res.json(addMetas(response, "/api/accounts/:userID/chats"))
@@ -210,7 +236,7 @@ module.exports = class SMS {
 
   }
 
-  getGroup(req, res) {  // TODO refactor to common between SMS and GMS
+  getGroup(req, res) {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
@@ -239,6 +265,7 @@ module.exports = class SMS {
         }
 
         if (group) {
+          // TODO use function from common
           let groupObj = {
             name: group.name,
             groupID: groupID,
