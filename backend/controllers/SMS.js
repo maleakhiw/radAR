@@ -229,6 +229,7 @@ module.exports = class SMS {
             let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
 
             // -2 is for taking into account decimal point, also to make it larger than -1 <= x <= 1
+            winston.debug(timeDifference);
             timeDifference = timeDifference / Math.pow(10, common.getNumLength(timeDifference - 2));
             winston.debug(timeDifference);
 
