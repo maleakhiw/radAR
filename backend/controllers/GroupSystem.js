@@ -232,7 +232,7 @@ module.exports = class GroupSystem extends SMS {
     .catch(err => {
       if (err == 'cannotRemoveAdmin') {
         winston.debug(err);
-        common.sendUnauthorizedError(res);
+        common.sendUnauthorizedError(res, []);
       } else {
         winston.error(err);
       }
