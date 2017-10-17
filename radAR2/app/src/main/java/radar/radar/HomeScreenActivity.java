@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -23,14 +24,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import radar.radar.Listeners.LocationCallbackProvider;
@@ -76,10 +80,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
-
         presenter = new HomeScreenPresenter(this, locationService);
-
-        getDeviceLocation();
 
         // set up mapView
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
@@ -93,13 +94,25 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
-
-                // TODO New Activity to create a new Group with that meeting point.
                 googleMap.clear();
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                         .title((String) place.getName()));
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(),DEFAULT_ZOOM));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    /**
+                     * handle marker click event
+                     */
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        // TODO Auto-generated method stub
+                        Log.i(TAG, "Successful click ");
+                        Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                        intent.putExtra("status", "successful");
+                        startActivity(intent);
+                        return true;
+                    }
+                });
             }
 
             @Override
@@ -255,31 +268,17 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                         // Set the map's camera position to the current location of the device.
                         currentLocation = (Location) task.getResult();
 
-                        CameraPosition cameraPosition = new CameraPosition.Builder()
-                                .target(new LatLng(currentLocation.getLatitude(),
-                                        currentLocation.getLongitude()))
-                                .zoom(DEFAULT_ZOOM).build();
-                        googleMap.animateCamera(CameraUpdateFactory
-                                .newCameraPosition(cameraPosition));
-
-                        googleMap.setMyLocationEnabled(true);
-
-
-                        if (currentLocation != null) {
-                            googleMap.clear();
+                        if(currentLocation != null) {
+                            CameraPosition cameraPosition = new CameraPosition.Builder()
+                                    .target(new LatLng(currentLocation.getLatitude(),
+                                            currentLocation.getLongitude()))
+                                    .zoom(DEFAULT_ZOOM).build();
+                            googleMap.animateCamera(CameraUpdateFactory
+                                    .newCameraPosition(cameraPosition));
+                            googleMap.setMyLocationEnabled(true);
                             // TODO do not remove PoI
                             LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-
-//                            googleMap.addCircle(new CircleOptions()
-//                                    .center(currentPosition)
-//                                    .strokeColor(getColorRes(R.color.colorPrimary))
-//                                    .radius(currentLocation.getAccuracy()));
-//                            googleMap.addCircle(new CircleOptions()
-//                                    .center(currentPosition)
-//                                    .fillColor(getColorRes(R.color.colorPrimaryDark))
-//                                    .strokeColor(getColorRes(R.color.colorPrimaryDark))
-//                                    .radius(1));
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                                     currentPosition, DEFAULT_ZOOM));
                         }
                     } else {
