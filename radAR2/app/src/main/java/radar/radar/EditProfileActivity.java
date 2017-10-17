@@ -78,51 +78,21 @@ public class EditProfileActivity extends AppCompatActivity {
         resourcesService = new ResourcesService(this, resourcesApi);
 
         // Setup onclick listener for picking image
-        preview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent galleryIntent = new Intent();
-                galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent, 0);
-            }
+        preview.setOnClickListener(view -> {
+            Intent galleryIntent = new Intent();
+            galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
+            galleryIntent.setType("image/*");
+            startActivityForResult(galleryIntent, 0);
         });
 
         // Setup onclick listener for upload
-        upload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Uploading the image
-                int permissionCheck = ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-                if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                    uploadFile();
-                } else {    // PERMISSION_DENIED
-                    ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-                }
-            }
-        });
-
-        Context that = this;
-        resourcesService.getResource("ff7978b8e2b882321e0d1f03c7d2972e", this).subscribe(new Observer<File>() {
-            @Override
-            public void onSubscribe(Disposable d) {
-
-            }
-
-            @Override
-            public void onNext(File file) {
-                System.out.println(file);
-                Picasso.with(that).load(file).into(preview);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                System.out.println(e);
-            }
-
-            @Override
-            public void onComplete() {
-
+        upload.setOnClickListener(view -> {
+            // Uploading the image
+            int permissionCheck = ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                uploadFile();
+            } else {    // PERMISSION_DENIED
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
             }
         });
 

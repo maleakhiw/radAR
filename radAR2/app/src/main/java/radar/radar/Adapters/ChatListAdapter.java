@@ -99,9 +99,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.isTrackingGroup.setVisibility(View.VISIBLE);
         }
 
+//        System.out.println(holder.profPicLoaded);
         if (group.profilePicture != null && !holder.profPicLoaded) {
-//            System.out.println("group has profilePicture");
-//            System.out.println(group.profilePicture);
             // TODO inject service using method from Activity
 
             holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
