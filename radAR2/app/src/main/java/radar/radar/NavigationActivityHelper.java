@@ -142,11 +142,13 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             int id = item.getItemId();
 
             if (id == R.id.nav_maps) {
-                if (!(activity instanceof HomeScreenActivity)) {
-                    Intent intent = new Intent(activity, HomeScreenActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
-//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    activity.startActivity(intent);
+                if (!(activity instanceof HomeScreenActivity)) {    // simulate a back button press
+                    // these activities are only 1 level above HomeScreenActivity
+//                    Intent intent = new Intent(activity, HomeScreenActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
+////                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    activity.startActivity(intent);
+                    activity.onBackPressed();
                     activity.finish();  // finish anyway.
                 }
 
