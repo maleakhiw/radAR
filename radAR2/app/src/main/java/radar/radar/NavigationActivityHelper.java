@@ -142,6 +142,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
             if (id == R.id.nav_maps) {
                 Intent intent = new Intent(activity, HomeScreenActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
 //                finishIfNotHomeScreen(activity);
                 activity.finish();  // finish anyway.
