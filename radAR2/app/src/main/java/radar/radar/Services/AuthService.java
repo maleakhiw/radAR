@@ -215,7 +215,7 @@ public class AuthService {
      */
     public static void signOut(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
-        prefs.edit().remove("radar_token").remove("radar_userID").apply();
+        prefs.edit().remove("radar_token").remove("radar_userID").remove("profilePicture").apply();
     }
 
 }
