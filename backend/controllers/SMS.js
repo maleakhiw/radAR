@@ -225,14 +225,19 @@ module.exports = class SMS {
           let group1ID = group1.groupID;
           let group2ID = group2.groupID;
 
-          if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
+          if (!groupsLastMessages[group1ID] || !groupsLastMessages[group2ID]) {
+            if (group1.name < group2.name) {
+              winston.debug("group1.name < group2.name");
+              return -1;
+            } else if (group1.name === group2.name){
+              winston.debug("group1.name = group2.name");
+              return 0;
+            } else {
+              winston.debug("group1.name > group2.name");
+              return 1;
+            }
+          } else {
             let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
-
-            // // -2 is for taking into account decimal point, also to make it larger than -1 <= x <= 1
-            // winston.debug(timeDifference);
-            // timeDifference = timeDifference / Math.pow(10, common.getNumLength(timeDifference) - 2);
-            // winston.debug(timeDifference);
-
             if (timeDifference < 0) {
               return -1;
             } else if (timeDifference == 0) {
@@ -242,19 +247,7 @@ module.exports = class SMS {
             }
 
             return timeDifference;
-          } else {
-            if (isNaN(group1.createdOn - group2.createdOn)) {
-              if (group1.name < group2.name) {
-                winston.debug("group1.name < group2.name");
-                return -1;
-              } else if (group1.name === group2.name){
-                winston.debug("group1.name = group2.name");
-                return 0;
-              } else {
-                winston.debug("group1.name > group2.name");
-                return 1;
-              }
-            }
+
           }
         });
 
