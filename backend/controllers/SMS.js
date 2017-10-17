@@ -200,6 +200,8 @@ module.exports = class SMS {
           .then(group => {
             let groupInfo = common.formatGroupInfo(group);
 
+            groupInfo.lastMessage = groupsLastMessages[groupID];
+
             common.getUsersDetails(group.members, userID)
             .then(usersDetails => {
               groupInfo["usersDetails"] = usersDetails;
