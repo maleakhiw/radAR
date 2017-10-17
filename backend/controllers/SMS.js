@@ -227,8 +227,21 @@ module.exports = class SMS {
             winston.debug(groupsLastMessages[group1ID].time, groupsLastMessages[group2ID].time, groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time)
             return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
           } else {
-            winston.debug(group1.createdOn, group2.createdOn, group1.createdOn - group2.createdOn)
-            return group1.createdOn - group2.createdOn;
+            if (isNan(group1.createdOn - group2.createdOn)) {
+              if (group1.name < group2.name) {
+                winston.debug("group1.name < group2.name");
+                return -1;
+              } else if (group1.name.equals(group2.name)){
+                winston.debug("group1.name = group2.name");
+                return 0;
+              } else {
+                winston.debug("group1.name > group2.name");
+                return 1;
+              }
+            } else {
+              winston.debug(group1.createdOn, group2.createdOn, group1.createdOn - group2.createdOn)
+              return group1.createdOn - group2.createdOn;
+            }
           }
         });
 
