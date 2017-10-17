@@ -70,6 +70,11 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         fullName.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
         userDetailsEmail.setText(user.email);
+
+        if (user.isFriend) {
+            add.setVisibility(View.GONE);
+        }
+
         // This is if user doesn't set any profile description
         if (user.profileDesc != null) {
             userDetailsProfile.setText(user.profileDesc);
@@ -133,6 +138,13 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     @Override
     public void showToastShort(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideAddFriend() {
+        if (add != null) {
+            add.setVisibility(View.GONE);
+        }
     }
 
     /**

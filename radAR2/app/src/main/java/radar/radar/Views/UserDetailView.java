@@ -5,4 +5,6 @@ package radar.radar.Views;
  */
 public interface UserDetailView {
     void showToastShort(String message);
+
+    void hideAddFriend();
 }
