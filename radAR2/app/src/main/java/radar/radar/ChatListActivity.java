@@ -55,7 +55,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         setupUI();
 
         // refresh the list of chats on refresh. TODO polling.
-        swipeRefreshLayout.setOnRefreshListener(() -> chatListPresenter.getGroups());
+        swipeRefreshLayout.setOnRefreshListener(() -> chatListPresenter.loadData());
 
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
@@ -73,10 +73,10 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
             }
             chatListAdapter.setGroups(groups);
 
-            chatListPresenter.getGroups();   // update - might have new messages
+            chatListPresenter.loadData();   // update - might have new messages
 
         } else {
-            chatListPresenter.getGroups();
+            chatListPresenter.loadData();
         }
     }
 
@@ -95,7 +95,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, img, this);
 
         // Setup recycler view
-        chatRecyclerView = findViewById(R.id.chatRecyclerView);
+        chatRecyclerView = findViewById(R.id.chat_list_RV);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
@@ -220,6 +220,15 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
             groups = newGroups;
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (chatListPresenter != null) {
+            chatListPresenter.loadData();
+        }
+    }
+
 
     @Override
     public void onStop() {

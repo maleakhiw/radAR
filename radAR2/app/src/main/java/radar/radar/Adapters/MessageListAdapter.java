@@ -200,6 +200,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                             }
                         });
                     }
+                    profilePicSet = true;
                 }
 
             }

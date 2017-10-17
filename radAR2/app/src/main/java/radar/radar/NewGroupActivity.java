@@ -52,6 +52,8 @@ public class NewGroupActivity extends AppCompatActivity {
 
         // TODO refactor to MVP
 
+        // TODO get bundle and set isNewChatActivity or isNewGroupActivity
+
         Retrofit retrofit = new Retrofit.Builder()
                                     .baseUrl("https://radar.fadhilanshar.com/api/")
                                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

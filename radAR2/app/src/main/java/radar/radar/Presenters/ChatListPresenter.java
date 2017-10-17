@@ -30,7 +30,7 @@ public class ChatListPresenter {
 
 //    Disposable getChatListDisposable;
 
-    public void getGroups() {
+    public void loadData() {
         chatListView.startRefreshIndicator();
         // Getting the chat id that are related to a particular user
        chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
@@ -74,7 +74,7 @@ public class ChatListPresenter {
                     chatListView.showToastMessage("Group deleted");
                     chatListView.removeGroup(groupID);
                 }
-                getGroups();
+                loadData();
             }
 
             @Override

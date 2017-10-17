@@ -10,10 +10,16 @@
     android:theme="@android:style/Theme.NoTitleBar"
     tools:showIn="@layout/app_bar_group_list">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/groups_list_recyclerView"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/group_list_swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/groups_list_recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/new_group_fab"

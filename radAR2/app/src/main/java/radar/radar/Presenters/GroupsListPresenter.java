@@ -28,6 +28,8 @@ public class GroupsListPresenter {
     public void loadData() {
         System.out.println("loadData()");
 
+        view.setRefreshing(true);
+
         groupsService.getGroups()
                 .map(getChatsResponse -> {
                     if (getChatsResponse.success) {
@@ -45,11 +47,13 @@ public class GroupsListPresenter {
                     @Override
                     public void onNext(ArrayList<Group> groups) {
                         view.updateRecyclerViewDataSet(groups);
+                        view.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
+                        view.setRefreshing(false);
 //                        Log.w("error", e.getMessage());
                     }
 

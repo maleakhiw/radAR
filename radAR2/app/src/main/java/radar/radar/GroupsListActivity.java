@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,6 +32,8 @@ public class GroupsListActivity extends AppCompatActivity
     RecyclerView recyclerView;
     GroupsAdapter rvAdapter;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
     NavigationActivityHelper helper;
 
     private void loadViews() {
@@ -57,6 +60,14 @@ public class GroupsListActivity extends AppCompatActivity
 
         loadViews();
 
+        // swipe refresh layout
+        swipeRefreshLayout = findViewById(R.id.group_list_swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.loadData();
+            }
+        });
 
         // setup recyclerView
         rvAdapter = new GroupsAdapter(this, new ArrayList<>());
@@ -84,6 +95,13 @@ public class GroupsListActivity extends AppCompatActivity
             startActivity(intent);
         });
 
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(refreshing);
+        }
     }
 
     @Override
