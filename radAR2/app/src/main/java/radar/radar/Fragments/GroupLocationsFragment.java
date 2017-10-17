@@ -59,10 +59,9 @@ public class GroupLocationsFragment extends Fragment {
                 } else {
                     Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT);
                 }
-                }
 
             });
-
+        }
 
         // notify main activity that we have done initiating
         listener.onSetUp(this);
