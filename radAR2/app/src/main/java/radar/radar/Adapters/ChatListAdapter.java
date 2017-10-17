@@ -91,9 +91,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.lastMessage.setText("No messages yet.");
         }
 
+        if (group.isTrackingGroup) {
+            holder.isTrackingGroup.setVisibility(View.VISIBLE);
+        } else {
+            holder.isChat.setVisibility(View.VISIBLE);
+        }
+
         if (group.profilePicture != null) {
-            System.out.println("group has profilePicture");
-            System.out.println(group.profilePicture);
+//            System.out.println("group has profilePicture");
+//            System.out.println(group.profilePicture);
             // TODO inject service using method from Activity
 
             holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
@@ -135,6 +141,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         TextView lastMessage;
         TextView lastMessageFrom;
         ImageView profilePic;
+        TextView isTrackingGroup;
+        TextView isChat;
 
         ResourcesService resourcesService;
 
@@ -160,6 +168,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             lastMessageFrom = itemView.findViewById(R.id.row_last_message_from);
             lastMessage = itemView.findViewById(R.id.row_last_message);
             profilePic = itemView.findViewById(R.id.row_profile_picture);
+            isTrackingGroup = itemView.findViewById(R.id.is_tracking_group);
+            isChat = itemView.findViewById(R.id.is_chat);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {

@@ -168,5 +168,8 @@
     <string name="new_group">New Group</string>
     <string name="new_chat">New Chat</string>
     <string name="new_friend">New Friend</string>
+    <string name="tracking_group">Tracking Group</string>
+    <string name="name">Name</string>
+    <string name="chat">Chat</string>
 
 </resources>
