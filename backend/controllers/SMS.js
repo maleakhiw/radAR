@@ -214,7 +214,7 @@ module.exports = class SMS {
           let group1ID = group1.groupID;
           let group2ID = group2.groupID;
 
-          if (groupsLastMessages[group1ID].time && groupsLastMessages[group2ID].time) {
+          if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
             return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
           } else {
             return group1.createdOn - group2.createdOn;
