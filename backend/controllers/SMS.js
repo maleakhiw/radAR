@@ -8,6 +8,9 @@ const addMetas = common.addMetas
 const isArray = common.isArray
 const unique = common.unique
 
+// helpful functions
+const _ = require('lodash');
+
 // logging framework
 const winston = require('winston');
 
@@ -26,6 +29,165 @@ function getExistingChat(req, res) {
   */
 
   // TODO to prevent creation of multiple chats for the same user
+}
+
+var getLastMessages = (groups) => new Promise((resolve, reject) => {
+  let groupsLastMessages = {};
+
+  let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+    Message.findOne({groupID: groupID}).sort({time: -1}).exec()
+    .then((message) => {
+      if (message) {
+        // TODO deprecate/move under GroupsDetails?
+        groupsLastMessages[groupID] = {
+          from: message.from,
+          time: message.time,
+          contentType: message.contentType,
+          text: message.text
+        }
+        resolve(message);
+      } else {
+        resolve(null);
+      }
+    })
+    .catch((err) => {
+      reject(err);
+    });
+
+  }));
+
+  Promise.all(promiseAll).then(lastMessages => {
+    resolve(groupsLastMessages);
+  }).catch(err => reject(err));
+})
+
+var getGroupsForUserImpl = (req, res, filterChatsOut) => {
+  let userID = req.params.userID
+
+  let groupsLastMessages = {};
+  let groupsTmp, groups;
+  let groupDetails = [];
+
+  User.findOne({ userID: userID }).exec()
+
+  .then(user => {
+    groupsTmp = user.groups;
+
+    if (filterChatsOut) {
+      winston.debug("filter chats out");
+      let promiseAll = user.groups.map(group => new Promise((resolve, reject) => {
+        Group.findOne({groupID: group}).exec()
+        .then(group => {
+          resolve(group.isTrackingGroup);
+        })
+        .catch(err => reject(err));
+      }));
+      // true only if the group is a tracking group
+      return Promise.all(promiseAll);
+    } else {
+      groups = user.groups;
+      // "keep everything", false indices to be filtered off later
+      return Promise.all(groups.map(group => true));
+    }
+
+  })
+
+  .then(groupsAreTrackingGroups => {
+    console.log(groupsAreTrackingGroups);
+    let groupsAndToKeep = _.zip(groupsTmp, groupsAreTrackingGroups);
+
+    // filter off non-tracking groups
+    let filteredGroup = groupsAndToKeep.filter(entry => entry[1]);
+    let groupsFirst = filteredGroup.map(entry => entry[0]);
+    groups = groupsFirst;
+
+    return new Promise((resolve, reject) => resolve(groupsFirst));
+  })
+
+  .then(groups => getLastMessages(groups))
+
+  .then((pGroupLastMessages) => {
+    groupsLastMessages = pGroupLastMessages;
+
+    let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+
+      Group.findOne({groupID: groupID}).exec()
+      .then(group => {
+        let groupInfo = common.formatGroupInfo(group);
+
+        groupInfo.lastMessage = groupsLastMessages[groupID];
+
+        common.getUsersDetails(group.members, userID)
+        .then(usersDetails => {
+          groupInfo["usersDetails"] = usersDetails;
+          groupDetails.push(groupInfo);
+          resolve();
+
+        })
+
+
+      })
+      .catch(err => reject(err));
+
+    }))
+
+    return Promise.all(promiseAll);
+  })
+
+  .then(() => {
+    // sort groupDetails - TODO refactor to individual functions; test cases
+    groupDetails.sort((group1, group2) => { // custom sort function
+      let group1ID = group1.groupID;
+      let group2ID = group2.groupID;
+
+      // TODO group last updated => is active or inactive
+
+      if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
+        let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+        if (timeDifference < 0) {
+          return 1;
+        } else if (timeDifference == 0) {
+          return 0;
+        } else {
+          return -1;
+        }
+        return timeDifference;
+
+      } else if (groupsLastMessages[group1ID] && !groupsLastMessages[group2ID]) {
+        return -1;
+      } else if (!groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
+        return 1;
+      } else {
+        if (group1.name < group2.name) {
+          winston.debug("group1.name < group2.name");
+          return -1;
+        } else if (group1.name === group2.name){
+          winston.debug("group1.name = group2.name");
+          return 0;
+        } else {
+          winston.debug("group1.name > group2.name");
+          return 1;
+        }
+      }
+    });
+
+    let response = {
+      success: true,
+      errors: [],
+      groups: groupDetails,
+      groupsLastMessages: groupsLastMessages
+    }
+    res.json(addMetas(response, "/api/accounts/:userID/chats"))
+  })
+
+  .catch((err) => {
+    winston.error(err)
+    res.json({
+      success: false,
+      errors: []
+    })
+  })
+
 }
 
 /**
@@ -170,10 +332,10 @@ function newGroupImpl(req, res, callback) {
 
 module.exports = class SMS {
   constructor(pGroup, pMessage, pUser) {
-      Group = pGroup
-      Message = pMessage
-      User = pUser
-      svs = new SVS(pUser)
+    Group = pGroup
+    Message = pMessage
+    User = pUser
+    svs = new SVS(pUser)
   }
 
   // deleteGroup(req, res) {
@@ -185,122 +347,7 @@ module.exports = class SMS {
   }
 
   getGroupsForUser(req, res) {
-      let userID = req.params.userID
-
-      let groupsLastMessages = {};
-      let groups;
-      let groupDetails = [];
-
-      User.findOne({ userID: userID }).exec()
-
-      .then((user) => {
-        groups = user.groups;
-        let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
-
-          Message.findOne({groupID: groupID}).sort({time: -1}).exec()
-          .then((message) => {
-            if (message) {
-              // TODO deprecate/move under GroupsDetails?
-              groupsLastMessages[groupID] = {
-                from: message.from,
-                time: message.time,
-                contentType: message.contentType,
-                text: message.text
-              }
-              resolve(message);
-            } else {
-              resolve(null);
-            }
-          })
-          .catch((err) => {
-            reject(err);
-          });
-
-        }));
-        return Promise.all(promiseAll);
-
-      })
-
-      .then(() => {
-        let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
-
-          Group.findOne({groupID: groupID}).exec()
-          .then(group => {
-            let groupInfo = common.formatGroupInfo(group);
-
-            groupInfo.lastMessage = groupsLastMessages[groupID];
-
-            common.getUsersDetails(group.members, userID)
-            .then(usersDetails => {
-              groupInfo["usersDetails"] = usersDetails;
-              groupDetails.push(groupInfo);
-              resolve();
-
-            })
-
-
-          })
-          .catch(err => reject(err));
-
-        }))
-
-        return Promise.all(promiseAll);
-      })
-
-      .then(() => {
-        // sort groupDetails - TODO refactor to individual functions; test cases
-        groupDetails.sort((group1, group2) => { // custom sort function
-          let group1ID = group1.groupID;
-          let group2ID = group2.groupID;
-
-          // TODO group last updated => is active or inactive
-
-          if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
-            let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
-            if (timeDifference < 0) {
-              return 1;
-            } else if (timeDifference == 0) {
-              return 0;
-            } else {
-              return -1;
-            }
-            return timeDifference;
-
-          } else if (groupsLastMessages[group1ID] && !groupsLastMessages[group2ID]) {
-            return -1;
-          } else if (!groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
-            return 1;
-          } else {
-            if (group1.name < group2.name) {
-              winston.debug("group1.name < group2.name");
-              return -1;
-            } else if (group1.name === group2.name){
-              winston.debug("group1.name = group2.name");
-              return 0;
-            } else {
-              winston.debug("group1.name > group2.name");
-              return 1;
-            }
-          }
-        });
-
-        let response = {
-          success: true,
-          errors: [],
-          groups: groupDetails,
-          groupsLastMessages: groupsLastMessages
-        }
-        res.json(addMetas(response, "/api/accounts/:userID/chats"))
-      })
-
-      .catch((err) => {
-        winston.error(err)
-        res.json({
-          success: false,
-          errors: []
-        })
-      })
-
+    getGroupsForUserImpl(req, res, false);
   }
 
   getGroup(req, res) {
@@ -507,3 +554,4 @@ module.exports = class SMS {
 
 // exports, after the class
 module.exports.newGroupImpl = newGroupImpl;
+module.exports.getGroupsForUserImpl = getGroupsForUserImpl;

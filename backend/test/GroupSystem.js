@@ -152,4 +152,49 @@ describe('GroupSystem', () => {
 
   })
 
+  let newChatID;
+  describe('POST /api/accounts/:userID/chats (sms.newGroup)', () => {
+    it('should create a new chat', (done) => {
+      chai.request(server)
+      .post('/api/accounts/1/chats')
+      .set('token', user1token)
+      .send({
+        name: 'test group',
+        participantUserIDs: [2]
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.group).to.not.equal(null);
+        newChatID = res.body.group.groupID;
+        // expect(res.body.group.groupID).to.equal(1); // important for deletion route
+        // console.log(res.body);
+        done();
+      })
+    })
+  });
+
+  describe('GET /api/accounts/:userID/groups', () => {
+    it('should not have a non-tracking group', done => {
+      chai.request(server)
+      .get('/api/accounts/1/groups')
+      .set('token', user1token)
+      .send()
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        // console.log(newChatID);
+        // console.log(res.body.groups);
+        let groupIDs = res.body.groups.map(entry => entry.groupID);
+        expect(res.body.groups.length).to.equal(1); // other group filtered off (there are 2 groups)
+        expect(groupIDs.includes(newChatID)).to.equal(false);
+        done();
+      })
+    })
+  })
+
+
+
 })

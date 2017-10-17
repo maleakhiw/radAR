@@ -141,7 +141,7 @@ describe('SMS', () => {
           expect(res.body.group.meetingPoint.name).to.equal("Baillieu Library");
           expect(res.body.group.meetingPoint.lat).to.equal(-37.7983668);
           expect(res.body.group.meetingPoint.lon).to.equal(144.95937859999998);
-          console.log(res.body);
+          // console.log(res.body);
           done();
         })
       })
@@ -222,6 +222,7 @@ describe('SMS', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
 
+        console.log(res.body.groupsLastMessages);
 
         expect(res.body.groupsLastMessages['1']).to.not.equal(null);
         expect(res.body.groupsLastMessages['1'].text).to.equal('Hello world');

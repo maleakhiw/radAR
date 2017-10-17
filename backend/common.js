@@ -6,6 +6,7 @@ const Resource = require('./models/resource');  // TODO as above
 
 module.exports.getNumLength = number => (Math.abs(number) + "").length;
 
+
 module.exports.updateGroupLastUpdated = (groupID, userID) => {
   // runs asynchronously - less "important" to validate if successfully completed
   Group.findOne({groupID: groupID}).exec()

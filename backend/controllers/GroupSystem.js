@@ -196,6 +196,10 @@ module.exports = class GroupSystem extends SMS {
     UserLocation = pLocation;
   }
 
+  getGroupsForUser(req, res) {
+    SMS.getGroupsForUserImpl(req, res, true);
+  }
+
   updateGroupDetails(req, res) {
     /*
       HTTP PUT {serverURL}/api/accounts/:userID/groups/:groupID
