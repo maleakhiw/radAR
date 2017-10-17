@@ -192,9 +192,9 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
                                         group = groupsResponse.group;
                                         updateFriends(groupsResponse.group.usersDetails);
                                         notifyDataSetChanged();
-                                        Toast.makeText(context, "Member removed", Toast.LENGTH_SHORT);
+                                        Toast.makeText(context, "Member removed", Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(context, "Unexpected error", Toast.LENGTH_SHORT);
+                                        Toast.makeText(context, "Unexpected error", Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
@@ -202,7 +202,7 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
                                 @Override
                                 public void onError(Throwable e) {
                                     e.printStackTrace();
-                                    Toast.makeText(context, "Unexpected error", Toast.LENGTH_SHORT);
+                                    Toast.makeText(context, "Unexpected error", Toast.LENGTH_SHORT).show();
                                 }
 
                                 @Override

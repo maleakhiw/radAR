@@ -206,7 +206,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
 
     @Override
     public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_SHORT);
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
     }
 
     /**

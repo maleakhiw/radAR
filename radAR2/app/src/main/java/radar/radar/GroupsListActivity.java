@@ -136,6 +136,6 @@ public class GroupsListActivity extends AppCompatActivity
 
     @Override
     public void showToast(String s) {
-        Toast.makeText(this, s, Toast.LENGTH_SHORT);
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 }

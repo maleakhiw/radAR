@@ -131,7 +131,7 @@ public class GroupLocationsFragment extends Fragment {
                     intent.putExtra("groupID", group.groupID);
                     startActivity(intent);
                 } else {
-                    Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT);
+                    Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT).show();
                 }
             });
             fab.setImageBitmap(textAsBitmap("AR", 40, Color.WHITE));

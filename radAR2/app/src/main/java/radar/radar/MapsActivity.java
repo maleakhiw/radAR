@@ -161,8 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
                 text = "Exception Error";
             } finally {
-//                Toast toast = Toast.makeText(this, text, duration);
-//                toast.show();
+//                Toast toast = Toast.makeText(this, text, duration).show();
             }
             //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             if (first) {

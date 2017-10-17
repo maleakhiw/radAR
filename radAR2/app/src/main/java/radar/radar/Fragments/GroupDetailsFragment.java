@@ -253,10 +253,15 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
         try {
             //open map activity and display navigation
             Intent intent = new Intent(getActivity(), MapsActivity.class);
-            intent.putExtra("meetingPoint", meetingPoint);
-            intent.putExtra("group", group);
+            if (meetingPoint != null) {
+                intent.putExtra("meetingPoint", meetingPoint);
+                intent.putExtra("group", group);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getActivity(), "Please set a meeting point first.", Toast.LENGTH_SHORT).show();
+            }
 
-            startActivity(intent);
+
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }

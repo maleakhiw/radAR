@@ -157,7 +157,7 @@ public class NewGroupActivity extends AppCompatActivity {
                 if (groupsResponse.success) {
                     launchChat(groupsResponse.group);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -189,7 +189,7 @@ public class NewGroupActivity extends AppCompatActivity {
                     launchGroup(groupsResponse.group);
 
                 } else {
-                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT).show();
                 }
             }
 
