@@ -281,6 +281,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
                 Place place = PlacePicker.getPlace(getActivity(), data);
                 Log.i(TAG, "Place Selected: " + place.getName());
                 mapView.getMapAsync(googleMap -> {
+                    googleMap.clear();
                     googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                             .title(getString(R.string.unimelb)));
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
