@@ -41,12 +41,12 @@ public class UserDetailPresenter {
             @Override
             public void onNext(AddFriendResponse addFriendResponse) {
                 if (addFriendResponse.success) {
-                    // If add friend successful, show alert dialogue to user to show that user has been added
-                    userDetailView.showToastShort("Friend request friend");
-                    userDetailView.hideAddFriend();
+                    userDetailView.showToastShort("Friend request sent");
+//                    userDetailView.hideAddFriend();
                 }
                 else {
-                    userDetailView.showToastShort("User have been added previously. Please wait for confirmation.");
+                    userDetailView.showToastShort("Friend request already sent");
+//                    userDetailView.showToastShort("User have been added previously. Please wait for confirmation.");
                 }
             }
 
