@@ -179,6 +179,8 @@ module.exports.isValidEmail = (email) => {
     return re.test(email);
 }
 
+module.exports.getUserDetail = (queryUserID, selfUserID) => module.exports.getUsersDetails([queryUserID], selfUserID);
+
 module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reject) => {
   let userDetails = {};
   let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {

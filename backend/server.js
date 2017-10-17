@@ -165,7 +165,7 @@ app.post("/api/accounts/:userID/location", authenticate, positioningSystem.updat
 // object: users
 // users
 app.get("/api/users", ums.search) // get all users (only if query specified)
-app.get("/api/users/:userID", ums.getInformation)
+app.get("/api/users/:userID", ums.getInformation) // NOTE: added new param: ?userID=(requesterUserID)
 
 // object: groups
 app.get("/api/groups", (req, res) => {
