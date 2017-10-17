@@ -1,100 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_group_locations_coordinatorLayout"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-
-        <android.support.constraint.ConstraintLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tracking"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Tracking"
-                android:textSize="24sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tracking"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Tracking"
+                    android:textSize="24sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Currently not tracking (sharing and receiving location updates). Tap on TRACK to start tracking."
+                    app:layout_constraintBottom_toTopOf="@+id/button4"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tracking" />
+
+                <Button
+                    android:id="@+id/button4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="8dp"
+                    android:text="Start tracking"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="OFF"
+                    android:textColor="@color/colorPrimary"
+                    app:layout_constraintStart_toEndOf="@+id/tracking"
+                    app:layout_constraintTop_toTopOf="@+id/tracking" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+
 
             <TextView
-                android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:text="Currently not tracking (sharing and receiving location updates). Tap on TRACK to start tracking."
-                app:layout_constraintBottom_toTopOf="@+id/button4"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tracking" />
+                android:paddingLeft="16dp"
+                android:text="Views"
+                android:textSize="24sp" />
 
-            <Button
-                android:id="@+id/button4"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:text="Start tracking"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:gravity="center">
 
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:text="OFF"
-                android:textColor="@color/colorPrimary"
-                app:layout_constraintStart_toEndOf="@+id/tracking"
-                app:layout_constraintTop_toTopOf="@+id/tracking" />
+                <Button
+                    android:id="@+id/start_tracking_in_AR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="AR view" />
 
-        </android.support.constraint.ConstraintLayout>
+                <Button
+                    android:id="@+id/go_to_mapView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Map view" />
+            </LinearLayout>
 
 
 
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="16dp"
-            android:text="Views"
-            android:textSize="24sp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <Button
-                android:id="@+id/start_tracking_in_AR"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="AR view" />
-
-            <Button
-                android:id="@+id/go_to_mapView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Map view" />
         </LinearLayout>
+    </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:text="@string/ar" />
 
 
-
-    </LinearLayout>
-
-</ScrollView>
+</android.support.design.widget.CoordinatorLayout>

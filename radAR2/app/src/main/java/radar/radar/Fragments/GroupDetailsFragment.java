@@ -336,7 +336,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
                     @Override
                     public void onNext(Status status) {
                         if (status.success) {
-                            Toast.makeText(getActivity(), "Update meeting point", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Meeting point updated", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG, "Error update");
                         }

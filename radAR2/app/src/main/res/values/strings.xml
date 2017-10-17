@@ -171,5 +171,6 @@
     <string name="tracking_group">Tracking Group</string>
     <string name="name">Name</string>
     <string name="chat">Chat</string>
+    <string name="ar">AR</string>
 
 </resources>
