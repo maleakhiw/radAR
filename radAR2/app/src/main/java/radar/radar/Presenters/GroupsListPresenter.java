@@ -25,7 +25,7 @@ public class GroupsListPresenter {
         loadData();
     }
 
-    private void loadData() {
+    public void loadData() {
         System.out.println("loadData()");
 
         groupsService.getGroups()

@@ -16,6 +16,8 @@ public class ARAnnotation {
     Button button;
 
     int offsetX;
+    int offsetY;
+
 
     public int getOffsetX() {
         return offsetX;
@@ -33,7 +35,6 @@ public class ARAnnotation {
         this.offsetY = offsetY;
     }
 
-    int offsetY;
 
     public UserLocation getUserLocation() {
         return userLocation;

@@ -27,29 +27,24 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import org.w3c.dom.Text;
-
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Presenters.HomeScreenPresenter;
-import radar.radar.Services.AuthService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
     private static final String TAG = "Home Screen Activity";
-    private static final float DEFAULT_ZOOM = 15;
+    private static final float DEFAULT_ZOOM = 16;
     private static final int REQUEST_FOR_LOCATION = 1;
 
     private Location currentLocation;
@@ -76,17 +71,15 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
 
         presenter = new HomeScreenPresenter(this, locationService);
+
+        getDeviceLocation();
 
         // set up mapView
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.home_screen_map);
@@ -100,6 +93,8 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onPlaceSelected(Place place) {
                 // TODO: Get info about the selected place.
+
+                // TODO New Activity to create a new Group with that meeting point.
                 googleMap.clear();
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
@@ -130,22 +125,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View v) {
                 // FAB Action
                 getDeviceLocation();
-                if(currentLocation != null) {
-                    googleMap.clear();
-                    LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                    googleMap.addMarker(new MarkerOptions().position(currentPosition));
-                    googleMap.addCircle(new CircleOptions()
-                            .center(currentPosition)
-                            .strokeColor(getColorRes(R.color.colorPrimary))
-                            .radius(currentLocation.getAccuracy()));
-                    googleMap.addCircle(new CircleOptions()
-                            .center(currentPosition)
-                            .fillColor(getColorRes(R.color.colorPrimaryDark))
-                            .strokeColor(getColorRes(R.color.colorPrimaryDark))
-                            .radius(1));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            currentPosition, DEFAULT_ZOOM));
-                }
             }
         });
 
@@ -180,7 +159,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
-                Intent intent = new Intent(getApplicationContext(), TabbedSearchActivity.class);
+                Intent intent = new Intent(getApplicationContext(), FriendRequestActivity.class);
                 startActivity(intent);
             }
         });
@@ -275,9 +254,34 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         currentLocation = (Location) task.getResult();
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(currentLocation.getLatitude(),
-                                        currentLocation.getLongitude()), DEFAULT_ZOOM));
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(new LatLng(currentLocation.getLatitude(),
+                                        currentLocation.getLongitude()))
+                                .zoom(DEFAULT_ZOOM).build();
+                        googleMap.animateCamera(CameraUpdateFactory
+                                .newCameraPosition(cameraPosition));
+
+                        googleMap.setMyLocationEnabled(true);
+
+
+                        if (currentLocation != null) {
+                            googleMap.clear();
+                            // TODO do not remove PoI
+                            LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+
+//                            googleMap.addCircle(new CircleOptions()
+//                                    .center(currentPosition)
+//                                    .strokeColor(getColorRes(R.color.colorPrimary))
+//                                    .radius(currentLocation.getAccuracy()));
+//                            googleMap.addCircle(new CircleOptions()
+//                                    .center(currentPosition)
+//                                    .fillColor(getColorRes(R.color.colorPrimaryDark))
+//                                    .strokeColor(getColorRes(R.color.colorPrimaryDark))
+//                                    .radius(1));
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                    currentPosition, DEFAULT_ZOOM));
+                        }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.");
                         Log.e(TAG, "Exception: %s", task.getException());

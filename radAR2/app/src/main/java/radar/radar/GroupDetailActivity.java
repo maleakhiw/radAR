@@ -53,11 +53,7 @@ public class GroupDetailActivity extends AppCompatActivity {
             finish();   // nothing to do here
         }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         groupsService = new GroupsService(this, groupsApi);
 

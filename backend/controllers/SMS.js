@@ -101,10 +101,11 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
-          usersDetails[userID] = (common.getPublicUserInfo(user));
+          // console.log(participantUserID)
+          usersDetails[participantUserID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
-          user.save() .then(() => resolve());
+          user.save().then(() => resolve());
         })
         .catch((err) => winston.error(err));  // TODO send fail
     }));
@@ -158,16 +159,45 @@ module.exports = class SMS {
   getGroupsForUser(req, res) {
       let userID = req.params.userID
 
+      let groupsLastMessages = {};
+      let groups;
+
       User.findOne({ userID: userID }).exec()
 
       .then((user) => {
+        groups = user.groups;
+        let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
+          Message.findOne({groupID: groupID}).sort({time: -1}).exec()
+          .then((message) => {
+            if (message) {
+              groupsLastMessages[groupID] = {
+                from: message.from,
+                time: message.time,
+                contentType: message.contentType,
+                text: message.text
+              }
+              resolve(message);
+            } else {
+              resolve(null);
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+
+        }));
+        return Promise.all(promiseAll);
+
+      })
+
+      .then(() => {
         let response = {
           success: true,
           errors: [],
-          groups: user.groups
+          groups: groups,
+          groupsLastMessages: groupsLastMessages
         }
         res.json(addMetas(response, "/api/accounts/:userID/chats"))
-
       })
 
       .catch((err) => {
@@ -184,17 +214,30 @@ module.exports = class SMS {
       let userID = req.params.userID
       let groupID = req.params.groupID
 
-      let group, usersDetails;
+      let group, usersDetails, lastMessage;
+
       Group.findOne({ groupID: groupID }).exec()
       .then((groupRes) => {
         group = groupRes;
 
-        return common.getUsersDetails(groupRes.members);
+        return common.getUsersDetails(groupRes.members, userID);
       })
       .then((pUserDetails) => {
         usersDetails = pUserDetails;
+
+        return Message.findOne({groupID: groupID}).sort({time: -1});
       })
-      .then(() => {
+
+      .then((message) => {
+        if (message) {
+          lastMessage = {
+            from: message.from,
+            time: message.time,
+            contentType: message.contentType,
+            text: message.text
+          }
+        }
+
         if (group) {
           let groupObj = {
             name: group.name,
@@ -202,7 +245,8 @@ module.exports = class SMS {
             admins: group.admins,
             members: group.members,
             isTrackingGroup: group.isTrackingGroup,
-            usersDetails: usersDetails
+            usersDetails: usersDetails,
+            lastMessage: lastMessage
           }
 
           res.json({
@@ -216,10 +260,10 @@ module.exports = class SMS {
           res.status(404).json({
             success: false,
             error: common.errorObjectBuilder(['invalidGroupID'])
-          })
+          });
         }
       })
-
+      .catch(err => common.sendInternalError(res));
 
   }
 
@@ -316,7 +360,6 @@ module.exports = class SMS {
       Group.findOne({ groupID: groupID }).exec()
 
       .then((group) => {
-        console.log(group);
         if (!group) {
           res.json({
             success: false,

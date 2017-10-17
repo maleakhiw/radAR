@@ -8,7 +8,9 @@ import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.MessageBody;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
+import radar.radar.Models.Responses.Status;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -32,4 +34,7 @@ public interface ChatApi {
 
     @GET("accounts/{userID}/chats/{chatID}/messages")
     Observable<MessagesResponse> getMessages(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="chatID", encoded=true) int chatID);
+
+    @DELETE("accounts/{userID}/chats/{groupID}")
+    Observable<Status> deleteGroup(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
 }

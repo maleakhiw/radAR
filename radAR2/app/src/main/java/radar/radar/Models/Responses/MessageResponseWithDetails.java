@@ -1,5 +1,6 @@
 package radar.radar.Models.Responses;
 
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Domain.User;
 
 /**

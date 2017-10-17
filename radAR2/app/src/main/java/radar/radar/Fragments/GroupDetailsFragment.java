@@ -2,6 +2,7 @@ package radar.radar.Fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 import io.reactivex.Observer;
@@ -40,6 +43,9 @@ import radar.radar.R;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
+import radar.radar.Services.LocationApi;
+import radar.radar.Services.LocationService;
+import radar.radar.Services.LocationTransformations;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -57,9 +63,14 @@ public class GroupDetailsFragment extends Fragment {
     RecyclerView recyclerView;
     GroupMembersAdapter friendsAdapter;
 
+    TextView destinationTV;
+    TextView distanceTV;
+
     MapView mapView;
 
     GroupDetailsLifecycleListener listener;
+
+    LocationService locationService;
 
     private Group group = null;
 
@@ -136,6 +147,9 @@ public class GroupDetailsFragment extends Fragment {
 
         mainTextView = rootView.findViewById(R.id.group_detail_textview);
         mainTextView.setText("Members");
+
+        destinationTV = rootView.findViewById(R.id.group_detail_dest_name);
+        distanceTV = rootView.findViewById(R.id.group_detail_distance);
 
         recyclerView = rootView.findViewById(R.id.group_details_members_recyclerView);
         friendsAdapter = new GroupMembersAdapter(getActivity(), new HashMap<Integer, User>());  // getContext becomes getActivity inside a fragment
@@ -230,6 +244,30 @@ public class GroupDetailsFragment extends Fragment {
         }
     }
 
+    double lastLat;
+    double lastLon;
+
+    public void updateLabels(String name, double lat, double lon) {
+        destinationTV.setText(name);
+        lastLat = lat;
+        lastLon = lon;
+    }
+
+    DecimalFormat df = new DecimalFormat();
+
+    public void updateDistance(double currentLat, double currentLon) {
+        double distance = LocationTransformations.distance(currentLat, currentLon, lastLat, lastLon, 'K');
+
+        if (distance >= 1) {
+//            distance = distance/1000;
+            df.setMaximumFractionDigits(2);
+            distanceTV.setText(df.format(distance) + " " + "km");   // TODO miles
+        } else {
+            distance *= 1000;
+            distanceTV.setText(((Integer) (int) distance).toString() + " m");
+        }
+    }
+
     /**
      * Called after the autocomplete activity has finished to return its result.
      */
@@ -253,12 +291,40 @@ public class GroupDetailsFragment extends Fragment {
                 double lonDouble = place.getLatLng().longitude;
                 String name = place.getName().toString();
 
+                updateLabels(name, latDouble, lonDouble);
+
                 //update group location settings
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl("https://radar.fadhilanshar.com/api/")
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
+
+                LocationApi locationApi = retrofit.create(LocationApi.class);
+                LocationService locationService = new LocationService(locationApi, getActivity(), LocationServices.getFusedLocationProviderClient(getActivity()));
+
+                locationService.getLastLocation().subscribe(new Observer<Location>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Location location) {
+                        updateDistance(location.getLatitude(), location.getLongitude());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        // TODO ask for location permissions
+                        Log.w("GroupDetailsFragment", "Grant location permissions!");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
 
                 GroupsService groupsService = new GroupsService(getActivity(), retrofit.create(GroupsApi.class));
                 groupsService.updateMeetingPoint(group.groupID, new MeetingPoint(latDouble, lonDouble, name, "")).subscribe(new Observer<Status>() {

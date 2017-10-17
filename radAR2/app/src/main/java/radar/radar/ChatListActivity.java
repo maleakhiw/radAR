@@ -1,7 +1,9 @@
 package radar.radar;
 
+import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,9 +13,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import radar.radar.Adapters.ChatListAdapter;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Presenters.ChatListPresenter;
 import radar.radar.Services.ChatApi;
@@ -36,23 +41,25 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     private ChatListPresenter chatListPresenter;
     NavigationActivityHelper helper;
 
+    SwipeRefreshLayout swipeRefreshLayout;
+
+    Bundle recyclerViewStateBundle;
+    private final String KEY_RECYCLER_STATE = "recycler_state";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
 
+        System.out.println("onCreate()");
+
         // Setup groups
         groups = new ArrayList<>();
 
-        // Setup UI
-        setupUI();
+
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // Create chat api
         ChatApi chatApi = retrofit.create(ChatApi.class);
@@ -60,11 +67,42 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         // Create the service
         chatService = new ChatService(this, chatApi);
 
+        // Setup UI
+        setupUI();
+
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                chatListPresenter.getChats();
+            }
+        });
+
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
 
+        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups, chatListPresenter);
+        chatRecyclerView.setAdapter(chatListAdapter);
+
+
         // Call the method to display chat list
-        chatListPresenter.getChatIDs();
+        if (savedInstanceState != null) {
+            Parcelable listState = savedInstanceState.getParcelable(KEY_RECYCLER_STATE);
+            ArrayList<Group> groups = (ArrayList<Group>) savedInstanceState.getSerializable("GROUPS_LIST");
+
+            if (listState != null) {
+                chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+            }
+
+            if (groups != null) {
+                chatListAdapter.setGroups(groups);
+            } else {
+                chatListPresenter.getChats();
+            }
+
+        } else {
+            chatListPresenter.getChats();
+        }
     }
 
     /**
@@ -82,13 +120,17 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);
-        chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups);
-        chatRecyclerView.setAdapter(chatListAdapter);
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(ChatListActivity.this));
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chatRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
+        swipeRefreshLayout = findViewById(R.id.chat_list_swipeRefreshLayout);
 
         setTitle("Chats");
+    }
+
+    @Override
+    public void stopRefreshIndicator() {
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     /**
@@ -133,7 +175,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
      */
     @Override
     public void showToastMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -147,7 +189,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
     /**
      * Get chat id
-     * @param index index of the chatids that we want
+     * @param index index of the chatIDs that we want
      * @return id for particular group
      */
     @Override
@@ -165,5 +207,53 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         chatListAdapter.setChatList(groups);
         chatListAdapter.notifyDataSetChanged();
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        System.out.println("onSaveInstanceState");
+
+        // save RV state
+        Parcelable listState = chatRecyclerView.getLayoutManager().onSaveInstanceState();
+        ArrayList<Group> groups = chatListAdapter.getGroups();
+        state.putParcelable(KEY_RECYCLER_STATE, listState);
+        state.putSerializable("GROUPS_LIST", groups);
+    }
+
+    @Override
+    public void removeGroup(int groupID) {
+        if (groups != null) {
+            ArrayList<Group> newGroups = new ArrayList<>();
+            for (Group group : groups) {
+                if (group.groupID != groupID) {
+                    newGroups.add(group);
+                }
+            }
+            groups = newGroups;
+        }
+    }
+
+//    Parcelable listState;
+//    @Override
+//    protected void onRestoreInstanceState(Bundle state) {
+//        super.onRestoreInstanceState(state);
+//
+//        System.out.println("onRestoreInstanceState");
+//
+//        if (state != null) {
+//           listState = state.getParcelable(KEY_RECYCLER_STATE);
+//        }
+//
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//
+//        if (listState != null) {
+//            chatRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+//        }
+//    }
 
 }

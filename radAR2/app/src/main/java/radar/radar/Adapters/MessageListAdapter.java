@@ -2,6 +2,7 @@ package radar.radar.Adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,14 @@ import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
-import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessageResponseWithDetails;
 import radar.radar.Models.Domain.User;
 import radar.radar.R;
@@ -26,7 +28,7 @@ import radar.radar.Services.AuthService;
  */
 public class MessageListAdapter extends RecyclerView.Adapter {
     private Context context;
-    private List<MessageResponse> messageList;
+    private ArrayList<MessageResponse> messageList;
     private HashMap<Integer, User> usersDetails;
 
     // Constant for message sent and received
@@ -38,7 +40,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      * @param context ChatActivity
      * @param messageList messages to be displayed
      */
-    public MessageListAdapter(Context context, List<MessageResponse> messageList) {
+    public MessageListAdapter(Context context, ArrayList<MessageResponse> messageList) {
         this.messageList = messageList;
         this.context = context;
     }
@@ -47,7 +49,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      * Setting the message list to new message lsit
      * @param messageList new message list
      */
-    public void setMessageList(List<MessageResponse> messageList) {
+    public void setMessageList(ArrayList<MessageResponse> messageList) {
         this.messageList = messageList;
     }
 
@@ -56,7 +58,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
      * @param messageList new message list
      * @param userDetails
      */
-    public void setMessageList(List<MessageResponse> messageList, HashMap<Integer, User> userDetails) {
+    public void setMessageList(ArrayList<MessageResponse> messageList, HashMap<Integer, User> userDetails) {
         this.messageList = messageList;
         this.usersDetails = userDetails;
     }
@@ -119,6 +121,18 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         return messageList.size();
     }
 
+    public ArrayList<MessageResponse> getMessageList() {
+        return messageList;
+    }
+
+    public HashMap<Integer, User> getUsersDetails() {
+        return usersDetails;
+    }
+
+    public void setUsersDetails(HashMap<Integer, User> usersDetails) {
+        this.usersDetails = usersDetails;
+    }
+
     /**
      * Parse time
      * @return string to be displayed in user interface
@@ -137,6 +151,7 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             Integer minute = calendar.get(Calendar.MINUTE);
 
             String hourString, minuteString;
+
             if (hour < 10) {
                 hourString = "0" + hour.toString();
             } else {
@@ -149,13 +164,20 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 minuteString = minute.toString();
             }
 
-            // set am or pm
-            int hourOfDay = hour;
-            if (hourOfDay >= 12) {
-                return hourString + ":" + minuteString + " PM";
+            if (!DateFormat.is24HourFormat(context)) {
+                return hourString + ":" + minuteString;
             } else {
-                return hourString + ":" + minuteString + " AM";
+                // set am or pm
+                int hourOfDay = hour;
+                if (hourOfDay >= 12) {
+                    return hourString + ":" + minuteString + " PM";
+                } else {
+                    return hourString + ":" + minuteString + " AM";
+                }
+                
             }
+
+
 
         } catch (ParseException e) {
             e.printStackTrace();

@@ -20,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * View part of the MVP model for signup activity/ screen
  */
-public class SignupActivity extends AppCompatActivity implements SignupView {
+public class SignUpActivity extends AppCompatActivity implements SignupView {
     /** Variable for UI element */
     private EditText email;
     private EditText username;
@@ -90,7 +90,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
         link_login = findViewById(R.id.link_login);
         firstName = findViewById(R.id.first_name);
         lastName = findViewById(R.id.last_name);
-        mProgress = new ProgressDialog(SignupActivity.this);
+        mProgress = new ProgressDialog(SignUpActivity.this);
     }
 
     /**
@@ -165,7 +165,7 @@ public class SignupActivity extends AppCompatActivity implements SignupView {
      */
     @Override
     public void showToastLong(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**

@@ -39,8 +39,8 @@ public class HomeScreenPresenter {
         // NOTE locationCallback just has to be instantiated in constructor! Moving it to method call
         // makes it unable to be unregistered.
         locationCallback = ((LocationCallbackProvider) homeScreenView).getLocationCallback(location -> {
-            System.out.println(location.getLatitude());
-            System.out.println(location.getLongitude());
+//            System.out.println(location.getLatitude());
+//            System.out.println(location.getLongitude());
 
             googleMap.clear();
 
@@ -80,7 +80,7 @@ public class HomeScreenPresenter {
 
     public void locationUpdates() {
         try {
-            locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_HIGH_ACCURACY, locationCallback);
+            locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, locationCallback);
         } catch (SecurityException e) {
             homeScreenView.requestLocationPermissions();
         }

@@ -48,82 +48,24 @@ public class GroupLocationsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
-
-        TextInputLayout meetingPointName = rootView.findViewById(R.id.meeting_point_name);
-        TextInputLayout meetingPointLat = rootView.findViewById(R.id.meeting_point_lat);
-        TextInputLayout meetingPointLon = rootView.findViewById(R.id.meeting_point_lon);
-
-
         Bundle args = getArguments();
-
-        System.out.println("groupLocationsFragment");
         if (args != null) {
             Group group = (Group) args.getSerializable("group");
             rootView.findViewById(R.id.start_tracking_in_AR).setOnClickListener(view -> {
-                Intent intent = new Intent(getActivity(), ARActivity.class);
-                intent.putExtra("groupID", group.groupID);
-                startActivity(intent);
-            });
-
-            Button setMeetingPointBtn = rootView.findViewById(R.id.setMeetingPointButton);
-            setMeetingPointBtn.setOnClickListener(view -> {
-                String name = meetingPointName.getEditText().getText().toString();
-                String lat = meetingPointLat.getEditText().getText().toString();
-                String lon = meetingPointLon.getEditText().getText().toString();
-
-                Double latDouble = Double.parseDouble(lat);
-                Double lonDouble = Double.parseDouble(lon);
-
-                System.out.println(name);
-                System.out.println(lat);
-                System.out.println(lon);
-
-                if (name != null && latDouble != null && lonDouble != null) {
-                    Retrofit retrofit = new Retrofit.Builder()
-                            .baseUrl("https://radar.fadhilanshar.com/api/")
-                            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .build();
-
-                    GroupsService groupsService = new GroupsService(getActivity(), retrofit.create(GroupsApi.class));
-                    groupsService.updateMeetingPoint(group.groupID, new MeetingPoint(latDouble, lonDouble, name, "")).subscribe(new Observer<Status>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-
-                        }
-
-                        @Override
-                        public void onNext(Status status) {
-                            Toast.makeText(getActivity(), "Updated meeting point", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            System.out.println(e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
+                if (group != null) {
+                    Intent intent = new Intent(getActivity(), ARActivity.class);
+                    intent.putExtra("groupID", group.groupID);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT);
                 }
+                }
+
             });
-
-
-
-
-
-        } else {
-
-        }
 
 
         // notify main activity that we have done initiating
         listener.onSetUp(this);
-
-
-
         return rootView;
     }
 

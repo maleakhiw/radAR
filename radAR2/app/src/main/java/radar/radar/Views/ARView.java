@@ -1,5 +1,6 @@
 package radar.radar.Views;
 
+import radar.radar.Models.Android.ARAnnotation;
 import radar.radar.Models.Android.CompassDirection;
 import radar.radar.Models.Domain.UserLocation;
 
@@ -16,7 +17,7 @@ public interface ARView {
 
     void removeAnnotation(int userID);
 
-    void getAnnotation(int userID);
+    ARAnnotation getAnnotation(int userID);
 
     void inflateARAnnotation(UserLocation userLocation);
 
@@ -30,6 +31,10 @@ public interface ARView {
     void updateDestinationName(String name);
 
     void updateRelativeDestinationPosition(CompassDirection compassDirection);
+
+    int getAnnotationHeight(int userID);
+
+    int getAnnotationWidth(int userID);
 
     void updateHUDHeading(CompassDirection direction);
 }

@@ -43,11 +43,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // make a new AuthApi using our current Retrofit *instance*
         AuthApi authApi = retrofit.create(AuthApi.class);
@@ -125,7 +121,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
      */
     @Override
     public void showToastLong(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -143,7 +139,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
      */
     @Override
     public void startSignUpActivity() {
-        Intent intent = new Intent(this, SignupActivity.class);
+        Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
     }
 

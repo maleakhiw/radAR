@@ -1,10 +1,12 @@
 package radar.radar.Fragments;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +20,15 @@ import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Presenters.PendingRequestsPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.PendingRequestsView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static radar.radar.RetrofitFactory.*;
 
 /**
  * Fragment that are used to display pending friend request that a user have
@@ -44,11 +49,7 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
 
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = getRetrofit().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);
@@ -75,9 +76,16 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
      */
     @Override
     public void bindAdapterToRecyclerView(FriendRequestsResponse friendRequestsResponse) {
-        FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
-        recyclerView2.setAdapter(adapter);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter.notifyDataSetChanged();
+        Activity activity = getActivity();
+
+        if (activity != null) {
+            FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
+            recyclerView2.setAdapter(adapter);
+            recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+            adapter.notifyDataSetChanged();
+        } else {
+            Log.w("PendingRequests", "Activity is null");
+        }
+
     }
 }

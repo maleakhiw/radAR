@@ -74,7 +74,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
      */
     @Override
     public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -92,9 +92,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
      */
     @Override
     public void launchSearchFriendsActivity() {
-        Intent intent = new Intent(this, TabbedSearchActivity.class);
+        Intent intent = new Intent(this, FriendRequestActivity.class);
         startActivity(intent);
-        finish();
     }
 
     /**

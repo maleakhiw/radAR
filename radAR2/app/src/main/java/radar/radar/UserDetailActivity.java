@@ -24,11 +24,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class UserDetailActivity extends AppCompatActivity implements UserDetailView {
     /** UI variable */
-    private TextView fullname;
+    private TextView fullName;
     private TextView username;
     private TextView userDetailsProfile;
     private TextView userDetailsEmail;
-    private TextView userDetailsPhoneNumber;
     private FloatingActionButton messageFab;
     private ImageView add;
     private User user;
@@ -50,11 +49,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup Retrofit Instances
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // Setup user api that will be used to generate a service so that we can add friends
         UsersApi usersApi = retrofit.create(UsersApi.class);
@@ -62,12 +57,9 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
 
         // Get the information for user to display
         user = (User) getIntent().getSerializableExtra("user");
-        fullname.setText(user.firstName + " " + user.lastName);
+        fullName.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
-        //TODO: after the server also return email address, we will set this with code below
-//        userDetailsEmail.setText(user.email);
-        userDetailsEmail.setText("This user doesn't provide email address.");
-        userDetailsPhoneNumber.setText("This user doesn't provide phone number.");
+        userDetailsEmail.setText(user.email);
         // This is if user doesn't set any profile description
         if (user.profileDesc != null) {
             userDetailsProfile.setText(user.profileDesc);
@@ -114,7 +106,7 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
      */
     @Override
     public void showToastLong(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -122,14 +114,13 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
      */
     public void setupUI() {
         messageFab = findViewById(R.id.fab_message);
-        fullname = findViewById(R.id.fullname);
+        fullName = findViewById(R.id.fullname);
         username = findViewById(R.id.username);
         userDetailsProfile = findViewById(R.id.user_details_profile);
         userDetailsEmail = findViewById(R.id.user_details_email);
-        userDetailsPhoneNumber = findViewById(R.id.user_details_phone_number);
         add = findViewById(R.id.userAddFriend);
 
-        setTitle("User Information");
+        setTitle("Details");
     }
 
 }

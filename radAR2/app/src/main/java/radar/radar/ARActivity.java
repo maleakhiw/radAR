@@ -172,11 +172,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         // setup services
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
@@ -212,7 +208,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
 
     @Override
     public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_LONG);
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT);
     }
 
     /**
@@ -283,8 +279,9 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
     }
 
     @Override
-    public void getAnnotation(int userID) {
+    public ARAnnotation getAnnotation(int userID) {
         arAnnotations.get(userID);
+        return null;
     }
 
 
@@ -501,7 +498,24 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
     }
 
     @Override
+    public int getAnnotationHeight(int userID) {
+        ARAnnotation annotation = arAnnotations.get(userID);
+        if (annotation != null) {
+            return annotation.getLayout().getMeasuredHeight();
+        } else return -1;
+    }
+
+    @Override
+    public int getAnnotationWidth(int userID) {
+        ARAnnotation annotation = arAnnotations.get(userID);
+        if (annotation != null) {
+            return annotation.getLayout().getMeasuredWidth();
+        } else return -1;
+    }
+
+    @Override
     public void updateHUDHeading(CompassDirection direction) {
+        // TODO move to LocationTransformations
         switch (direction) {
             case NORTH:
                 heading.setText("N");

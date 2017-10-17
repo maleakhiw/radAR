@@ -4,6 +4,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
@@ -28,7 +29,7 @@ public class ChatListPresenter {
     /**
      * Get chat ids that are related to a particular user
      */
-    public void getChatIDs() {
+    public void getChats() {
         // Getting the chat id that are related to a particular user
         chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
             @Override
@@ -77,6 +78,7 @@ public class ChatListPresenter {
                     // If the response successful display on the recycler view
                     if (getChatInfoResponse.success) {
                         chatListView.processDisplayChatList(getChatInfoResponse);
+                        chatListView.stopRefreshIndicator();
                     }
                     else {
                         chatListView.showToastMessage("Failed to display chat information.");
@@ -86,6 +88,7 @@ public class ChatListPresenter {
 
                 @Override
                 public void onError(Throwable e) {
+                    System.out.println(e);
                     chatListView.showToastMessage("Internal Error. Failed to display chat list.");
 
                 }
@@ -97,4 +100,32 @@ public class ChatListPresenter {
         }
     }
 
+    public void deleteGroup(int groupID) {
+        chatService.deleteGroup(groupID).subscribe(new Observer<Status>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Status status) {
+                if (status.success) {
+                    chatListView.showToastMessage("Group deleted");
+                    chatListView.removeGroup(groupID);
+                }
+                getChats();
+//                displayChatList();  // update chat list - group has been deleted
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 }

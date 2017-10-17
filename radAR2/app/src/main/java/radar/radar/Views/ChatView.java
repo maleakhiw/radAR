@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import radar.radar.Adapters.MessageListAdapter;
 import radar.radar.Models.Domain.Group;
-import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.MessagesResponse;
 

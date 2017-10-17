@@ -8,9 +8,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
+    <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -21,7 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".SignupActivity"
+            android:name=".SignUpActivity"
             android:label="Sign up" />
         <activity
             android:name=".HomeScreenActivity"
@@ -33,14 +31,13 @@
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".UserDetailActivity" />
-
-        <activity android:name=".LaunchActivity">
+        <activity
+            android:name=".LaunchActivity"
             android:theme="@style/Theme.AppCompat.Translucent">
 
             <!-- ORIGINAL LAUNCHER -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -52,9 +49,8 @@
         <activity android:name=".TabbedSearchActivity">
         </activity>
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key" />
+        <activity android:name=".FriendRequestActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
             android:name=".SearchLocationActivity"
@@ -64,7 +60,8 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name=".ChatActivity" />
-        <activity android:name=".GroupsListActivity" />
+        <activity android:name=".GroupsListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -77,6 +74,10 @@
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>
