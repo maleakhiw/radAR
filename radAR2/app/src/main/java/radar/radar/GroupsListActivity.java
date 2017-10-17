@@ -69,8 +69,13 @@ public class GroupsListActivity extends AppCompatActivity
             }
         });
 
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+        GroupsApi groupsApi = retrofit.create(GroupsApi.class);
+        GroupsService groupsService = new GroupsService(this, groupsApi);
+        presenter = new GroupsListPresenter(groupsService, this);
+
         // setup recyclerView
-        rvAdapter = new GroupsAdapter(this, new ArrayList<>());
+        rvAdapter = new GroupsAdapter(this, new ArrayList<>(), presenter);
         recyclerView.setAdapter(rvAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -78,12 +83,6 @@ public class GroupsListActivity extends AppCompatActivity
                 DividerItemDecoration.VERTICAL));
 
 
-        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
-
-        GroupsApi groupsApi = retrofit.create(GroupsApi.class);
-        GroupsService groupsService = new GroupsService(this, groupsApi);
-
-        presenter = new GroupsListPresenter(groupsService, this);
         if (first) {
             presenter.loadData();
             first = false;
@@ -132,5 +131,10 @@ public class GroupsListActivity extends AppCompatActivity
     public void updateRecyclerViewDataSet(ArrayList<Group> groups) {
         rvAdapter.setGroupsList(groups);
         rvAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showToast(String s) {
+
     }
 }

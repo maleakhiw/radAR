@@ -10,6 +10,7 @@ import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.Responses.Status;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
@@ -31,4 +32,7 @@ public interface GroupsApi {
 
     @GET("accounts/{userID}/groups")
     public Observable<GetChatsResponse> getGroupIDs(@Path(value="userID", encoded=true) int userID, @Header("token") String token);
+
+    @DELETE("accounts/{userID}/groups/{groupID}")
+    Observable<Status> deleteGroup(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
 }

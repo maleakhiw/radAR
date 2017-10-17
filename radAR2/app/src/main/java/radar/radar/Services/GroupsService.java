@@ -62,4 +62,10 @@ public class GroupsService {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Observable<Status> deleteGroup(int groupID) {
+        return groupsApi.deleteGroup(userID, token, groupID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }

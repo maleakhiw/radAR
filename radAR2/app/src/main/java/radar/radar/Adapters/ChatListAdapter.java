@@ -178,8 +178,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 //            menu.setHeaderTitle("Select Action");
-            MenuItem delete = menu.add(Menu.NONE,1,1,"Delete chat");
-
+            MenuItem delete = menu.add(Menu.NONE,1,1,"Delete chat");    // TODO move to strings
             delete.setOnMenuItemClickListener(this);
         }
 
