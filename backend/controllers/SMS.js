@@ -231,7 +231,7 @@ module.exports = class SMS {
               if (group1.name < group2.name) {
                 winston.debug("group1.name < group2.name");
                 return -1;
-              } else if (group1.name.equals(group2.name)){
+              } else if (group1.name === group2.name){
                 winston.debug("group1.name = group2.name");
                 return 0;
               } else {
