@@ -10,6 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -24,6 +27,8 @@ import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
 import retrofit2.Retrofit;
 
@@ -89,6 +94,41 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
         if (user.userID == AuthService.getUserID(context)) {
             holder.tvDelete.setVisibility(View.GONE);
         }
+
+        if (user.profilePicture != null) {
+            if (!holder.profPicLoaded) {
+                // TODO inject service using method from Activity
+//            System.out.println(position);
+//            System.out.println(group.name);
+//            System.out.println(group.profilePicture);
+
+                holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(File file) {
+                        System.out.println("Update profile picture for: " + user.userID);
+                        Picasso.with(holder.context).load(file).into(holder.profilePic);
+                        holder.profPicLoaded = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
+        } else {
+            holder.profilePic.setImageResource(R.mipmap.ic_launcher_round);
+        }
     }
 
     @Override
@@ -100,21 +140,29 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivProfilePic;
+        ImageView profilePic;
         TextView tvName;
         TextView tvDelete;
         TextView tvOnlineStatus;
 
+        boolean profPicLoaded = false;
+        Context context;
+        ResourcesService resourcesService;
+
         public ViewHolder(View itemView) {
             super(itemView);
-            ivProfilePic = itemView.findViewById(R.id.row_friends_profile_picture);
+            profilePic = itemView.findViewById(R.id.row_friends_profile_picture);
             tvName = itemView.findViewById(R.id.row_friends_name);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
+
+            context = itemView.getContext();
+
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));
 
             tvDelete = itemView.findViewById(R.id.delete_TV);
 
             // TODO inject service in constructor
-            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
             GroupsApi groupsApi = retrofit.create(GroupsApi.class);
             GroupsService groupsService = new GroupsService(context, groupsApi);
 
