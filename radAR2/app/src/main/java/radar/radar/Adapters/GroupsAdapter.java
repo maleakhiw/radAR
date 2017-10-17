@@ -97,6 +97,8 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
                     context.startActivity(intent);
                 }
             });
+
+            itemView.setOnCreateContextMenuListener(this);  // handle long click for context menu
         }
 
         @Override
