@@ -24,6 +24,8 @@ import com.google.maps.model.TravelMode;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -87,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private String getEndLocationTitle(DirectionsResult results) {
-        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+        return  "Time: "+ results.routes[0].legs[0].duration.humanReadable + " Distance: " + results.routes[0].legs[0].distance.humanReadable;
     }
 
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
@@ -109,6 +111,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng from;
     LatLng to;
 
+    HashMap<Integer, Marker> markers = new HashMap<>();
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -118,17 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
            drawRoute();
         }
 
-        locationService.getGroupLocationInfo(group.groupID, 3000).subscribe(
-                groupLocationsInfo -> {
-                    googleMap.clear();  // clear all previous pins
-                    drawRoute();
-                    for (UserLocation location: groupLocationsInfo.locations) {
-                        Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
-                        marker.showInfoWindow();
-                    }
-                }, System.out::println
-        );
-
+        loadGroupLocations();
     }
 
     boolean first = true;
@@ -172,10 +166,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
             if (first) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(from,15));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(from,18));
                 first = false;
             }
 
         }, System.out::println);
+    }
+
+    private void loadGroupLocations() {
+        locationService.getGroupLocationInfo(group.groupID, 3000).subscribe(
+                groupLocationsInfo -> {
+//                    googleMap.clear();  // clear all previous pins
+                    drawRoute();
+                    for (UserLocation location: groupLocationsInfo.locations) {
+                        Marker existingMarker = markers.get(location.getUserID());
+                        if (existingMarker != null) {
+                            existingMarker.setPosition(new LatLng(location.lat, location.lon));
+                        } else {
+                            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
+                            marker.showInfoWindow();
+
+                            markers.put(location.getUserID(), marker);  // add to list
+                        }
+
+                    }
+                }, System.out::println
+        );
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadGroupLocations();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        locationService.stopPollingGroupLocation();
     }
 }

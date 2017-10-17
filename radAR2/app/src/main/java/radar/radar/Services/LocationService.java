@@ -153,6 +153,8 @@ public class LocationService {
 
     }
 
+
+    boolean receiving = true;
     /**
      * Returns location info for a group.
      * @param groupID group for which location info is requested
@@ -160,10 +162,14 @@ public class LocationService {
      * @return location info
      */
     public Observable<GroupLocationsInfo> getGroupLocationInfo(int groupID, int interval) {
-        return Observable.interval(interval, TimeUnit.MILLISECONDS).switchMap(tick ->
+        return Observable.interval(interval, TimeUnit.MILLISECONDS).takeWhile(aLong -> receiving).switchMap(tick ->
                 locationApi.getGroupLocations(userID, groupID, token)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread()));
+    }
+
+    public void stopPollingGroupLocation() {
+        receiving = false;
     }
 
 
