@@ -127,7 +127,7 @@ public class LocationService {
      * @return response from the API server
      */
 
-    public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading) {
+    public Observable<UpdateLocationResponse> updateLocation(double lat, double lon, double accuracy, double heading) {
         Observable<UpdateLocationResponse> observable = locationApi.updateLocation(userID, token,
                                                                 new UpdateLocationRequest(lat, lon, accuracy, heading))
                                                                 .subscribeOn(Schedulers.io())

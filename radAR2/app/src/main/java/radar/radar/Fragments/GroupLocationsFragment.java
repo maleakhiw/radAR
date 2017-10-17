@@ -88,8 +88,11 @@ public class GroupLocationsFragment extends Fragment {
     LocationService locationService;
     FusedLocationProviderClient fusedLocationClient;
 
-
     boolean isTracking = false;
+
+    GroupMemberLocationsAdapter adapter;
+
+    Group group;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -106,32 +109,19 @@ public class GroupLocationsFragment extends Fragment {
 
         Bundle args = getArguments();
         if (args != null) {
-            Group group = (Group) args.getSerializable("group");
+            group = (Group) args.getSerializable("group");
 
             Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
             LocationApi locationApi = retrofit.create(LocationApi.class);
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
-            LocationService locationService = new LocationService(locationApi, getActivity(), fusedLocationClient);
+            locationService = new LocationService(locationApi, getActivity(), fusedLocationClient);
 
-            GroupMemberLocationsAdapter adapter = new GroupMemberLocationsAdapter(rootView.getContext(), group.usersDetails, new ArrayList<>(), 0, 0);
+            adapter = new GroupMemberLocationsAdapter(rootView.getContext(), group.usersDetails, new ArrayList<>(), 0, 0);
 
             groupLocations = rootView.findViewById(R.id.locationsRV);
             groupLocations.setAdapter(adapter);
             groupLocations.setLayoutManager(new LinearLayoutManager(rootView.getContext()));
-
-
-            // TODO use the safer one which can be unsubscribed from
-            Observable<Location> locationObservable = locationService.getLocationUpdates(3000, 3000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            Observable<GroupLocationsInfo> groupLocationsInfoObservable = locationService.getGroupLocationInfo(group.groupID, 3000);
-            Observable.combineLatest(locationObservable, groupLocationsInfoObservable, (location, groupLocation) -> {
-                adapter.updateData(groupLocation.userDetails, groupLocation.locations, location.getLatitude(), location.getLongitude());
-                return 1;
-            }).subscribe(result -> {}, error -> {
-                System.out.println("Grant permissions!");
-                // TODO grant permissions
-            });
-
 
 
             FloatingActionButton fab = rootView.findViewById(R.id.fab);
@@ -173,6 +163,18 @@ public class GroupLocationsFragment extends Fragment {
         trackingBlurb.setText(getString(R.string.tracking));
         offOn.setText(getString(R.string.on_caps));
         startTracking.setText(getString(R.string.stop_tracking));
+
+        // TODO use the safer one which can be unsubscribed from
+        Observable<Location> locationObservable = locationService.getLocationUpdates(3000, 3000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        Observable<GroupLocationsInfo> groupLocationsInfoObservable = locationService.getGroupLocationInfo(group.groupID, 3000);
+        Observable.combineLatest(locationObservable, groupLocationsInfoObservable, (location, groupLocation) -> {
+            adapter.updateData(groupLocation.userDetails, groupLocation.locations, location.getLatitude(), location.getLongitude());
+            locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
+            return 1;
+        }).takeUntil(aLong -> isTracking).subscribe(result -> {}, error -> {
+            System.out.println("Grant permissions!");
+            // TODO grant permissions
+        });
     }
 
     public void setStopTracking() {
@@ -181,6 +183,7 @@ public class GroupLocationsFragment extends Fragment {
         trackingBlurb.setText(getString(R.string.not_tracking));
         offOn.setText(getString(R.string.off_caps));
         startTracking.setText(getString(R.string.start_tracking));
+
     }
 
     public void setListener(GroupDetailsLifecycleListener listener) {

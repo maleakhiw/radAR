@@ -62,6 +62,11 @@ public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMembe
         }
     }
 
+    public void invalidateLocations() {
+        userLocationHashMap = new HashMap<>();
+        notifyDataSetChanged();
+    }
+
     public void updateData(HashMap<Integer, User> friends, ArrayList<UserLocation> usersLocations, double currentLat, double currentLon) {
         this.friends = friends;
         this.usersLocations = usersLocations;
@@ -123,6 +128,8 @@ public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMembe
                     holder.distance.setText(((Integer) (int) distance).toString() + " m");
                 }
 
+            } else {
+                holder.distance.setText("");
             }
         }
 
