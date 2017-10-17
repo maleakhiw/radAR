@@ -383,8 +383,8 @@ module.exports = class GroupSystem extends SMS {
     })
 
     .then(() => {
-      console.log(locations);
-      console.log(userDetails);
+      winston.debug(locations);
+      winston.debug(userDetails);
       res.json({
         success: true,
         errors: [],

@@ -26,6 +26,8 @@ public class ChatListPresenter {
         this.chatService = chatService;
     }
 
+    Disposable getChatListDisposable;
+
     /**
      * Get chat ids that are related to a particular user
      */
@@ -34,7 +36,7 @@ public class ChatListPresenter {
         chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
-
+                getChatListDisposable = d;
             }
 
             @Override
@@ -127,5 +129,11 @@ public class ChatListPresenter {
 
             }
         });
+    }
+
+    public void onStop() {
+        if (getChatListDisposable != null) {
+            getChatListDisposable.dispose();
+        }
     }
 }

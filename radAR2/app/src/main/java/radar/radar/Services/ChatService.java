@@ -3,11 +3,14 @@ package radar.radar.Services;
 import android.content.Context;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Requests.NewChatRequest;
@@ -109,6 +112,7 @@ public class ChatService {
                         .observeOn(AndroidSchedulers.mainThread());
     }
 
+    private boolean receiving = false;
     /**
      * Polls the server for new messages
      * @param chatID chat to get messages for
@@ -116,37 +120,20 @@ public class ChatService {
      * @return Observable<MessagesResponse>
      */
     public Observable<MessagesResponse> getMessages(int chatID, int pollingPeriod) {
-        return Observable.create(emitter -> {
-            Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
-            .subscribe(tick -> {
-                chatApi
-                .getMessages(userID, token, chatID)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<MessagesResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(MessagesResponse messagesResponse) {
-                        emitter.onNext(messagesResponse);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        emitter.onError(e);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-            });
-        });
+        receiving = true;
+        return Observable.interval(pollingPeriod, TimeUnit.MILLISECONDS)
+                .takeWhile(aLong -> receiving)
+                .switchMap(tick -> chatApi
+                                .getMessages(userID, token, chatID)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread()));
     }
+
+    public void stopPollingMessages() {
+        receiving = false;
+    }
+
+
 
     /**
      * Sending message to particular chat id

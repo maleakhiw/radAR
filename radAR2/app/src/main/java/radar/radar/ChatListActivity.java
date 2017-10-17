@@ -236,6 +236,14 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         }
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (chatListPresenter != null) {
+            chatListPresenter.onStop();
+        }
+    }
+
 //    Parcelable listState;
 //    @Override
 //    protected void onRestoreInstanceState(Bundle state) {

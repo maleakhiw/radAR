@@ -2,6 +2,7 @@ package radar.radar.Presenters;
 
 import java.util.ArrayList;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Domain.Group;
@@ -48,12 +49,16 @@ public class ChatPresenter {
         }
     }
 
+
+    Observable<MessagesResponse> responseObservable;
+
     /**
      * Used to load messages
      * @param chatID id of the chat to load the messages
      */
     public void loadMessages(int chatID) {
-        chatService.getMessages(chatID, 2000).subscribe(new Observer<MessagesResponse>() {
+        responseObservable = chatService.getMessages(chatID, 2000);
+        responseObservable.subscribe(new Observer<MessagesResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
                 loadMessagesDisposable = d;
@@ -62,6 +67,7 @@ public class ChatPresenter {
             @Override
             public void onNext(MessagesResponse messagesResponse) {
                 // If successful display on recycler view
+                System.out.println("got message response");
                 if (messagesResponse.success) {
                     chatView.processRecyclerView(messagesResponse);
                 }
@@ -101,7 +107,11 @@ public class ChatPresenter {
 
     public void onStop() {
         if (loadMessagesDisposable != null) {
+            System.out.println("disposing load messages disposable");
             loadMessagesDisposable.dispose();
+            System.out.println(loadMessagesDisposable.isDisposed());
+//            responseObservable = null;
+            chatService.stopPollingMessages();
         }
     }
 
