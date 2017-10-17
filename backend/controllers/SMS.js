@@ -227,7 +227,7 @@ module.exports = class SMS {
             winston.debug(groupsLastMessages[group1ID].time, groupsLastMessages[group2ID].time, groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time)
             return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
           } else {
-            if (isNan(group1.createdOn - group2.createdOn)) {
+            if (isNaN(group1.createdOn - group2.createdOn)) {
               if (group1.name < group2.name) {
                 winston.debug("group1.name < group2.name");
                 return -1;
