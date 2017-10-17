@@ -19,6 +19,15 @@ let svs;
 // data models
 let Group, Message, User;
 
+function getExistingChat(req, res) {
+  /*
+  GET api/users/userID/existingChat
+  QUERY userID int
+  */
+
+  // TODO to prevent creation of multiple chats for the same user
+}
+
 /**
  * @param callback callback function. If defined, callback should handle response
  */
@@ -224,6 +233,8 @@ module.exports = class SMS {
         groupDetails.sort((group1, group2) => { // custom sort function
           let group1ID = group1.groupID;
           let group2ID = group2.groupID;
+
+          // TODO group last updated => is active or inactive
 
           if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
             let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;

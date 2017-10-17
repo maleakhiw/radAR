@@ -28,6 +28,7 @@ import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
+import radar.radar.Services.TimeFormatService;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
@@ -87,14 +88,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 holder.lastMessageFrom.setText(group.usersDetails.get(group.lastMessage.from).firstName + ": ");
             }
             holder.lastMessage.setText(group.lastMessage.text);
+
+            // set last message time
+            holder.timestamp.setText(TimeFormatService.parseTimeString(group.lastMessage.time, context));
         } else {
             holder.lastMessage.setText("No messages yet.");
         }
 
         if (group.isTrackingGroup) {
             holder.isTrackingGroup.setVisibility(View.VISIBLE);
-        } else {
-            holder.isChat.setVisibility(View.VISIBLE);
         }
 
         if (group.profilePicture != null) {
@@ -141,8 +143,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         TextView lastMessage;
         TextView lastMessageFrom;
         ImageView profilePic;
-        TextView isTrackingGroup;
-        TextView isChat;
+        ImageView isTrackingGroup;
+//        TextView isChat;
+        TextView timestamp;
 
         ResourcesService resourcesService;
 
@@ -169,7 +172,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             lastMessage = itemView.findViewById(R.id.row_last_message);
             profilePic = itemView.findViewById(R.id.row_profile_picture);
             isTrackingGroup = itemView.findViewById(R.id.is_tracking_group);
-            isChat = itemView.findViewById(R.id.is_chat);
+            timestamp = itemView.findViewById(R.id.timestamp);
+//            isChat = itemView.findViewById(R.id.is_chat);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {

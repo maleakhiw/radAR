@@ -104,6 +104,7 @@ module.exports = class PositioningSystem {
     // POST {serverURL}/api/accounts/:userID/location
     /* Request body:
        {
+         groupID: Number, // optional
          lat: Number,  // latitude
          lon: Number,  // longitude
          accuracy: Number, // in metres
@@ -112,6 +113,7 @@ module.exports = class PositioningSystem {
     */
 
     let userID   = req.params.userID;
+    let groupID  = req.body.groupID;
     let lat      = req.body.lat;
     let lon      = req.body.lon;
     let accuracy = req.body.accuracy;
@@ -122,6 +124,10 @@ module.exports = class PositioningSystem {
       sendError(res, errorKeys);
       return;
     }
+
+    // update group last updated, to be used for sorting
+    common.updateGroupLastUpdated(groupID, userID);
+
     LocationModel.findOne({userID: userID}).exec()
     .then((location) => {
       if (location) {

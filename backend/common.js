@@ -6,6 +6,17 @@ const Resource = require('./models/resource');  // TODO as above
 
 module.exports.getNumLength = number => (Math.abs(number) + "").length;
 
+module.exports.updateGroupLastUpdated = (groupID, userID) => {
+  // runs asynchronously - less "important" to validate if successfully completed
+  Group.findOne({groupID: groupID}).exec()
+  .then(group => {
+    if (group.members.includes(userID)) {
+      group.lastUpdated = Date.now();
+      group.save();
+    }
+  })
+}
+
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
     reject('missingUserID');
