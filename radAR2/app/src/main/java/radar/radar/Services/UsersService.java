@@ -2,6 +2,8 @@ package radar.radar.Services;
 
 import android.content.Context;
 
+import java.io.File;
+
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -11,6 +13,7 @@ import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
+import radar.radar.Models.SearchUserResponse;
 
 /**
  * Service for users that served as layer of abstraction for retrofit. The methods here
@@ -40,6 +43,28 @@ public class UsersService {
     public static enum REQUEST_ACTION {
         ACCEPT, DECLINE
     };
+
+    public Observable<SearchUserResponse> getProfile(int queryUserID) {
+        return usersApi.getUserProfile(queryUserID, userID, token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Gets the profile picture for a user
+     * @param queryUserID user to get the profile picture for
+     * @param resourcesService Service, required to access profile picture
+     * @return
+     */
+    public Observable<File> getProfilePicture(int queryUserID, ResourcesService resourcesService) {
+        return getProfile(queryUserID).switchMap(searchUserResponse -> {
+            if (searchUserResponse.details != null && searchUserResponse.details.profilePicture != null) {
+                return resourcesService.getResource(searchUserResponse.details.profilePicture);
+            } else {
+                throw new Exception("User has no profile picture"); // to go to onError
+            }
+        });
+    }
 
     /**
      * Returns a list of friends for the logged-in user.

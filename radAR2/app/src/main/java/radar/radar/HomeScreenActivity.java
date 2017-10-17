@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
@@ -68,8 +69,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+        ImageView image = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
 
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
 
         Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 

@@ -12,10 +12,8 @@ import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
 import okio.BufferedSink;
 import okio.Okio;
-import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UploadFileResponse;
 import retrofit2.Response;
-import retrofit2.http.Multipart;
 
 /**
  * Created by maleakhiw on 10/10/2017
@@ -27,7 +25,7 @@ public class ResourcesService {
     int userID;
     String token;
 
-    public ResourcesService(ResourcesApi resourcesApi, Context context) {
+    public ResourcesService(Context context, ResourcesApi resourcesApi) {
         this.context = context;
         this.resourcesApi = resourcesApi;
         userID = AuthService.getUserID(context);
@@ -47,6 +45,9 @@ public class ResourcesService {
                 String header = response.headers().get("Content-Type");
                 System.out.println(header);
                 String filename = response.headers().get("filename");
+                if (filename == null) {
+                    filename = "temp";
+                }
 //                String filename = header.replace("attachment; filename=", "");
                 System.out.println(filename);
 

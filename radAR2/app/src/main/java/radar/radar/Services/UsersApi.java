@@ -11,6 +11,7 @@ import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.OnlineStatusesResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
+import radar.radar.Models.SearchUserResponse;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -37,6 +38,9 @@ public interface UsersApi {
     // Respond to friend request
     @POST("accounts/{userID}/friendRequests/{requestID}")
     Observable<Status> respondToFriendRequest(@Path(value = "userID", encoded = true) int userID, @Header("token") String token, @Path(value = "requestID", encoded = true) int requestID, @Body RespondToRequestRequest body);
+
+    @GET("users/{queryUserID}")
+    Observable<SearchUserResponse> getUserProfile(@Path(value = "queryUserID", encoded = true) int queryUserID, @Query("userID") int userID, @Header("token") String token);
 
     // Search another user
     @GET("users")

@@ -8,9 +8,23 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
+
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import radar.radar.Models.SearchUserResponse;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
+import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
+import retrofit2.Retrofit;
 
 
 public class NavigationActivityHelper {    // not actually a pure "Presenter"
@@ -22,6 +36,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
     // TODO move to constructor
     TextView name;
     TextView email;
+    ImageView profilePicture;
 
     public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar, TextView name, TextView email, AppCompatActivity activity) {
         this.navigationView = navigationView;
@@ -32,6 +47,19 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         this.email = email;
 
         initialiseToolbarAndDrawer();
+    }
+
+    public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar,TextView name, TextView email, ImageView profilePicture,  AppCompatActivity activity) {
+        this.navigationView = navigationView;
+        this.drawerLayout = drawerLayout;
+        this.toolbar = toolbar;
+        this.activity = activity;
+        this.name = name;
+        this.email = email;
+        this.profilePicture = profilePicture;
+
+        initialiseToolbarAndDrawer();
+
     }
 
     private void finishIfNotHomeScreen(Activity activity) {
@@ -52,9 +80,50 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
+        navigationView.getHeaderView(0).setOnClickListener(view -> {
+            System.out.println("clicked");
+        });
+
         // update profile info display
         name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
         email.setText(AuthService.getEmail(activity));
+
+        if (name != null) {
+            // TODO pass this in as a dependency
+            Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+            ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
+            UsersApi usersApi = retrofit.create(UsersApi.class);
+            ResourcesService resourcesService = new ResourcesService(activity, resourcesApi);
+            UsersService usersService = new UsersService(activity, usersApi);
+
+            // get userID
+            int userID = AuthService.getUserID(activity);
+            usersService.getProfilePicture(userID, resourcesService).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(File file) {
+                    if (file != null) {
+                        Picasso.with(activity).load(file).into(profilePicture);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.w("loadProfilePicture", e);
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+
+
+        }
 
         navigationView.setNavigationItemSelectedListener(item -> {
             // Handle navigation view item clicks here.

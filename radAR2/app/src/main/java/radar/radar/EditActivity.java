@@ -6,17 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,15 +24,12 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
-import java.net.URI;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import radar.radar.Models.Android.CameraData;
-import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UploadFileResponse;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ResourcesApi;
@@ -80,7 +74,7 @@ public class EditActivity extends AppCompatActivity {
 
         // Create instance of the resource service
         ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
-        resourcesService = new ResourcesService(resourcesApi, this);
+        resourcesService = new ResourcesService(this, resourcesApi);
 
         // Setup onclick listener for picking image
         preview.setOnClickListener(new View.OnClickListener() {
