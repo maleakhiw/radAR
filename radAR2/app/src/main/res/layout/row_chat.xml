@@ -17,7 +17,7 @@
         android:layout_width="@dimen/group_img_size"
         android:layout_height="@dimen/group_img_size"
         android:contentDescription="Profile picture"
-        android:src="@drawable/img" />
+        android:src="@mipmap/ic_launcher_round" />
 
     <LinearLayout
         android:layout_width="wrap_content"
