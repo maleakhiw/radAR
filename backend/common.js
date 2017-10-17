@@ -4,6 +4,8 @@ const User = require('./models/user') // TODO refactor so User is plug and play
 const Group = require('./models/group') // TODO refactor as above
 const Resource = require('./models/resource');  // TODO as above
 
+module.exports.getNumLength = number => (Math.abs(number) + "").length;
+
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
     reject('missingUserID');

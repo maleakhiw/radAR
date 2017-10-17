@@ -226,8 +226,11 @@ module.exports = class SMS {
           let group2ID = group2.groupID;
 
           if (groupsLastMessages[group1ID] && groupsLastMessages[group2ID]) {
-            winston.debug(groupsLastMessages[group1ID].time, groupsLastMessages[group2ID].time, groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time)
-            return groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+            let timeDifference = groupsLastMessages[group1ID].time - groupsLastMessages[group2ID].time;
+            timeDifference = timeDifference / Math.pow(10, common.getNumLength(timeDifference - 1));
+            winston.debug(timeDifference);
+
+            return timeDifference;
           } else {
             if (isNaN(group1.createdOn - group2.createdOn)) {
               if (group1.name < group2.name) {
@@ -240,9 +243,6 @@ module.exports = class SMS {
                 winston.debug("group1.name > group2.name");
                 return 1;
               }
-            } else {
-              winston.debug(group1.createdOn, group2.createdOn, group1.createdOn - group2.createdOn)
-              return group1.createdOn - group2.createdOn;
             }
           }
         });
