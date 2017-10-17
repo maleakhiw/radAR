@@ -16,6 +16,8 @@ public class User implements Serializable {
     public String email;
     public HashMap<Integer, Group> commonGroups;    // may be null
 
+    public boolean isFriend;
+
     /** Constructor for User class */
     public User(int userID, String username, String firstName, String lastName, String profileDesc, String email) {
         this.userID = userID;
