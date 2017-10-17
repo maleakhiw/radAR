@@ -12,14 +12,17 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Domain.User;
+import radar.radar.Models.Domain.UserLocation;
 import radar.radar.R;
 import radar.radar.RetrofitFactory;
+import radar.radar.Services.LocationTransformations;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
@@ -29,14 +32,28 @@ import retrofit2.Retrofit;
  * Created by kenneth on 7/10/17.
  */
 
-public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.ViewHolder> {
+public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMemberLocationsAdapter.ViewHolder> {
     HashMap<Integer, User> friends;
     ArrayList<User> friendsList;
+    ArrayList<UserLocation> usersLocations;
+    HashMap<Integer, UserLocation> userLocationHashMap;
     Context context;
 
-    public GroupMembersAdapter(Context context, HashMap<Integer, User> friends) {
+    double currentLat;
+    double currentLon;
+    
+    public GroupMemberLocationsAdapter(Context context, HashMap<Integer, User> friends, ArrayList<UserLocation> usersLocations, double currentLat, double currentLon) {
         this.context = context;
         this.friends = friends;
+        this.usersLocations = usersLocations;
+        
+        this.currentLat = currentLat;
+        this.currentLon = currentLon;
+
+        userLocationHashMap = new HashMap<>();
+        for (UserLocation location: usersLocations) {
+            userLocationHashMap.put(location.getUserID(), location);
+        }
 
         friendsList = new ArrayList<>();
         for (Object entry: friends.values()) {
@@ -45,30 +62,42 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         }
     }
 
-    public void updateFriends(HashMap<Integer, User> friends) {
+    public void updateData(HashMap<Integer, User> friends, ArrayList<UserLocation> usersLocations, double currentLat, double currentLon) {
         this.friends = friends;
+        this.usersLocations = usersLocations;
+        this.currentLat = currentLat;
+        this.currentLon = currentLon;
+
+        userLocationHashMap = new HashMap<>();
+        for (UserLocation location: usersLocations) {
+            userLocationHashMap.put(location.getUserID(), location);
+        }
 
         friendsList = new ArrayList<>();
-        for (Object entry: friends.values()) {
+        for (Object entry : friends.values()) {
             User user = (User) entry;
             friendsList.add(user);
         }
+
+        notifyDataSetChanged(); // TODO move all notifyDataSetChanged for all other RVs in setter methods
     }
 
     @Override
-    public GroupMembersAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GroupMemberLocationsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // inflate custom layout
-        View titleView = inflater.inflate(R.layout.row_friends, parent, false);
+        View titleView = inflater.inflate(R.layout.row_friends_with_distance, parent, false);
 
         // return a new VH instance
-        return new GroupMembersAdapter.ViewHolder(titleView);
+        return new GroupMemberLocationsAdapter.ViewHolder(titleView);
     }
 
+    DecimalFormat df = new DecimalFormat();
+
     @Override
-    public void onBindViewHolder(GroupMembersAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(GroupMemberLocationsAdapter.ViewHolder holder, int position) {
         User user = friendsList.get(position);
 
         // load stuff
@@ -80,6 +109,25 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             holder.tvOnlineStatus.setText(user.profileDesc);
         }
 
+        // location
+        if (usersLocations != null) {
+            UserLocation location = userLocationHashMap.get(user.userID);
+            if (location != null) {
+                double distance = LocationTransformations.distance(currentLat, currentLon, location.getLat(), location.getLon(), 'K');
+
+                if (distance >= 1) {
+                    df.setMaximumFractionDigits(2);
+                    holder.distance.setText(df.format(distance) + " " + "km");   // TODO miles
+                } else {
+                    distance *= 1000;
+                    holder.distance.setText(((Integer) (int) distance).toString() + " m");
+                }
+
+            }
+        }
+
+
+        // profile picture
         // TODO refactor to one helper class
         if (user.profilePicture != null) {
             // TODO inject service using method from Activity
@@ -128,6 +176,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
         TextView tvName;
 //        TextView tvUsername;
         TextView tvOnlineStatus;
+        TextView distance;
 
         boolean profPicLoaded = false;
         Context context;
@@ -141,6 +190,7 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             tvName = itemView.findViewById(R.id.row_friends_name);
 //            tvUsername = itemView.findViewById(R.id.row_friends_username);
             tvOnlineStatus = itemView.findViewById(R.id.row_friends_online_status);
+            distance = itemView.findViewById(R.id.distance);
 
             context = itemView.getContext();
 
@@ -148,19 +198,16 @@ public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapte
             resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));
 
             // Setup on click listener on the view
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // From the displayed friend list send information
-                    User user = friendsList.get(getAdapterPosition());
+            itemView.setOnClickListener(view -> {
+                // From the displayed friend list send information
+                User user = friendsList.get(getAdapterPosition());
 
-                    System.out.println(user);
+                System.out.println(user);
 
-                    Intent intent = new Intent(context, UserDetailActivity.class);
-                    intent.putExtra("user", user);
-                    context.startActivity(intent);
+                Intent intent = new Intent(context, UserDetailActivity.class);
+                intent.putExtra("user", user);
+                context.startActivity(intent);
 
-                }
             });
         }
     }
