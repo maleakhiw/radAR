@@ -21,7 +21,7 @@ public interface SignupView {
 
     void dismissProgressBar();
 
-    void showToastLong(String message);
+    void showToastShort(String message);
 
     void startHomeScreenActivity();
 

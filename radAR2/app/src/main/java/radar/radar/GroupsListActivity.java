@@ -10,6 +10,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -51,7 +52,8 @@ public class GroupsListActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        ImageView img = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, img, this);
 
         setTitle("Groups");  // TODO replace with String resource
 

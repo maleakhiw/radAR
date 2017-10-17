@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -116,7 +117,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        ImageView img = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, img, this);
 
         // Setup recycler view
         chatRecyclerView = findViewById(R.id.chatRecyclerView);

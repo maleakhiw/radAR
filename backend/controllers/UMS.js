@@ -493,6 +493,7 @@ module.exports = class UMS {
         .then((user) => {
           // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
+          // TODO
           let response = {
             success: true,
             errors: [],
@@ -510,6 +511,7 @@ module.exports = class UMS {
         .then((user) => {
           // winston.debug(user)
           let userInfo = getPublicUserInfo(user)
+          // TODO
           let response = {
             success: true,
             errors: [],

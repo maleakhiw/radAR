@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
      * @param message the message that will be display using toast
      */
     @Override
-    public void showToastLong(String message) {
+    public void showToastShort(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 

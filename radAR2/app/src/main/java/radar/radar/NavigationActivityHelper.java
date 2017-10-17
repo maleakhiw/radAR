@@ -18,7 +18,7 @@ import java.io.File;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.Models.SearchUserResponse;
+import radar.radar.Models.Domain.User;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
@@ -38,6 +38,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
     TextView email;
     ImageView profilePicture;
 
+    @Deprecated
     public NavigationActivityHelper(NavigationView navigationView, DrawerLayout drawerLayout, Toolbar toolbar, TextView name, TextView email, AppCompatActivity activity) {
         this.navigationView = navigationView;
         this.drawerLayout = drawerLayout;
@@ -81,7 +82,17 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         toggle.syncState();
 
         navigationView.getHeaderView(0).setOnClickListener(view -> {
-            System.out.println("clicked");
+            Intent intent = new Intent(activity, UserDetailActivity.class);
+
+            User user = new User(AuthService.getUserID(activity),   // TODO just store the User object in AuthService.
+                                 AuthService.getUsername(activity),
+                                 AuthService.getFirstName(activity),
+                                 AuthService.getLastName(activity),
+                                 AuthService.getProfileDesc(activity),
+                                 AuthService.getEmail(activity));
+            intent.putExtra("user", user);
+            activity.startActivity(intent);
+            finishIfNotHomeScreen(activity);
         });
 
         // update profile info display
@@ -106,7 +117,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
 
                 @Override
                 public void onNext(File file) {
-                    if (file != null) {
+                    if (file != null && profilePicture != null) {
                         Picasso.with(activity).load(file).into(profilePicture);
                     }
                 }

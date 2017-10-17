@@ -12,6 +12,7 @@ import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class EditActivity extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
     private ImageView preview;
     private EditText name;
     private EditText email;
@@ -92,11 +93,11 @@ public class EditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Uploading the image
-                int permissionCheck = ContextCompat.checkSelfPermission(EditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
+                int permissionCheck = ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
                 if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
                     uploadFile();
                 } else {    // PERMISSION_DENIED
-                    ActivityCompat.requestPermissions(EditActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+                    ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
                 }
             }
         });
@@ -221,43 +222,49 @@ public class EditActivity extends AppCompatActivity {
     private void uploadFile() {
         progressDialog.show(); // start the progress dialog
 
-        // Used to multipart the file using okhttp3
-        File file = new File(mediaPath);
+        if (mediaPath != null) {
+            // Used to multipart the file using okhttp3
+            File file = new File(mediaPath);
 
-        // Parsing any Media type file
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+            // Parsing any Media type file
+            RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+            MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
-        // Make a request
-        resourcesService.uploadFile(fileToUpload).subscribe(new Observer<UploadFileResponse>() {
-            @Override
-            public void onSubscribe(Disposable d) {
+            // Make a request
+            resourcesService.uploadFile(fileToUpload).subscribe(new Observer<UploadFileResponse>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-            }
+                }
 
-            @Override
-            public void onNext(UploadFileResponse response) {
-                progressDialog.dismiss();
-                System.out.println(response.resourceID);
-                // After we upload File, show success message
-                Toast.makeText(EditActivity.this, "Successfully upload file", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onNext(UploadFileResponse response) {
+                    progressDialog.dismiss();
+                    System.out.println(response.resourceID);
+                    // After we upload File, show success message
+                    Toast.makeText(EditProfileActivity.this, "Successfully upload file", Toast.LENGTH_SHORT).show();
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable e) {
-                progressDialog.dismiss();
-                // Display error message
-                System.out.println(e.getMessage());
-                Toast.makeText(EditActivity.this, "Go to on error.", Toast.LENGTH_SHORT).show();
+                @Override
+                public void onError(Throwable e) {
+                    progressDialog.dismiss();
+                    // Display error message
+                    System.out.println(e.getMessage());
+                    Toast.makeText(EditProfileActivity.this, "Go to on error.", Toast.LENGTH_SHORT).show();
 
-            }
+                }
 
-            @Override
-            public void onComplete() {
+                @Override
+                public void onComplete() {
 
-            }
-        });
+                }
+            });
+        } else {
+            // TODO warn
+            Log.w("uploadFile", "file is null");
+        }
+
 
     }
 

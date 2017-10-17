@@ -14,7 +14,6 @@ public class User implements Serializable {
     public String profilePicture;
     public String profileDesc;
     public String email;
-
     public HashMap<Integer, Group> commonGroups;    // may be null
 
     /** Constructor for User class */

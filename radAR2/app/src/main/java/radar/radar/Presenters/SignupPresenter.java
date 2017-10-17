@@ -71,7 +71,7 @@ public class SignupPresenter {
                 @Override
                 public void onError(Throwable e) {
                     System.out.println(e);
-                    signupView.showToastLong("Internal Error. Sign Up failed.");
+                    signupView.showToastShort("Internal Error. Sign Up failed.");
                     signupView.dismissProgressBar();
                 }
 
@@ -84,7 +84,7 @@ public class SignupPresenter {
 
         // Tell that the form is not valid
         else {
-            signupView.showToastLong("Please enter all fields.");
+            signupView.showToastShort("Please enter all fields.");
             signupView.dismissProgressBar();
         }
     }
