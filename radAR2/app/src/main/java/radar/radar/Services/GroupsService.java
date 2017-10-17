@@ -9,9 +9,11 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.MeetingPoint;
+import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Requests.NewGroupBody;
 import radar.radar.Models.Responses.GetChatsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
+import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Models.Responses.Status;
 
 public class GroupsService {
@@ -29,8 +31,16 @@ public class GroupsService {
         System.out.println("newGroup");
         NewGroupBody newGroupBody = new NewGroupBody(name, participantUserIDs);
         return groupsApi.newGroup(userID, newGroupBody, token)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<NewChatResponse> newChat(String name, ArrayList<Integer> participantUserIDs) {
+        System.out.println("newChat");
+        NewChatRequest newChatRequest = new NewChatRequest(name, participantUserIDs);
+        return groupsApi.newChat(userID, newChatRequest, token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<GroupsResponse> getGroup(int groupID) {

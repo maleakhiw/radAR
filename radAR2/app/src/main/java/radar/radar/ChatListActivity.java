@@ -1,6 +1,8 @@
 package radar.radar;
 
+import android.content.Intent;
 import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -37,7 +39,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     private ChatListPresenter chatListPresenter;
     NavigationActivityHelper helper;
 
-    SwipeRefreshLayout swipeRefreshLayout;
+    private FloatingActionButton fab;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private final String KEY_RECYCLER_STATE = "recycler_state";
 
@@ -59,6 +62,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
+
+        fab.setOnClickListener(view -> {
+            Intent intent = new Intent(this, NewGroupActivity.class);
+            intent.putExtra("newGroup", true);
+            startActivity(intent);
+        });
 
         chatListAdapter = new ChatListAdapter(ChatListActivity.this, groups, chatListPresenter);
         chatRecyclerView.setAdapter(chatListAdapter);

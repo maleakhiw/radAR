@@ -19,6 +19,7 @@ import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Android.UserWithCheckbox;
+import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.UsersApi;
@@ -34,6 +35,8 @@ public class NewGroupActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     NewGroupListAdapter adapter;
+
+    Button button;
 
     void launchGroup(Group group) {
         Intent intent = new Intent(this, GroupDetailActivity.class);
@@ -55,10 +58,10 @@ public class NewGroupActivity extends AppCompatActivity {
         // TODO get bundle and set isNewChatActivity or isNewGroupActivity
 
         Retrofit retrofit = new Retrofit.Builder()
-                                    .baseUrl("https://radar.fadhilanshar.com/api/")
-                                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                                    .addConverterFactory(GsonConverterFactory.create())
-                                    .build();
+                .baseUrl("https://radar.fadhilanshar.com/api/")
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
         groupsService = new GroupsService(this, retrofit.create(GroupsApi.class));
         usersService = new UsersService(this, retrofit.create(UsersApi.class));
@@ -74,21 +77,21 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onNext(FriendsResponse friendsResponse) {
                 // setup recyclerView
-                ArrayList<User> users= friendsResponse.friends;
+                ArrayList<User> users = friendsResponse.friends;
                 ArrayList<UserWithCheckbox> users2 = new ArrayList<>();
 
-                for (User user: users) {
+                for (User user : users) {
                     users2.add(new UserWithCheckbox(user, false));
                 }
 
                 adapter = new NewGroupListAdapter(users2);
                 recyclerView.setAdapter(adapter);
 
-                Button button = findViewById(R.id.new_group_button);
+                button = findViewById(R.id.new_group_button);
                 button.setOnClickListener(view -> {
                     ArrayList<UserWithCheckbox> userWithCheckboxes = adapter.getUsers();
                     ArrayList<Integer> selectedUsers = new ArrayList<>();
-                    for (int i=0; i<userWithCheckboxes.size(); i++) {
+                    for (int i = 0; i < userWithCheckboxes.size(); i++) {
                         UserWithCheckbox user = userWithCheckboxes.get(i);
                         if (user.isChecked) {
                             selectedUsers.add(users.get(i).userID);
@@ -100,35 +103,19 @@ public class NewGroupActivity extends AppCompatActivity {
                     } else {
                         // disable button, don't want duplicate group
                         button.setEnabled(false);
-                        groupsService.newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers).subscribe(new Observer<GroupsResponse>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
 
-                            }
 
-                            @Override
-                            public void onNext(GroupsResponse groupsResponse) {
-                                System.out.println(groupsResponse);
+                        Intent intent = getIntent();
+                        if (intent.getExtras().containsKey("newGroup")) {
+                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        } else if (intent.getExtras().containsKey("newChat")) {
+                            newChat(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        } else {
+                            // default to new group
+                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        }
 
-                                if (groupsResponse.success) {
-                                    launchGroup(groupsResponse.group);
 
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                System.out.println(e);
-                                button.setEnabled(true);
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
                     }
 
                 });
@@ -145,8 +132,71 @@ public class NewGroupActivity extends AppCompatActivity {
 
             }
         });
+    }
 
 
+    public void newChat(String groupName, ArrayList<Integer> selectedUsers) {
+        groupsService.newGroup(groupName, selectedUsers).subscribe(new Observer<GroupsResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(GroupsResponse groupsResponse) {
+                System.out.println(groupsResponse);
+
+                if (groupsResponse.success) {
+                    launchGroup(groupsResponse.group);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+                button.setEnabled(true);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+    public void newGroup(String groupName, ArrayList<Integer> selectedUsers) {
+        groupsService.newChat(groupName, selectedUsers).subscribe(new Observer<NewChatResponse>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(NewChatResponse groupsResponse) {
+                System.out.println(groupsResponse);
+
+                if (groupsResponse.success) {
+                    launchGroup(groupsResponse.group);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Fail", Toast.LENGTH_SHORT);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+                button.setEnabled(true);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
 
     }
 }

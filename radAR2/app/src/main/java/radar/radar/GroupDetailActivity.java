@@ -45,7 +45,6 @@ public class GroupDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_detail);
 
-
         Group group = (Group) getIntent().getSerializableExtra("group");
         if (group == null) {
             finish();   // nothing to do here

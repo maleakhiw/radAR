@@ -9,7 +9,6 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.NewChatResponse;
-import radar.radar.Services.AuthService;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatView;
 
@@ -101,7 +100,7 @@ public class ChatPresenter {
         participant.add(id1);
         participant.add(id2);
 
-        NewChatRequest object = new NewChatRequest(participant, name);
+        NewChatRequest object = new NewChatRequest(name, participant);
         return (object);
     }
 
