@@ -38,6 +38,8 @@ public class GroupsListActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.groups_list_recyclerView);
     }
 
+
+    private boolean first = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,8 @@ public class GroupsListActivity extends AppCompatActivity
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
 
+        setTitle("Groups");  // TODO replace with String resource
+
         loadViews();
 
 
@@ -63,15 +67,16 @@ public class GroupsListActivity extends AppCompatActivity
                 DividerItemDecoration.VERTICAL));
 
 
-        Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("https://radar.fadhilanshar.com/api/")
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                                        .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         GroupsService groupsService = new GroupsService(this, groupsApi);
 
         presenter = new GroupsListPresenter(groupsService, this);
+        if (first) {
+            presenter.loadData();
+            first = false;
+        }
 
         FloatingActionButton fab = findViewById(R.id.new_group_fab);
         fab.setOnClickListener(view -> {
@@ -79,6 +84,16 @@ public class GroupsListActivity extends AppCompatActivity
             startActivity(intent);
         });
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!first) {
+            presenter.loadData();
+            recyclerView.getAdapter().notifyDataSetChanged();
+        }
     }
 
     @Override

@@ -1,6 +1,7 @@
 package radar.radar;
 
 import android.content.Context;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,13 +12,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.MessageListAdapter;
 import radar.radar.Models.Domain.Group;
-import radar.radar.Models.Responses.MessageResponse;
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessagesResponse;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.MessageBody;
@@ -75,11 +79,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         messageRecyclerView.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
 
         // Create instance of retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
 
         // Create instance of chat service
         ChatApi chatApi = retrofit.create(ChatApi.class);
@@ -93,6 +93,25 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
         // Check whether we should load or generate new message
         load = getIntent().getExtras().getBoolean("load");
+
+        // Call the method to display chat list
+        if (savedInstanceState != null) {
+            // save RV state
+            Parcelable listState = savedInstanceState.getParcelable("LIST_STATE");
+            ArrayList<MessageResponse> messages = (ArrayList<MessageResponse>) savedInstanceState.getSerializable("MESSAGES");
+            HashMap<Integer, User> usersDetails = (HashMap<Integer, User>) savedInstanceState.getSerializable("USERS_DETAILS");
+
+            if (listState != null) {
+                messageRecyclerView.getLayoutManager().onRestoreInstanceState(listState);
+            }
+
+            if (messages != null && usersDetails != null) {
+                messageListAdapter.setMessageList(messages, usersDetails);
+            }
+
+        } else {
+//            chatListPresenter.getChats();
+        }
 
         // Process loading message or determine message creation
         chatPresenter.determineMessageCreation();
@@ -232,7 +251,7 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
      */
     @Override
     public void showToast(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -274,6 +293,9 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // disable the button
+                send.setEnabled(false);
+
                 // If send is clicked then send the message
                 // Extract string from edit text
                 MessageBody messageBody = new MessageBody(chatText.getText().toString());
@@ -297,13 +319,17 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
 
                             // Remove the text on the edit view
                             chatText.setText("");
+
+                            send.setEnabled(true);
                         }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
-                        Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ChatActivity.this, "go to on error", Toast.LENGTH_SHORT).show();
+
+                        send.setEnabled(true);
                     }
 
                     @Override
@@ -313,6 +339,21 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
                 });
             }
         });
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        System.out.println("onSaveInstanceState");
+
+        // save RV state
+        Parcelable listState = messageRecyclerView.getLayoutManager().onSaveInstanceState();
+        ArrayList<MessageResponse> messages = messageListAdapter.getMessageList();
+        HashMap<Integer, User> usersDetails = messageListAdapter.getUsersDetails();
+        state.putParcelable("LIST_STATE", listState);
+        state.putSerializable("MESSAGES", messages);
+        state.putSerializable("USERS_DETAILS", usersDetails);
     }
 
     /**

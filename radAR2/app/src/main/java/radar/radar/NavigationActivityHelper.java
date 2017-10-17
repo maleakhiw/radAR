@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -33,6 +34,12 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         initialiseToolbarAndDrawer();
     }
 
+    private void finishIfNotHomeScreen(Activity activity) {
+        if (!(activity instanceof HomeScreenActivity)) {
+            activity.finish();
+        }
+    }
+
     /**
      * Sets up the navigation drawer. Changing the behaviour app-wide is easier when we reuse
      * the same code.
@@ -54,61 +61,44 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             int id = item.getItemId();
 
             if (id == R.id.nav_maps) {
-                //TODO: Go to maps
                 Intent intent = new Intent(activity, HomeScreenActivity.class);
                 activity.startActivity(intent);
-                activity.finish();
+//                finishIfNotHomeScreen(activity);
+                activity.finish();  // finish anyway.
             } else if (id == R.id.nav_chats) {
                 // launch chats
                 Intent intent = new Intent(activity, ChatListActivity.class);
                 activity.startActivity(intent);
-                activity.finish();
+                finishIfNotHomeScreen(activity);
+
             } else if (id == R.id.nav_friends) {
                 // launch Friends activity
                 Intent intent = new Intent(activity, FriendsActivity.class);
                 activity.startActivity(intent);
-                activity.finish();
+                finishIfNotHomeScreen(activity);
+
             } else if (id == R.id.nav_logout) {
                 // launch Login activity
                 Intent intent = new Intent(activity, LoginActivity.class);
                 AuthService.signOut(activity);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
-                activity.finish();
-                return true;
+                finishIfNotHomeScreen(activity);
 
             }
-//            else if (id == R.id.nav_settings) {
-//
-//            }
+
             else if (id == R.id.nav_tracking_groups) {
                 Intent intent = new Intent(activity, GroupsListActivity.class);
                 activity.startActivity(intent);
-
-
+                finishIfNotHomeScreen(activity);
             }
 
-            if (!activity.getClass().equals(HomeScreenActivity.class)) {
-                activity.finish();
-            }
-
-            if (!activity.getClass().equals(HomeScreenActivity.class)) {
-                activity.finish();
-            }
 
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
 
     }
-
-    private void uncheckAllItems() {
-        int size = navigationView.getMenu().size();
-        for (int i = 0; i < size; i++) {
-            navigationView.getMenu().getItem(i).setChecked(false);
-        }
-    }
-
 
 
 

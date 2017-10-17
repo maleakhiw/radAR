@@ -42,7 +42,8 @@ const addMetas = common.addMetas
 
 // Error handling
 app.use(function (error, req, res, next) {
-  if (err instanceof SyntaxError) {
+  winston.error(error);
+  if (error instanceof SyntaxError) {
     res.json({
       success: false,
       errors: common.errorObjectBuilder(['invalidJSON'])

@@ -381,6 +381,7 @@ module.exports = class GroupSystem extends SMS {
       }))
       return Promise.all(promiseAll);
     })
+
     .then(() => {
       console.log(locations);
       console.log(userDetails);

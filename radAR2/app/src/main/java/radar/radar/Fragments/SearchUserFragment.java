@@ -18,12 +18,15 @@ import radar.radar.Adapters.SearchAdapter;
 import radar.radar.Models.Responses.UsersSearchResult;
 import radar.radar.Presenters.SearchUserPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.SearchUserView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static radar.radar.RetrofitFactory.*;
 
 /**
  * Class representing fragments that have design and functionality to search another users on the
@@ -47,11 +50,7 @@ public class SearchUserFragment extends Fragment implements SearchUserView {
         setupUI(view);
 
         // Create retrofit instance
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        Retrofit retrofit = getRetrofit().build();
 
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(getActivity(), usersApi);

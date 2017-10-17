@@ -24,9 +24,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
-                    android:layout_marginTop="16dp"
                     android:text="Meeting point"
                     android:textSize="@dimen/section_text_size" />
 
@@ -59,23 +59,24 @@
                             android:background="@color/cardview_light_background">
 
                             <TextView
+                                android:id="@+id/group_detail_dest_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="8dp"
                                 android:layout_marginStart="8dp"
                                 android:layout_marginTop="8dp"
-                                android:text="South Lawn"
+                                android:text="Set a meeting point."
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
                             <TextView
+                                android:id="@+id/group_detail_distance"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="8dp"
                                 android:layout_marginEnd="8dp"
                                 android:layout_marginTop="8dp"
-                                android:text="300m"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
@@ -121,7 +122,8 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/group_details_members_recyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"/>
 
 
             </LinearLayout>

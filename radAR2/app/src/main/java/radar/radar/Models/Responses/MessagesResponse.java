@@ -3,6 +3,7 @@ package radar.radar.Models.Responses;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Domain.User;
 
 /**

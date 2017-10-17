@@ -23,7 +23,7 @@ public class ChatPresenter {
 
     /**
      * Constructor for ChatPresenter
-     * @paro chatView ChatActivityooo
+     * @param chatView ChatActivityooo
      * @param chatService instance of ChatService object
      */
     public ChatPresenter(ChatView chatView, ChatService chatService) {

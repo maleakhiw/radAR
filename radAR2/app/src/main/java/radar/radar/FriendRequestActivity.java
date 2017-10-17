@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 
 import radar.radar.Fragments.PendingRequestsFragment;
 import radar.radar.Fragments.SearchUserFragment;
@@ -13,7 +15,7 @@ import radar.radar.Fragments.SearchUserFragment;
 /**
  * Main Activity that are used to display search user functionality and also pending friend requests
  */
-public class TabbedSearchActivity extends AppCompatActivity {
+public class FriendRequestActivity extends AppCompatActivity {
     private ViewPager mViewPager;
 
     @Override
@@ -25,8 +27,15 @@ public class TabbedSearchActivity extends AppCompatActivity {
         setTitle("Search");
 
         // Enable back action bar
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar = findViewById(R.id.friend_request_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         mViewPager = findViewById(R.id.container);
         setupViewPager(mViewPager);

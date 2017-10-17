@@ -1,6 +1,7 @@
 const errorValues = require('./consts').errors
 const metas = require('./consts').metas
 const User = require('./models/user') // TODO refactor so User is plug and play
+const Group = require('./models/group') // TODO refactor as above
 const Resource = require('./models/resource');  // TODO as above
 
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
@@ -60,7 +61,7 @@ module.exports.sendInternalError = (res) => {
 }
 
 module.exports.addMetas = (obj, key) => {
-  // console.log(obj, key)
+  // winston.debug(obj, key)
   obj.resources = metas[key].resources
   return obj
 }
@@ -85,7 +86,7 @@ module.exports.errorObjectBuilder = function(errorKeys) {
   errors = []
   // TODO: error handling for keys that don't exist
   for (let i=0; i<errorKeys.length; i++) {
-    // console.log(errorKeys[i], errorValues[errorKeys[i]])
+    // winston.debug(errorKeys[i], errorValues[errorKeys[i]])
     errors.push({
       reason: errorValues[errorKeys[i]].reason,
       errorCode: errorValues[errorKeys[i]].code
@@ -99,6 +100,7 @@ module.exports.getPublicUserInfo = function(user) {
   let retVal = {
     userID: user.userID,
     username: user.username,
+    email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
     profilePicture: user.profilePicture,
@@ -106,6 +108,30 @@ module.exports.getPublicUserInfo = function(user) {
   }
   return retVal
 }
+
+module.exports.getPublicUserInfoPromise = (userID, userIDToCheck) => new Promise((resolve, reject) => {
+  let common = [];
+
+  getCommonGroups(userID, userIDToCheck)
+  .then(commonGroups => {
+    common = commonGroups;
+    return User.findOne({userID: userIDToCheck});
+  })
+  .then(user => {
+    let userInfo = {
+      userID: user.userID,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      profilePicture: user.profilePicture,
+      profileDesc: user.profileDesc,
+      commonGroups: commonGroups
+    }
+    resolve(userInfo);
+  })
+  .catch(err => reject(err));
+})
 
 module.exports.getAuthUserInfo = function(user) {
   let retVal = {
@@ -153,7 +179,7 @@ module.exports.isValidEmail = (email) => {
     return re.test(email);
 }
 
-module.exports.getUsersDetails = (members) => new Promise((resolve, reject) => {
+module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reject) => {
   let userDetails = {};
   let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
     User.findOne({userID: memberUserID}).exec()
@@ -167,9 +193,78 @@ module.exports.getUsersDetails = (members) => new Promise((resolve, reject) => {
 
   // when all info loaded, resolve the promise
   Promise.all(promiseAll).then(() => {
-    resolve(userDetails);
+    // already got userdetails, now get common groups if userID specified
+    if (userID) {
+      let promiseAll2 = members.map(memberUserID => new Promise((resolve, reject) => {
+        module.exports.getCommonGroups(userID, memberUserID)
+        .then(commonGroups => {
+          userDetails[memberUserID].commonGroups = commonGroups;
+          resolve();
+        })
+      }));
+
+      Promise.all(promiseAll2).then(() => {
+        resolve(userDetails);
+      })
+    } else {
+      resolve(userDetails);
+    }
   })
   .catch((err) => {
     reject(err);
   })
+});
+
+module.exports.getCommonGroups = (userID, userToCheckAgainst) => new Promise((resolve, reject) => {
+  let user;
+  let otherUser;
+
+  let groups = {};
+
+  User.findOne({userID: userID}).exec()
+  .then(userRes => {
+    user = userRes;
+    return User.findOne({userID: userToCheckAgainst})
+  })
+  .then(userRes => {
+    otherUser = userRes;
+    if (!user || !otherUser) {
+      reject('invalidUsers');
+    }
+
+    let users = [user, otherUser];
+    // winston.debug(user, otherUser)
+    // otherwise
+    let users_dict = {};
+    users.map(user => {
+      users_dict[user.userID] = user;
+    });
+
+    let commonGroups = users_dict[userID].groups.filter(group => {
+      // winston.debug(group, users_dict[userToCheckAgainst].groups);
+      // winston.debug(users_dict[userToCheckAgainst].groups.includes(group));
+      return users_dict[userToCheckAgainst].groups.includes(group);
+    });
+
+
+    let promiseAll = commonGroups.map(groupID => Group.findOne({groupID: groupID}).exec().then(
+      group => {
+        groups[groupID] = {
+          name: group.name,
+          profilePicture: group.profilePicture,
+          // groupID: {type: Number, unique: true},
+          createdOn: group.createdOn,
+          members: group.members,
+          admins: group.admins,
+          meetingPoint: group.meetingPoint,
+          isTrackingGroup: group.isTrackingGroup
+        };
+      }
+    ));
+    return Promise.all(promiseAll);
+  })
+  .then(() => {
+    resolve(groups);
+  })
+  .catch(err => reject(err));
 });

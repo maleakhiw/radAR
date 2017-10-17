@@ -101,10 +101,11 @@ function newGroupImpl(req, res, callback) {
       (participantUserID) => new Promise((resolve, reject) => {
         User.findOne({userID: participantUserID}).exec()
         .then((user) => {
-          usersDetails[userID] = (common.getPublicUserInfo(user));
+          // console.log(participantUserID)
+          usersDetails[participantUserID] = (common.getPublicUserInfo(user));
 
           user.groups.push(groupID)
-          user.save() .then(() => resolve());
+          user.save().then(() => resolve());
         })
         .catch((err) => winston.error(err));  // TODO send fail
     }));
@@ -219,7 +220,7 @@ module.exports = class SMS {
       .then((groupRes) => {
         group = groupRes;
 
-        return common.getUsersDetails(groupRes.members);
+        return common.getUsersDetails(groupRes.members, userID);
       })
       .then((pUserDetails) => {
         usersDetails = pUserDetails;
