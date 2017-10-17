@@ -198,8 +198,17 @@ module.exports = class SMS {
 
           Group.findOne({groupID: groupID}).exec()
           .then(group => {
-            groupDetails.push(common.formatGroupInfo(group));
-            resolve();
+            let groupInfo = common.formatGroupInfo(group);
+
+            common.getUsersDetails(groupRes.members, userID)
+            .then(usersDetails => {
+              groupInfo["usersDetails"] = usersDetails;
+              groupDetails.push(groupInfo);
+              resolve();
+
+            })
+
+
           })
           .catch(err => reject(err));
 
