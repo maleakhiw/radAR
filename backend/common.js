@@ -45,6 +45,20 @@ module.exports.isUsernameUnique = (username) => new Promise((resolve, reject) =>
   })
 })
 
+module.exports.getMeetingPointInfo = (meetingPoint) => {
+  if (meetingPoint) {
+    return {
+      lat: meetingPoint.lat,
+      lon: meetingPoint.lon,
+      name: meetingPoint.name,
+      description: meetingPoint.description,
+      updatedBy: meetingPoint.updatedBy,
+      timeAdded: meetingPoint.timeAdded
+    }
+  }
+
+}
+
 module.exports.formatGroupInfo = (group) => {
   return {
     name: group.name,
@@ -53,7 +67,7 @@ module.exports.formatGroupInfo = (group) => {
     members: group.members,
     isTrackingGroup: group.isTrackingGroup,
     profilePicture: group.profilePicture,
-    meetingPoint: group.meetingPoint
+    meetingPoint: module.exports.getMeetingPointInfo(group.meetingPoint)
     // usersDetails: usersDetails,  // TODO pass it in
     // lastMessage: lastMessage // TODO pass it in
   }
