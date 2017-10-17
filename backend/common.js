@@ -52,7 +52,8 @@ module.exports.formatGroupInfo = (group) => {
     admins: group.admins,
     members: group.members,
     isTrackingGroup: group.isTrackingGroup,
-    profilePicture: group.profilePicture
+    profilePicture: group.profilePicture,
+    meetingPoint: group.meetingPoint
     // usersDetails: usersDetails,  // TODO pass it in
     // lastMessage: lastMessage // TODO pass it in
   }
