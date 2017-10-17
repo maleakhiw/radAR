@@ -152,6 +152,8 @@ public class MessageListAdapter extends RecyclerView.Adapter {
         ImageView profilePic;
         ResourcesService resourcesService;
 
+        private boolean profilePicSet = false;
+
 
         public ReceivedMessageHolder(View itemView) {
             super(itemView);
@@ -173,29 +175,33 @@ public class MessageListAdapter extends RecyclerView.Adapter {
                 nameText.setText(message.userDetails.firstName + " " + message.userDetails.lastName);
 
                 // load profile picture
-                if (message.userDetails.profilePicture != null) {
-                    resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+                if (!profilePicSet) {
+                    if (message.userDetails.profilePicture != null) {
+                        resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onNext(File file) {
-                            Picasso.with(context).load(file).into(profilePic);
-                        }
+                            @Override
+                            public void onNext(File file) {
+                                Picasso.with(context).load(file).into(profilePic);
+                                profilePicSet = true;
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onComplete() {
+                            @Override
+                            public void onComplete() {
 
-                        }
-                    });
+                            }
+                        });
+                    }
                 }
+
             }
 
             timeText.setText(TimeFormatService.parseTimeString(message.time, context));

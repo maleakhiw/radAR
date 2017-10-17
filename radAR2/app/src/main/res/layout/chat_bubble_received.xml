@@ -8,11 +8,11 @@
     android:paddingTop="@dimen/recyclerView_padding_small"
     android:paddingBottom="@dimen/recyclerView_padding_small">
     
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_message_profile"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:background="@mipmap/ic_launcher"
+        android:src="@mipmap/ic_launcher"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent" />
