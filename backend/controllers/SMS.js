@@ -200,7 +200,7 @@ module.exports = class SMS {
           .then(group => {
             let groupInfo = common.formatGroupInfo(group);
 
-            common.getUsersDetails(groupRes.members, userID)
+            common.getUsersDetails(group.members, userID)
             .then(usersDetails => {
               groupInfo["usersDetails"] = usersDetails;
               groupDetails.push(groupInfo);

@@ -193,10 +193,15 @@ describe('SMS', () => {
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
-        // console.log(res.body);
+
+
         expect(res.body.groupsLastMessages['1']).to.not.equal(null);
         expect(res.body.groupsLastMessages['1'].text).to.equal('Hello world');
         expect(res.body.groups[0].groupID).to.equal(1);
+
+        expect(res.body.groups[0].usersDetails).to.not.equal(null);
+        expect(res.body.groups[0].usersDetails['1'].username).to.equal('user1');
+        expect(res.body.groups[0].usersDetails['2'].username).to.equal('user2');
 
         done();
       })
