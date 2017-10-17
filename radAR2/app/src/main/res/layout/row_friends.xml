@@ -19,6 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--TODO refactor to common with row_friends_with_delete-->
     <RelativeLayout
         android:id="@+id/relativeLayout4"
         android:layout_width="0dp"
