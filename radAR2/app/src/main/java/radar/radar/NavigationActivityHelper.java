@@ -1,6 +1,7 @@
 package radar.radar;
 
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -141,22 +142,32 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             int id = item.getItemId();
 
             if (id == R.id.nav_maps) {
-                Intent intent = new Intent(activity, HomeScreenActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
-                activity.startActivity(intent);
-//                finishIfNotHomeScreen(activity);
-                activity.finish();  // finish anyway.
+                if (!(activity instanceof HomeScreenActivity)) {
+                    Intent intent = new Intent(activity, HomeScreenActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
+//                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    activity.startActivity(intent);
+                    activity.finish();  // finish anyway.
+                }
+
             } else if (id == R.id.nav_chats) {
-                // launch chats
-                Intent intent = new Intent(activity, ChatListActivity.class);
-                activity.startActivity(intent);
-                finishIfNotHomeScreen(activity);
+
+                if (!(activity instanceof ChatListActivity)) {
+                    // launch chats
+                    Intent intent = new Intent(activity, ChatListActivity.class);
+                    activity.startActivity(intent);
+                    finishIfNotHomeScreen(activity);
+                }
+
 
             } else if (id == R.id.nav_friends) {
-                // launch Friends activity
-                Intent intent = new Intent(activity, FriendsActivity.class);
-                activity.startActivity(intent);
-                finishIfNotHomeScreen(activity);
+
+                if (!(activity instanceof FriendsActivity)) {
+                    // launch Friends activity
+                    Intent intent = new Intent(activity, FriendsActivity.class);
+                    activity.startActivity(intent);
+                    finishIfNotHomeScreen(activity);
+                }
 
             } else if (id == R.id.nav_logout) {
                 // launch Login activity
@@ -169,9 +180,11 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             }
 
             else if (id == R.id.nav_tracking_groups) {
-                Intent intent = new Intent(activity, GroupsListActivity.class);
-                activity.startActivity(intent);
-                finishIfNotHomeScreen(activity);
+                if (!(activity instanceof GroupsListActivity)) {
+                    Intent intent = new Intent(activity, GroupsListActivity.class);
+                    activity.startActivity(intent);
+                    finishIfNotHomeScreen(activity);
+                }
             }
 
 
