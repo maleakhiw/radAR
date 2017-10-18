@@ -68,7 +68,7 @@ public class EditProfileActivity extends AppCompatActivity {
         // Setup UI
         setupUI();
 
-        setTitle(getString(R.string.update_profile));
+        setTitle(getString(R.string.edit_profile));
 
 
         // Enable back action bar
