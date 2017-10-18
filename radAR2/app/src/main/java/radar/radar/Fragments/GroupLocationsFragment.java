@@ -12,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -175,7 +176,7 @@ public class GroupLocationsFragment extends Fragment {
             locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
             return 1;
         }).takeUntil(aLong -> isTracking).subscribe(result -> {}, error -> {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             setStopTracking();
 
             // TODO grant permissions

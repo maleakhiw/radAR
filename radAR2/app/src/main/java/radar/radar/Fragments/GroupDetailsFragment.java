@@ -466,7 +466,6 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
     @Override
     public void requestLocationPermissions(int requestCode) {
-        System.out.println(requestCode);
         FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
     }
 
