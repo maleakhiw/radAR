@@ -1,14 +1,16 @@
 package radar.radar.Fragments;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v13.app.FragmentCompat;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -86,6 +88,9 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = "SearchLocationActivity";
+
+    private static final int REQUEST_FOR_LOCATION_DISTANCE = 2;
+    private static final int REQUEST_FOR_LOCATION_MAP = 3;
 
     public void setListener(GroupDetailsLifecycleListener listener) {
         this.listener = listener;
@@ -183,14 +188,8 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
             this.googleMap = googleMap;
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                     && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                ;
+                requestLocationPermissions(REQUEST_FOR_LOCATION_MAP);
+                System.out.println("Request location - map");
             } else {
                 googleMap.setMyLocationEnabled(true);
             }
@@ -277,6 +276,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     }
 
     MeetingPoint meetingPoint;
+
     @Override
     public void setMeetingPoint(MeetingPoint meetingPoint) {
         this.meetingPoint = meetingPoint;
@@ -346,8 +346,9 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
                     @Override
                     public void onError(Throwable e) {
-                        // TODO ask for location permissions
-                        Log.w("GroupDetailsFragment", "Grant location permissions!");
+                        if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+//                            requestLocationPermissions(REQUEST_FOR_LOCATION_DISTANCE);
+                        }
                     }
 
                     @Override
@@ -404,7 +405,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     @Override
     public void dropPinAt(double lat, double lon, String name) {
         if (googleMap != null) {
-            googleMap.clear();  // TODO
+//            googleMap.clear();  // TODO
             LatLng latLng = new LatLng(lat, lon);
             googleMap.addMarker(new MarkerOptions().position(latLng)
                     .title(name));
@@ -450,8 +451,9 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
                 @Override
                 public void onError(Throwable e) {
-                    // TODO ask for location permissions - assume asked in home screen
-                    Log.w("GroupDetailsFragment", "Grant location permissions!");
+                    if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+//                        requestLocationPermissions(REQUEST_FOR_LOCATION_DISTANCE);
+                    }
                 }
 
                 @Override
@@ -461,4 +463,38 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
             });
         }
     }
+
+    @Override
+    public void requestLocationPermissions(int requestCode) {
+        System.out.println(requestCode);
+        FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        System.out.println("onRequestPermissionsResult");
+        if (requestCode == REQUEST_FOR_LOCATION_DISTANCE) {
+            System.out.println("Request location - distance");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateDistanceToMeetingPoint();
+                if (googleMap != null) {
+                    googleMap.setMyLocationEnabled(true);
+                }
+            } else {
+            }
+        }
+
+        if (requestCode == REQUEST_FOR_LOCATION_MAP) {
+            System.out.println("Request location - map");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                System.out.println(googleMap);
+                updateDistanceToMeetingPoint();
+                if (googleMap != null) {
+                    googleMap.setMyLocationEnabled(true);
+                }
+            } else {}
+        }
+    }
+
 }

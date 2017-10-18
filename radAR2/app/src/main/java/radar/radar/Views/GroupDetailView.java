@@ -18,4 +18,6 @@ public interface GroupDetailView {
     void setMeetingPointName(String name);
 
     void updateDistanceToMeetingPoint();
+
+    void requestLocationPermissions(int requestCode);
 }

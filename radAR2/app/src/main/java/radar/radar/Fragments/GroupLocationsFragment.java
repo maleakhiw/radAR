@@ -1,7 +1,9 @@
 package radar.radar.Fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +12,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -172,9 +175,23 @@ public class GroupLocationsFragment extends Fragment {
             locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
             return 1;
         }).takeUntil(aLong -> isTracking).subscribe(result -> {}, error -> {
-            System.out.println("Grant permissions!");
+            ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            setStopTracking();
+
             // TODO grant permissions
         });
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if (requestCode == 0) {
+            System.out.println("Request location - distance");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                setTracking();
+            } else {
+            }
+        }
     }
 
     public void setStopTracking() {
