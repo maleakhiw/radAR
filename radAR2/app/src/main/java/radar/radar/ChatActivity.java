@@ -122,6 +122,11 @@ public class ChatActivity extends AppCompatActivity implements ChatView {
     }
 
     @Override
+    public void setActivityTitle(String title) {
+        setTitle(title);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         chatPresenter.onStart();

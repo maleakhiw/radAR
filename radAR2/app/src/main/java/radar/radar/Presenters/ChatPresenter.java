@@ -121,6 +121,8 @@ public class ChatPresenter {
         }
     }
 
+
+
     /**
      * Used to generate a new chat for a particular user
      * DEPRECATED - use the new API route for this purpose.
@@ -144,6 +146,7 @@ public class ChatPresenter {
                 if (newChatResponse.success) {
                     // new chat created
                     chatView.setGroupID(newChatResponse.group.groupID);
+                    chatView.setActivityTitle(newChatResponse.group.name);
                 }
                 else {
                     chatView.showToast("Failed to create new chat");

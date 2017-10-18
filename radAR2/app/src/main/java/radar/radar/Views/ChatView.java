@@ -14,6 +14,8 @@ import radar.radar.Models.Responses.MessagesResponse;
  * Interface for ChatActivity
  */
 public interface ChatView {
+    void setActivityTitle(String title);
+
     void setLoad(Boolean load);
 
     Boolean getLoad();
