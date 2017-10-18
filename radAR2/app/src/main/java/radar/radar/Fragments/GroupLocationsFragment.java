@@ -180,7 +180,8 @@ public class GroupLocationsFragment extends Fragment {
             }
 
             adapter.updateData(groupLocation.userDetails, groupLocation.locations, location.getLatitude(), location.getLongitude());
-            locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
+            locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), 0f)
+                    .subscribe(response -> {}, error -> {});
             return 1;
         }).subscribe(result -> {}, error -> {
             FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
