@@ -73,6 +73,9 @@ public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMembe
         this.currentLat = currentLat;
         this.currentLon = currentLon;
 
+        System.out.println(currentLat);
+        System.out.println(currentLon);
+
         userLocationHashMap = new HashMap<>();
         for (UserLocation location: usersLocations) {
             userLocationHashMap.put(location.getUserID(), location);

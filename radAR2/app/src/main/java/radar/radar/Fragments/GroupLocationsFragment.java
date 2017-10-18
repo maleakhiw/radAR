@@ -178,6 +178,7 @@ public class GroupLocationsFragment extends Fragment {
             if (locationUpdateListener != null) {
                 locationUpdateListener.onLocationUpdate(location);
             }
+
             adapter.updateData(groupLocation.userDetails, groupLocation.locations, location.getLatitude(), location.getLongitude());
             locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
             return 1;

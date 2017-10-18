@@ -174,22 +174,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void loadGroupLocations() {
         locationService.getGroupLocationInfo(group.groupID, 3000).subscribe(
-                groupLocationsInfo -> {
-//                    googleMap.clear();  // clear all previous pins
-                    drawRoute();
-                    for (UserLocation location: groupLocationsInfo.locations) {
-                        Marker existingMarker = markers.get(location.getUserID());
-                        if (existingMarker != null) {
-                            existingMarker.setPosition(new LatLng(location.lat, location.lon));
-                        } else {
-                            Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
-                            marker.showInfoWindow();
+            groupLocationsInfo -> {
+                mMap.clear();  // clear all previous pins
+                drawRoute();
 
-                            markers.put(location.getUserID(), marker);  // add to list
-                        }
 
-                    }
-                }, System.out::println
+                for (UserLocation location: groupLocationsInfo.locations) {
+                    Marker existingMarker = markers.get(location.getUserID());
+//                    if (existingMarker != null) {
+//                        existingMarker.setPosition(new LatLng(location.lat, location.lon));
+//                    } else {
+//                        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
+//                        marker.showInfoWindow();
+//
+//                        markers.put(location.getUserID(), marker);  // add to list
+//                    }
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
+                    marker.showInfoWindow();
+
+                    markers.put(location.getUserID(), marker);  // add to list
+
+                }
+            }, System.out::println
         );
     }
 

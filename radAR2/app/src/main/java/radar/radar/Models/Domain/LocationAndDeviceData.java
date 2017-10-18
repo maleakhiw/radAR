@@ -9,12 +9,12 @@ import radar.radar.Models.Responses.GroupLocationsInfo;
  */
 
 public class LocationAndDeviceData {
-    public float azimuth;
-    public float pitch;
+    public double azimuth;
+    public double pitch;
     public Location location;
     public GroupLocationsInfo groupLocationDetails;
 
-    public LocationAndDeviceData(float azimuth, float pitch, Location location, GroupLocationsInfo groupLocationDetails) {
+    public LocationAndDeviceData(double azimuth, double pitch, Location location, GroupLocationsInfo groupLocationDetails) {
         this.pitch = pitch;
         this.azimuth = azimuth;
         this.location = location;
@@ -23,6 +23,6 @@ public class LocationAndDeviceData {
 
     @Override
     public String toString() {
-        return ((Float) azimuth).toString() + ", " + ((Float) pitch).toString() + ", " + location.toString();
+        return ((Double) azimuth).toString() + ", " + ((Double) pitch).toString() + ", " + location.toString();
     }
 }
