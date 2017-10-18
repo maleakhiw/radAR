@@ -2,6 +2,7 @@ package radar.radar;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.location.Location;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -18,13 +19,14 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Fragments.GroupDetailsFragment;
 import radar.radar.Fragments.GroupLocationsFragment;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import retrofit2.Retrofit;
 
-public class GroupDetailActivity extends AppCompatActivity {
+public class GroupDetailActivity extends AppCompatActivity implements LocationUpdateListener {
 
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
@@ -176,4 +178,8 @@ public class GroupDetailActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onLocationUpdate(Location location) {
+        groupDetailsFragment.updateDistance(location.getLatitude(), location.getLongitude());
+    }
 }

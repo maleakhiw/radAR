@@ -1,6 +1,7 @@
 package radar.radar.Fragments;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,6 +38,7 @@ import radar.radar.ARActivity;
 import radar.radar.Adapters.GroupMemberLocationsAdapter;
 import radar.radar.ChatActivity;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.GroupLocationsInfo;
@@ -169,13 +171,17 @@ public class GroupLocationsFragment extends Fragment {
         startTracking.setText(getString(R.string.stop_tracking));
 
         // TODO use the safer one which can be unsubscribed from
-        Observable<Location> locationObservable = locationService.getLocationUpdates(3000, 3000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        Observable<Location> locationObservable = locationService.getLocationUpdates(3000, 3000, LocationRequest.PRIORITY_HIGH_ACCURACY);
         Observable<GroupLocationsInfo> groupLocationsInfoObservable = locationService.getGroupLocationInfo(group.groupID, 3000);
         Observable.combineLatest(locationObservable, groupLocationsInfoObservable, (location, groupLocation) -> {
+            System.out.println("got data");
+            if (locationUpdateListener != null) {
+                locationUpdateListener.onLocationUpdate(location);
+            }
             adapter.updateData(groupLocation.userDetails, groupLocation.locations, location.getLatitude(), location.getLongitude());
             locationService.updateLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy(), 0f);
             return 1;
-        }).takeUntil(aLong -> isTracking).subscribe(result -> {}, error -> {
+        }).subscribe(result -> {}, error -> {
             FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             setStopTracking();
         });
@@ -191,6 +197,24 @@ public class GroupLocationsFragment extends Fragment {
             }
         }
     }
+
+
+//    Activity activity;
+    LocationUpdateListener locationUpdateListener;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            locationUpdateListener = (LocationUpdateListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement LocationUpdateListener");
+        }
+    }
+
 
     public void setStopTracking() {
         isTracking = false;

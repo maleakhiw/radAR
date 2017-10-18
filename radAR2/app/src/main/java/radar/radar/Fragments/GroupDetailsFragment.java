@@ -285,6 +285,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     DecimalFormat df = new DecimalFormat();
 
     public void updateDistance(double currentLat, double currentLon) {
+        System.out.println("updateDistance");
         double distance = LocationTransformations.distance(currentLat, currentLon, lastMeetingPointLat, lastMeetingPointLon, 'K');
 
         if (distance >= 1) {
