@@ -130,23 +130,26 @@ module.exports = class PositioningSystem {
 
     LocationModel.findOne({userID: userID}).exec()
     .then((location) => {
-      if (location) {
-        location.remove();
-      }
-
-      LocationModel.create({
+      let obj = {
         userID: userID,
         lat: lat,
         lon: lon,
         heading: heading,
         accuracy: accuracy
-      })
-      .then((location) => {
-        res.json({
-          success: true,
-          errors: []
+      };
+      if (location) {
+        // location.remove();
+        location.update(obj);
+      } else {
+        LocationModel.create()
+        .then((location) => {
+          res.json({
+            success: true,
+            errors: []
+          })
         })
-      })
+      }
+
     })
     .catch((err) => common.sendInternalError(res));
 
