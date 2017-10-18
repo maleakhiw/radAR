@@ -101,6 +101,7 @@ module.exports = class PositioningSystem {
   }
 
   updateLocation(req, res) {
+    console.log(req.body);
     // POST {serverURL}/api/accounts/:userID/location
     /* Request body:
        {
@@ -130,6 +131,7 @@ module.exports = class PositioningSystem {
 
     LocationModel.findOne({userID: userID}).exec()
     .then((location) => {
+      winston.log(location);
       let obj = {
         userID: userID,
         lat: lat,
@@ -142,7 +144,7 @@ module.exports = class PositioningSystem {
         // location.remove();
         location.update(obj);
       } else {
-        LocationModel.create()
+        LocationModel.create(obj)
         .then((location) => {
           res.json({
             success: true,
