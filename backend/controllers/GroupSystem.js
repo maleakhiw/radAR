@@ -392,7 +392,7 @@ module.exports = class GroupSystem extends SMS {
 
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         console.log(memberUserID);
-        UserLocation.findOne({userID: memberUserID}).exec()
+        UserLocation.findOne({userID: memberUserID}).sort({timeUpdated: -1}).exec()
         .then((location) => {
           console.log(location);
           if (location) {

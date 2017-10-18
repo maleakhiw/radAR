@@ -135,7 +135,8 @@ module.exports = class PositioningSystem {
         lat: lat,
         lon: lon,
         heading: heading,
-        accuracy: accuracy
+        accuracy: accuracy,
+        timeUpdated: Date.now()
       };
       if (location) {
         // location.remove();
