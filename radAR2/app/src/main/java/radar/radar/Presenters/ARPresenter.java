@@ -96,7 +96,7 @@ public class ARPresenter {
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
 //            System.out.println(azimuth.toString() + " " + location.toString());
             locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), azimuth)
-                    .subscribe();
+                    .subscribe(response -> {}, error -> {});
             return 0;
         }).subscribe(new Observer<Integer>() {
             @Override
