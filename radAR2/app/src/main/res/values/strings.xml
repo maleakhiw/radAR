@@ -162,6 +162,8 @@
     ]]>
     </string>
 
+    <string name="edit_profile">Edit Profile</string>
+
     <string name="directionsApiKey">AIzaSyAx1-_v4CYijIxiBVvGq_WQnyc0GeO5GCA</string>
 
     <!-- Data related to Home Screen Activity -->
