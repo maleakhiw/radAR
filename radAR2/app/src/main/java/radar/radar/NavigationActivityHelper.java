@@ -89,6 +89,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                                  AuthService.getUsername(activity),
                                  AuthService.getFirstName(activity),
                                  AuthService.getLastName(activity),
+                                 UsersService.getProfilePictureResID(activity),
                                  AuthService.getProfileDesc(activity),
                                  AuthService.getEmail(activity));
             intent.putExtra("user", user);
@@ -97,59 +98,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
         });
 
         // update profile info display
-        name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
-        email.setText(AuthService.getEmail(activity));
-
-
-
-        if (name != null) {
-            // TODO pass this in as a dependency
-            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
-            ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
-            UsersApi usersApi = retrofit.create(UsersApi.class);
-            ResourcesService resourcesService = new ResourcesService(activity, resourcesApi);
-            UsersService usersService = new UsersService(activity, usersApi);
-
-            // load the last known profile picture from cache
-            String resID = UsersService.getProfilePictureResID(activity);
-            if (resID != null) {
-                resourcesService.getResourceWithCache(resID, activity).subscribe(file -> {
-                    if (file != null && profilePicture != null) {
-                        Picasso.with(activity).load(file).into(profilePicture);
-                    }
-                }, System.out::println);
-            }
-
-            // get userID
-            int userID = AuthService.getUserID(activity);
-            usersService.getProfilePicture(userID, resourcesService, activity).subscribe(new Observer<File>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(File file) {
-                    if (file != null && profilePicture != null) {
-                        Picasso.with(activity).load(file).into(profilePicture);
-                    }
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    Log.w("loadProfilePicture", e);
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
-
-
-
-
-        }
+        updateDisplay();
 
         navigationView.setNavigationItemSelectedListener(item -> {
             // Handle navigation view item clicks here.
@@ -207,6 +156,57 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
             drawerLayout.closeDrawer(GravityCompat.START);
             return true;
         });
+
+    }
+
+    public void updateDisplay() {
+        if (name != null) { // TODO other null checks
+            name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
+            email.setText(AuthService.getEmail(activity));
+            // TODO pass this in as a dependency
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
+            UsersApi usersApi = retrofit.create(UsersApi.class);
+            ResourcesService resourcesService = new ResourcesService(activity, resourcesApi);
+            UsersService usersService = new UsersService(activity, usersApi);
+
+            // load the last known profile picture from cache
+            String resID = UsersService.getProfilePictureResID(activity);
+            if (resID != null) {
+                resourcesService.getResourceWithCache(resID, activity).subscribe(file -> {
+                    if (file != null && profilePicture != null) {
+                        Picasso.with(activity).load(file).into(profilePicture);
+                    }
+                }, System.out::println);
+            }
+
+            // get userID
+            int userID = AuthService.getUserID(activity);
+            usersService.getProfilePicture(userID, resourcesService, activity).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(File file) {
+                    if (file != null && profilePicture != null) {
+                        Picasso.with(activity).load(file).into(profilePicture);
+                    }
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.w("loadProfilePicture", e);
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        }
+
 
     }
 

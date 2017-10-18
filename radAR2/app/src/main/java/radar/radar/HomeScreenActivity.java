@@ -238,6 +238,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onStart();
         mapFragment.getMapAsync(this); // reload map
 
+        // might have updated profile
+        helper.updateDisplay();
+
         presenter.onStart();
     }
 

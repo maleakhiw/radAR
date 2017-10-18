@@ -29,4 +29,14 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    public User(int userID, String username, String firstName, String lastName, String profilePicture, String profileDesc, String email) {
+        this.userID = userID;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profilePicture = profilePicture;
+        this.profileDesc = profileDesc;
+        this.email = email;
+    }
+
 }

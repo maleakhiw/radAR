@@ -162,13 +162,15 @@ public class UsersService {
                         if (body.firstName != null) {
                             prefs.edit().putString("firstName", body.firstName)
                                     .putString("lastName", body.lastName).apply();
-
                         }
                         if (body.email != null) {
                             prefs.edit().putString("email", body.email).apply();
                         }
                         if (body.profileDesc != null) {
                             prefs.edit().putString("profileDesc", body.profileDesc).apply();
+                        }
+                        if (body.profilePicture != null) {
+                            prefs.edit().putString("profilePicture", body.profilePicture).apply();
                         }
                     }
 
