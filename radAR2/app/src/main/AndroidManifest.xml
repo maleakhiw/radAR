@@ -67,7 +67,8 @@
             android:name=".ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewGroupActivity" />
-        <activity android:name=".EditProfileActivity"></activity>
+        <activity android:name=".EditProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />

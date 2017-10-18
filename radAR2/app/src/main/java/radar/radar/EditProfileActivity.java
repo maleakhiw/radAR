@@ -12,7 +12,10 @@ import android.support.v13.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -26,22 +29,28 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UploadFileResponse;
+import radar.radar.Models.UpdateGroupBody;
+import radar.radar.Models.UpdateProfileBody;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
+import radar.radar.Services.UsersApi;
+import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EditProfileActivity extends AppCompatActivity {
     private ImageView preview;
-    private EditText name;
+    private EditText nameET;
     private EditText email;
     private EditText description;
     private TextView upload;
@@ -49,6 +58,7 @@ public class EditProfileActivity extends AppCompatActivity {
     String mediaPath;
 
     private ResourcesService resourcesService;
+    UsersService usersService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,13 +68,16 @@ public class EditProfileActivity extends AppCompatActivity {
         // Setup UI
         setupUI();
 
+
+
         // Enable back action bar
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
+//        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup progress dialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Uploading...");
+
 
         // Initiate retrofit object
         Retrofit retrofit = new Retrofit.Builder()
@@ -77,6 +90,11 @@ public class EditProfileActivity extends AppCompatActivity {
         ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);
         resourcesService = new ResourcesService(this, resourcesApi);
 
+        resourcesService.getResourceWithCache(UsersService.getProfilePictureResID(this), this).subscribe(file -> Picasso.with(this).load(file).into(preview),
+                System.out::println);
+
+        usersService = new UsersService(this, retrofit.create(UsersApi.class));
+
         // Setup onclick listener for picking image
         preview.setOnClickListener(view -> {
             Intent galleryIntent = new Intent();
@@ -85,24 +103,87 @@ public class EditProfileActivity extends AppCompatActivity {
             startActivityForResult(galleryIntent, 0);
         });
 
-        // Setup onclick listener for upload
-        upload.setOnClickListener(view -> {
-            // Uploading the image
-            int permissionCheck = ContextCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-                uploadFile();
-            } else {    // PERMISSION_DENIED
-                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
-            }
-        });
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed()); // enable back button
 
     }
 
 
-    /** Method that are used for the back */
-    public boolean onOptionsItemSelected(MenuItem item){
-        finish();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_activity_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Observer<Status> statusObserver = new Observer<Status>() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Status status) {
+                // TODO loading bar
+                if (status.success) {
+                    System.out.println("Updated profile picture");
+                    finish();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        };
+
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.done:
+                String name = null;
+                String emailStr = null;
+                String descStr = null;
+
+                if (nameET.getText().toString().trim().length() > 0) {
+                    name = nameET.getText().toString();
+                }
+                if (email.getText().toString().trim().length() > 0) {
+                    emailStr = email.getText().toString();
+                }
+                if (description.getText().toString().trim().length() > 0) {
+                    descStr = description.getText().toString();
+                }
+
+                if (mediaPath != null) {    // want to update profile pic
+                    String finalName = name;
+                    String finalEmailStr = emailStr;
+                    String finalDescStr = descStr;
+                    uploadFile().map(response -> {
+                        System.out.println(response.success);
+                        return response;
+                    })
+                            .switchMap(response -> usersService.updateProfile(new UpdateProfileBody(finalName, finalEmailStr, finalDescStr, response.resourceID)))
+                            .subscribe(statusObserver);
+
+                } else if (name != null) {  // only update name
+                    usersService.updateProfile(new UpdateProfileBody(name, emailStr, descStr,null))
+                            .subscribe(statusObserver);
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /** Permission for getting image from gallery and uploading it */
@@ -161,15 +242,14 @@ public class EditProfileActivity extends AppCompatActivity {
     /** Setup UI */
     public void setupUI() {
         preview = findViewById(R.id.preview);
-        name = findViewById(R.id.name);
+        nameET = findViewById(R.id.name);
         email = findViewById(R.id.email);
         description = findViewById(R.id.description_text);
-        upload = findViewById(R.id.upload);
 
         // For now setup the name, email using default
-        name.setText(AuthService.getFirstName(this) + " " + AuthService.getLastName(this));
+        nameET.setText(AuthService.getFirstName(this) + " " + AuthService.getLastName(this));
         email.setText(AuthService.getEmail(this));
-        description.setText("Hello, I am using Radar!");
+        description.setText("");
     }
 
     /** Get real path from gallery that are used to initiate a new file */
@@ -189,9 +269,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     /** Use for uploading file */
-    private void uploadFile() {
-        progressDialog.show(); // start the progress dialog
-
+    private Observable<UploadFileResponse> uploadFile() {
         if (mediaPath != null) {
             // Used to multipart the file using okhttp3
             File file = new File(mediaPath);
@@ -200,42 +278,10 @@ public class EditProfileActivity extends AppCompatActivity {
             RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
             MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
 
-            // Make a request
-            resourcesService.uploadFile(fileToUpload).subscribe(new Observer<UploadFileResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(UploadFileResponse response) {
-                    progressDialog.dismiss();
-                    System.out.println(response.resourceID);
-                    // After we upload File, show success message
-                    Toast.makeText(EditProfileActivity.this, "Successfully upload file", Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    progressDialog.dismiss();
-                    // Display error message
-                    System.out.println(e.getMessage());
-                    Toast.makeText(EditProfileActivity.this, "Go to on error.", Toast.LENGTH_SHORT).show();
-
-                }
-
-                @Override
-                public void onComplete() {
-
-                }
-            });
-        } else {
-            // TODO warn
-            Log.w("uploadFile", "file is null");
+            return resourcesService.uploadFile(fileToUpload);
         }
 
-
+        return null;
     }
 
 }

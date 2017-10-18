@@ -178,8 +178,6 @@ public class GroupLocationsFragment extends Fragment {
         }).takeUntil(aLong -> isTracking).subscribe(result -> {}, error -> {
             FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             setStopTracking();
-
-            // TODO grant permissions
         });
     }
 
@@ -187,7 +185,6 @@ public class GroupLocationsFragment extends Fragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if (requestCode == 0) {
-            System.out.println("Request location - distance");
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 setTracking();
             } else {

@@ -182,5 +182,6 @@
     <string name="delete_group">Delete Group</string>
     <string name="edit">Edit</string>
     <string name="done">Done</string>
+    <string name="remove">REMOVE</string>
 
 </resources>
