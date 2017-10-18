@@ -5,11 +5,11 @@ package radar.radar.Models;
  */
 
 public class UpdateProfileBody {
-    String firstName;
-    String lastName;
-    String email;
-    String profileDesc;
-    String profilePicture;
+    public String firstName;
+    public String lastName;
+    public String email;
+    public String profileDesc;
+    public String profilePicture;
 
     public UpdateProfileBody(String name, String email, String profileDesc, String profilePicture) {
         String[] splitStr = name.split("\\s+");

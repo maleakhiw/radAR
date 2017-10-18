@@ -153,8 +153,27 @@ public class UsersService {
      * @return success or failure + reasons
      */
     public Observable<Status> updateProfile(UpdateProfileBody body) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+
         return usersApi.updateProfile(userID, token, body)
                 .subscribeOn(Schedulers.io())
+                .map(result -> {
+                    if (result.success) {
+                        if (body.firstName != null) {
+                            prefs.edit().putString("firstName", body.firstName)
+                                    .putString("lastName", body.lastName).apply();
+
+                        }
+                        if (body.email != null) {
+                            prefs.edit().putString("email", body.email).apply();
+                        }
+                        if (body.profileDesc != null) {
+                            prefs.edit().putString("profileDesc", body.profileDesc).apply();
+                        }
+                    }
+
+                    return result;
+                })
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
