@@ -139,7 +139,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
-                getDeviceLocation();
+                presenter.jumpToCurrentLocation();
             }
         });
 
@@ -193,8 +193,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         presenter.onMapReady(googleMap);
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
     }
 
 
@@ -254,51 +252,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
         return locationCallback;
-    }
-
-    private boolean first = true;
-    private void getDeviceLocation() {
-    /*
-     * Get the best and most recent location of the device, which may be null in rare
-     * cases when a location is not available.
-     */
-        try {
-            Task locationResult = fusedLocationClient.getLastLocation();
-            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        currentLocation = (Location) task.getResult();
-
-                        if(currentLocation != null) {
-                            CameraPosition cameraPosition = new CameraPosition.Builder()
-                                    .target(new LatLng(currentLocation.getLatitude(),
-                                            currentLocation.getLongitude()))
-                                    .zoom(DEFAULT_ZOOM).build();
-                            if (first) {
-                                googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                                first = false;
-                            } else {
-                                googleMap.animateCamera(CameraUpdateFactory
-                                        .newCameraPosition(cameraPosition));
-                            }
-                            googleMap.setMyLocationEnabled(true);
-
-                            // TODO do not remove PoI
-                            LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    currentPosition, DEFAULT_ZOOM));
-                        }
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.getException());
-                    }
-                }
-            });
-        } catch(SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
     }
 }
 
