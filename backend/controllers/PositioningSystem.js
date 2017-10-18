@@ -142,7 +142,14 @@ module.exports = class PositioningSystem {
       };
       if (location) {
         // location.remove();
-        location.update(obj);
+        location.update(obj)
+        .then((location) => {
+          res.json({
+            success: true,
+            errors: []
+          })
+        })
+        .catch(err => winston.error(err));
       } else {
         LocationModel.create(obj)
         .then((location) => {
