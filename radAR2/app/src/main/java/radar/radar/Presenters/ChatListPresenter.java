@@ -81,6 +81,7 @@ public class ChatListPresenter {
 
             @Override
             public void onError(Throwable e) {
+                chatListView.showToastMessage("Internal Error. Failure to delete group.");
                 System.out.println(e);
             }
 
