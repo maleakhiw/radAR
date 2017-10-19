@@ -8,4 +8,16 @@ import java.util.ArrayList;
 public class Status {
     public boolean success;
     public ArrayList<StatusError> errors;
+
+    /**
+     * Constructor for Status
+     * @param success
+     */
+    public Status(boolean success) {
+        this.success = success;
+    }
+
+    public Status() {
+
+    }
 }

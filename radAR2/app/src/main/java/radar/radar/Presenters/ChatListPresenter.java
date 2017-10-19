@@ -90,4 +90,5 @@ public class ChatListPresenter {
 
     public void onStop() {
     }
+
 }

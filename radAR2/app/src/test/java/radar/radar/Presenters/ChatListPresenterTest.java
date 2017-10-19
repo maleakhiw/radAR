@@ -12,8 +12,8 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.Group;
-import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
@@ -136,5 +136,37 @@ public class ChatListPresenterTest {
         // Verify if load data status false, it will give message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
         Mockito.verify(chatListView).stopRefreshIndicator();
+    }
+
+    /**
+     * Unit testing to check when deleteGroup, it will behave properly by deleting the group
+     * and showing message to user
+     */
+    @Test
+    public void deleteGroup_Success() {
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+        int groupID = 1;
+
+        // Create presenter and spy it
+        ChatListPresenter presenterToBeSpied = new ChatListPresenter(chatListView, chatService);
+        ChatListPresenter presenter = Mockito.spy(presenterToBeSpied);
+
+        // Create Successful observable
+        Status status = new Status(true);
+        Observable<Status> observable = Observable.just(status);
+
+        // Return that successful observable
+        Mockito.when(chatService.deleteGroup(groupID)).thenReturn(observable);
+
+        // Change behaviour of load data
+        Mockito.doNothing().when(presenter).loadData();
+
+        // Call the presenter
+        presenter.deleteGroup(groupID);
+
+        // Verify
+        Mockito.verify(chatListView).showToastMessage(anyString());
+        Mockito.verify(chatListView).removeGroup(groupID);
     }
 }

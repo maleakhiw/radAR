@@ -3,9 +3,8 @@ package radar.radar.Models.Domain;
 import java.util.ArrayList;
 
 /**
- * Created by kenneth on 6/9/17.
+ * Class representing data model for status
  */
-
 class StatusError {
     String reason;
     int errorCode;
@@ -14,4 +13,12 @@ class StatusError {
 public class Status {
     boolean success;
     ArrayList<StatusError> errors;
+
+    /**
+     * Constructor for status
+     * @param success success value true/false
+     */
+    public Status(boolean success) {
+        this.success = success;
+    }
 }
