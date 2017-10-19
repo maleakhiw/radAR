@@ -15,11 +15,10 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Created by kenneth on 17/9/17.
+ * Service for authentication that served as layer of abstraction for retrofit. The method here
+ * will call AuthApi.java
  */
-
 public class AuthService {
-//    Retrofit retrofit;
     AuthApi authApi;
     SharedPreferences prefs;
 
@@ -43,23 +42,64 @@ public class AuthService {
         return prefs.getInt("radar_userID", 0);
     }
 
+    /**
+     * Retrieves the username from SharedPreferences. Returns 0 if unset.
+     * @param context Android Context
+     * @return userID
+     */
+    public static String getUsername(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("username", "");
+    }
+
+    /**
+     * Retrieves the username from SharedPreferences. Returns 0 if unset.
+     * @param context Android Context
+     * @return userID
+     */
+    public static String getProfileDesc(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("profileDesc", "");
+    }
+
+    /**
+     * Retrieves the user first name from SharedPreferences. Returns "" if unset.
+     * @param context Android Context
+     * @return userID
+     */
     public static String getFirstName(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
         return prefs.getString("firstName", "");
     }
+
+    /**
+     * Retrieves the user first name from SharedPreferences. Returns "" if unset.
+     * @param context Android Context
+     * @return userID
+     */
     public static String getLastName(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
         return prefs.getString("lastName", "");
     }
 
+    /**
+     * Retrieves the user email from SharedPreferences. Returns "" if unset.
+     * @param context Android Context
+     * @return userID
+     */
     public static String getEmail(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
         return prefs.getString("email",  "");
     }
 
+    /**
+     * Constructor class for AuthService.java
+     * @param context Android Context
+     * @param authApi Instance of the authentication api created by retrofit
+     * @return userID
+     */
     public AuthService(AuthApi authApi, Context context) {
         this.prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
-//        this.retrofit = retrofit;
         this.authApi = authApi;
     }
 
@@ -85,12 +125,17 @@ public class AuthService {
 
                     @Override
                     public void onNext(AuthResponse authResponse) {
-                        prefs.edit().putString("radar_token", authResponse.token)
-                                .putInt("radar_userID", authResponse.userID)
-                                .putString("firstName", authResponse.userInfo.firstName)
-                                .putString("lastName", authResponse.userInfo.lastName)
-                                .putString("email", authResponse.userInfo.email)
-                                .apply();
+                        if (authResponse.success) {
+                            prefs.edit().putString("radar_token", authResponse.token)
+                                    .putInt("radar_userID", authResponse.userID)
+                                    .putString("username", authResponse.userInfo.username)
+                                    .putString("firstName", authResponse.userInfo.firstName)
+                                    .putString("lastName", authResponse.userInfo.lastName)
+                                    .putString("email", authResponse.userInfo.email)
+                                    .putString("profileDesc", authResponse.userInfo.profileDesc)
+                                    .apply();
+                        }
+
                         emitter.onNext(authResponse);
                     }
 
@@ -109,7 +154,6 @@ public class AuthService {
         });
 
         return newObservable;
-
     }
 
     /**
@@ -135,12 +179,16 @@ public class AuthService {
 
                     @Override
                     public void onNext(AuthResponse authResponse) {
-                        prefs.edit().putString("radar_token", authResponse.token)
-                                .putInt("radar_userID", authResponse.userID)
-                                .putString("firstName", authResponse.userInfo.firstName)
-                                .putString("lastName", authResponse.userInfo.lastName)
-                                .putString("email", authResponse.userInfo.email)
-                                .apply();
+                        if (authResponse.success) {
+                            prefs.edit().putString("radar_token", authResponse.token)
+                                    .putInt("radar_userID", authResponse.userID)
+                                    .putString("username", authResponse.userInfo.username)
+                                    .putString("firstName", authResponse.userInfo.firstName)
+                                    .putString("lastName", authResponse.userInfo.lastName)
+                                    .putString("email", authResponse.userInfo.email)
+                                    .putString("profileDesc", authResponse.userInfo.profileDesc)
+                                    .apply();
+                        }
                         emitter.onNext(authResponse);
                     }
 
@@ -161,9 +209,13 @@ public class AuthService {
         return newObservable;
     }
 
+    /**
+     * Sign out from the application, removing the shared preferences store in the device
+     * @param context context of the application
+     */
     public static void signOut(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
-        prefs.edit().remove("radar_token").remove("radar_userID").apply();
+        prefs.edit().remove("radar_token").remove("radar_userID").remove("profilePicture").apply();
     }
 
 }

@@ -11,13 +11,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
-import radar.radar.Models.UserWithCheckbox;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.R;
 
-/**
- * Created by kenneth on 4/10/17.
- */
 
 public class NewGroupListAdapter extends RecyclerView.Adapter<NewGroupListAdapter.ViewHolder> {
 

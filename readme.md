@@ -41,9 +41,14 @@ Open the folder /radAR2 on Android Studio 3.0 or above, build the project and in
 
 The AR functionality is best experienced via an actual Android device instead of through the emulator.
 
+## Testing
+### Backend
+Ensure that `mocha`, the test driver is installed by running `npm install -g mocha`. Also run `npm install`, which would also install the dependencies required for running the unit tests.
+
+Run `npm run-script unit` to run the unit tests. To run all tests, run `npm test`.
+
 ## Server Information
 The server for this application is placed on a remote VPS running NodeJS. It uses RESTful design and its API root is accessible from https://radar.fadhilanshar.com/.
-
 
 This assumes Node and NPM has been installed on the testing machine.
 

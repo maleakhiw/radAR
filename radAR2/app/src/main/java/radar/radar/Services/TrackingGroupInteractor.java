@@ -1,13 +1,10 @@
 package radar.radar.Services;
 
 
-import radar.radar.Models.GroupDetails;
+import radar.radar.Models.Domain.GroupDetails;
 
 import io.reactivex.Observable;
 
-/**
- * Created by kenneth on 6/9/17.
- */
 
 // interactor, implements a use case
 // corresponds to TrackingGroupService in Design document

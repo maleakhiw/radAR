@@ -1,12 +1,9 @@
 package radar.radar.Views;
 
-import io.reactivex.Observable;
-import radar.radar.CompassDirection;
-import radar.radar.Models.UserLocation;
+import radar.radar.Models.Android.ARAnnotation;
+import radar.radar.Models.Android.CompassDirection;
+import radar.radar.Models.Domain.UserLocation;
 
-/**
- * Created by kenneth on 28/9/17.
- */
 
 public interface ARView {
     void requestLocationPermissions();
@@ -17,7 +14,7 @@ public interface ARView {
 
     void removeAnnotation(int userID);
 
-    void getAnnotation(int userID);
+    ARAnnotation getAnnotation(int userID);
 
     void inflateARAnnotation(UserLocation userLocation);
 
@@ -31,6 +28,10 @@ public interface ARView {
     void updateDestinationName(String name);
 
     void updateRelativeDestinationPosition(CompassDirection compassDirection);
+
+    int getAnnotationHeight(int userID);
+
+    int getAnnotationWidth(int userID);
 
     void updateHUDHeading(CompassDirection direction);
 }

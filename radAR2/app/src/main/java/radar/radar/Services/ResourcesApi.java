@@ -5,6 +5,7 @@ import radar.radar.Models.Responses.Status;
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.ResponseBody;
+import radar.radar.Models.Responses.UploadFileResponse;
 import retrofit2.Response;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
@@ -13,10 +14,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Streaming;
-
-/**
- * Created by kenneth on 18/9/17.
- */
 
 public interface ResourcesApi {
     // https://stackoverflow.com/a/38891018
@@ -30,7 +27,7 @@ public interface ResourcesApi {
      */
     @Multipart
     @POST("accounts/{userID}/resources")
-    Observable<Status> uploadResource(@Path(value = "userID", encoded = true) int userID, @Header("token") String token, @Part MultipartBody.Part filePart);
+    Observable<UploadFileResponse> uploadResource(@Path(value = "userID", encoded = true) int userID, @Header("token") String token, @Part MultipartBody.Part filePart);
 
     // 404 not found for invalid resource will call Subscribers' onError() method
     // https://stackoverflow.com/questions/31126793/download-and-write-a-file-with-retrofit-and-rxjava

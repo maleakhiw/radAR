@@ -1,9 +1,8 @@
 package radar.radar.Models.Responses;
 
-/**
- * Created by kenneth on 20/9/17.
- */
+import radar.radar.Models.Domain.Group;
+
 
 public class NewChatResponse extends Status {
-   public radar.radar.Models.Group group;
+   public Group group;
 }

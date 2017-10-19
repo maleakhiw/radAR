@@ -26,10 +26,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 
 /**
- * Created by keyst on 27/09/2017.
+ * Unit testing for SignupPresenter class
+ * This class is used to test the application logic of signup functionality
  */
 public class SignupPresenterTest {
 
+    /**
+     * Method to setup class that are used when unit testing retrofit rxjava
+     */
     @BeforeClass
     public static void setupClass() {
         // set all schedulers to trampoline scheduler - to run on the "main thread"
@@ -54,11 +58,18 @@ public class SignupPresenterTest {
     public void tearDown() throws Exception {
     }
 
-    // Test to check whether validation works
+    /**
+     * Method that are used to check whether the validation form act like what we want in to be
+     * In this case we want the validation form to validate successfully if every field
+     * is entered correctly
+     * @throws Exception
+     */
     @Test
     public void validateForm_Success() throws Exception {
         // Set up the SignupView mock
         SignupView signupView = Mockito.mock(SignupView.class);
+
+        // Setup behaviour of the view
         Mockito.when(signupView.getUsernameText()).thenReturn("maleakhiw");
         Mockito.when(signupView.getEmailText()).thenReturn("keystorm7@gmail.com");
         Mockito.when(signupView.getPassword()).thenReturn("hunter2");
@@ -81,11 +92,16 @@ public class SignupPresenterTest {
         Mockito.verify(signupView).getPassword();
         Mockito.verify(signupView).getFirstName();
         Mockito.verify(signupView).getLastName();
-
     }
 
+    /**
+     * Method that are used to check whether the validation form act like what we want in to be
+     * In this case when user does not entered correctly such as leaving some things empty
+     * it will generate false
+     * @throws Exception
+     */
     @Test
-    public void validateForm_Failed() throws Exception {
+    public void validateForm_Failure() throws Exception {
         // Set up the SignupView mock
         SignupView signupView = Mockito.mock(SignupView.class);
         Mockito.when(signupView.getUsernameText()).thenReturn("");
@@ -99,7 +115,8 @@ public class SignupPresenterTest {
         SignupPresenter presenter = new SignupPresenter(signupView, authService);
 
         boolean isFormValid = presenter.validateForm();
-        assert(isFormValid);
+        // Assert that it will return false because it is not valid
+        assert(isFormValid == false);
 
         Mockito.verify(signupView).getPassword();
         Mockito.verify(signupView).getUsernameText();
@@ -109,24 +126,30 @@ public class SignupPresenterTest {
     }
 
 
+    /**
+     * Method that are used to test whether processSignup works as intended (processing signup request
+     * to server) In the case of success, it will bring the user to home screen and finish the
+     * SignUpActivity.
+     * @throws Exception
+     */
     @Test
     public void processSignup_Success() throws Exception {
         // Set up the signupview mock and signup presenter
         SignupView signupView = Mockito.mock(SignupView.class);
         AuthService authService = Mockito.mock(AuthService.class);
 
+        // Need to create Mockito.spy because we will call validateForm that we will manipulate
+        // its behaviour
         SignupPresenter presenterToBeSpiedOn = new SignupPresenter(signupView, authService);
         SignupPresenter presenter = Mockito.spy(presenterToBeSpiedOn);
-
-        // NOTE https://stackoverflow.com/a/11620196 - Mockito calls presenter.validateForm()
-        // which fails due to a NullPointerException.
 
         // Mockito documentation also suggests using doReturn().when() syntax instead of
         // when().thenReturn() - safer for spies
         Mockito.doReturn(true).when(presenter).validateForm();
 
         // return an actual response! This is a success, not a failure
-        Observable<AuthResponse> authResponseObservable = Observable.just(new AuthResponse(true, new ArrayList<>(), "fakeToken", 42));
+        Observable<AuthResponse> authResponseObservable = Observable.just(new
+                AuthResponse(true, new ArrayList<>(), "fakeToken", 42));
         Mockito.when(authService.signUp(any(SignUpRequest.class))).thenReturn(authResponseObservable);
         presenter.processSignup();
 
@@ -136,8 +159,13 @@ public class SignupPresenterTest {
         Mockito.verify(signupView).finishActivity();
     }
 
+    /**
+     * Method that are used to test whether processSignup works as intended (processing signup request
+     * to server) In the case of failure, it will log the error, display a toast to user.
+     * @throws Exception
+     */
     @Test
-    public void processSignup_Failed() throws Exception {
+    public void processSignup_Failure() throws Exception {
         // Set up the signupview mock and signup presenter
         SignupView signupView = Mockito.mock(SignupView.class);
         AuthService authService = Mockito.mock(AuthService.class);
@@ -148,17 +176,19 @@ public class SignupPresenterTest {
         Mockito.doReturn(true).when(presenter).validateForm();
 
         // pretend a SocketTimeoutException occurred
-        Observable<AuthResponse> authResponseObservable = Observable.just(new AuthResponse(true, new ArrayList<>(), "fakeToken", 42))
+        Observable<AuthResponse> authResponseObservable = Observable.just(new
+                AuthResponse(true, new ArrayList<>(), "fakeToken", 42))
                 .map(authResponse -> {
                     throw new SocketTimeoutException("fake socket timeout exception");
                 });
         Mockito.when(authService.signUp(any(SignUpRequest.class))).thenReturn(authResponseObservable);
+
+        // Call the method that will be tested
         presenter.processSignup();
 
         // Check whether it is properly called
-        Mockito.verify(signupView).showToastLong(anyString());
+        Mockito.verify(signupView).showToastShort("Internal Error. Sign Up failed.");
         Mockito.verify(signupView).dismissProgressBar();
-
     }
 
 }

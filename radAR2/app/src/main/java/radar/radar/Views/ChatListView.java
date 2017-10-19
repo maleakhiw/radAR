@@ -2,13 +2,17 @@ package radar.radar.Views;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.Group;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Responses.GetChatInfoResponse;
 
 /**
- * Created by keyst on 3/10/2017.
+ * Interface for ChatListActivity that supports MVP model.
  */
-
 public interface ChatListView {
+    void stopRefreshIndicator();
+
+    void startRefreshIndicator();
+
     void setGroups(ArrayList<Group> groups);
 
     void setChatIDs(ArrayList<Integer> chatIDs);
@@ -19,7 +23,11 @@ public interface ChatListView {
 
     void showToastMessage(String message);
 
-    void setArrayListInAdapter(ArrayList<Group> groups);
+    int getChatIDsSize();
 
-    void notifyAdapterChange();
+    int getChatId(int index);
+
+    void processDisplayChatList(GetChatInfoResponse getChatInfoResponse);
+
+    void removeGroup(int groupID);
 }

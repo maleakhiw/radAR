@@ -9,13 +9,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import radar.radar.Adapters.FriendsAdapter;
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.FriendsPresenter;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
@@ -24,31 +25,31 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Class representing activity to display friend list and the default activity for friends
+ * functionality.
+ */
 public class FriendsActivity extends AppCompatActivity implements FriendsView {
-    NavigationActivityHelper helper;
-    FriendsPresenter presenter;
-    RecyclerView recyclerView;
-    FloatingActionButton fab;
+    /** Navigation variable */
+    private NavigationActivityHelper helper;
+    private RecyclerView recyclerView;
+    private FloatingActionButton fab;
+
+    /** Presenter and service */
     private UsersService usersService;
+    private FriendsPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
 
-        // Setup drawer and navigation helper
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
-        DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
-        TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        // Setup UI
+        setupUI();
 
-        recyclerView = findViewById(R.id.friends_recyclerView);
-        fab = findViewById(R.id.fab);
-        
+        // Create retrofit instance
         Retrofit retrofit = new Retrofit.Builder()
-                                        .baseUrl("http://35.185.35.117/api/")
+                                        .baseUrl("https://radar.fadhilanshar.com/api/")
                                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                                         .addConverterFactory(GsonConverterFactory.create())
                                         .build();
@@ -58,6 +59,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();
 
+        // Setup onclick listener on the fab
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -67,11 +69,18 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
     }
 
+    /**
+     * Displaying message in front of toast to user
+     * @param message message to be displayed on the screen
+     */
     @Override
-    public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_LONG).show();
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Method that are used to go from this activity to home screen immediately
+     */
     @Override
     public void launchHomeScreenActivity() {
         Intent intent = new Intent(this, HomeScreenActivity.class);
@@ -79,20 +88,44 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         finish();
     }
 
+    /**
+     * Method that are used to go from this activity to search friends/ another user
+     */
     @Override
     public void launchSearchFriendsActivity() {
-        Intent intent = new Intent(this, SearchResultActivity.class);
+        Intent intent = new Intent(this, FriendRequestActivity.class);
         startActivity(intent);
     }
 
-
+    /**
+     * Binding the adapter to the recycler view and also display the data on the recycler view
+     * @param friends array list that consisting of users to be displayed on the list
+     */
     @Override
     public void bindAdapterToRecyclerView(ArrayList<User> friends) {
         FriendsAdapter friendsAdapter = new FriendsAdapter(this, friends);
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
         friendsAdapter.notifyDataSetChanged();
+    }
 
+    /**
+     * Connecting UI element on the xml files with java
+     */
+    public void setupUI() {
+        // Setup drawer and navigation helper
+        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
+        TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+        ImageView image = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
+
+        recyclerView = findViewById(R.id.friends_recyclerView);
+        fab = findViewById(R.id.fab);
+
+        setTitle("Friends"); // set the title of the activity
     }
 
 }

@@ -1,9 +1,8 @@
 package radar.radar.Views;
 
 /**
- * Created by keyst on 27/09/2017.
+ * Interface for SignUpActivity that are used to support MVP model.
  */
-
 public interface SignupView {
     // Some setter and getter for the private variable
     String getUsernameText();
@@ -22,7 +21,7 @@ public interface SignupView {
 
     void dismissProgressBar();
 
-    void showToastLong(String message);
+    void showToastShort(String message);
 
     void startHomeScreenActivity();
 

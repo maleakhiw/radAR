@@ -1,9 +1,9 @@
 package radar.radar.Views;
 
 /**
- * Created by keyst on 26/09/2017.
+ * Interface for LoginActivity that are used to support MVP design
+ * Note: for description of method please refer to LoginActivity.java
  */
-
 public interface LoginView {
 
     void setProgressBarMessage(String message);
@@ -16,7 +16,7 @@ public interface LoginView {
 
     String getPasswordText();
 
-    void showToastLong(String message);
+    void showToastShort(String message);
 
     void startHomeScreenActivity();
 

@@ -1,95 +1,98 @@
 package radar.radar.Presenters;
 
-import android.widget.Toast;
-
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.ChatListActivity;
-import radar.radar.Models.Responses.GetChatInfoResponse;
 import radar.radar.Models.Responses.GetChatsResponse;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
 /**
- * Created by keyst on 3/10/2017.
+ * Presenter class of ChatListActivity.
+ * Contains application logic related to displaying chat list
  */
 
 public class ChatListPresenter {
     ChatListView chatListView;
     ChatService chatService;
 
-    /** Constructor */
+    /**
+     * Constructor
+     * @param chatListView ChatListActivity
+     * @param  chatService service that are instantiated on ChatListActivity
+     */
     public ChatListPresenter(ChatListView chatListView, ChatService chatService) {
         this.chatListView = chatListView;
         this.chatService = chatService;
     }
 
-    public void getChatIDs() {
+    public void loadData() {
+        chatListView.startRefreshIndicator();
         // Getting the chat id that are related to a particular user
-        chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
+       chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
+           @Override
+           public void onSubscribe(Disposable d) {
+
+           }
+
+           @Override
+           public void onNext(GetChatsResponse getChatsResponse) {
+               if (getChatsResponse.success) {
+                   chatListView.setGroups(getChatsResponse.groups);
+               }
+               else {
+                   chatListView.showToastMessage("Failure to load chat list.");
+               }
+               chatListView.stopRefreshIndicator();
+           }
+
+           @Override
+           public void onError(Throwable e) {
+               System.out.println(e);
+               chatListView.showToastMessage("Internal Error. Failure to load chat list.");
+               chatListView.stopRefreshIndicator();
+           }
+
+           @Override
+           public void onComplete() {
+
+           }
+       });
+    }
+
+    public void deleteGroup(int groupID) {
+        chatService.deleteGroup(groupID).subscribe(new Observer<Status>() {
             @Override
             public void onSubscribe(Disposable d) {
 
             }
 
             @Override
-            public void onNext(GetChatsResponse getChatsResponse) {
-                // If we successfully get chat ids
-                if (getChatsResponse.success) {
-                    chatListView.setChatIDs(getChatsResponse.groups);
-                    displayChatList();
+            public void onNext(Status status) {
+                if (status.success) {
+                    chatListView.showToastMessage("Group deleted");
+                    chatListView.removeGroup(groupID);
                 }
                 else {
-                    chatListView.showToastMessage("Unsuccessful getting chatIDs");
+                    chatListView.showToastMessage("Failure to delete group.");
                 }
+                loadData();
             }
 
             @Override
             public void onError(Throwable e) {
+                chatListView.showToastMessage("Internal Error. Failure to delete group.");
+                System.out.println(e);
             }
 
             @Override
             public void onComplete() {
+
             }
         });
     }
 
-    /** Method that are used to display chat list */
-    public void displayChatList() {
-        // Using the id that we have get display the chat
-        // Iterate through all ids
-        for (int i=0; i < chatListView.getChatIDs().size(); i++) {
-            chatService.getChatInfo(chatListView.getChatIDs().get(i)).subscribe(new Observer<GetChatInfoResponse>() {
-                @Override
-                public void onSubscribe(Disposable d) {
-
-                }
-
-                @Override
-                public void onNext(GetChatInfoResponse getChatInfoResponse) {
-                    // If the response successful display on the recycler view
-                    if (getChatInfoResponse.success) {
-                        // Add to groups
-                        chatListView.getGroups().add(getChatInfoResponse.group);
-                        chatListView.setArrayListInAdapter(chatListView.getGroups());
-                        chatListView.notifyAdapterChange();
-                    }
-                    else {
-                        chatListView.showToastMessage("Failed to display chat information.");
-                    }
-
-                }
-
-                @Override
-                public void onError(Throwable e) {
-
-                }
-
-                @Override
-                public void onComplete() {
-                }
-            });
-        }
+    public void onStop() {
     }
 
 }

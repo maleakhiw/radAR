@@ -51,7 +51,7 @@ function validateAddFriend(req) {
 }
 
 var checkIfAlreadyFriends = (userID, invitedUserID) => new Promise((resolve, reject) => {
-  User.findOne({userID: userID}).then((user) => {
+  User.findOne({userID: userID}).exec().then((user) => {
     if (user.friends.includes(invitedUserID)) {
       reject('invitedUserIDAlreadyAdded');
     } else {
@@ -64,7 +64,7 @@ var checkIfRequestAlreadySent = (userID, invitedUserID) => new Promise((resolve,
   Request.findOne({$and: [
     {from: userID},
     {to: invitedUserID}
-  ]}).then((request) => {
+  ]}).exec().then((request) => {
     if (request) {
       reject('friendRequestAlreadyExists');
     } else {
@@ -84,11 +84,162 @@ var getRequestIDForNewRequest = () => new Promise((resolve, reject) => {
   })
 })
 
+var validateDeleteRequest = (req) => new Promise((resolve, reject) => {
+  let errorKeys = [];
+  let userID = req.params.userID;
+  let requestID = req.params.requestID;
+
+  // userID assumed to be valid due to authentication middleware.
+
+  // find a request
+  Request.findOne({requestID: requestID}).exec()
+  .then((request) => {
+    if (request == null) {
+      reject('invalidRequestID');
+    } else {
+      if (request.from != userID) {
+        reject('invalidRequestID');
+      }
+    }
+
+    resolve();
+  })
+  .catch(err => {
+    reject(err);
+  });
+
+});
+
+var deleteRequest = (requestID, res) => {
+  Request.remove({requestID: requestID}).exec()
+  .then((result) => {
+    res.json({
+      success: true,
+      errors: []
+    })
+  })
+  .catch((err) => {
+    winston.error(err);
+    common.sendInternalError(res);
+  })
+}
+
 module.exports = class UMS {
   constructor(pUser, pRequest) {
     User = pUser
     Request = pRequest
     svs = new SVS(User)
+
+    this.validateAddFriend = validateAddFriend;
+    this.checkIfAlreadyFriends = checkIfAlreadyFriends;
+    this.checkIfRequestAlreadySent = checkIfRequestAlreadySent;
+    this.getRequestIDForNewRequest = getRequestIDForNewRequest;
+    this.validateDeleteRequest = validateDeleteRequest;
+    this.deleteRequest = deleteRequest;
+  }
+
+  updateProfile(req, res) {
+    /*
+      HTTP PUT {serverURL}/api/accounts/:userID
+
+      Body:
+      {
+        username: String (optional),  // validated
+        firstName: String (optional),
+        lastName: String (optional),
+        email: String (optional), // validated
+        profilePicture: String (optional),  // validated -> needs to point to a valid resource on the server
+        profileDesc: String (optional)
+      }
+
+      Headers:
+      token: (token issued by the server)
+    */
+
+    let userID = req.params.userID;
+
+    let toUpdate = {};
+    let errorKeys = [];
+
+    let username = req.body.username;
+    let firstName = req.body.firstName;
+    let lastName = req.body.lastName;
+    let email = req.body.email;
+    let profilePicture = req.body.profilePicture;
+    let profileDesc = req.body.profileDesc;
+
+    // validation
+    /*
+    1. Valid username -> not taken.
+    2. Valid email -> not taken + correct format
+    */
+
+    function updateProfile(errorKeys, toUpdate) {
+      if (errorKeys.length) {
+        common.sendError(res, errorKeys);
+        return;
+      }
+
+      if (firstName) toUpdate['firstName'] = firstName;
+      if (lastName) toUpdate['lastName'] = lastName;
+      if (profileDesc) toUpdate['profileDesc'] = profileDesc;
+      // NOTE to empty profileDesc, send in a string containing a space character.
+      if (new String(profileDesc).valueOf() == new String(" ".valueOf())) {
+        profileDesc = "";
+      }
+
+      User.findOneAndUpdate({userID: userID}, {
+        "$set": toUpdate
+      }).exec((err, user) => {
+        if (err) {
+          common.sendInternalError(res);
+        } else {
+          res.json({
+            success: true,
+            errors: []
+          });
+        }
+      });
+    }
+
+    if (username) {
+      common.isUsernameUnique(username).then((isUnique) => {
+        if (isUnique) {
+          toUpdate['username'] = username;
+        } else {
+          errorKeys.push('invalidUsername');
+        }
+      });
+    }
+    if (email) {
+      if (common.isValidEmail(email)) {
+        toUpdate['email'] = email;
+      } else {
+        errorKeys.push('invalidEmail');
+      }
+    }
+
+    if (profilePicture) {
+      common.isValidPicture(profilePicture)
+      .then(() => {
+        toUpdate['profilePicture'] = profilePicture;
+        updateProfile(errorKeys, toUpdate);
+      })
+      .catch((err) => {
+        if (err == 'invalidResourceID') {
+          errorKeys.push('invalidResourceID');
+        }
+        if (err == 'invalidMimetype') {
+          errorKeys.push('invalidResourceID');
+        }
+        updateProfile(errorKeys, toUpdate);
+      })
+    } else {
+      updateProfile(errorKeys, toUpdate);
+    }
+
+
+
   }
 
   // TODO refactor, write unit tests for isOnline
@@ -184,6 +335,23 @@ module.exports = class UMS {
       })
 
     }
+
+  }
+
+  cancelRequest(req, res) {
+    let userID = req.params.userID;
+    let requestID = req.params.requestID;
+
+    validateDeleteRequest(req)
+    .then(() => {
+      deleteRequest(requestID, res);
+    })
+    .catch((err) => {
+      if (err == 'invalidRequestID') {
+        sendError(res, ['invalidRequestID']);
+      }
+      common.sendInternalError(res);
+    })
 
   }
 
@@ -302,8 +470,9 @@ module.exports = class UMS {
   }
 
   getInformation(req, res) {
-    let queryUserID = req.params.userID
-    let username = req.body.username
+    let userID = req.query.userID;
+    let queryUserID = req.params.userID;
+    let username = req.body.username;
 
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure
@@ -324,13 +493,17 @@ module.exports = class UMS {
         User.findOne( { username: username } ).exec()
         .then((user) => {
           // winston.debug(user)
-          let userInfo = getPublicUserInfo(user)
-          let response = {
-            success: true,
-            errors: [],
-            details: userInfo
-          }
-          res.json(response)
+          common.getUserDetail(user.userID, userID).then(
+            usersDetailsOne => {
+              let response = {
+                success: true,
+                errors: [],
+                details: usersDetailsOne[user.userID]
+              };
+              res.json(response);
+            }
+          );
+
         })
         .catch((err) => {
           winston.error(err);
@@ -341,13 +514,16 @@ module.exports = class UMS {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
           // winston.debug(user)
-          let userInfo = getPublicUserInfo(user)
-          let response = {
-            success: true,
-            errors: [],
-            details: userInfo
-          }
-          res.json(response)
+          common.getUserDetail(user.userID, userID).then(
+            usersDetailsOne => {
+              let response = {
+                success: true,
+                errors: [],
+                details: usersDetailsOne[user.userID]
+              };
+              res.json(response);
+            }
+          );
         })
         .catch((err) => {
           winston.error(err);
@@ -422,6 +598,9 @@ module.exports = class UMS {
 
           // decline friend request
           else {
+            request.responded = true
+            request.save()
+
             let response = {
               success: true,
               error: []

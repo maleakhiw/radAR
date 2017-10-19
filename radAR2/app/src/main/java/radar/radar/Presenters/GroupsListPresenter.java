@@ -1,21 +1,17 @@
 package radar.radar.Presenters;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.function.Function;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.GroupsListView;
-import radar.radar.Models.Group;
+import radar.radar.Models.Responses.Status;
+import radar.radar.Views.GroupsListView;
+import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;
 
-/**
- * Created by kenneth on 3/10/17.
- */
+
 
 public class GroupsListPresenter {
     GroupsService groupsService;
@@ -28,37 +24,17 @@ public class GroupsListPresenter {
         loadData();
     }
 
-    private void loadData() {
-        System.out.println("loadData()");
+    public void loadData() {
+        view.setRefreshing(true);
 
         groupsService.getGroups()
-                .map(response -> {
-                    System.out.println("got groupIDs");
-                    ArrayList<Observable<GroupsResponse>> observablesArrayList = new ArrayList<>();
-
-                    if (response.success != true) {
-                        System.out.println("response.success is false");
-//                        Log.w("loadData()", "response.success is false");
+                .map(getChatsResponse -> {
+                    if (getChatsResponse.success) {
+                        return getChatsResponse.groups;
                     } else {
-                        for (int groupID: response.groups) {
-                            observablesArrayList.add(groupsService.getGroup(groupID));
-                        }
+                        return new ArrayList<Group>();
                     }
-                    return observablesArrayList;
                 })
-                .switchMap(observables ->
-                    Observable.zip(observables, responses -> {
-                        ArrayList<Group> groupsArrayListTmp = new ArrayList<>();
-                        for (Object obj: responses) {
-                            GroupsResponse response = (GroupsResponse) obj;
-                            if (response.success && response.group.isTrackingGroup) {
-                                groupsArrayListTmp.add(response.group);
-                            }
-                        }
-                        System.out.println(groupsArrayListTmp);
-                        return groupsArrayListTmp;
-                    })
-                )
                 .subscribe(new Observer<ArrayList<Group>>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -68,12 +44,13 @@ public class GroupsListPresenter {
                     @Override
                     public void onNext(ArrayList<Group> groups) {
                         view.updateRecyclerViewDataSet(groups);
+                        view.setRefreshing(false);
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
-//                        Log.w("error", e.getMessage());
+                        view.setRefreshing(false);
                     }
 
                     @Override
@@ -84,5 +61,33 @@ public class GroupsListPresenter {
 
     }
 
+    public void deleteGroup(int groupID) {
+        groupsService.deleteGroup(groupID).subscribe(new Observer<Status>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
+            }
+
+            @Override
+            public void onNext(Status status) {
+                if (status.success) {
+                    view.showToast("Group deleted");
+                    loadData();
+                } else {
+                    view.showToast("Unexpected error");
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                System.out.println(e);
+                view.showToast("Unexpected error");
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
 }

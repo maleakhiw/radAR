@@ -3,13 +3,14 @@
     <color name="colorPrimary">#01579b</color>
     <color name="colorPrimaryDark">#1a237e</color>
     <color name="colorAccent">#ffb300</color>
+    <color name="colorAccentDark">#DB9A00</color>
+    <color name="colorAccentMid">#DEBA2F</color>
+    <color name="colorAccentLight">#DEBC00</color>
     <color name="colorSuperAppBar">#237ccf</color>
     <color name="colorWhite">#ffffff</color>
     <color name="colorBlack">#000000</color>
     <color name="accent_material_light_1">#303f95</color>
     <color name="accent_material_light_2">#304ffe</color>
-    <color name="text_color_primary">#ffffff</color>
-    <color name="foreground_material_light">#e8e8e8</color>
     <color name="gray">#9E9E9E</color>
     <color name="gray_tint">#4e4e4e</color>
 </resources>

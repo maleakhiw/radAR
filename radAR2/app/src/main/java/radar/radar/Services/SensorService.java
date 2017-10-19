@@ -8,9 +8,6 @@ import android.util.Log;
 
 import io.reactivex.Observable;
 
-/**
- * Created by kenneth on 1/10/17.
- */
 
 public class SensorService {
     SensorEventListener azimuthEventListener;
@@ -37,7 +34,6 @@ public class SensorService {
         }
 
         azimuthUpdates = Observable.create(emitter -> {
-            CompassSensorFilter filter = new CompassSensorFilter();
             float[] mOrientationAngles = new float[3];  // for compass
             float[] mRotationMatrix = new float[9];     // for compass
 
@@ -52,13 +48,10 @@ public class SensorService {
                         SensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
                         double azimuth = Math.toDegrees(mOrientationAngles[0]);
-//                        if (azimuth < 0.0f) {   // normalise
-//                            azimuth += 360f;
-//                        }
-
-                        azimuth = filter.updateAndGetSmoothed(azimuth);
-
-//                        System.out.println(azimuth);
+                        azimuth = azimuth % 360d;    // azimuth can be less than -360 or 360
+                        if (azimuth < 0.0d) {   // normalise
+                            azimuth += 360d;
+                        }
 
                         emitter.onNext(azimuth);
                     }

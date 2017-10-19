@@ -11,18 +11,23 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 import radar.radar.UserDetailActivity;
 
 /**
- * Created by keyst on 28/09/2017.
+ * Adapter class for SearchUserFragment
+ * Used to connect recycler view with data
  */
-
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
     ArrayList<User> users;
     Context context;
 
+    /**
+     * Constructor for SearchAdapter
+     * @param context context of the activity calling this
+     * @param users list of users to be displayed
+     */
     public SearchAdapter(Context context, ArrayList<User> users) {
         this.context = context;
         this.users = users;
@@ -44,10 +49,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
     public void onBindViewHolder(ViewHolder holder, int position) {
         User user = users.get(position);
 
-        // load stuff
+        // Bind with the view holder
         holder.tvName.setText(user.firstName + " " + user.lastName);
         holder.tvUsername.setText(" @" + user.username);
-        holder.description.setText("Hello, I am using Radar!");
+        holder.description.setText(user.profileDesc);
     }
 
     @Override
@@ -55,6 +60,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         return users.size();
     }
 
+    /**
+     * ViewHolder class to connect UI in row with java
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ivProfilePic;
         TextView tvName;
@@ -78,7 +86,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
                     Intent intent = new Intent(context, UserDetailActivity.class);
                     intent.putExtra("user", user);
                     context.startActivity(intent);
-
                 }
             });
         }

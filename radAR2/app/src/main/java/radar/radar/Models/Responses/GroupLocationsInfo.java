@@ -3,13 +3,10 @@ package radar.radar.Models.Responses;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import radar.radar.Models.MeetingPoint;
-import radar.radar.Models.User;
-import radar.radar.Models.UserLocation;
+import radar.radar.Models.Domain.MeetingPoint;
+import radar.radar.Models.Domain.User;
+import radar.radar.Models.Domain.UserLocation;
 
-/**
- * Created by kenneth on 2/10/17.
- */
 
 public class GroupLocationsInfo extends Status {
     public MeetingPoint meetingPoint;

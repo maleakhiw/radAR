@@ -1,16 +1,12 @@
 package radar.radar.Views;
 
-import android.content.Intent;
-import android.view.View;
-
 import java.util.ArrayList;
 
-import radar.radar.Models.User;
+import radar.radar.Models.Domain.User;
 
 /**
- * Created by kenneth on 19/9/17.
+ * Interface for FriendsActivity to support MVP models.
  */
-
 public interface FriendsView {
     void showToast(String toast);
 

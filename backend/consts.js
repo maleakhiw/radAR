@@ -171,7 +171,7 @@ module.exports.errors = {
   },
   unauthorisedGroup: {
     code: 29,
-    reason: "You do not have access to this chat."
+    reason: "You do not have access to this chat or group."
   },
   missingGroupID: {
     code: 30,
