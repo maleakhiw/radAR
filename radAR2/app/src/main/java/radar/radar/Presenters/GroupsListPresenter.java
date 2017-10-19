@@ -25,8 +25,6 @@ public class GroupsListPresenter {
     }
 
     public void loadData() {
-        System.out.println("loadData()");
-
         view.setRefreshing(true);
 
         groupsService.getGroups()
@@ -53,7 +51,6 @@ public class GroupsListPresenter {
                     public void onError(Throwable e) {
                         System.out.println(e);
                         view.setRefreshing(false);
-//                        Log.w("error", e.getMessage());
                     }
 
                     @Override
