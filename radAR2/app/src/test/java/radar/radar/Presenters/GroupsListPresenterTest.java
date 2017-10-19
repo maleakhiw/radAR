@@ -70,6 +70,9 @@ public class GroupsListPresenterTest {
 
         // Call the presenter method
         presenter.loadData();
+
+        // Verify
+        Mockito.verify(groupsListView).updateRecyclerViewDataSet(any());
     }
 
     /**
@@ -102,6 +105,9 @@ public class GroupsListPresenterTest {
 
         // Call the presenter method
         presenter.loadData();
+
+        // Verify
+        Mockito.verify(groupsListView).showToast(any());
     }
 
     /**
