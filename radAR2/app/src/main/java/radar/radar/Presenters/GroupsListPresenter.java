@@ -74,17 +74,17 @@ public class GroupsListPresenter {
             @Override
             public void onNext(Status status) {
                 if (status.success) {
-                    view.showToast("Group deleted");
+                    view.showToast("Group deleted successfully.");
                     loadData();
                 } else {
-                    view.showToast("Unexpected error");
+                    view.showToast("Failure to delete group");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                view.showToast("Unexpected error");
+                view.showToast("Internal error. Failure to delete group.");
             }
 
             @Override
