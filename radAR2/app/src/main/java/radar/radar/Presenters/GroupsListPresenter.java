@@ -51,6 +51,7 @@ public class GroupsListPresenter {
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
+                        view.showToast("Internal Error. Failure to load groups.");
                         view.setRefreshing(false);
                     }
 

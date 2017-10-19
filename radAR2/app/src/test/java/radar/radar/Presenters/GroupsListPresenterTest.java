@@ -4,6 +4,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
@@ -60,6 +61,38 @@ public class GroupsListPresenterTest {
         getChatsResponse.groups = groups;
 
         Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
+        Mockito.when(groupsService.getGroups()).thenReturn(observable);
+
+        // Create object to be tested
+        GroupsListPresenter presenter = new GroupsListPresenter(groupsService, groupsListView);
+
+        // Call the presenter method
+        presenter.loadData();
+    }
+
+    /**
+     * Unit test to make sure that message is displayed when failure
+     */
+    @Test
+    public void loadData_Failure() {
+        // Mock necessary object
+        GroupsService groupsService = Mockito.mock(GroupsService.class);
+        GroupsListView groupsListView = Mockito.mock(GroupsListView.class);
+
+        // Create array list consisting groups
+        ArrayList<Group> groups = new ArrayList<>();
+        Group group = Mockito.mock(Group.class);
+        groups.add(group);
+
+        // Define behaviour
+        GetChatsResponse getChatsResponse = Mockito.mock(GetChatsResponse.class);
+        getChatsResponse.success = true;
+        getChatsResponse.groups = groups;
+
+        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse)
+                .map(getChatsResponse1 -> {
+                    throw new SocketTimeoutException();
+                });
         Mockito.when(groupsService.getGroups()).thenReturn(observable);
 
         // Create object to be tested
