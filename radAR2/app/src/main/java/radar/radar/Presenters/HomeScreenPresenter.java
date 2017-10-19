@@ -27,13 +27,10 @@ import static android.content.ContentValues.TAG;
 
 public class HomeScreenPresenter {
     private static final float DEFAULT_ZOOM = 15;
+
     HomeScreenView homeScreenView;
     LocationService locationService;
-
     GoogleMap googleMap;
-
-    Disposable locationServiceDisposable;
-
     LocationCallback locationCallback;
 
     private boolean first = true;
