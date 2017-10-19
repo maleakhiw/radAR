@@ -92,7 +92,6 @@ public class SignupPresenterTest {
         Mockito.verify(signupView).getPassword();
         Mockito.verify(signupView).getFirstName();
         Mockito.verify(signupView).getLastName();
-
     }
 
     /**

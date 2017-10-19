@@ -12,8 +12,6 @@ import radar.radar.Views.ChatListView;
  * Contains application logic related to displaying chat list
  */
 
-// TODO @maleakhiw class has been refactored - rewrite unit tests
-
 public class ChatListPresenter {
     ChatListView chatListView;
     ChatService chatService;
@@ -27,8 +25,6 @@ public class ChatListPresenter {
         this.chatListView = chatListView;
         this.chatService = chatService;
     }
-
-//    Disposable getChatListDisposable;
 
     public void loadData() {
         chatListView.startRefreshIndicator();
@@ -90,8 +86,5 @@ public class ChatListPresenter {
     }
 
     public void onStop() {
-//        if (getChatListDisposable != null) {
-//            getChatListDisposable.dispose();
-//        }
     }
 }

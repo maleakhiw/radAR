@@ -39,194 +39,225 @@ public class ChatListPresenterTest {
 
     }
 
+//    /**
+//     * When successfully getting chat ids, the method should call displayChatList()
+//     * @throws Exception
+//     */
+//    @Test
+//    public void getChatIDs_Success() throws Exception {
+//        // Mock necessary object
+//        ChatListView chatListView = Mockito.mock(ChatListView.class);
+//        ChatService chatService = Mockito.mock(ChatService.class);
+//
+//        // Create spied presenter
+//        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
+//        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+//
+//        // Create Observable that will be return
+//        int group1 = 1;
+//        ArrayList<Integer> groups = new ArrayList<>();
+//        groups.add(group1);
+//        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, true);
+//        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
+//
+//        // Define the behaviour of getChats
+//        Mockito.when(chatService.getChats()).thenReturn(observable);
+//
+//        // Call the method that will be tested
+//        presenter.getChats();
+//
+//        // Verify the method is called
+//        Mockito.verify(chatListView).setChatIDs(groups);
+//        Mockito.verify(presenter).displayChatList();
+//    }
+//
+//    /**
+//     * When status false, notify error message to user
+//     * @throws Exception
+//     */
+//    @Test
+//    public void getChatIDs_StatusFalse() throws Exception {
+//        // Mock necessary object
+//        ChatListView chatListView = Mockito.mock(ChatListView.class);
+//        ChatService chatService = Mockito.mock(ChatService.class);
+//
+//        // Create spied presenter
+//        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
+//        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+//
+//        // Create Observable that will be return
+//        int group1 = 1;
+//        ArrayList<Integer> groups = new ArrayList<>();
+//        groups.add(group1);
+//        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
+//        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
+//
+//        // Define the behaviour of getChats
+//        Mockito.when(chatService.getChats()).thenReturn(observable);
+//
+//        // Call the method that will be tested
+//        presenter.getChats();
+//
+//        // Verify to display error message to user
+//        Mockito.verify(chatListView).showToastMessage(anyString());
+//    }
+
+//    /**
+//     * When there is error, notify error message to user
+//     * @throws Exception
+//     */
+//    @Test
+//    public void getChatIDs_Failure() throws Exception {
+//        // Mock necessary object
+//        ChatListView chatListView = Mockito.mock(ChatListView.class);
+//        ChatService chatService = Mockito.mock(ChatService.class);
+//
+//        // Create spied presenter
+//        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
+//        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+//
+//        // Create observable that will return error message
+//        int group1 = 1;
+//        ArrayList<Integer> groups = new ArrayList<>();
+//        groups.add(group1);
+//        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
+//        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse)
+//                .map(chatResponse1 -> {
+//                    throw new SocketTimeoutException("Fake timeout exception");
+//                });
+//
+//        // Define the behaviour of getChats
+//        Mockito.when(chatService.getChats()).thenReturn(observable);
+//
+//        // Call the method that will be tested
+//        presenter.getChats();
+//
+//        // Verify to display error message to user
+//        Mockito.verify(chatListView).showToastMessage(anyString());
+//    }
+//
+//    /**
+//     * Unit testing to check if displayChatList is displaying chat list successfully
+//     */
+//    @Test
+//    public void displayChatList_Success() {
+//        // Mock necessary object
+//        ChatListView chatListView = Mockito.mock(ChatListView.class);
+//        ChatService chatService = Mockito.mock(ChatService.class);
+//
+//        // Mock the behaviour
+//        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
+//        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
+//
+//        // Create Observable returning valid object
+//        Group group = Mockito.mock(Group.class);
+//        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
+//        getChatInfoResponse.success = true;
+//        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
+//
+//        // Behaviour of the function
+//        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
+//
+//        // Call the method and create the presenter
+//        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
+//        presenter.displayChatList();
+//
+//        // Verify
+//        Mockito.verify(chatListView).processDisplayChatList(getChatInfoResponse);
+//    }
+
+//
+//    /**
+//     * Unit testing to check when status false to display error message
+//     */
+//    @Test
+//    public void displayChatList_StatusFalse() {
+//        // Mock necessary object
+//        ChatListView chatListView = Mockito.mock(ChatListView.class);
+//        ChatService chatService = Mockito.mock(ChatService.class);
+//
+//        // Mock the behaviour
+//        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
+//        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
+//
+//        // Create Observable returning valid object
+//        Group group = Mockito.mock(Group.class);
+//        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
+//        getChatInfoResponse.success = false;
+//        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
+//
+//        // Behaviour of the function
+//        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
+//
+//        // Call the method and create the presenter
+//        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
+//        presenter.displayChatList();
+//
+//        // Verify error message is called
+//        Mockito.verify(chatListView).showToastMessage(anyString());
+//    }
+
     /**
-     * When successfully getting chat ids, the method should call displayChatList()
-     * @throws Exception
+     * Unite testing to check when error, to display toast to user
      */
     @Test
-    public void getChatIDs_Success() throws Exception {
+    public void loadData_Success() {
         // Mock necessary object
         ChatListView chatListView = Mockito.mock(ChatListView.class);
         ChatService chatService = Mockito.mock(ChatService.class);
 
-        // Create spied presenter
-        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
-        ChatListPresenter presenter = Mockito.spy(presenterSpied);
+        // Create groups
+        ArrayList<Group> groups = Mockito.mock(ArrayList.class);
 
-        // Create Observable that will be return
-        int group1 = 1;
-        ArrayList<Integer> groups = new ArrayList<>();
-        groups.add(group1);
-        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, true);
+        // Create observable returning success
+        GetChatsResponse getChatsResponse = Mockito.mock(GetChatsResponse.class);
+        getChatsResponse.success = true;
+        getChatsResponse.groups = groups;
         Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
 
-        // Define the behaviour of getChats
+        // Define behaviour of getChats()
         Mockito.when(chatService.getChats()).thenReturn(observable);
 
-        // Call the method that will be tested
-        presenter.getChats();
-
-        // Verify the method is called
-        Mockito.verify(chatListView).setChatIDs(groups);
-        Mockito.verify(presenter).displayChatList();
-    }
-
-    /**
-     * When status false, notify error message to user
-     * @throws Exception
-     */
-    @Test
-    public void getChatIDs_StatusFalse() throws Exception {
-        // Mock necessary object
-        ChatListView chatListView = Mockito.mock(ChatListView.class);
-        ChatService chatService = Mockito.mock(ChatService.class);
-
-        // Create spied presenter
-        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
-        ChatListPresenter presenter = Mockito.spy(presenterSpied);
-
-        // Create Observable that will be return
-        int group1 = 1;
-        ArrayList<Integer> groups = new ArrayList<>();
-        groups.add(group1);
-        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
-        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
-
-        // Define the behaviour of getChats
-        Mockito.when(chatService.getChats()).thenReturn(observable);
-
-        // Call the method that will be tested
-        presenter.getChats();
-
-        // Verify to display error message to user
-        Mockito.verify(chatListView).showToastMessage(anyString());
-    }
-
-    /**
-     * When there is error, notify error message to user
-     * @throws Exception
-     */
-    @Test
-    public void getChatIDs_Failure() throws Exception {
-        // Mock necessary object
-        ChatListView chatListView = Mockito.mock(ChatListView.class);
-        ChatService chatService = Mockito.mock(ChatService.class);
-
-        // Create spied presenter
-        ChatListPresenter presenterSpied = new ChatListPresenter(chatListView, chatService);
-        ChatListPresenter presenter = Mockito.spy(presenterSpied);
-
-        // Create observable that will return error message
-        int group1 = 1;
-        ArrayList<Integer> groups = new ArrayList<>();
-        groups.add(group1);
-        GetChatsResponse getChatsResponse = new GetChatsResponse(groups, false);
-        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse)
-                .map(chatResponse1 -> {
-                    throw new SocketTimeoutException("Fake timeout exception");
-                });
-
-        // Define the behaviour of getChats
-        Mockito.when(chatService.getChats()).thenReturn(observable);
-
-        // Call the method that will be tested
-        presenter.getChats();
-
-        // Verify to display error message to user
-        Mockito.verify(chatListView).showToastMessage(anyString());
-    }
-
-    /**
-     * Unit testing to check if displayChatList is displaying chat list successfully
-     */
-    @Test
-    public void displayChatList_Success() {
-        // Mock necessary object
-        ChatListView chatListView = Mockito.mock(ChatListView.class);
-        ChatService chatService = Mockito.mock(ChatService.class);
-
-        // Mock the behaviour
-        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
-        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
-
-        // Create Observable returning valid object
-        Group group = Mockito.mock(Group.class);
-        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
-        getChatInfoResponse.success = true;
-        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
-
-        // Behaviour of the function
-        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
-
-        // Call the method and create the presenter
+        // Create the real presenter object to be tested
         ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
-        presenter.displayChatList();
 
-        // Verify
-        Mockito.verify(chatListView).processDisplayChatList(getChatInfoResponse);
-    }
+        // Call the method
+        presenter.loadData();
 
-
-    /**
-     * Unit testing to check when status false to display error message
-     */
-    @Test
-    public void displayChatList_StatusFalse() {
-        // Mock necessary object
-        ChatListView chatListView = Mockito.mock(ChatListView.class);
-        ChatService chatService = Mockito.mock(ChatService.class);
-
-        // Mock the behaviour
-        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
-        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
-
-        // Create Observable returning valid object
-        Group group = Mockito.mock(Group.class);
-        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
-        getChatInfoResponse.success = false;
-        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse);
-
-        // Behaviour of the function
-        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
-
-        // Call the method and create the presenter
-        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
-        presenter.displayChatList();
-
-        // Verify error message is called
-        Mockito.verify(chatListView).showToastMessage(anyString());
+        // Verify if load data successfully called
+        Mockito.verify(chatListView).setGroups(groups);
+        Mockito.verify(chatListView).stopRefreshIndicator();
     }
 
     /**
      * Unite testing to check when error, to display toast to user
      */
     @Test
-    public void displayChatList_Failure() {
+    public void loadData_Success() {
         // Mock necessary object
         ChatListView chatListView = Mockito.mock(ChatListView.class);
         ChatService chatService = Mockito.mock(ChatService.class);
 
-        // Mock the behaviour
-        Mockito.when(chatListView.getChatIDsSize()).thenReturn(1);
-        Mockito.when(chatListView.getChatId(0)).thenReturn(1);
+        // Create groups
+        ArrayList<Group> groups = Mockito.mock(ArrayList.class);
 
-        // Create Observable returning valid object
-        Group group = Mockito.mock(Group.class);
-        GetChatInfoResponse getChatInfoResponse = new GetChatInfoResponse(group);
-        getChatInfoResponse.success = false;
-        Observable<GetChatInfoResponse> observable = Observable.just(getChatInfoResponse)
-                .map(chatInfoResponse1 -> {
-                    throw new SocketTimeoutException("Fake timeout exception");
-                });
+        // Create observable returning success
+        GetChatsResponse getChatsResponse = Mockito.mock(GetChatsResponse.class);
+        getChatsResponse.success = true;
+        getChatsResponse.groups = groups;
+        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse);
 
-        // Behaviour of the function
-        Mockito.when(chatService.getChatInfo(1)).thenReturn(observable);
+        // Define behaviour of getChats()
+        Mockito.when(chatService.getChats()).thenReturn(observable);
 
-        // Call the method and create the presenter
+        // Create the real presenter object to be tested
         ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
-        presenter.displayChatList();
 
-        // Verify error message is called
-        Mockito.verify(chatListView).showToastMessage(anyString());
+        // Call the method
+        presenter.loadData();
+
+        // Verify if load data successfully called
+        Mockito.verify(chatListView).setGroups(groups);
+        Mockito.verify(chatListView).stopRefreshIndicator();
     }
 }
