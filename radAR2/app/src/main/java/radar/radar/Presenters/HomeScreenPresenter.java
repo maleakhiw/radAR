@@ -1,5 +1,6 @@
 package radar.radar.Presenters;
 
+import android.annotation.SuppressLint;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
@@ -33,6 +34,7 @@ public class HomeScreenPresenter {
     private boolean first = true;
     private LatLng current = null;
 
+    @SuppressLint("MissingPermission")
     public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
         this.homeScreenView = homeScreenView;
         this.locationService = locationService;
@@ -43,9 +45,18 @@ public class HomeScreenPresenter {
             current = new LatLng(location.getLatitude(), location.getLongitude());
             if (first) {
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                googleMap.setMyLocationEnabled(true);
                 first = false;
             }
         });
+
+        locationUpdates();
+    }
+
+    public void jumpToCurrentLocation() {
+        if (current != null) {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+        }
     }
 
     public void onMapReady(GoogleMap googleMap) {

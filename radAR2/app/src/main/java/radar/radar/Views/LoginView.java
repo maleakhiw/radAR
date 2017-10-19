@@ -16,7 +16,7 @@ public interface LoginView {
 
     String getPasswordText();
 
-    void showToastLong(String message);
+    void showToastShort(String message);
 
     void startHomeScreenActivity();
 

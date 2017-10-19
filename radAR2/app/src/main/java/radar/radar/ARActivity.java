@@ -45,8 +45,6 @@ import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
 import radar.radar.Views.ARView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 
 class ViewSize {
@@ -172,7 +170,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
         cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
 
         // setup services
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
@@ -208,7 +206,7 @@ public class ARActivity extends AppCompatActivity implements ARView, CameraDataL
 
     @Override
     public void showToast(String toast) {
-        Toast.makeText(this, toast, Toast.LENGTH_SHORT);
+        Toast.makeText(this, toast, Toast.LENGTH_SHORT).show();
     }
 
     /**

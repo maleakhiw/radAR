@@ -1,5 +1,6 @@
 package radar.radar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +11,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import radar.radar.Models.Domain.User;
 import radar.radar.Presenters.UserDetailPresenter;
+import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.UserDetailView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Class that handle displaying user details and information (profile)
@@ -30,11 +34,22 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     private TextView userDetailsEmail;
     private FloatingActionButton messageFab;
     private ImageView add;
+    private ImageView profilePicture;
     private User user;
 
     /** Service and Presenter variable */
     private UsersService usersService;
     private UserDetailPresenter userDetailPresenter;
+
+
+    private boolean isSelf(Context context, int userID) {
+        return AuthService.getUserID(context) == userID;
+    }
+
+    private void updateViewForSelf() {
+        messageFab.setImageDrawable(getDrawable(R.drawable.ic_edit_white_24dp));
+        add.setVisibility(View.GONE);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,38 +64,69 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Setup Retrofit Instances
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         // Setup user api that will be used to generate a service so that we can add friends
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(this, usersApi);
+
 
         // Get the information for user to display
         user = (User) getIntent().getSerializableExtra("user");
         fullName.setText(user.firstName + " " + user.lastName);
         username.setText(user.username);
         userDetailsEmail.setText(user.email);
+
+        // profile picture
+        ResourcesService resourcesService = new ResourcesService(this, retrofit.create(ResourcesApi.class));
+        profilePicture = findViewById(R.id.tracking_group_details_profile);
+        if (user.profilePicture != null) {
+            resourcesService.getResourceWithCache(user.profilePicture, this)
+                    .subscribe(file -> Picasso.with(this).load(file).into(profilePicture),
+                            error -> Toast.makeText(this, "Unexpected error", Toast.LENGTH_SHORT));
+        }
+
+        if (user.isFriend) {
+            add.setVisibility(View.GONE);
+        }
+
         // This is if user doesn't set any profile description
         if (user.profileDesc != null) {
             userDetailsProfile.setText(user.profileDesc);
         } else {
-            userDetailsProfile.setText("Hello, I am using Radar!");
+            userDetailsProfile.setText("No description set.");
+        }
+
+        if (isSelf(this, user.userID)) {
+            updateViewForSelf();
+            messageFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Go to home page
+                    Intent intent = new Intent(UserDetailActivity.this, EditProfileActivity.class);
+                    intent.putExtra("user", user);
+                    startActivity(intent);
+                }
+            });
+
+        } else {
+            // On click listener for fab
+            messageFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Go to home page
+                    Intent intent = new Intent(UserDetailActivity.this, ChatActivity.class);
+                    intent.putExtra("user", user);
+                    startActivity(intent);
+                }
+            });
         }
 
         // Initialise presenter
         userDetailPresenter = new UserDetailPresenter(this, usersService);
 
 
-        // On click listener for fab
-        messageFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Go to home page
-                Intent intent = new Intent(UserDetailActivity.this, ChatActivity.class);
-                intent.putExtra("user", user);
-                startActivity(intent);
-            }
-        });
+
 
         // On click listener for add friends
         add.setOnClickListener(new View.OnClickListener() {
@@ -105,8 +151,15 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
      * Will be used to show message on the form of toast on the presenter class
      */
     @Override
-    public void showToastLong(String message) {
+    public void showToastShort(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideAddFriend() {
+        if (add != null) {
+            add.setVisibility(View.GONE);
+        }
     }
 
     /**

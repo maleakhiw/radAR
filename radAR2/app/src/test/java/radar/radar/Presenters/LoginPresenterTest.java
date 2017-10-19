@@ -89,7 +89,7 @@ public class LoginPresenterTest {
 
         // thanks to the scheduler setup above, all the code runs synchronously
         // let's make sure feedback is displayed to the user and the progressBar is dismissed
-        Mockito.verify(loginView).showToastLong(anyString());
+        Mockito.verify(loginView).showToastShort(anyString());
         Mockito.verify(loginView).dismissProgressBar();
     }
 
@@ -169,7 +169,7 @@ public class LoginPresenterTest {
                 null, 0));
 
         // make sure feedback is shown to the user
-        Mockito.verify(loginView).showToastLong(anyString());
+        Mockito.verify(loginView).showToastShort(anyString());
     }
 
 }

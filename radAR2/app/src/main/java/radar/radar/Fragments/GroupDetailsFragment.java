@@ -1,10 +1,16 @@
 package radar.radar.Fragments;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v13.app.FragmentCompat;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -22,6 +28,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -39,13 +46,16 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.Status;
+import radar.radar.Presenters.GroupDetailsPresenter;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Services.LocationTransformations;
+import radar.radar.Views.GroupDetailView;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -57,7 +67,7 @@ import static android.app.Activity.RESULT_OK;
  * Modified by rtanudjaja on 10/10/17
  */
 
-public class GroupDetailsFragment extends Fragment {
+public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     TextView nameTextView;
     TextView mainTextView;
     RecyclerView recyclerView;
@@ -72,10 +82,15 @@ public class GroupDetailsFragment extends Fragment {
 
     LocationService locationService;
 
+    GroupDetailsPresenter presenter;
+
     private Group group = null;
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
     private static final String TAG = "SearchLocationActivity";
+
+    private static final int REQUEST_FOR_LOCATION_DISTANCE = 2;
+    private static final int REQUEST_FOR_LOCATION_MAP = 3;
 
     public void setListener(GroupDetailsLifecycleListener listener) {
         this.listener = listener;
@@ -126,10 +141,13 @@ public class GroupDetailsFragment extends Fragment {
         mapView.onLowMemory();
     }
 
+    private GoogleMap googleMap;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // The last two arguments ensure LayoutParams are inflated
         // properly.
+
 
         if (savedInstanceState != null) {
             // restore the listener
@@ -157,15 +175,25 @@ public class GroupDetailsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         friendsAdapter.updateFriends(group.usersDetails);
 
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
+        LocationApi locationApi = retrofit.create(LocationApi.class);
+        LocationService locationService = new LocationService(locationApi, getActivity(), LocationServices.getFusedLocationProviderClient(getActivity()));
+
+
         mapView = rootView.findViewById(R.id.group_detail_map);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(googleMap -> {
-            // Add a marker in Melbourne Uni and move the camera
-            double unimelb_lat = Double.parseDouble(getString(R.string.melbourne_university_lat));
-            double unimelb_lng = Double.parseDouble(getString(R.string.melbourne_university_lng));
-
-            LatLng melbourne_university = new LatLng(unimelb_lat, unimelb_lng);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(melbourne_university, 15));
+            // UI now ready
+            this.googleMap = googleMap;
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestLocationPermissions(REQUEST_FOR_LOCATION_MAP);
+                System.out.println("Request location - map");
+            } else {
+                googleMap.setMyLocationEnabled(true);
+            }
+            presenter = new GroupDetailsPresenter(this, group, locationService);
         });
 
         // Make a marker when the button is clicked.
@@ -176,6 +204,7 @@ public class GroupDetailsFragment extends Fragment {
         Button navigateButton = (Button) rootView.findViewById(R.id.navigate_to_location);
         navigateButton.setOnClickListener(view -> onNavigateButtonClicked());
 
+        // go to the group chat
         FloatingActionButton fab = rootView.findViewById(R.id.group_details_fab);
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChatActivity.class);
@@ -187,9 +216,7 @@ public class GroupDetailsFragment extends Fragment {
         });
 
         // notify main activity that we have done initiating
-
         listener.onSetUp(this);
-
 
         return rootView;
     }
@@ -225,38 +252,41 @@ public class GroupDetailsFragment extends Fragment {
         try {
             //open map activity and display navigation
             Intent intent = new Intent(getActivity(), MapsActivity.class);
+            if (meetingPoint != null) {
+                intent.putExtra("meetingPoint", meetingPoint);
+                intent.putExtra("group", group);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getActivity(), "Please set a meeting point first.", Toast.LENGTH_SHORT).show();
+            }
 
 
-            startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
     }
 
-    /**
-     * Click event handler to handle clicking the "Track" Button
-     */
-    public void onTrackButtonClicked() {
-        try {
-            //open map activity and display friends
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
-    }
-
-    double lastLat;
-    double lastLon;
+    double lastMeetingPointLat;
+    double lastMeetingPointLon;
 
     public void updateLabels(String name, double lat, double lon) {
         destinationTV.setText(name);
-        lastLat = lat;
-        lastLon = lon;
+        lastMeetingPointLat = lat;
+        lastMeetingPointLon = lon;
+    }
+
+    MeetingPoint meetingPoint;
+
+    @Override
+    public void setMeetingPoint(MeetingPoint meetingPoint) {
+        this.meetingPoint = meetingPoint;
     }
 
     DecimalFormat df = new DecimalFormat();
 
     public void updateDistance(double currentLat, double currentLon) {
-        double distance = LocationTransformations.distance(currentLat, currentLon, lastLat, lastLon, 'K');
+        System.out.println("updateDistance");
+        double distance = LocationTransformations.distance(currentLat, currentLon, lastMeetingPointLat, lastMeetingPointLon, 'K');
 
         if (distance >= 1) {
 //            distance = distance/1000;
@@ -282,9 +312,10 @@ public class GroupDetailsFragment extends Fragment {
                 Place place = PlacePicker.getPlace(getActivity(), data);
                 Log.i(TAG, "Place Selected: " + place.getName());
                 mapView.getMapAsync(googleMap -> {
+                    googleMap.clear();
                     googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                             .title(getString(R.string.unimelb)));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
                 });
 
                 double latDouble = place.getLatLng().latitude;
@@ -316,8 +347,9 @@ public class GroupDetailsFragment extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        // TODO ask for location permissions
-                        Log.w("GroupDetailsFragment", "Grant location permissions!");
+                        if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+//                            requestLocationPermissions(REQUEST_FOR_LOCATION_DISTANCE);
+                        }
                     }
 
                     @Override
@@ -336,7 +368,7 @@ public class GroupDetailsFragment extends Fragment {
                     @Override
                     public void onNext(Status status) {
                         if (status.success) {
-                            Toast.makeText(getActivity(), "Update meeting point", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Meeting point updated", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.d(TAG, "Error update");
                         }
@@ -362,4 +394,107 @@ public class GroupDetailsFragment extends Fragment {
             mainTextView.setText(text);
         }
     }
+
+    @Override
+    public void moveCameraTo(double lat, double lon) {
+        if (googleMap != null) {
+            LatLng latLng = new LatLng(lat, lon);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+        }
+    }
+
+    @Override
+    public void dropPinAt(double lat, double lon, String name) {
+        if (googleMap != null) {
+//            googleMap.clear();  // TODO
+            LatLng latLng = new LatLng(lat, lon);
+            googleMap.addMarker(new MarkerOptions().position(latLng)
+                    .title(name));
+        }
+    }
+
+    @Override
+    @Deprecated
+    public void setMeetingPointLatLon(double lat, double lon) {
+        System.out.println(lat);
+        System.out.println(lon);
+        lastMeetingPointLat = lat;
+        lastMeetingPointLon = lon;
+    }
+
+    @Override
+    @Deprecated
+    public void setMeetingPointName(String name) {
+        if (destinationTV != null) {
+            destinationTV.setText(name);
+        }
+    }
+
+    @Override
+    public void updateDistanceToMeetingPoint() {
+        if (distanceTV != null) {
+            //update group location settings
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
+            LocationApi locationApi = retrofit.create(LocationApi.class);
+            LocationService locationService = new LocationService(locationApi, getActivity(), LocationServices.getFusedLocationProviderClient(getActivity()));
+
+            locationService.getLastLocation().subscribe(new Observer<Location>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+
+                }
+
+                @Override
+                public void onNext(Location location) {
+                    updateDistance(location.getLatitude(), location.getLongitude());
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (e.getMessage().equals("GRANT_ACCESS_FINE_LOCATION")) {
+//                        requestLocationPermissions(REQUEST_FOR_LOCATION_DISTANCE);
+                    }
+                }
+
+                @Override
+                public void onComplete() {
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public void requestLocationPermissions(int requestCode) {
+        FragmentCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, requestCode);
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        System.out.println("onRequestPermissionsResult");
+        if (requestCode == REQUEST_FOR_LOCATION_DISTANCE) {
+            System.out.println("Request location - distance");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                updateDistanceToMeetingPoint();
+                if (googleMap != null) {
+                    googleMap.setMyLocationEnabled(true);
+                }
+            } else {
+            }
+        }
+
+        if (requestCode == REQUEST_FOR_LOCATION_MAP) {
+            System.out.println("Request location - map");
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                System.out.println(googleMap);
+                updateDistanceToMeetingPoint();
+                if (googleMap != null) {
+                    googleMap.setMyLocationEnabled(true);
+                }
+            } else {}
+        }
+    }
+
 }

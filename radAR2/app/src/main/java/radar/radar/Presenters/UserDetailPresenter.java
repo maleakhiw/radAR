@@ -41,18 +41,19 @@ public class UserDetailPresenter {
             @Override
             public void onNext(AddFriendResponse addFriendResponse) {
                 if (addFriendResponse.success) {
-                    // If add friend successful, show alert dialogue to user to show that user has been added
-                    userDetailView.showToastLong("User have been added successfully.");
+                    userDetailView.showToastShort("Friend request sent");
+//                    userDetailView.hideAddFriend();
                 }
                 else {
-                    userDetailView.showToastLong("User have been added previously. Please wait for confirmation.");
+                    userDetailView.showToastShort("Friend request already sent");
+//                    userDetailView.showToastShort("User have been added previously. Please wait for confirmation.");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 // Throw message if add friend fails
-                userDetailView.showToastLong("Internal error. Failed to add friends.");
+                userDetailView.showToastShort("Internal error. Failed to add friends.");
             }
 
             @Override

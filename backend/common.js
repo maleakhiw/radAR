@@ -4,6 +4,20 @@ const User = require('./models/user') // TODO refactor so User is plug and play
 const Group = require('./models/group') // TODO refactor as above
 const Resource = require('./models/resource');  // TODO as above
 
+module.exports.getNumLength = number => (Math.abs(number) + "").length;
+
+
+module.exports.updateGroupLastUpdated = (groupID, userID) => {
+  // runs asynchronously - less "important" to validate if successfully completed
+  Group.findOne({groupID: groupID}).exec()
+  .then(group => {
+    if (group.members.includes(userID)) {
+      group.lastUpdated = Date.now();
+      group.save();
+    }
+  })
+}
+
 module.exports.isValidUser = (userID) => new Promise((resolve, reject) => {
   if (!userID) {  // if no userID specified
     reject('missingUserID');
@@ -30,6 +44,34 @@ module.exports.isUsernameUnique = (username) => new Promise((resolve, reject) =>
     }
   })
 })
+
+module.exports.getMeetingPointInfo = (meetingPoint) => {
+  if (meetingPoint) {
+    return {
+      lat: meetingPoint.lat,
+      lon: meetingPoint.lon,
+      name: meetingPoint.name,
+      description: meetingPoint.description,
+      updatedBy: meetingPoint.updatedBy,
+      timeAdded: meetingPoint.timeAdded
+    }
+  }
+
+}
+
+module.exports.formatGroupInfo = (group) => {
+  return {
+    name: group.name,
+    groupID: group.groupID,
+    admins: group.admins,
+    members: group.members,
+    isTrackingGroup: group.isTrackingGroup,
+    profilePicture: group.profilePicture,
+    meetingPoint: module.exports.getMeetingPointInfo(group.meetingPoint)
+    // usersDetails: usersDetails,  // TODO pass it in
+    // lastMessage: lastMessage // TODO pass it in
+  }
+}
 
 module.exports.isValidLat = (val) => {
   // latitude can only be +/- 90 degrees.
@@ -179,6 +221,8 @@ module.exports.isValidEmail = (email) => {
     return re.test(email);
 }
 
+module.exports.getUserDetail = (queryUserID, selfUserID) => module.exports.getUsersDetails([queryUserID], selfUserID);
+
 module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reject) => {
   let userDetails = {};
   let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
@@ -186,6 +230,7 @@ module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reje
     .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
       if (user) {
         userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
+        userDetails[memberUserID].isFriend = user.friends.includes(parseInt(userID));
       }
       resolve();
     })

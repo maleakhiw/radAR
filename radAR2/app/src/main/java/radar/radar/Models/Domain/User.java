@@ -14,8 +14,9 @@ public class User implements Serializable {
     public String profilePicture;
     public String profileDesc;
     public String email;
-
     public HashMap<Integer, Group> commonGroups;    // may be null
+
+    public boolean isFriend;
 
     /** Constructor for User class */
     public User(int userID, String username, String firstName, String lastName, String profileDesc, String email) {
@@ -24,6 +25,16 @@ public class User implements Serializable {
         this.firstName = firstName;
         this.lastName = lastName;
         this.profilePicture = "";
+        this.profileDesc = profileDesc;
+        this.email = email;
+    }
+
+    public User(int userID, String username, String firstName, String lastName, String profilePicture, String profileDesc, String email) {
+        this.userID = userID;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profilePicture = profilePicture;
         this.profileDesc = profileDesc;
         this.email = email;
     }

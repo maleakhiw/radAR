@@ -146,6 +146,7 @@ app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.send
 // chats and groups
 app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
 app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate, groupSystem.removeMember);
 
 // groups
 app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
@@ -165,7 +166,7 @@ app.post("/api/accounts/:userID/location", authenticate, positioningSystem.updat
 // object: users
 // users
 app.get("/api/users", ums.search) // get all users (only if query specified)
-app.get("/api/users/:userID", ums.getInformation)
+app.get("/api/users/:userID", ums.getInformation) // NOTE: added new param: ?userID=(requesterUserID)
 
 // object: groups
 app.get("/api/groups", (req, res) => {

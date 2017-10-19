@@ -20,8 +20,6 @@
             android:id="@+id/friends_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/recyclerView_padding_small"
-            android:paddingBottom="@dimen/recyclerView_padding_small"
             android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

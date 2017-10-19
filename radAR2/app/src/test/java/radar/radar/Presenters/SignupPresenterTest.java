@@ -188,7 +188,7 @@ public class SignupPresenterTest {
         presenter.processSignup();
 
         // Check whether it is properly called
-        Mockito.verify(signupView).showToastLong("Internal Error. Sign Up failed.");
+        Mockito.verify(signupView).showToastShort("Internal Error. Sign Up failed.");
         Mockito.verify(signupView).dismissProgressBar();
     }
 

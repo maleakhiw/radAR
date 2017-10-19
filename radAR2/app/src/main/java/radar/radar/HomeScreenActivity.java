@@ -14,6 +14,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Status;
@@ -72,10 +73,11 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
+        ImageView image = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
 
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
 
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -137,7 +139,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             @Override
             public void onClick(View v) {
                 // FAB Action
-                getDeviceLocation();
+                presenter.jumpToCurrentLocation();
             }
         });
 
@@ -191,8 +193,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         presenter.onMapReady(googleMap);
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
     }
 
 
@@ -238,6 +238,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onStart();
         mapFragment.getMapAsync(this); // reload map
 
+        // might have updated profile
+        helper.updateDisplay();
+
         presenter.onStart();
     }
 
@@ -252,44 +255,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             }
         };
         return locationCallback;
-    }
-
-    private void getDeviceLocation() {
-    /*
-     * Get the best and most recent location of the device, which may be null in rare
-     * cases when a location is not available.
-     */
-        try {
-            Task locationResult = fusedLocationClient.getLastLocation();
-            locationResult.addOnCompleteListener(this, new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        currentLocation = (Location) task.getResult();
-
-                        if(currentLocation != null) {
-                            CameraPosition cameraPosition = new CameraPosition.Builder()
-                                    .target(new LatLng(currentLocation.getLatitude(),
-                                            currentLocation.getLongitude()))
-                                    .zoom(DEFAULT_ZOOM).build();
-                            googleMap.animateCamera(CameraUpdateFactory
-                                    .newCameraPosition(cameraPosition));
-                            googleMap.setMyLocationEnabled(true);
-                            // TODO do not remove PoI
-                            LatLng currentPosition = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                                    currentPosition, DEFAULT_ZOOM));
-                        }
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.getException());
-                    }
-                }
-            });
-        } catch(SecurityException e)  {
-            Log.e("Exception: %s", e.getMessage());
-        }
     }
 }
 

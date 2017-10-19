@@ -80,6 +80,7 @@ module.exports = class ResMS {
         // TODO: Groups and Groups
         if (file.owners.includes(userID)) {
           res.setHeader('Content-Type', file.mimetype)
+          res.setHeader('filename', file.filename);
           res.sendFile(fileID, { root: path.join(__dirname, '../uploads') })
         } else {
           res.sendStatus(401)

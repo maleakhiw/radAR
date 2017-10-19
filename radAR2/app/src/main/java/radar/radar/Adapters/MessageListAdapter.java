@@ -6,8 +6,12 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,11 +21,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Responses.MessageResponseWithDetails;
 import radar.radar.Models.Domain.User;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
 import radar.radar.Services.AuthService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
+import radar.radar.Services.TimeFormatService;
+import retrofit2.Retrofit;
 
 /**
  * Adapter for chat (messages)
@@ -134,62 +145,15 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     }
 
     /**
-     * Parse time
-     * @return string to be displayed in user interface
-     */
-    private String parseTimeString(String timeString) {
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date date = null;
-        try {
-            date = sdf.parse(timeString);
-            System.out.println(date);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(date.getTime());
-
-            Integer hour = calendar.get(Calendar.HOUR_OF_DAY);
-            Integer minute = calendar.get(Calendar.MINUTE);
-
-            String hourString, minuteString;
-
-            if (hour < 10) {
-                hourString = "0" + hour.toString();
-            } else {
-                hourString = hour.toString();
-            }
-
-            if (minute < 10) {
-                minuteString = "0" + minute.toString();
-            } else {
-                minuteString = minute.toString();
-            }
-
-            if (!DateFormat.is24HourFormat(context)) {
-                return hourString + ":" + minuteString;
-            } else {
-                // set am or pm
-                int hourOfDay = hour;
-                if (hourOfDay >= 12) {
-                    return hourString + ":" + minuteString + " PM";
-                } else {
-                    return hourString + ":" + minuteString + " AM";
-                }
-                
-            }
-
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    /**
      * Inner class for ReceivedMessageHolder (layout for receive message row)
      */
     private class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText, nameText;
+        ImageView profilePic;
+        ResourcesService resourcesService;
+
+        private boolean profilePicSet = false;
+
 
         public ReceivedMessageHolder(View itemView) {
             super(itemView);
@@ -197,15 +161,55 @@ public class MessageListAdapter extends RecyclerView.Adapter {
             messageText = itemView.findViewById(R.id.text_message_body);
             nameText = itemView.findViewById(R.id.text_message_name);
             timeText = itemView.findViewById(R.id.text_message_time);
+            profilePic = itemView.findViewById(R.id.image_message_profile);
+
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));   // TODO move to factory, along with other instances of new UsersService
+
         }
 
         // Bind method
         void bind(MessageResponseWithDetails message) {
+
             messageText.setText(message.text);
             if (message.userDetails != null) {
                 nameText.setText(message.userDetails.firstName + " " + message.userDetails.lastName);
+
+                // load profile picture
+                if (!profilePicSet) {
+                    if (message.userDetails.profilePicture != null) {
+                        resourcesService.getResourceWithCache(message.userDetails.profilePicture, context).subscribe(new Observer<File>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(File file) {
+                                Picasso.with(context).load(file).into(profilePic);
+                                profilePicSet = true;
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                            }
+
+                            @Override
+                            public void onComplete() {
+
+                            }
+                        });
+                    }
+                    profilePicSet = true;
+                }
+
+            } else {
+                profilePic.setImageResource(R.mipmap.ic_launcher);
+
             }
-            timeText.setText(parseTimeString(message.time));
+
+            timeText.setText(TimeFormatService.parseTimeString(message.time, context));
         }
     }
 
@@ -215,17 +219,19 @@ public class MessageListAdapter extends RecyclerView.Adapter {
     private class SentMessageHolder extends RecyclerView.ViewHolder {
         TextView messageText, timeText;
 
+
         public SentMessageHolder(View itemView) {
             super(itemView);
 
             messageText = itemView.findViewById(R.id.text_message_body_send);
             timeText = itemView.findViewById(R.id.text_message_time);
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
         }
 
         // Bind method
         void bind(MessageResponseWithDetails message) {
             messageText.setText(message.text);
-            timeText.setText(parseTimeString(message.time));
+            timeText.setText(TimeFormatService.parseTimeString(message.time, context));
         }
     }
 }

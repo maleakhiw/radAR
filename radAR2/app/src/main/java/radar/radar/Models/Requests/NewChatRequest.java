@@ -11,10 +11,10 @@ public class NewChatRequest {
 
     /**
      * Constructor for new chat
-     * @param participantUserIDs array list of participants
      * @param name name of the chat
+     * @param participantUserIDs array list of participants
      */
-    public NewChatRequest(ArrayList<Integer> participantUserIDs, String name) {
+    public NewChatRequest(String name, ArrayList<Integer> participantUserIDs) {
         this.participantUserIDs = participantUserIDs;
         this.name = name;
     }

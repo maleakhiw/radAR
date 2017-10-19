@@ -14,8 +14,6 @@ import radar.radar.Services.AuthApi;
 import radar.radar.Services.AuthService;
 import radar.radar.Views.LoginView;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * View part of the MVP model for Login activity/ screen
@@ -42,7 +40,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
 
         // get a Retrofit instance (this is also called the Builder pattern)
         // This is used to create an api class
-        Retrofit retrofit = RetrofitFactory.getRetrofit().build();
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         // make a new AuthApi using our current Retrofit *instance*
         AuthApi authApi = retrofit.create(AuthApi.class);
@@ -119,7 +117,7 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
      * @param message the message that will be display using toast
      */
     @Override
-    public void showToastLong(String message) {
+    public void showToastShort(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
@@ -149,7 +147,6 @@ public class LoginActivity extends AppCompatActivity implements LoginView {
     public void finishActivity() {
         finish();
     }
-
 
     /**
      * Method to connect user interface components on the screen/xml to java

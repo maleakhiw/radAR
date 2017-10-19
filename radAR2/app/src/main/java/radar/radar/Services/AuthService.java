@@ -43,6 +43,26 @@ public class AuthService {
     }
 
     /**
+     * Retrieves the username from SharedPreferences. Returns 0 if unset.
+     * @param context Android Context
+     * @return userID
+     */
+    public static String getUsername(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("username", "");
+    }
+
+    /**
+     * Retrieves the username from SharedPreferences. Returns 0 if unset.
+     * @param context Android Context
+     * @return userID
+     */
+    public static String getProfileDesc(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("profileDesc", "");
+    }
+
+    /**
      * Retrieves the user first name from SharedPreferences. Returns "" if unset.
      * @param context Android Context
      * @return userID
@@ -108,9 +128,11 @@ public class AuthService {
                         if (authResponse.success) {
                             prefs.edit().putString("radar_token", authResponse.token)
                                     .putInt("radar_userID", authResponse.userID)
+                                    .putString("username", authResponse.userInfo.username)
                                     .putString("firstName", authResponse.userInfo.firstName)
                                     .putString("lastName", authResponse.userInfo.lastName)
                                     .putString("email", authResponse.userInfo.email)
+                                    .putString("profileDesc", authResponse.userInfo.profileDesc)
                                     .apply();
                         }
 
@@ -160,9 +182,11 @@ public class AuthService {
                         if (authResponse.success) {
                             prefs.edit().putString("radar_token", authResponse.token)
                                     .putInt("radar_userID", authResponse.userID)
+                                    .putString("username", authResponse.userInfo.username)
                                     .putString("firstName", authResponse.userInfo.firstName)
                                     .putString("lastName", authResponse.userInfo.lastName)
                                     .putString("email", authResponse.userInfo.email)
+                                    .putString("profileDesc", authResponse.userInfo.profileDesc)
                                     .apply();
                         }
                         emitter.onNext(authResponse);
@@ -191,7 +215,7 @@ public class AuthService {
      */
     public static void signOut(Context context) {
         SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
-        prefs.edit().remove("radar_token").remove("radar_userID").apply();
+        prefs.edit().remove("radar_token").remove("radar_userID").remove("profilePicture").apply();
     }
 
 }

@@ -160,6 +160,7 @@ function deleteGroupImpl(req, res) {
     }
   })
   .then(() => {
+    winston.debug('Group deleted');
     let promiseAll = members.map(member => {
       return User.findOne({userID: member}).exec()
       .then(user => {
@@ -195,6 +196,49 @@ module.exports = class GroupSystem extends SMS {
     UserLocation = pLocation;
   }
 
+  getGroupsForUser(req, res) {
+    SMS.getGroupsForUserImpl(req, res, true);
+  }
+
+  removeMember(req, res) {
+    let userID  = parseInt(req.params.userID);
+    let groupID = parseInt(req.params.groupID);
+    let memberUserID = parseInt(req.params.memberUserID);
+
+    groupExists(groupID).then(() => {
+      return Group.findOne({groupID: groupID})
+    })
+    .then(group => {
+      if (!group.admins.includes(memberUserID)) {
+        group.members = group.members.filter(userId => userId != memberUserID);
+        group.save();
+      } else {
+        throw 'cannotRemoveAdmin';
+      }
+
+      return User.findOne({userID: memberUserID});
+    })
+    .then(user => {
+      // TODO check if no users filtered, throw error
+      user.groups = user.groups.filter(groupId => groupId != groupID);
+      return user.save();
+    })
+    .then(() => {
+      res.json({
+        success: true,
+        errors: []
+      });
+    })
+    .catch(err => {
+      if (err == 'cannotRemoveAdmin') {
+        winston.debug(err);
+        common.sendUnauthorizedError(res, []);  // TODO add new errorKey for the error
+      } else {
+        winston.error(err);
+      }
+    })
+  }
+
   updateGroupDetails(req, res) {
     /*
       HTTP PUT {serverURL}/api/accounts/:userID/groups/:groupID
@@ -202,6 +246,7 @@ module.exports = class GroupSystem extends SMS {
       Body:
       {
         name: String (optional),  // validated
+        profilePicture: String
       }
 
       Headers:
@@ -347,7 +392,7 @@ module.exports = class GroupSystem extends SMS {
 
       let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
         console.log(memberUserID);
-        UserLocation.findOne({userID: memberUserID}).exec()
+        UserLocation.findOne({userID: memberUserID}).sort({timeUpdated: -1}).exec()
         .then((location) => {
           console.log(location);
           if (location) {
@@ -383,8 +428,8 @@ module.exports = class GroupSystem extends SMS {
     })
 
     .then(() => {
-      console.log(locations);
-      console.log(userDetails);
+      winston.debug(locations);
+      winston.debug(userDetails);
       res.json({
         success: true,
         errors: [],

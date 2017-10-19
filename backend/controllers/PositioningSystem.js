@@ -101,9 +101,11 @@ module.exports = class PositioningSystem {
   }
 
   updateLocation(req, res) {
+    console.log(req.body);
     // POST {serverURL}/api/accounts/:userID/location
     /* Request body:
        {
+         groupID: Number, // optional
          lat: Number,  // latitude
          lon: Number,  // longitude
          accuracy: Number, // in metres
@@ -112,6 +114,7 @@ module.exports = class PositioningSystem {
     */
 
     let userID   = req.params.userID;
+    let groupID  = req.body.groupID;
     let lat      = req.body.lat;
     let lon      = req.body.lon;
     let accuracy = req.body.accuracy;
@@ -122,25 +125,41 @@ module.exports = class PositioningSystem {
       sendError(res, errorKeys);
       return;
     }
+
+    // update group last updated, to be used for sorting
+    common.updateGroupLastUpdated(groupID, userID);
+
     LocationModel.findOne({userID: userID}).exec()
     .then((location) => {
-      if (location) {
-        location.remove();
-      }
-
-      LocationModel.create({
+      winston.log(location);
+      let obj = {
         userID: userID,
         lat: lat,
         lon: lon,
         heading: heading,
-        accuracy: accuracy
-      })
-      .then((location) => {
-        res.json({
-          success: true,
-          errors: []
+        accuracy: accuracy,
+        timeUpdated: Date.now()
+      };
+      if (location) {
+        // location.remove();
+        location.update(obj)
+        .then((location) => {
+          res.json({
+            success: true,
+            errors: []
+          })
         })
-      })
+        .catch(err => winston.error(err));
+      } else {
+        LocationModel.create(obj)
+        .then((location) => {
+          res.json({
+            success: true,
+            errors: []
+          })
+        })
+      }
+
     })
     .catch((err) => common.sendInternalError(res));
 

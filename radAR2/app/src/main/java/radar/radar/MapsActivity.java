@@ -4,11 +4,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.DirectionsApi;
@@ -21,12 +24,27 @@ import com.google.maps.model.TravelMode;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
+import radar.radar.Models.Domain.UserLocation;
+import radar.radar.Services.LocationApi;
+import radar.radar.Services.LocationService;
+import retrofit2.Retrofit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+
+    private MeetingPoint meetingPoint;
+    private Group group;
+
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationService locationService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +56,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        group = (Group) getIntent().getExtras().getSerializable("group");
+        meetingPoint = (MeetingPoint) getIntent().getExtras().getSerializable("meetingPoint");  // TODO remove, take from group
+
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+        locationService = new LocationService(retrofit.create(LocationApi.class), this, fusedLocationClient);
+
+        // set up the onLocationCallback
+        // TODO not for here - for GroupLocationsFragment
 
     }
 
@@ -61,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private String getEndLocationTitle(DirectionsResult results) {
-        return  "Time :"+ results.routes[0].legs[0].duration.humanReadable + " Distance :" + results.routes[0].legs[0].distance.humanReadable;
+        return  "Time: "+ results.routes[0].legs[0].duration.humanReadable + " Distance: " + results.routes[0].legs[0].distance.humanReadable;
     }
 
     private void addPolyline(DirectionsResult results, GoogleMap mMap) {
@@ -79,49 +107,108 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+
+    LatLng from;
+    LatLng to;
+
+    HashMap<Integer, Marker> markers = new HashMap<>();
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng unimelb = new LatLng(-37.7963689,144.9611738);
-        LatLng sydney = new LatLng(-34, 151);
-
-        // Testing purposes
-        CharSequence text = "Null";
-        int duration = Toast.LENGTH_SHORT;
-
-        String orig;
-        String dest;
-        DateTime now = new DateTime();
-        DirectionsResult results;
-        try {
-            orig = String.valueOf(unimelb.latitude) + "," + String.valueOf(unimelb.longitude);
-            dest = String.valueOf(sydney.latitude) + "," + String.valueOf(sydney.longitude);
-
-            results = DirectionsApi.newRequest(getGeoContext())
-                    .mode(TravelMode.DRIVING).origin(orig)
-                    .destination(dest).departureTime(now)
-                    .await();
-            addMarkersToMap(results,mMap);
-            addPolyline(results, mMap);
-            text = "Success";
-
-        } catch (ApiException e) {
-            e.printStackTrace();
-            text = "Exception Error";
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            text = "Exception Error";
-        } catch (IOException e) {
-            e.printStackTrace();
-            text = "Exception Error";
-        } finally {
-            Toast toast = Toast.makeText(this, text, duration);
-            toast.show();
+        if (meetingPoint != null) {
+            // Add a marker in Sydney and move the camera
+           drawRoute();
         }
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(unimelb,7));
+        loadGroupLocations();
+    }
+
+    boolean first = true;
+    public void drawRoute() {
+        locationService.getLastLocation().subscribe(location -> {
+            from = new LatLng(location.getLatitude(), location.getLongitude());
+            to = new LatLng(meetingPoint.lat, meetingPoint.lon);
+
+            // Testing purposes
+            CharSequence text = "Null";
+            int duration = Toast.LENGTH_SHORT;
+
+            String orig;
+            String dest;
+            DateTime now = new DateTime();
+            DirectionsResult results;
+            try {
+                orig = String.valueOf(from.latitude) + "," + String.valueOf(from.longitude);
+                dest = String.valueOf(to.latitude) + "," + String.valueOf(to.longitude);
+
+                results = DirectionsApi.newRequest(getGeoContext())
+                        .mode(TravelMode.DRIVING).origin(orig)
+                        .destination(dest).departureTime(now)
+                        .await();
+                addMarkersToMap(results,mMap);
+                addPolyline(results, mMap);
+                text = "Success";
+
+            } catch (ApiException e) {
+                e.printStackTrace();
+                text = "Exception Error";
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                text = "Exception Error";
+            } catch (IOException e) {
+                e.printStackTrace();
+                text = "Exception Error";
+            } finally {
+//                Toast toast = Toast.makeText(this, text, duration).show();
+            }
+            //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+            if (first) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(from,18));
+                first = false;
+            }
+
+        }, System.out::println);
+    }
+
+    private void loadGroupLocations() {
+        locationService.getGroupLocationInfo(group.groupID, 3000).subscribe(
+            groupLocationsInfo -> {
+                mMap.clear();  // clear all previous pins
+                drawRoute();
+
+
+                for (UserLocation location: groupLocationsInfo.locations) {
+                    Marker existingMarker = markers.get(location.getUserID());
+//                    if (existingMarker != null) {
+//                        existingMarker.setPosition(new LatLng(location.lat, location.lon));
+//                    } else {
+//                        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
+//                        marker.showInfoWindow();
+//
+//                        markers.put(location.getUserID(), marker);  // add to list
+//                    }
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
+                    marker.showInfoWindow();
+
+                    markers.put(location.getUserID(), marker);  // add to list
+
+                }
+            }, System.out::println
+        );
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadGroupLocations();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        locationService.stopPollingGroupLocation();
     }
 }

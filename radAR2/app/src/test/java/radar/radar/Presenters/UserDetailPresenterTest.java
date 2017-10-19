@@ -62,7 +62,7 @@ public class UserDetailPresenterTest {
         presenter.generateFriendRequest(1);
 
         // Assert the it produce successful message
-        Mockito.verify(userDetailView).showToastLong(anyString());
+        Mockito.verify(userDetailView).showToastShort(anyString());
     }
 
     /**
@@ -86,7 +86,7 @@ public class UserDetailPresenterTest {
         presenter.generateFriendRequest(1);
 
         // Assert that it produces error message
-        Mockito.verify(userDetailView).showToastLong(anyString());
+        Mockito.verify(userDetailView).showToastShort(anyString());
     }
 
     /**
@@ -116,7 +116,7 @@ public class UserDetailPresenterTest {
         presenter.generateFriendRequest(1);
 
         // Assert that it return error
-        Mockito.verify(userDetailView).showToastLong(anyString());
+        Mockito.verify(userDetailView).showToastShort(anyString());
     }
 
 }

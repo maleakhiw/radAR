@@ -470,8 +470,9 @@ module.exports = class UMS {
   }
 
   getInformation(req, res) {
-    let queryUserID = req.params.userID
-    let username = req.body.username
+    let userID = req.query.userID;
+    let queryUserID = req.params.userID;
+    let username = req.body.username;
 
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure
@@ -492,13 +493,17 @@ module.exports = class UMS {
         User.findOne( { username: username } ).exec()
         .then((user) => {
           // winston.debug(user)
-          let userInfo = getPublicUserInfo(user)
-          let response = {
-            success: true,
-            errors: [],
-            details: userInfo
-          }
-          res.json(response)
+          common.getUserDetail(user.userID, userID).then(
+            usersDetailsOne => {
+              let response = {
+                success: true,
+                errors: [],
+                details: usersDetailsOne[user.userID]
+              };
+              res.json(response);
+            }
+          );
+
         })
         .catch((err) => {
           winston.error(err);
@@ -509,13 +514,16 @@ module.exports = class UMS {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
           // winston.debug(user)
-          let userInfo = getPublicUserInfo(user)
-          let response = {
-            success: true,
-            errors: [],
-            details: userInfo
-          }
-          res.json(response)
+          common.getUserDetail(user.userID, userID).then(
+            usersDetailsOne => {
+              let response = {
+                success: true,
+                errors: [],
+                details: usersDetailsOne[user.userID]
+              };
+              res.json(response);
+            }
+          );
         })
         .catch((err) => {
           winston.error(err);

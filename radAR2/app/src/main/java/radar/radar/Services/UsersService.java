@@ -1,6 +1,9 @@
 package radar.radar.Services;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+
+import java.io.File;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -11,6 +14,13 @@ import radar.radar.Models.Responses.FriendRequestsResponse;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.Status;
 import radar.radar.Models.Responses.UsersSearchResult;
+import radar.radar.Models.SearchUserResponse;
+import radar.radar.Models.UpdateGroupBody;
+import radar.radar.Models.UpdateProfileBody;
+import retrofit2.http.Body;
+import retrofit2.http.Header;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 /**
  * Service for users that served as layer of abstraction for retrofit. The methods here
@@ -40,6 +50,32 @@ public class UsersService {
     public static enum REQUEST_ACTION {
         ACCEPT, DECLINE
     };
+
+    public Observable<SearchUserResponse> getProfile(int queryUserID) {
+        return usersApi.getUserProfile(queryUserID, userID, token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Gets the profile picture for a user
+     * @param queryUserID user to get the profile picture for
+     * @param resourcesService Service, required to access profile picture
+     * @param context Android Context, to load data from SharedPreferences and internal storage
+     * @return
+     */
+    public Observable<File> getProfilePicture(int queryUserID, ResourcesService resourcesService, Context context) {
+        return getProfile(queryUserID).switchMap(searchUserResponse -> {
+            if (searchUserResponse.details != null && searchUserResponse.details.profilePicture != null) {
+                SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+                prefs.edit().putString("profilePicture", searchUserResponse.details.profilePicture).apply();
+                // check if the fileID is in cache
+                return resourcesService.getResourceWithCache(searchUserResponse.details.profilePicture, context);
+            } else {
+                throw new Exception("User has no profile picture"); // to go to onError
+            }
+        });
+    }
 
     /**
      * Returns a list of friends for the logged-in user.
@@ -97,15 +133,59 @@ public class UsersService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+
+
     /**
      * Search for users using keyword
      * @param query keyword that are used for search
      * @param searchType search type (i.e. email, username, full name)
-     * @return
+     * @return search results
      */
     public Observable<UsersSearchResult> searchForUsers(String query, String searchType) {
         return usersApi.searchForUsers(userID, token, query, searchType)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Updates the user profile for the signed in user.
+     * @param body fields to be changed from the profile
+     * @return success or failure + reasons
+     */
+    public Observable<Status> updateProfile(UpdateProfileBody body) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+
+        return usersApi.updateProfile(userID, token, body)
+                .subscribeOn(Schedulers.io())
+                .map(result -> {
+                    if (result.success) {
+                        if (body.firstName != null) {
+                            prefs.edit().putString("firstName", body.firstName)
+                                    .putString("lastName", body.lastName).apply();
+                        }
+                        if (body.email != null) {
+                            prefs.edit().putString("email", body.email).apply();
+                        }
+                        if (body.profileDesc != null) {
+                            prefs.edit().putString("profileDesc", body.profileDesc).apply();
+                        }
+                        if (body.profilePicture != null) {
+                            prefs.edit().putString("profilePicture", body.profilePicture).apply();
+                        }
+                    }
+
+                    return result;
+                })
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Retrieves the last known profile picture resource ID from SharedPreferences. Returns null if unset.
+     * @param context Android Context
+     * @return resource ID
+     */
+    public static String getProfilePictureResID(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("radar.radar", Context.MODE_PRIVATE);
+        return prefs.getString("profilePicture", null);
     }
 }

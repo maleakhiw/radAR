@@ -88,15 +88,15 @@ public class ARPresenter {
     }
 
     private void updateLocationTransformations() {
-        Observable<Float> azimuthObservable = sensorService.azimuthUpdates.map(x -> (float) (double) x);
-        Observable<Float> pitchObservable = sensorService.pitchUpdates.map(x -> (float) (double) x);
+        Observable<Double> azimuthObservable = sensorService.azimuthUpdates;
+        Observable<Double> pitchObservable = sensorService.pitchUpdates;
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // push location to server
         Observable.zip(azimuthObservable, locationObservable, (azimuth, location) -> {
 //            System.out.println(azimuth.toString() + " " + location.toString());
             locationService.updateLocation((float) location.getLatitude(), (float) location.getLongitude(), location.getAccuracy(), azimuth)
-                    .subscribe();
+                    .subscribe(response -> {}, error -> {});
             return 0;
         }).subscribe(new Observer<Integer>() {
             @Override
@@ -134,10 +134,10 @@ public class ARPresenter {
             @Override
             public void onNext(LocationAndDeviceData locationAndDeviceData) {
                 Location location = locationAndDeviceData.location;
-                float latCurrent = (float) location.getLatitude();
-                float lonCurrent = (float) location.getLongitude();
-                float azimuth = locationAndDeviceData.azimuth;
-                float pitch = locationAndDeviceData.pitch;
+                double latCurrent = location.getLatitude();
+                double lonCurrent = location.getLongitude();
+                double azimuth = locationAndDeviceData.azimuth;
+                double pitch = locationAndDeviceData.pitch;
 
 
                 // meeting point

@@ -4,5 +4,7 @@ package radar.radar.Views;
  * Interface for UserDetailActivity to support MVP model.
  */
 public interface UserDetailView {
-    void showToastLong(String message);
+    void showToastShort(String message);
+
+    void hideAddFriend();
 }

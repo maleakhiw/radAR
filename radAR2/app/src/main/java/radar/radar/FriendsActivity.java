@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -118,7 +119,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
         NavigationView navigationView = findViewById(R.id.nav_view);
         TextView name = navigationView.getHeaderView(0).findViewById(R.id.nav_header_name);
         TextView email = navigationView.getHeaderView(0).findViewById(R.id.nav_header_email);
-        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, this);
+        ImageView image = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
+        helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
 
         recyclerView = findViewById(R.id.friends_recyclerView);
         fab = findViewById(R.id.fab);

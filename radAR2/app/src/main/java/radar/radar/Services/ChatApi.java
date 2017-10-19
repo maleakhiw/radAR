@@ -24,6 +24,7 @@ public interface ChatApi {
     Observable<GetChatsResponse> getChats(@Path(value="userID", encoded=true) int userID, @Header("token") String token);
 
     @POST("accounts/{userID}/chats")
+    @Deprecated
     Observable<NewChatResponse> newChat(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Body NewChatRequest body);
 
     @GET("accounts/{userID}/chats/{chatID}")

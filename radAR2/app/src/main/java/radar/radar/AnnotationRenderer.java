@@ -17,10 +17,10 @@ import static radar.radar.Presenters.ARPresenter.DESTINATION_ID;
  */
 
 public class AnnotationRenderer {
-    float latCurrent;
-    float lonCurrent;
-    float azimuth;
-    float pitch;
+    double latCurrent;
+    double lonCurrent;
+    double azimuth;
+    double pitch;
 
     ARView arView;
 
@@ -30,7 +30,7 @@ public class AnnotationRenderer {
 
     HashMap<Integer, AnnotationData> annotations;
 
-    public AnnotationRenderer(float latCurrent, float lonCurrent, float azimuth, float pitch, ArrayList<UserLocation> userLocations, HashMap<Integer, User> usersDetails, LocationTransformations locationTransformations, ARView arView) {
+    public AnnotationRenderer(double latCurrent, double lonCurrent, double azimuth, double pitch, ArrayList<UserLocation> userLocations, HashMap<Integer, User> usersDetails, LocationTransformations locationTransformations, ARView arView) {
         this.latCurrent = latCurrent;
         this.lonCurrent = lonCurrent;
         this.azimuth = azimuth;

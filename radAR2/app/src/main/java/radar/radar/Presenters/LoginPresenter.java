@@ -49,7 +49,7 @@ public class LoginPresenter {
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                loginView.showToastLong("Internal Error. Failed to login.");
+                loginView.showToastShort("Internal Error. Failed to login.");
                 loginView.dismissProgressBar();
             }
 
@@ -81,7 +81,7 @@ public class LoginPresenter {
             loginView.finishActivity();
         }
         else {
-            loginView.showToastLong("Login failed.Please check your username or password.");
+            loginView.showToastShort("Login failed.Please check your username or password.");
         }
     }
 
