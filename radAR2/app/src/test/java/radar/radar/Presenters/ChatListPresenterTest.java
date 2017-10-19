@@ -169,4 +169,34 @@ public class ChatListPresenterTest {
         Mockito.verify(chatListView).showToastMessage(anyString());
         Mockito.verify(chatListView).removeGroup(groupID);
     }
+
+    /**
+     * Unit testing to check when deleteGroup is false, it will show message
+     */
+    @Test
+    public void deleteGroup_StatusFalse() {
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+        int groupID = 1;
+
+        // Create presenter and spy it
+        ChatListPresenter presenterToBeSpied = new ChatListPresenter(chatListView, chatService);
+        ChatListPresenter presenter = Mockito.spy(presenterToBeSpied);
+
+        // Create Successful observable
+        Status status = new Status(false);
+        Observable<Status> observable = Observable.just(status);
+
+        // Return that successful observable
+        Mockito.when(chatService.deleteGroup(groupID)).thenReturn(observable);
+
+        // Change behaviour of load data
+        Mockito.doNothing().when(presenter).loadData();
+
+        // Call the presenter
+        presenter.deleteGroup(groupID);
+
+        // Verify error message
+        Mockito.verify(chatListView).showToastMessage(anyString());
+    }
 }

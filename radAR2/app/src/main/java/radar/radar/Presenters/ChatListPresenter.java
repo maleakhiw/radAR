@@ -73,6 +73,9 @@ public class ChatListPresenter {
                     chatListView.showToastMessage("Group deleted");
                     chatListView.removeGroup(groupID);
                 }
+                else {
+                    chatListView.showToastMessage("Failure to delete group.");
+                }
                 loadData();
             }
 
