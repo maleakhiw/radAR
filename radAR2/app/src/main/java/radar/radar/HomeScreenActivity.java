@@ -91,38 +91,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         // set up place autocomplete
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
-                googleMap.clear();
-                Log.i(TAG, "Place: " + place.getName());
-                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
-                        .title((String) place.getName()));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    /**
-                     * handle marker click event
-                     */
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        // TODO Auto-generated method stub
-                        Log.i(TAG, "Successful click ");
-                        Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
-                        intent.putExtra("status", "successful");
-                        startActivity(intent);
-                        return true;
-                    }
-                });
-            }
-
-            @Override
-            public void onError(Status status) {
-                // TODO: Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
+        presenter.setUpAutoCompleteFragment(autocompleteFragment, getApplicationContext());
 
         // set up floating action button
         FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);

@@ -1,25 +1,32 @@
 package radar.radar.Presenters;
 
 import android.annotation.SuppressLint;
-import android.support.design.widget.FloatingActionButton;
-import android.view.View;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import io.reactivex.disposables.Disposable;
 import radar.radar.Listeners.LocationCallbackProvider;
-import radar.radar.R;
+import radar.radar.NewGroupActivity;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
 
+import static android.content.ContentValues.TAG;
+
 
 public class HomeScreenPresenter {
+    private static final float DEFAULT_ZOOM = 15;
     HomeScreenView homeScreenView;
     LocationService locationService;
 
@@ -42,7 +49,7 @@ public class HomeScreenPresenter {
 
             current = new LatLng(location.getLatitude(), location.getLongitude());
             if (first) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, DEFAULT_ZOOM));
                 googleMap.setMyLocationEnabled(true);
                 first = false;
             }
@@ -53,7 +60,7 @@ public class HomeScreenPresenter {
 
     public void jumpToCurrentLocation() {
         if (current != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, DEFAULT_ZOOM));
         }
     }
 
@@ -82,6 +89,35 @@ public class HomeScreenPresenter {
 
     public LatLng getCurrent() {
         return current;
+    }
+
+    public void setUpAutoCompleteFragment(PlaceAutocompleteFragment autocompleteFragment, Context context) {
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // Get info about the selected place.
+                googleMap.clear();
+                Log.i(TAG, "Place: " + place.getName());
+                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                        .title((String) place.getName()));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                // handle marker click event
+                googleMap.setOnMarkerClickListener(marker -> {
+                    Log.i(TAG, "Successful click ");
+                    Intent intent = new Intent(context, NewGroupActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra("status", "successful");
+                    context.startActivity(intent);
+                    return true;
+                });
+            }
+
+            @Override
+            public void onError(Status status) {
+                // Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
     }
 
 }
