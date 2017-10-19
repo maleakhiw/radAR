@@ -22,7 +22,8 @@ public class GroupsListPresenter {
         this.groupsService = groupsService;
         this.view = view;
 
-        loadData();
+        // This was removed to make the unit test easier
+        // loadData();
     }
 
     public void loadData() {

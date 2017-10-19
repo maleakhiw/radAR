@@ -74,6 +74,7 @@ public class GroupsListActivity extends AppCompatActivity
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         GroupsService groupsService = new GroupsService(this, groupsApi);
         presenter = new GroupsListPresenter(groupsService, this);
+        presenter.loadData();
 
         // setup recyclerView
         rvAdapter = new GroupsAdapter(this, new ArrayList<>(), presenter);

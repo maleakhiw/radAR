@@ -12,6 +12,7 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import radar.radar.Models.Responses.Status;
 import radar.radar.Views.GroupsListView;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GetChatsResponse;
@@ -20,6 +21,7 @@ import radar.radar.Services.GroupsService;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 
 /**
@@ -101,38 +103,37 @@ public class GroupsListPresenterTest {
         // Call the presenter method
         presenter.loadData();
     }
+
+    /**
+     * Unit test to make sure delete group behave appropriately
+     */
+    @Test
+    public void deleteGroup_Success() {
+        // Mock necessary object
+        GroupsService service = Mockito.mock(GroupsService.class);
+        GroupsListView view = Mockito.mock(GroupsListView.class);
+
+        int groupID = 1;
+
+        // Mock the observable
+        Status status = Mockito.mock(Status.class);
+        status.success = true;
+        Observable<Status> observable = Observable.just(status);
+
+        // Define behaviour
+        Mockito.when(service.deleteGroup(groupID)).thenReturn(observable);
+
+        // Create object that will be tested, spy it because need load data
+        GroupsListPresenter presenter = new GroupsListPresenter(service, view);
+        GroupsListPresenter spy = Mockito.spy(presenter);
+
+        // Change behaviour of the spy
+        Mockito.doNothing().when(spy).loadData();
+
+        // Call the method to be tested
+        spy.deleteGroup(groupID);
+
+        // Verify
+        Mockito.verify(view).showToast(any());
+    }
 }
-//
-//    @Test
-//    public void loadDataError() {
-//        GroupsService groupsService = Mockito.mock(GroupsService.class);
-//        GroupsListView groupsListView = Mockito.mock(GroupsListView.class);
-//
-//        Mockito.when(groupsService.getGroups()).thenReturn(Observable.error(new Throwable("error")));
-//
-//        GroupsListPresenter groupsListPresenter = new GroupsListPresenter(groupsService, groupsListView);
-//        // method called in presenter, verify
-//        Mockito.verify(groupsListView, times(0)).updateRecyclerViewDataSet(any());
-//
-//    }
-//
-//    @Test
-//    public void loadData() {
-//        GroupsService groupsService = Mockito.mock(GroupsService.class);
-//        GroupsListView groupsListView = Mockito.mock(GroupsListView.class);
-//
-//        ArrayList<Integer> groups = new ArrayList<>();
-//        groups.add(1);
-//        groups.add(2);
-//        Mockito.when(groupsService.getGroups()).thenReturn(Observable.just(new GetChatsResponse(groups, true)));
-//        Mockito.when(groupsService.getGroup(1)).thenReturn(Observable.just(new GroupsResponse(new Group("test", true))));
-//        Mockito.when(groupsService.getGroup(2)).thenReturn(Observable.just(new GroupsResponse(new Group("test2", true))));
-//
-//        GroupsListPresenter groupsListPresenter = new GroupsListPresenter(groupsService, groupsListView);
-//        // method called in presenter, verify
-//        Mockito.verify(groupsListView, times(1)).updateRecyclerViewDataSet(any());
-//
-//    }
-//
-//
-//}
