@@ -102,4 +102,39 @@ public class ChatListPresenterTest {
         Mockito.verify(chatListView).showToastMessage(anyString());
         Mockito.verify(chatListView).stopRefreshIndicator();
     }
+
+    /**
+     * Unit testing to check when error, to display toast to user
+     */
+    @Test
+    public void loadData_Failure() {
+        // Mock necessary object
+        ChatListView chatListView = Mockito.mock(ChatListView.class);
+        ChatService chatService = Mockito.mock(ChatService.class);
+
+        // Create groups
+        ArrayList<Group> groups = Mockito.mock(ArrayList.class);
+
+        // Create observable returning success
+        GetChatsResponse getChatsResponse = Mockito.mock(GetChatsResponse.class);
+        getChatsResponse.success = false;
+        getChatsResponse.groups = groups;
+        Observable<GetChatsResponse> observable = Observable.just(getChatsResponse)
+                .map(getChatsResponse1 -> {
+                    throw new SocketTimeoutException("Exception");
+                });
+
+        // Define behaviour of getChats()
+        Mockito.when(chatService.getChats()).thenReturn(observable);
+
+        // Create the real presenter object to be tested
+        ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
+
+        // Call the method
+        presenter.loadData();
+
+        // Verify if load data status false, it will give message to user
+        Mockito.verify(chatListView).showToastMessage(anyString());
+        Mockito.verify(chatListView).stopRefreshIndicator();
+    }
 }

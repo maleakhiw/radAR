@@ -49,6 +49,7 @@ public class ChatListPresenter {
            @Override
            public void onError(Throwable e) {
                System.out.println(e);
+               chatListView.showToastMessage("Internal Error. Failure to load chat list.");
                chatListView.stopRefreshIndicator();
            }
 
