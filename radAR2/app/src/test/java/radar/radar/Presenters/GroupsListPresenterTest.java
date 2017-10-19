@@ -142,4 +142,40 @@ public class GroupsListPresenterTest {
         // Verify
         Mockito.verify(view).showToast(any());
     }
+
+    /**
+     * Unit test to make sure if delete group fail will display error message
+     */
+    @Test
+    public void deleteGroup_Failure() {
+        // Mock necessary object
+        GroupsService service = Mockito.mock(GroupsService.class);
+        GroupsListView view = Mockito.mock(GroupsListView.class);
+
+        int groupID = 1;
+
+        // Mock the observable
+        Status status = Mockito.mock(Status.class);
+        status.success = true;
+        Observable<Status> observable = Observable.just(status)
+                .map(status1 -> {
+                    throw new SocketTimeoutException();
+                });
+
+        // Define behaviour
+        Mockito.when(service.deleteGroup(groupID)).thenReturn(observable);
+
+        // Create object that will be tested, spy it because need load data
+        GroupsListPresenter presenter = new GroupsListPresenter(service, view);
+        GroupsListPresenter spy = Mockito.spy(presenter);
+
+        // Change behaviour of the spy
+        Mockito.doNothing().when(spy).loadData();
+
+        // Call the method to be tested
+        spy.deleteGroup(groupID);
+
+        // Verify
+        Mockito.verify(view).showToast(any());
+    }
 }
