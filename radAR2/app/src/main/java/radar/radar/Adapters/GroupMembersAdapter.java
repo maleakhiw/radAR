@@ -25,10 +25,6 @@ import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
 import retrofit2.Retrofit;
 
-/**
- * Created by kenneth on 7/10/17.
- */
-
 public class GroupMembersAdapter extends RecyclerView.Adapter<GroupMembersAdapter.ViewHolder> {
     HashMap<Integer, User> friends;
     ArrayList<User> friendsList;

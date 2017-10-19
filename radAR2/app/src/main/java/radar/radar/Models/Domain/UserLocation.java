@@ -4,9 +4,7 @@ import java.util.Date;
 
 import radar.radar.Models.Responses.GetLocationResponse;
 
-/**
- * Created by kenneth on 28/9/17.
- */
+
 
 public class UserLocation extends GetLocationResponse {
     public int getUserID() {

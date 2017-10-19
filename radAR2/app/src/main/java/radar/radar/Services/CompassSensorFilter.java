@@ -1,9 +1,5 @@
 package radar.radar.Services;
 
-/**
- * Created by kenneth on 2/10/17.
- */
-
 public class CompassSensorFilter extends SensorFilter {
     public CompassSensorFilter() {
         super();

@@ -1,9 +1,5 @@
 package radar.radar.Models.Requests;
 
-/**
- * Created by kenneth on 6/9/17.
- */
-
 public class RMSGetGroupInfoRequest {
     int userID = 0;
     String username = null;

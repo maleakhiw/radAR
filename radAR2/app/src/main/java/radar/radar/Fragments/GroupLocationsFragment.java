@@ -55,9 +55,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
-/**
- * Created by kenneth on 3/10/17.
- */
 
 public class GroupLocationsFragment extends Fragment {
 

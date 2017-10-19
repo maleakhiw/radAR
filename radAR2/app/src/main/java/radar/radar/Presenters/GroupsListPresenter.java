@@ -11,9 +11,7 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;
 
-/**
- * Created by kenneth on 3/10/17.
- */
+
 
 public class GroupsListPresenter {
     GroupsService groupsService;

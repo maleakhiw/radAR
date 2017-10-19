@@ -12,10 +12,6 @@ import radar.radar.Views.ARView;
 
 import static radar.radar.Presenters.ARPresenter.DESTINATION_ID;
 
-/**
- * Created by kenneth on 12/10/17.
- */
-
 public class AnnotationRenderer {
     double latCurrent;
     double lonCurrent;

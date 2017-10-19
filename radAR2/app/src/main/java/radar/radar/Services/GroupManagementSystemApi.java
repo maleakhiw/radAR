@@ -7,9 +7,6 @@ import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-/**
- * Created by kenneth on 6/9/17.
- */
 
 public interface GroupManagementSystemApi {
     @POST("getGroupInfo")

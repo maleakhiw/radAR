@@ -1,8 +1,5 @@
 package radar.radar.Models.Requests;
 
-/**
- * Created by kenneth on 17/9/17.
- */
 
 public class SignUpRequest {
     String firstName;

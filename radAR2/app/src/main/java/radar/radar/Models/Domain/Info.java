@@ -2,9 +2,6 @@ package radar.radar.Models.Domain;
 
 import java.util.ArrayList;
 
-/**
- * Created by kenneth on 6/9/17.
- */
 
 public class Info {
     public String getName() {

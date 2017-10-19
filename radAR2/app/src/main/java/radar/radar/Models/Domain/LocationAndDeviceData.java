@@ -4,10 +4,6 @@ import android.location.Location;
 
 import radar.radar.Models.Responses.GroupLocationsInfo;
 
-/**
- * Created by kenneth on 28/9/17.
- */
-
 public class LocationAndDeviceData {
     public double azimuth;
     public double pitch;

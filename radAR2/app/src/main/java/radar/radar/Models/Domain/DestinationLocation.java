@@ -4,10 +4,6 @@ import java.util.Date;
 
 import radar.radar.Models.Responses.GetLocationResponse;
 
-/**
- * Created by kenneth on 12/10/17.
- */
-
 public class DestinationLocation extends UserLocation {
     public String name;
 

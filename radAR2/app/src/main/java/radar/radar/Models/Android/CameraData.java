@@ -3,10 +3,6 @@ package radar.radar.Models.Android;
 import android.hardware.camera2.CameraCharacteristics;
 import android.util.SizeF;
 
-/**
- * Created by kenneth on 30/9/17.
- */
-
 
 public class CameraData {
     public CameraCharacteristics getCameraCharacteristics() {

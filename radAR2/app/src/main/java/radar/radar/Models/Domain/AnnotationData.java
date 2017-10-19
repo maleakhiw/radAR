@@ -1,9 +1,5 @@
 package radar.radar.Models.Domain;
 
-/**
- * Created by kenneth on 12/10/17.
- */
-
 public class AnnotationData {
     // unlike ARAnnotation, used for bookkeeping to handle overlapping annotations.
 

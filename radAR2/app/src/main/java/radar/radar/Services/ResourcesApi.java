@@ -15,10 +15,6 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Streaming;
 
-/**
- * Created by kenneth on 18/9/17.
- */
-
 public interface ResourcesApi {
     // https://stackoverflow.com/a/38891018
     /*

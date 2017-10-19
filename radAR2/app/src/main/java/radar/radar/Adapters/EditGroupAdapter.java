@@ -32,9 +32,6 @@ import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
 import retrofit2.Retrofit;
 
-/**
- * Created by kenneth on 7/10/17.
- */
 
 public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.ViewHolder> {
     HashMap<Integer, User> friends;

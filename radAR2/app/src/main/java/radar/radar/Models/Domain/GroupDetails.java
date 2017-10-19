@@ -2,11 +2,6 @@ package radar.radar.Models.Domain;
 
 import java.util.List;
 
-/**
- * Created by kenneth on 6/9/17.
- */
-
-
 public class GroupDetails {
 
     private Boolean success;

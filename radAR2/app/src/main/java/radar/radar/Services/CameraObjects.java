@@ -7,9 +7,6 @@ import android.view.Surface;
 
 import radar.radar.Models.Android.CameraData;
 
-/**
- * Created by kenneth on 7/10/17.
- */
 
 public class CameraObjects {
     CameraData cameraData;

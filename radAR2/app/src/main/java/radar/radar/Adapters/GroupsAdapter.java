@@ -29,9 +29,6 @@ import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
 import retrofit2.Retrofit;
 
-/**
- * Created by kenneth on 3/10/17.
- */
 public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder> {
 
     ArrayList<Group> groups;

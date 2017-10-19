@@ -62,11 +62,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * Created by kenneth on 3/10/17.
- * Modified by rtanudjaja on 10/10/17
- */
-
 public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     TextView nameTextView;
     TextView mainTextView;

@@ -2,9 +2,6 @@ package radar.radar.Models.Android;
 
 import radar.radar.Models.Domain.User;
 
-/**
- * Created by kenneth on 4/10/17.
- */
 
 public class UserWithCheckbox extends User {
     public boolean isChecked = false;

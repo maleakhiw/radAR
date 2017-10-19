@@ -18,9 +18,7 @@ import radar.radar.R;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
 
-/**
- * Created by kenneth on 8/10/17.
- */
+
 public class HomeScreenPresenter {
     HomeScreenView homeScreenView;
     LocationService locationService;

@@ -3,10 +3,6 @@ package radar.radar.Models.Responses;
 import radar.radar.Models.Domain.MessageResponse;
 import radar.radar.Models.Domain.User;
 
-/**
- * Created by kenneth on 7/10/17.
- */
-
 public class MessageResponseWithDetails extends MessageResponse {
     public User userDetails;
     public MessageResponseWithDetails(MessageResponse messageResponse, User user) {

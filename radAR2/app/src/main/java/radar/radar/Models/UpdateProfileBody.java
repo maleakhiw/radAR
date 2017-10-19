@@ -1,8 +1,5 @@
 package radar.radar.Models;
 
-/**
- * Created by kenneth on 18/10/17.
- */
 
 public class UpdateProfileBody {
     public String firstName;

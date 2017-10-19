@@ -8,9 +8,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * Created by kenneth on 6/9/17.
- */
 
 public class TrackingGroupInteractorImpl implements TrackingGroupInteractor {
     public Observable<GroupDetails> getGroupDetails(int userID, int queryUserID, String token) {

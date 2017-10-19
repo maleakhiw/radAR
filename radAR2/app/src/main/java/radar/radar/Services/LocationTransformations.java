@@ -3,9 +3,6 @@ package radar.radar.Services;
 import radar.radar.Models.Android.CompassDirection;
 import static radar.radar.Models.Android.CompassDirection.*;
 
-/**
- * Created by kenneth on 30/9/17.
- */
 
 public class LocationTransformations {
 

@@ -7,9 +7,6 @@ import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Domain.UserLocation;
 
-/**
- * Created by kenneth on 2/10/17.
- */
 
 public class GroupLocationsInfo extends Status {
     public MeetingPoint meetingPoint;

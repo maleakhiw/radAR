@@ -5,9 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-/**
- * Created by kenneth on 18/10/17.
- */
 
 public class PathHelper {
     /** Get real path from gallery that are used to initiate a new file */

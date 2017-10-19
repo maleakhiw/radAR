@@ -27,10 +27,6 @@ import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Android.CameraData;
 import radar.radar.Listeners.CameraDataListener;
 
-/**
- * Created by kenneth on 7/10/17.
- */
-
 class SurfaceAndSurfaceTexture {
     Surface surface;
     SurfaceTexture surfaceTexture;

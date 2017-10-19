@@ -5,9 +5,6 @@ import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.GroupDetailView;
 
-/**
- * Created by kenneth on 17/10/17.
- */
 
 public class GroupDetailsPresenter {
 

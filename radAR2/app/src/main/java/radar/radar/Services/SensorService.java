@@ -8,9 +8,6 @@ import android.util.Log;
 
 import io.reactivex.Observable;
 
-/**
- * Created by kenneth on 1/10/17.
- */
 
 public class SensorService {
     SensorEventListener azimuthEventListener;

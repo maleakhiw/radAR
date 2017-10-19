@@ -5,9 +5,6 @@ import android.widget.RelativeLayout;
 
 import radar.radar.Models.Domain.UserLocation;
 
-/**
- * Created by kenneth on 28/9/17.
- */
 
 public class ARAnnotation {
     UserLocation userLocation;

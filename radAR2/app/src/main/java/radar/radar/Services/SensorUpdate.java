@@ -1,9 +1,5 @@
 package radar.radar.Services;
 
-/**
- * Created by kenneth on 1/10/17.
- */
-
 class SensorUpdate {
     double azimuth;
     double pitch;

@@ -4,9 +4,6 @@ import radar.radar.Models.Android.ARAnnotation;
 import radar.radar.Models.Android.CompassDirection;
 import radar.radar.Models.Domain.UserLocation;
 
-/**
- * Created by kenneth on 28/9/17.
- */
 
 public interface ARView {
     void requestLocationPermissions();
