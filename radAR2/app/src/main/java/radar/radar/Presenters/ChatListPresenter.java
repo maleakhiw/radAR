@@ -37,9 +37,11 @@ public class ChatListPresenter {
 
            @Override
            public void onNext(GetChatsResponse getChatsResponse) {
-               System.out.println("got response");
                if (getChatsResponse.success) {
                    chatListView.setGroups(getChatsResponse.groups);
+               }
+               else {
+                   chatListView.showToastMessage("Failure to load chat list.");
                }
                chatListView.stopRefreshIndicator();
            }
