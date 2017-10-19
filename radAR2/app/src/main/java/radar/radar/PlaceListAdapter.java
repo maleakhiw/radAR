@@ -9,10 +9,6 @@ import android.widget.TextView;
 
 import com.google.android.gms.location.places.PlaceBuffer;
 
-/**
- * Created by rtanudjaja on 29/09/17.
- */
-
 public class PlaceListAdapter extends RecyclerView.Adapter<PlaceListAdapter.PlaceViewHolder> {
 
     private Context mContext;

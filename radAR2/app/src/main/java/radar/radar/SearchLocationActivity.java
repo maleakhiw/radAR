@@ -24,10 +24,6 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.ui.PlacePicker;
 
-/**
- * Created by rtanudjaja on 3/10/17.
- */
-
 public class SearchLocationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     /**
