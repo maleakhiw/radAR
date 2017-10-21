@@ -27,6 +27,7 @@ import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.NewGroupListAdapter;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Models.Domain.User;
@@ -56,8 +57,8 @@ public class NewGroupActivity extends AppCompatActivity {
 
     private Boolean first = true;
     private String placeName;
-    private String placeLat;
-    private String placeLng;
+    private Double placeLat;
+    private Double placeLng;
     private TextView locationText;
     private ImageButton cancelButton;
 
@@ -91,8 +92,13 @@ public class NewGroupActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
 
         placeName = bundle.getString("name");
-        placeLat = bundle.getString("lat");
-        placeLng = bundle.getString("lng");
+        try {
+            placeLat = Double.parseDouble(bundle.getString("lat"));
+            placeLng = Double.parseDouble(bundle.getString("lng"));
+        } catch (NullPointerException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
 
         //set up meeting point view
         locationText = findViewById(R.id.textViewLocn);
@@ -117,10 +123,13 @@ public class NewGroupActivity extends AppCompatActivity {
             }
         });
 
+        cancelButton = findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(view -> {
             cancelButton.setVisibility(View.INVISIBLE);
-            placeName = null;
             locationText.setText(DEFAULT_TEXT);
+            placeName = null;
+            placeLat = null;
+            placeLng = null;
         });
 
         recyclerView = findViewById(R.id.new_group_recyclerview);
@@ -208,6 +217,9 @@ public class NewGroupActivity extends AppCompatActivity {
                 // Get the user's selected place from the Intent.
                 Place place = PlacePicker.getPlace(this, data);
                 Log.i(TAG, "Place Selected: " + place.getName());
+                placeName = place.getName().toString();
+                placeLat = place.getLatLng().latitude;
+                placeLng = place.getLatLng().longitude;
                 locationText.setText(place.getName());
                 cancelButton.setVisibility(View.VISIBLE);
             }
@@ -246,7 +258,8 @@ public class NewGroupActivity extends AppCompatActivity {
     }
 
     public void newGroup(String groupName, ArrayList<Integer> selectedUsers) {
-        groupsService.newGroup(groupName, selectedUsers).subscribe(new Observer<GroupsResponse>() {
+
+        Observer<GroupsResponse> observer = new Observer<GroupsResponse>() {
             @Override
             public void onSubscribe(Disposable d) {
 
@@ -274,7 +287,17 @@ public class NewGroupActivity extends AppCompatActivity {
             public void onComplete() {
 
             }
-        });
+        };
+
+        if (placeName == null) {
+            groupsService.newGroup(groupName, selectedUsers).subscribe(observer);
+        } else {
+            groupsService.newGroup(groupName, selectedUsers,
+                    new MeetingPoint(placeLat,
+                            placeLng,
+                            placeName,
+                            "")).subscribe(observer);
+        }
 
     }
 }
