@@ -36,6 +36,9 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
     private RecyclerView recyclerView;
     private FloatingActionButton fab;
 
+    // Adapters
+    FriendsAdapter friendsAdapter;
+
     /** Presenter and service */
     private UsersService usersService;
     private FriendsPresenter presenter;
@@ -56,6 +59,8 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
                                         .build();
         UsersApi usersApi = retrofit.create(UsersApi.class);
         usersService = new UsersService(this, usersApi);
+
+        setupRecyclerView();
 
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();
@@ -105,7 +110,13 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
      */
     @Override
     public void updateAdapterDataset(ArrayList<User> friends) {
-        FriendsAdapter friendsAdapter = new FriendsAdapter(this, friends);
+        friendsAdapter.updateFriends(friends);
+        friendsAdapter.notifyDataSetChanged();
+    }
+
+
+    private void setupRecyclerView() {
+        friendsAdapter = new FriendsAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
         recyclerView.addItemDecoration(new DividerItemDecoration(this,

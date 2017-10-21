@@ -76,31 +76,29 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         }
 
         if (user.profilePicture != null) {
-            if (!holder.profPicLoaded) {
-                holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-                    }
+                }
 
-                    @Override
-                    public void onNext(File file) {
-                        System.out.println("Update profile picture for: " + user.userID);
-                        Picasso.with(holder.context).load(file).into(holder.profilePic);
-                        holder.profPicLoaded = true;
-                    }
+                @Override
+                public void onNext(File file) {
+                    System.out.println("Update profile picture for: " + user.userID);
+                    Picasso.with(holder.context).load(file).into(holder.profilePic);
+                    holder.profPicLoaded = true;
+                }
 
-                    @Override
-                    public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-                    }
+                }
 
-                    @Override
-                    public void onComplete() {
+                @Override
+                public void onComplete() {
 
-                    }
-                });
-            }
+                }
+            });
         } else {
             holder.profilePic.setImageResource(R.mipmap.ic_launcher_round);
         }
