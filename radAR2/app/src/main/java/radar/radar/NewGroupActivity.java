@@ -6,7 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -30,6 +33,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewGroupActivity extends AppCompatActivity {
 
+    private static final String TAG = "NewGroupActivity";
     GroupsService groupsService;
     UsersService usersService;
 
@@ -37,6 +41,8 @@ public class NewGroupActivity extends AppCompatActivity {
     NewGroupListAdapter adapter;
 
     Button button;
+
+    private Boolean first = true;
     private String placeName;
     private String placeLat;
     private String placeLng;
@@ -62,6 +68,12 @@ public class NewGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed()); // enable back button
+
         recyclerView = findViewById(R.id.new_group_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -74,15 +86,16 @@ public class NewGroupActivity extends AppCompatActivity {
         TextInputLayout textInputEditText = findViewById(R.id.new_group_name);
 
         Bundle bundle = getIntent().getExtras();
-        String status = bundle.getString("place");
-        if (status.equals("selected")) {
-            // get name location, lat and lng
+
+        if (first) {
             placeName = bundle.getString("name");
             placeLat = bundle.getString("lat");
             placeLng = bundle.getString("lng");
-        }
 
-        //set up meeting point view
+            //set up meeting point view
+            TextView locationText = findViewById(R.id.textViewLocn);
+            locationText.setText(placeName);
+        }
 
         usersService.getFriends().subscribe(new Observer<FriendsResponse>() {
             @Override

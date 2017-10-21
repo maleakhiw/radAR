@@ -191,6 +191,5 @@
     <string name="meeting_place_location">Click SELECT to select a location</string>
     <string name="location_image">location image</string>
     <string name="cancel_button">cancel button</string>
-    <string name="group_name">Group name</string>
 
 </resources>
