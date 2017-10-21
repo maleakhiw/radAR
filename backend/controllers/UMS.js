@@ -420,6 +420,7 @@ module.exports = class UMS {
   }
 
   getFriendRequests(req, res) {
+    winston.debug('getFriendRequests');
     let userID = req.params.userID  // TODO check for missing userID
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure
@@ -470,6 +471,7 @@ module.exports = class UMS {
   }
 
   getInformation(req, res) {
+    winston.debug('getInformation');
     let userID = req.query.userID;
     let queryUserID = req.params.userID;
     let username = req.body.username;
@@ -483,7 +485,7 @@ module.exports = class UMS {
       res.json(response)
     }
 
-    winston.debug(req.body)
+    winston.debug('queryUserID', queryUserID)
 
     if (!username && !queryUserID) {
       errorKeys.push('missingUserIDOrUsername')
@@ -513,7 +515,6 @@ module.exports = class UMS {
       } else {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
-          // winston.debug(user)
           common.getUserDetail(user.userID, userID).then(
             usersDetailsOne => {
               let response = {
@@ -633,6 +634,7 @@ module.exports = class UMS {
 
 
   getFriends(req, res) {
+    winston.debug('getFriends');
     let userID = req.params.userID
     let friends = []
     let errorKeys = []
@@ -663,7 +665,11 @@ module.exports = class UMS {
 
     .then((users) => {  // friends
       // winston.debug('users', users)
-      friends = users.map((user) => getPublicUserInfo(user))
+      if (users) {
+        friends = users.map((user) => getPublicUserInfo(user))
+      } else {
+        friends = [];
+      }
       // winston.debug('friends', friends)
 
       let response = {
@@ -687,6 +693,7 @@ module.exports = class UMS {
   }
 
   search(req, res) {
+    winston.debug('search');
     let userID = req.query.userID
     let query = req.query.query
     let searchType = req.query.searchType

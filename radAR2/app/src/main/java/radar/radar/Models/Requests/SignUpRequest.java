@@ -22,6 +22,6 @@ public class SignUpRequest {
         this.username = username;
         this.profileDesc = profileDesc;
         this.password = password;
-        this.deviceID = deviceID;
+        this.deviceID = deviceID;   // TODO currently unused - for push notifications (Firebase cloud messaging)
     }
 }

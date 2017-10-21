@@ -73,17 +73,6 @@ public class ARPresenter {
         activeAnnotationUserID = userID;
     }
 
-    void renderDestinationLocation(MeetingPoint meetingPoint, double latUser, double lonUser, double azimuth, double pitch) {
-        // render destination location, userID DESTINATION_ID
-        // TODO new class
-        UserLocation destination = new UserLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded);
-        if (!arView.isInflated(DESTINATION_ID)) {
-            arView.inflateARAnnotation(destination);
-        }
-        arView.setAnnotationMainText(DESTINATION_ID, meetingPoint.name);
-        renderDestination(latUser, lonUser, destination, azimuth, pitch);
-    }
-
     public void updateLocationTransformations() {
         Observable<Double> azimuthObservable = sensorService.azimuthUpdates;
         Observable<Double> pitchObservable = sensorService.pitchUpdates;
@@ -212,11 +201,11 @@ public class ARPresenter {
         if (sensorService != null) {
             sensorService.unregisterSensorEventListener();
         }
-        boolean tracking = false;    // TODO move out
 
-        if (!tracking) {    // do not send location data in the background
-            locationPushDisposable.dispose();
-        }
+//        boolean tracking = true;    // TODO stub
+//        if (!tracking) {    // do not send location data in the background
+//            locationPushDisposable.dispose();
+//        }
 
         if (combinedDataDisposable != null) {
             combinedDataDisposable.dispose();

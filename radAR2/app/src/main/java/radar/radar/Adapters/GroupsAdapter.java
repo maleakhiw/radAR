@@ -161,7 +161,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
                     } else {
                         Log.w("onMenuItemClick", "Group missing");
                     }
-//                    presenter.deleteGroup(groups.get(getAdapterPosition()).groupID);
+//                    presenter.leaveGroup(groups.get(getAdapterPosition()).groupID);
                     return true;
             }
             return false;

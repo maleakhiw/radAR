@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -34,6 +35,9 @@ import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.UserLocation;
 import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
+import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -172,6 +176,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void loadGroupLocations() {
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+        ResourcesService resourcesService = new ResourcesService(this, retrofit.create(ResourcesApi.class));
+
         locationService.getGroupLocationInfo(group.groupID, 3000).subscribe(
             groupLocationsInfo -> {
                 mMap.clear();  // clear all previous pins
@@ -179,17 +186,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
                 for (UserLocation location: groupLocationsInfo.locations) {
-                    Marker existingMarker = markers.get(location.getUserID());
-//                    if (existingMarker != null) {
-//                        existingMarker.setPosition(new LatLng(location.lat, location.lon));
-//                    } else {
-//                        Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
-//                        marker.showInfoWindow();
-//
-//                        markers.put(location.getUserID(), marker);  // add to list
-//                    }
-                    Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(location.lat, location.lon)).title(group.usersDetails.get(location.getUserID()).firstName));
-                    marker.showInfoWindow();
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(new LatLng(location.lat, location.lon))
+                            .title(group.usersDetails.get(location.getUserID()).firstName));
+
+                    if (group.usersDetails.get(location.getUserID()).profilePicture != null) {
+                        resourcesService.getResourceWithCache(group.usersDetails.get(location.getUserID()).profilePicture, this)
+                                .subscribe(file -> {
+                                    System.out.println(file.getPath());
+                                    marker.setIcon(BitmapDescriptorFactory.fromPath(file.getPath()));
+                                }, Throwable::printStackTrace);
+                    } else {
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));
+                    }
+//                    marker.showInfoWindow();
 
                     markers.put(location.getUserID(), marker);  // add to list
 

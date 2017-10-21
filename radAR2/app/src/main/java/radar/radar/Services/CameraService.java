@@ -201,7 +201,8 @@ public class CameraService {
         return Observable.create(observableEmitter -> {
             String[] cameraIDs = cameraManager.getCameraIdList();   // first camera
             if (cameraIDs.length > 0) {
-                // take the 1st camera. Assume to be rear camera. TODO remove assumption, allow selection
+                // take the 1st camera. Assume to be rear camera
+                // TODO allow switching between front and rear cameras
                 String cameraID = cameraIDs[0];
                 System.out.println("cameraID");
                 System.out.println(cameraID);

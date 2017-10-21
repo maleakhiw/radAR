@@ -1,5 +1,8 @@
 package radar.radar.Presenters;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.FriendsResponse;
@@ -30,6 +33,20 @@ public class FriendsPresenter {
         friendsView.launchSearchFriendsActivity();
     }
 
+    boolean isUpdating = false;
+    public void startUpdates() {
+        isUpdating = true;
+        Observable.interval(5, TimeUnit.SECONDS)
+                .takeWhile(l -> isUpdating)
+                .subscribe(tick -> loadFriends());
+    }
+
+    public void stopUpdates() {
+        isUpdating = false;
+    }
+
+
+
     /**
      * Load friends that the user have on the recycler view
      */
@@ -43,7 +60,7 @@ public class FriendsPresenter {
             @Override
             public void onNext(FriendsResponse friendsResponse) {
                 if (friendsResponse.success) {
-                    friendsView.bindAdapterToRecyclerView(friendsResponse.friends);
+                    friendsView.updateAdapterDataset(friendsResponse.friends);
                 } else {
                     friendsView.showToast("Failed to load friends.");
                 }
