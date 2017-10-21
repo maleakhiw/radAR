@@ -363,7 +363,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
                     }
                 });
-                
+
                 meetingPoint = new MeetingPoint(latDouble, lonDouble, name, "");
 
                 GroupsService groupsService = new GroupsService(getActivity(), retrofit.create(GroupsApi.class));

@@ -1,6 +1,7 @@
 package radar.radar.Presenters;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -31,11 +32,23 @@ public class GroupsListPresenter {
         // loadData();
     }
 
+    boolean isUpdating = false;
+    public void startUpdates() {
+        isUpdating = true;
+        Observable.interval(5, TimeUnit.SECONDS)
+                .takeWhile(aLong -> isUpdating)
+                .subscribe(tick -> loadData());
+    }
+
+    public void stopUpdates() {
+        isUpdating = false;
+    }
+
     /**
      * Used to load group for a particular user
      */
     public void loadData() {
-        view.setRefreshing(true);
+//        view.setRefreshing(true);
 
         groupsService.getGroups()
                 .map(getChatsResponse -> {

@@ -115,10 +115,19 @@ public class GroupsListActivity extends AppCompatActivity
     public void onStart() {
         super.onStart();
 
+        presenter.startUpdates();
+
         if (!first) {
             presenter.loadData();
             recyclerView.getAdapter().notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        presenter.stopUpdates();
     }
 
     @Override

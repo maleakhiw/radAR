@@ -58,10 +58,12 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
         setupUI();
 
         // refresh the list of chats on refresh.
-        swipeRefreshLayout.setOnRefreshListener(() -> chatListPresenter.loadData());
+        swipeRefreshLayout.setOnRefreshListener(() -> chatListPresenter.loadData(true));
 
         // Create a presenter object
         chatListPresenter = new ChatListPresenter(this, chatService);
+
+        chatListPresenter.startUpdates();
 
 
         fab.setOnClickListener(view -> {
@@ -83,10 +85,10 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
             }
             chatListAdapter.setGroups(groups);
 
-            chatListPresenter.loadData();   // update - might have new messages
+            chatListPresenter.loadData(true);   // update - might have new messages
 
         } else {
-            chatListPresenter.loadData();
+            chatListPresenter.loadData(true);
         }
     }
 
@@ -237,7 +239,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     public void onStart() {
         super.onStart();
         if (chatListPresenter != null) {
-            chatListPresenter.loadData();
+            chatListPresenter.startUpdates();
         }
     }
 
@@ -246,7 +248,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
     public void onStop() {
         super.onStop();
         if (chatListPresenter != null) {
-            chatListPresenter.onStop();
+            chatListPresenter.stopUpdates();
         }
     }
 

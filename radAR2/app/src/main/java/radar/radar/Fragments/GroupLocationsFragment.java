@@ -128,9 +128,13 @@ public class GroupLocationsFragment extends Fragment {
             FloatingActionButton fab = rootView.findViewById(R.id.fab);
             fab.setOnClickListener(view -> {
                 if (group != null) {
-                    Intent intent = new Intent(getActivity(), ARActivity.class);
-                    intent.putExtra("groupID", group.groupID);
-                    startActivity(intent);
+                    if (group.meetingPoint != null) {
+                        Intent intent = new Intent(getActivity(), ARActivity.class);
+                        intent.putExtra("groupID", group.groupID);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(getActivity(), "Please set a meeting point first.", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     Toast.makeText(getActivity(), "Invalid group.", Toast.LENGTH_SHORT).show();
                 }

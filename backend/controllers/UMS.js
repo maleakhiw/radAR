@@ -665,7 +665,11 @@ module.exports = class UMS {
 
     .then((users) => {  // friends
       // winston.debug('users', users)
-      friends = users.map((user) => getPublicUserInfo(user))
+      if (users) {
+        friends = users.map((user) => getPublicUserInfo(user))
+      } else {
+        friends = [];
+      }
       // winston.debug('friends', friends)
 
       let response = {

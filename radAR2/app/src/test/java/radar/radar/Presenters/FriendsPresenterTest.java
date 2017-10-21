@@ -12,7 +12,6 @@ import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Responses.FriendsResponse;
-import radar.radar.Models.Responses.StatusError;
 import radar.radar.Models.Domain.User;
 import radar.radar.Services.UsersService;
 import radar.radar.Views.FriendsView;
@@ -119,7 +118,7 @@ public class FriendsPresenterTest {
         friendsPresenter.loadFriends();
 
         // Make sure that it display the data and bind that to recycler view
-        Mockito.verify(friendsView).bindAdapterToRecyclerView(friendsForFriendsResponse);
+        Mockito.verify(friendsView).updateAdapterDataset(friendsForFriendsResponse);
     }
 
     /**

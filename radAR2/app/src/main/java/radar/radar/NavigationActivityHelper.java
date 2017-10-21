@@ -140,7 +140,7 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
                 AuthService.signOut(activity);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);    // clear entire Activity stack
                 activity.startActivity(intent);
-                finishIfNotHomeScreen(activity);
+                activity.finish();
 
             }
 

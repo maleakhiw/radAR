@@ -1,5 +1,8 @@
 package radar.radar.Presenters;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Responses.GetChatsResponse;
@@ -16,6 +19,8 @@ public class ChatListPresenter {
     ChatListView chatListView;
     ChatService chatService;
 
+    boolean isUpdating = false;
+
     /**
      * Constructor
      * @param chatListView ChatListActivity
@@ -26,8 +31,26 @@ public class ChatListPresenter {
         this.chatService = chatService;
     }
 
-    public void loadData() {
-        chatListView.startRefreshIndicator();
+    public void startUpdates() {
+        isUpdating = true;
+        Observable.interval(5, TimeUnit.SECONDS)
+                .takeWhile(aLong -> isUpdating)
+                .subscribe(tick -> {
+                    System.out.println(tick);
+                    loadData(false);
+                });
+    }
+
+    public void stopUpdates() {
+        System.out.println("stopUpdates");
+        isUpdating = false;
+    }
+
+    public void loadData(boolean showRefresh) {
+        System.out.println("loadData");
+        if (showRefresh) {
+            chatListView.startRefreshIndicator();
+        }
         // Getting the chat id that are related to a particular user
        chatService.getChats().subscribe(new Observer<GetChatsResponse>() {
            @Override
@@ -43,14 +66,18 @@ public class ChatListPresenter {
                else {
                    chatListView.showToastMessage("Failure to load chat list.");
                }
-               chatListView.stopRefreshIndicator();
+               if (showRefresh) {
+                   chatListView.stopRefreshIndicator();
+               }
            }
 
            @Override
            public void onError(Throwable e) {
                System.out.println(e);
                chatListView.showToastMessage("Internal Error. Failure to load chat list.");
-               chatListView.stopRefreshIndicator();
+               if (showRefresh) {
+                   chatListView.stopRefreshIndicator();
+               }
            }
 
            @Override
@@ -76,7 +103,7 @@ public class ChatListPresenter {
                 else {
                     chatListView.showToastMessage("Failure to delete group.");
                 }
-                loadData();
+                loadData(true);
             }
 
             @Override
