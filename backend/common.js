@@ -15,44 +15,6 @@ module.exports.groupExists = groupID => new Promise((resolve, reject) => {
   }).catch(err => reject(err));
 })
 
-module.exports.getGroupInfo = (groupID, userID) => new Promise((resolve, reject) => {
-
-  let lastMessage;
-
-  Message.findOne({groupID: groupID}).exec()
-  .then(message => {
-    if (message) {
-      lastMessage = {
-        from: message.from,
-        time: message.time,
-        contentType: message.contentType,
-        text: message.text
-      }
-    }
-
-    return Group.findOne({groupID: groupID});
-  })
-  .then(group => {
-    if (group) {
-      let groupInfo = module.exports.formatGroupInfo(group);
-
-      groupInfo.lastMessage = lastMessage;
-
-      module.exports.getUsersDetails(group.members, userID)
-      .then(usersDetails => {
-        groupInfo["usersDetails"] = usersDetails;
-        resolve(groupInfo);
-      })
-    } else {
-      resolve();
-    }
-
-
-  })
-  .catch(err => reject(err))
-
-});
-
 module.exports.updateGroupLastUpdated = (groupID, userID) => {
   // runs asynchronously - less "important" to validate if successfully completed
   Group.findOne({groupID: groupID}).exec()
@@ -103,20 +65,6 @@ module.exports.getMeetingPointInfo = (meetingPoint) => {
     }
   }
 
-}
-
-module.exports.formatGroupInfo = (group) => {
-  return {
-    name: group.name,
-    groupID: group.groupID,
-    admins: group.admins,
-    members: group.members,
-    isTrackingGroup: group.isTrackingGroup,
-    profilePicture: group.profilePicture,
-    meetingPoint: module.exports.getMeetingPointInfo(group.meetingPoint)
-    // usersDetails: usersDetails,  // TODO pass it in
-    // lastMessage: lastMessage // TODO pass it in
-  }
 }
 
 module.exports.isValidLat = (val) => {
@@ -186,7 +134,6 @@ module.exports.errorObjectBuilder = function(errorKeys) {
 module.exports.userExists = userID => new Promise((resolve, reject) => {
   User.findOne({userID: userID})
   .then(user => {
-    console.log(user);
     if (user) resolve(true);
     else resolve(false);
   })
@@ -277,44 +224,7 @@ module.exports.isValidEmail = (email) => {
     return re.test(email);
 }
 
-module.exports.getUserDetail = (queryUserID, selfUserID) => module.exports.getUsersDetails([queryUserID], selfUserID);
 
-module.exports.getUsersDetails = (members, userID) => new Promise((resolve, reject) => {
-  let userDetails = {};
-  let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
-    User.findOne({userID: memberUserID}).exec()
-    .then((user) => { // assumption: user is valid (since all other routes validated, this is only a GET route)
-      if (user) {
-        userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
-        userDetails[memberUserID].isFriend = user.friends.includes(parseInt(userID));
-      }
-      resolve();
-    })
-  }))
-
-  // when all info loaded, resolve the promise
-  Promise.all(promiseAll).then(() => {
-    // already got userdetails, now get common groups if userID specified
-    if (userID) {
-      let promiseAll2 = members.map(memberUserID => new Promise((resolve, reject) => {
-        module.exports.getCommonGroups(userID, memberUserID)
-        .then(commonGroups => {
-          userDetails[memberUserID].commonGroups = commonGroups;
-          resolve();
-        })
-      }));
-
-      Promise.all(promiseAll2).then(() => {
-        resolve(userDetails);
-      })
-    } else {
-      resolve(userDetails);
-    }
-  })
-  .catch((err) => {
-    reject(err);
-  })
-});
 
 module.exports.getCommonGroups = (userID, userToCheckAgainst) => new Promise((resolve, reject) => {
   let user;
