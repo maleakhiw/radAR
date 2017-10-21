@@ -298,3 +298,157 @@ describe('SMS', () => {
 
 
 })
+
+describe('SMS - getOneToOneChat', () => {
+  let user1token, user2token, user3token;
+
+  before((done) => {
+    mongoose.connect('mongodb://localhost/radarTest',
+      { useMongoClient: true },
+      (err) => {
+        if (err) console.log(err)
+      }
+    )
+
+    // clean database before tests
+    Request.remove({}).exec()
+    .then(() => User.remove({}))
+    .then(() => Group.remove({}))
+    .then(() => Message.remove({}))
+    .then(() => {
+      // create dummy users
+      chai.request(server)
+      .post('/api/auth')
+      .send({
+          "firstName": "User1",
+          "lastName": "LastName",
+          "email": "email1@example.com",
+          "username": "user1",
+          "profileDesc": "",
+          "password": "hunter2",
+          "deviceID": "memes"
+      })
+      .end((err, res) => {
+        res.should.have.status(200)
+        expect(res).to.be.json
+        expect(res.body.success).to.equal(true)
+        expect(res.body.userID).to.equal(1)
+        user1token = res.body.token
+
+        chai.request(server)
+        .post('/api/auth')
+        .send({
+            "firstName": "User2",
+            "lastName": "LastName",
+            "email": "email2@example.com",
+            "username": "user2",
+            "profileDesc": "",
+            "password": "hunter2",
+            "deviceID": "memes"
+        })
+        .end((err, res) => {
+          res.should.have.status(200)
+          expect(res).to.be.json
+          expect(res.body.success).to.equal(true)
+          expect(res.body.userID).to.equal(2)
+          user2token = res.body.token
+
+          chai.request(server)
+          .post('/api/auth')
+          .send({
+              "firstName": "User3",
+              "lastName": "LastName",
+              "email": "email3@example.com",
+              "username": "user3",
+              "profileDesc": "",
+              "password": "hunter2",
+              "deviceID": "memes"
+          })
+          .end((err, res) => {
+            res.should.have.status(200)
+            expect(res).to.be.json
+            expect(res.body.success).to.equal(true)
+            expect(res.body.userID).to.equal(3)
+            user3token = res.body.token;
+
+            chai.request(server)
+            .post('/api/accounts/1/groups')
+            .set('token', user1token)
+            .send({
+              name: 'test group',
+              participantUserIDs: [2, 3],
+              meetingPoint: { "lat" : -37.7983668, "lon" : 144.95937859999998, "name" : "Baillieu Library"}
+            })
+            .end((err, res) => {
+              res.should.have.status(200);
+              expect(res).to.be.json;
+              expect(res.body.success).to.equal(true);
+              expect(res.body.group).to.not.equal(null);
+              // console.log(res.body);
+              done();
+            })
+          })
+        })
+
+      })
+    })
+
+    .catch((err) => {
+      throw new Error(err)
+    })
+
+  })
+
+  describe('getOneToOneChat', () => {
+    let groupID;
+
+    it('should create a new chat, since the previously created group is for 3 people', done => {
+      chai.request(server)
+      .get('/api/accounts/1/chats/with/2')
+      .set('token', user1token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.group).to.not.equal(null);
+        expect(res.body.group.members.includes(1)).to.equal(true);
+        expect(res.body.group.members.includes(2)).to.equal(true);
+        expect(res.body.group.groupID).to.not.equal(null);
+        groupID = res.body.group.groupID;
+        done();
+      })
+    })
+
+    it('should return the existing 1-to-1 chat', done => {
+      chai.request(server)
+      .get('/api/accounts/1/chats/with/2')
+      .set('token', user1token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.group).to.not.equal(null);
+        expect(res.body.group.members.includes(1)).to.equal(true);
+        expect(res.body.group.members.includes(2)).to.equal(true);
+        expect(res.body.group.groupID).to.equal(groupID);
+        done();
+      })
+    })
+
+    it('should not do anything for an invalid userID', done => {
+      chai.request(server)
+      .get('/api/accounts/1/chats/with/79')
+      .set('token', user1token)
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(false);
+        expect(res.body.errors[0].errorCode).to.equal(88);
+
+        done();
+      })
+    })
+
+  })
+
+})
