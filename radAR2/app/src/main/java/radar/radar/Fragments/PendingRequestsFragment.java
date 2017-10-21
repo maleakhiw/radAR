@@ -64,6 +64,18 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        presenter.startUpdates();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stopUpdates();
+    }
+
     /**
      * Displaying pending requests
      * @param friendRequestsResponse representing the response when displaying pending request

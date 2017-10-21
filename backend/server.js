@@ -141,13 +141,16 @@ app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
 app.get("/api/accounts/:userID/chats/with/:queryUserID", authenticate, sms.getOneToOneChat);
 
 var groupAuthorisedMiddleware = (req, res, next) => {
+  winston.debug('groupAuthorisedMiddleware');
   let groupID = parseInt(req.params.groupID);
   let userID = parseInt(req.params.userID);
+  console.log(groupID, userID);
   Group.findOne({groupID: groupID}).exec()
   .then(group => {
     if (!group) {
       common.sendError(res, ['invalidGroupID']);
     } else {
+      console.log(group.members);
       if (!group.members.includes(userID)) {
         common.sendUnauthorizedError(res);
       } else {
@@ -156,6 +159,7 @@ var groupAuthorisedMiddleware = (req, res, next) => {
     }
   })
 }
+
 app.get("/api/accounts/:userID/chats/:groupID", authenticate,
           groupAuthorisedMiddleware, sms.getGroup)
 app.put("/api/accounts/:userID/chats/:groupID", authenticate,

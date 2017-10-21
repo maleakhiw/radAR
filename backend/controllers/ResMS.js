@@ -78,13 +78,13 @@ module.exports = class ResMS {
         // do checks - if unauthorised, send 401 unauthorised
 
         // TODO: Groups and Groups
-        if (file.owners.includes(userID)) {
+        // if (file.owners.includes(userID) && true) { // enabled for now.
           res.setHeader('Content-Type', file.mimetype)
           res.setHeader('filename', file.filename);
           res.sendFile(fileID, { root: path.join(__dirname, '../uploads') })
-        } else {
-          res.sendStatus(401)
-        }
+        // } else {
+          // res.sendStatus(401)
+        // }
 
       } else {
         res.sendStatus(404) // resource not found

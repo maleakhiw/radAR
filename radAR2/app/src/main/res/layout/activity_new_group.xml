@@ -72,7 +72,7 @@
         android:layout_height="21dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/meetingpoint"
+        android:text="@string/meeting_point"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_group_name" />
 

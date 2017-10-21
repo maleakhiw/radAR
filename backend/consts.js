@@ -300,5 +300,9 @@ module.exports.errors = {
   missingMeetingPointName: {
     code: 108,
     reason: "Missing param: name (String)"
+  },
+  cannotRemoveAdmin: {
+    code: 109,
+    reason: "Invalid action: cannot remove group admin."
   }
 }
