@@ -95,13 +95,25 @@ public class NewGroupActivity extends AppCompatActivity {
             Log.e(TAG, e.getMessage());
         }
 
-
         //set up meeting point view
         locationText = findViewById(R.id.textViewLocn);
+
+        //set up cancel button
+        cancelButton = findViewById(R.id.cancelButton);
+
         if (placeName != null) {
             locationText.setText(placeName);
             cancelButton.setVisibility(View.VISIBLE);
         }
+
+        cancelButton.setOnClickListener(view -> {
+            cancelButton.setVisibility(View.INVISIBLE);
+            locationText.setText(DEFAULT_TEXT);
+            placeName = null;
+            placeLat = null;
+            placeLng = null;
+        });
+
 
         Button selectButton = findViewById(R.id.select_button);
         selectButton.setOnClickListener(view -> {
@@ -117,15 +129,6 @@ public class NewGroupActivity extends AppCompatActivity {
             } catch (GooglePlayServicesNotAvailableException e) {
                 e.printStackTrace();
             }
-        });
-
-        cancelButton = findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(view -> {
-            cancelButton.setVisibility(View.INVISIBLE);
-            locationText.setText(DEFAULT_TEXT);
-            placeName = null;
-            placeLat = null;
-            placeLng = null;
         });
 
         recyclerView = findViewById(R.id.new_group_recyclerview);
