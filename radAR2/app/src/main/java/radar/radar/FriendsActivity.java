@@ -59,6 +59,7 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
 
         presenter = new FriendsPresenter(this, usersService);
         presenter.loadFriends();
+        presenter.startUpdates();
 
         // Setup onclick listener on the fab
         fab.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +104,30 @@ public class FriendsActivity extends AppCompatActivity implements FriendsView {
      * @param friends array list that consisting of users to be displayed on the list
      */
     @Override
-    public void bindAdapterToRecyclerView(ArrayList<User> friends) {
+    public void updateAdapterDataset(ArrayList<User> friends) {
         FriendsAdapter friendsAdapter = new FriendsAdapter(this, friends);
         recyclerView.setAdapter(friendsAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // layout manager to position items
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
         friendsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null) {
+            presenter.loadFriends();
+            presenter.startUpdates();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (presenter != null) {
+            presenter.stopUpdates();
+        }
     }
 
     /**

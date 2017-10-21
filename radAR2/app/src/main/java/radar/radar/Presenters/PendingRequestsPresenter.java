@@ -3,6 +3,9 @@ package radar.radar.Presenters;
 import android.support.v7.widget.LinearLayoutManager;
 import android.widget.Toast;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.FriendsRequestAdapter;
@@ -27,6 +30,19 @@ public class PendingRequestsPresenter {
         this.view = view;
         this.usersService = service;
     }
+
+    boolean isUpdating = false;
+    public void startUpdates() {
+        isUpdating = true;
+        Observable.interval(5, TimeUnit.SECONDS)
+                .takeWhile(l -> isUpdating)
+                .subscribe(tick -> displayFriendsRequest());
+    }
+
+    public void stopUpdates() {
+        isUpdating = false;
+    }
+
 
     /**
      * Displaying pending friend request

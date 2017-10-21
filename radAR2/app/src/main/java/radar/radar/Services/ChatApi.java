@@ -1,6 +1,7 @@
 package radar.radar.Services;
 
 import io.reactivex.Observable;
+import radar.radar.Models.Requests.AddMembersBody;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.GetChatInfoResponse;
@@ -14,6 +15,7 @@ import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 /**
@@ -37,5 +39,11 @@ public interface ChatApi {
     Observable<MessagesResponse> getMessages(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="chatID", encoded=true) int chatID);
 
     @DELETE("accounts/{userID}/chats/{groupID}")
-    Observable<Status> deleteGroup(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
+    Observable<Status> leaveGroup(@Path(value="userID", encoded=true) int userID, @Header("token") String token, @Path(value="groupID", encoded=true) int groupID);
+
+    @PUT("accounts/{userID}/chats/{groupID}/members")
+    Observable<Status> addMembers(@Path(value="userID", encoded=true) int userID,
+                                  @Path(value="groupID", encoded=true) int groupID,
+                                  @Header("token") String token,
+                                  @Body AddMembersBody body);
 }

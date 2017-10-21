@@ -139,7 +139,7 @@ public class ChatListPresenterTest {
     }
 
     /**
-     * Unit testing to check when deleteGroup, it will behave properly by deleting the group
+     * Unit testing to check when leaveGroup, it will behave properly by deleting the group
      * and showing message to user
      */
     @Test
@@ -157,7 +157,7 @@ public class ChatListPresenterTest {
         Observable<Status> observable = Observable.just(status);
 
         // Return that successful observable
-        Mockito.when(chatService.deleteGroup(groupID)).thenReturn(observable);
+        Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
         Mockito.doNothing().when(presenter).loadData();
@@ -171,7 +171,7 @@ public class ChatListPresenterTest {
     }
 
     /**
-     * Unit testing to check when deleteGroup is false, it will show message
+     * Unit testing to check when leaveGroup is false, it will show message
      */
     @Test
     public void deleteGroup_StatusFalse() {
@@ -188,7 +188,7 @@ public class ChatListPresenterTest {
         Observable<Status> observable = Observable.just(status);
 
         // Return that successful observable
-        Mockito.when(chatService.deleteGroup(groupID)).thenReturn(observable);
+        Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
         Mockito.doNothing().when(presenter).loadData();
@@ -201,7 +201,7 @@ public class ChatListPresenterTest {
     }
 
     /**
-     * Unit testing to check when deleteGroup is error, it will show message
+     * Unit testing to check when leaveGroup is error, it will show message
      */
     @Test
     public void deleteGroup_Failure() {
@@ -221,7 +221,7 @@ public class ChatListPresenterTest {
                 });
 
         // Return that successful observable
-        Mockito.when(chatService.deleteGroup(groupID)).thenReturn(observable);
+        Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
         Mockito.doNothing().when(presenter).loadData();

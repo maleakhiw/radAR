@@ -22,6 +22,7 @@ import radar.radar.Models.Domain.User;
 import radar.radar.Models.Domain.UserLocation;
 import radar.radar.R;
 import radar.radar.RetrofitFactory;
+import radar.radar.Services.AuthService;
 import radar.radar.Services.LocationTransformations;
 import radar.radar.Services.ResourcesApi;
 import radar.radar.Services.ResourcesService;
@@ -54,7 +55,11 @@ public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMembe
         friendsList = new ArrayList<>();
         for (Object entry: friends.values()) {
             User user = (User) entry;
-            friendsList.add(user);
+
+            // don't add self to list
+            if (user.userID != AuthService.getUserID(context)) {
+                friendsList.add(user);
+            }
         }
     }
 
@@ -174,7 +179,7 @@ public class GroupMemberLocationsAdapter extends RecyclerView.Adapter<GroupMembe
         if (friends == null) {
             return 0;
         }
-        return friends.size();
+        return friendsList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

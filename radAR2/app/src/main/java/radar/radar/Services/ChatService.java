@@ -2,17 +2,15 @@ package radar.radar.Services;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
 
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Predicate;
 import io.reactivex.schedulers.Schedulers;
-import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Requests.AddMembersBody;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Responses.SendMessageResponse;
 import radar.radar.Models.Responses.GetChatInfoResponse;
@@ -156,8 +154,25 @@ public class ChatService {
         });
     }
 
-    public Observable<Status> deleteGroup(int groupID) {
-        return chatApi.deleteGroup(userID, token, groupID)
+    /**
+     * Leaves the group.
+     * @param groupID group to leave from
+     * @return Observable<Status>
+     */
+    public Observable<Status> leaveGroup(int groupID) {
+        return chatApi.leaveGroup(userID, token, groupID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Adds users to the group.
+     * @param groupID group in question
+     * @param invitedUsers users to invite to the group
+     * @return Observable<Status>
+     */
+    public Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers) {
+        return chatApi.addMembers(userID, groupID, token, new AddMembersBody(invitedUsers))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

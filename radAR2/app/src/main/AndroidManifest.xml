@@ -38,7 +38,6 @@
             <!-- ORIGINAL LAUNCHER -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -67,8 +66,9 @@
             android:name=".ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".NewGroupActivity" />
-        <activity android:name=".EditProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".EditProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />
@@ -77,7 +77,10 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".EditGroupActivity"
+        <activity
+            android:name=".EditGroupActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".AddMembersActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 

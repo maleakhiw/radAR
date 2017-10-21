@@ -2,8 +2,18 @@ package radar.radar.Models.Domain;
 
 import java.util.ArrayList;
 
-
+/**
+ * Data model for information i.e on tracking group
+ */
 public class Info {
+    private String name;
+    private ArrayList<Integer> members;
+    private String description;
+    private int chatID;
+
+    /**
+     * Getter and setter
+     */
     public String getName() {
         return name;
     }
@@ -35,9 +45,4 @@ public class Info {
     public void setChatID(int chatID) {
         this.chatID = chatID;
     }
-
-    private String name;
-    private ArrayList<Integer> members;
-    private String description;
-    private int chatID;
 }

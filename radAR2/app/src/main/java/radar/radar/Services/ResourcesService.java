@@ -22,15 +22,19 @@ import radar.radar.Models.Responses.UploadFileResponse;
 import retrofit2.Response;
 
 /**
- * Created by maleakhiw on 10/10/2017
+ * Service for resource, used for RxJava and uploading profile picture
  */
-
 public class ResourcesService {
     Context context;
     ResourcesApi resourcesApi;
     int userID;
     String token;
 
+    /**
+     * Constructor
+     * @param context context where the service is called
+     * @param resourcesApi instance of interface
+     */
     public ResourcesService(Context context, ResourcesApi resourcesApi) {
         this.context = context;
         this.resourcesApi = resourcesApi;
@@ -38,9 +42,11 @@ public class ResourcesService {
         token = AuthService.getToken(context);
     }
 
+    /**
+     * Used to cache and save to disk
+     */
     // http://www.codexpedia.com/android/retrofit-2-and-rxjava-for-file-downloading-in-android/
     // adapted for RxJava2
-
     private Observable<File> saveToDiskRxAndCache(final Response<ResponseBody> response, String fileID) {
         return saveToDiskRx(response).map(file -> {
             // copy to FileOutputStream
@@ -72,16 +78,15 @@ public class ResourcesService {
                 // get header and filename from response
                 String header = response.headers().get("Content-Type");
                 System.out.println(header);
+
+//                String filename = header.replace("attachment; filename=", "");
                 String filename = response.headers().get("filename");
                 if (filename == null) {
                     filename = "temp";
                 }
-//                String filename = header.replace("attachment; filename=", "");
                 System.out.println(filename);
 
                 // create a temp file
-                // TODO randomly generate filename to avoid conflicts.
-                // TODO store saved files in a local dir. (sdcard/radAR/chats/{chatID}/{resID}
                 File file = File.createTempFile(filename, null, context.getCacheDir());
 
                 BufferedSink bufferedSink = Okio.buffer(Okio.sink(file));
@@ -100,7 +105,10 @@ public class ResourcesService {
 
     }
 
-    /** This method is used to upload resource to server */
+    /**
+     * This method is used to upload resource to server
+     * @param filePart file part to be send/uploaded to the server
+     */
     public Observable<UploadFileResponse> uploadFile(MultipartBody.Part filePart) {
         Observable<UploadFileResponse> uploadFileObservable = resourcesApi.uploadResource(userID, token, filePart)
                 .subscribeOn(Schedulers.io())

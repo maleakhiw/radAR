@@ -4,9 +4,15 @@ import java.util.Date;
 
 import radar.radar.Models.Responses.GetLocationResponse;
 
+/**
+ * Data model for destination
+ */
 public class DestinationLocation extends UserLocation {
     public String name;
 
+    /**
+     * Constructor
+     */
     public DestinationLocation(int userID, GetLocationResponse response) {
         super(userID, response);
     }
