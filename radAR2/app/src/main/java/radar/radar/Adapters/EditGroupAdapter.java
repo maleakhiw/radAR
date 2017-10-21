@@ -89,7 +89,9 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
     public void onBindViewHolder(EditGroupAdapter.ViewHolder holder, int position) {
         User user = friendsList.get(position);
 
-        holder.tvDelete.setVisibility(View.VISIBLE);
+        if (!group.admins.contains(user.userID)) {
+            holder.tvDelete.setVisibility(View.VISIBLE);
+        }
 
         // load stuff
         holder.tvName.setText(user.firstName + " " + user.lastName);
@@ -203,6 +205,10 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
                                         updateFriends(groupsResponse.group.usersDetails);
                                         notifyDataSetChanged();
                                         Toast.makeText(context, "Member removed", Toast.LENGTH_SHORT).show();
+                                    } else if (groupsResponse.errors.get(0) != null) {
+                                        if (groupsResponse.errors.get(0).errorCode == 109) {
+                                            Toast.makeText(context, "Cannot remove the group admin", Toast.LENGTH_SHORT).show();
+                                        }
                                     } else {
                                         Toast.makeText(context, "Unexpected error", Toast.LENGTH_SHORT).show();
                                     }

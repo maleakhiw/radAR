@@ -194,5 +194,6 @@
     <string name="navigate">NAVIGATE</string>
     <string name="members_to_invite">Members to invite</string>
     <string name="invite_members">Invite</string>
+    <string name="online">Online</string>
 
 </resources>
