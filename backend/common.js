@@ -17,7 +17,7 @@ module.exports.groupExists = groupID => new Promise((resolve, reject) => {
 
 // TODO to be removed
 module.exports.getUserDetail = (queryUserID, selfUserID) => {
-  return getUsersDetails([queryUserID], selfUserID);
+  return module.exports.getUsersDetails([queryUserID], selfUserID);
 }
 
 // TODO to be removed

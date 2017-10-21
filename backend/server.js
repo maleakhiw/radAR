@@ -158,6 +158,7 @@ var groupAuthorisedMiddleware = (req, res, next) => {
     }
   })
 }
+
 app.get("/api/accounts/:userID/chats/:groupID", authenticate,
           groupAuthorisedMiddleware, sms.getGroup)
 app.put("/api/accounts/:userID/chats/:groupID", authenticate,
