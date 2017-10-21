@@ -64,10 +64,13 @@ module.exports.updateGroupLastUpdated = (groupID, userID) => {
   // runs asynchronously - less "important" to validate if successfully completed
   Group.findOne({groupID: groupID}).exec()
   .then(group => {
-    if (group.members.includes(userID)) {
-      group.lastUpdated = Date.now();
-      group.save();
+    if (group) {
+      if (group.members.includes(userID)) {
+        group.lastUpdated = Date.now();
+        group.save();
+      }
     }
+
   })
 }
 

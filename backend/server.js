@@ -150,7 +150,6 @@ var groupAuthorisedMiddleware = (req, res, next) => {
     if (!group) {
       common.sendError(res, ['invalidGroupID']);
     } else {
-      console.log(userID);
       console.log(group.members);
       if (!group.members.includes(userID)) {
         common.sendUnauthorizedError(res);
