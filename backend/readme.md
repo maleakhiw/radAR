@@ -1,3 +1,9 @@
+# Backend
+## Running the backend
+Make sure you have all dependencies installed by using `npm install` and run `npm start` to start the server. The server will listen in port 8080 (if the environment is set to `DEV` in `.env`), or 8443 (if the environment is set to `PRODUCTION` in `.env`).
+
+An example `.env` file is provided in `.env.example`. Do not remove this file as it is needed by `dotenv`.
+
 # API Documentation
 <!-- TOC -->
 
@@ -148,7 +154,7 @@ interface AuthenticationService {
   */
 
   String getFirstName(Context context)
-  
+
   /**
   * Retrieves the last name of a user
   * @param context Android Context
@@ -173,9 +179,9 @@ interface AuthenticationService {
    * @param username username for the account
    * @param profileDesc a description for the user account's profile
    * @param password password for the account
-   * @return an Observable to be subscribed by other functions for API responses 
+   * @return an Observable to be subscribed by other functions for API responses
    * TODO: Crosscheck with final interpretation
-   * 
+   *
    */
   Status signUp(String firstName, String lastName, String email, String username);
 
@@ -234,7 +240,7 @@ interface ChatService {
 
   /**
    * Get all chats the user participates within.
-   * @return Chat objects 
+   * @return Chat objects
    */
   Observable<GetChatsResponse> getChats()
 
@@ -324,7 +330,7 @@ interface TrackingGroupService {
    /**
     * Modifies the meeting point in a Tracking Group
     * @param groupID unique identifier of the Tracking Group
-    * @param meetingPoint class that contains details of the meeting point 
+    * @param meetingPoint class that contains details of the meeting point
     * @return operation status
     */
    Status Observable<Status> updateMeetingPoint(int groupID, MeetingPoint meetingPoint);
@@ -333,7 +339,7 @@ interface TrackingGroupService {
 ```
 
 ### Navigation Component
-This uses a call to the Google Maps API, however, an abstract implementation of the requests looks as follows. 
+This uses a call to the Google Maps API, however, an abstract implementation of the requests looks as follows.
 
 ```Java
 interface NavigationService {
@@ -371,7 +377,7 @@ interface ResourcesProviderService {
    * @return The requested file
    */
   Observable<File> getResource(String resourceID)
-  
+
   /**
    * Saves files to the disk
    * @param response response from a file fetch from the server
@@ -435,7 +441,7 @@ interface LocationService {
      */
 
   public Observable<GetLocationResponse> getLocation(int queryUserID);
-  
+
   /**
      * Returns location info for a group.
      * @param groupID group for which location info is requested
@@ -514,7 +520,7 @@ Get information about a Tracking Group
       "name": String,
       "groupID": int,
       "members": [int],
-      "isTrackingGroup": bool, 
+      "isTrackingGroup": bool,
       "usersDetails": String
     }
 }
@@ -577,7 +583,7 @@ Get the location of the members in the tracking group.
       },
       ...],
     "locations": {
-      int: {  
+      int: {
         "userID": int,
         "lat": float,
         "lon": float,
@@ -622,7 +628,7 @@ Creates a new Tracking Group
       admins: [userID],
       footprints: [],
       meetingPoint: null,
-      isTrackingGroup: true 
+      isTrackingGroup: true
       ...],
 }
 ```
@@ -841,7 +847,7 @@ Username is part of the URI, but password is part of the query
 ```
 
 ### Server Messaging System
-In the implementation of this API, the data models for both groups and chats are shared due to high similarity. 
+In the implementation of this API, the data models for both groups and chats are shared due to high similarity.
 
 #### newChat / newGroup
 `POST https://{serverURL}/api/groups`
@@ -876,7 +882,7 @@ Create a new conversation (chat) on the Server Messaging System.
       admins: [userID],
       footprints: [],
       meetingPoint: null,
-      isTrackingGroup: false 
+      isTrackingGroup: false
       ...],
 }
 ```
@@ -891,7 +897,7 @@ Get messages from a chat.
 ```JSON
 {
     "userID": int,
-    "groupID": int, // the chat ID 
+    "groupID": int, // the chat ID
 }
 ```
 
@@ -996,7 +1002,7 @@ Sends a file to a chat room.
 `POST https://{serverURL}/api/accounts/{userID}/chats/{groupID}`
 
 ##### Description
-Changes the chat room to a tracking group, allowing it to be a larger group. 
+Changes the chat room to a tracking group, allowing it to be a larger group.
 
 ##### Request format
 ```JSON
@@ -1021,7 +1027,7 @@ Changes the chat room to a tracking group, allowing it to be a larger group.
 
 ### User Management System
 #### isOnline
-TODO: Ensure correct 
+TODO: Ensure correct
 
 `GET https://{serverURL}/api/accounts/:userID/usersOnlineStatuses`
 
@@ -1282,7 +1288,7 @@ Get a resource (file) from the Resource Management System
         "errorCode": int
       },
       ...],
-    "resource": File 
+    "resource": File
 }
 ```
 
