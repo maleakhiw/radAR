@@ -65,5 +65,6 @@ public interface GroupsApi {
     @PUT("accounts/{userID}/groups/{groupID}/members")
     Observable<Status> addMembers(@Path(value="userID", encoded=true) int userID,
                                   @Path(value="groupID", encoded=true) int groupID,
+                                  @Header("token") String token,
                                   @Body AddMembersBody body);
 }

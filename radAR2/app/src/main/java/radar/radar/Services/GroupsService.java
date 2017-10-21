@@ -90,7 +90,9 @@ public class GroupsService {
      * @return Observable<Status>
      */
     public Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers) {
-        return groupsApi.addMembers(userID, groupID, new AddMembersBody(invitedUsers))
+        System.out.println(userID);
+        System.out.println(groupID);
+        return groupsApi.addMembers(userID, groupID, token, new AddMembersBody(invitedUsers))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

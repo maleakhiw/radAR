@@ -44,5 +44,6 @@ public interface ChatApi {
     @PUT("accounts/{userID}/chats/{groupID}/members")
     Observable<Status> addMembers(@Path(value="userID", encoded=true) int userID,
                                   @Path(value="groupID", encoded=true) int groupID,
+                                  @Header("token") String token,
                                   @Body AddMembersBody body);
 }
