@@ -27,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import radar.radar.Listeners.LocationCallbackProvider;
@@ -125,63 +126,48 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         TextView text_new_group = (TextView) findViewById(R.id.text_new_group);
 
         // set up floating action button (fab_current, fab_add, etc.) behaviour
-        fab_current_loc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                presenter.jumpToCurrentLocation();
-            }
+        fab_current_loc.setOnClickListener(v -> {
+            // FAB Action
+            presenter.jumpToCurrentLocation();
         });
 
-        fab_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                fab_add.setVisibility(View.INVISIBLE);
-                fab_remove.setVisibility(View.VISIBLE);
-                fab_new_friend.setVisibility(View.VISIBLE);
-                text_new_friend.setVisibility(View.VISIBLE);
-                fab_new_group.setVisibility(View.VISIBLE);
-                text_new_group.setVisibility(View.VISIBLE);
-            }
+        fab_add.setOnClickListener(v -> {
+            // FAB Action
+            fab_add.setVisibility(View.INVISIBLE);
+            fab_remove.setVisibility(View.VISIBLE);
+            fab_new_friend.setVisibility(View.VISIBLE);
+            text_new_friend.setVisibility(View.VISIBLE);
+            fab_new_group.setVisibility(View.VISIBLE);
+            text_new_group.setVisibility(View.VISIBLE);
         });
 
-        fab_remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                fab_add.setVisibility(View.VISIBLE);
-                fab_remove.setVisibility(View.INVISIBLE);
-                fab_new_friend.setVisibility(View.INVISIBLE);
-                text_new_friend.setVisibility(View.INVISIBLE);
-                fab_new_group.setVisibility(View.INVISIBLE);
-                text_new_group.setVisibility(View.INVISIBLE);
-            }
+        fab_remove.setOnClickListener(v -> {
+            // FAB Action
+            fab_add.setVisibility(View.VISIBLE);
+            fab_remove.setVisibility(View.INVISIBLE);
+            fab_new_friend.setVisibility(View.INVISIBLE);
+            text_new_friend.setVisibility(View.INVISIBLE);
+            fab_new_group.setVisibility(View.INVISIBLE);
+            text_new_group.setVisibility(View.INVISIBLE);
         });
 
 
-        fab_new_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                Intent intent = new Intent(getApplicationContext(), FriendRequestActivity.class);
-                startActivity(intent);
-            }
+        fab_new_friend.setOnClickListener(v -> {
+            // FAB Action
+            Intent intent = new Intent(getApplicationContext(), FriendRequestActivity.class);
+            startActivity(intent);
         });
 
-        fab_new_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
-                intent.putExtra("status", "successful");
-                if (meetingPoint != null) {
-                    intent.putExtra("name", meetingPoint.getName().toString());
-                    intent.putExtra("lat", meetingPoint.getLatLng().latitude);
-                    intent.putExtra("lng", meetingPoint.getLatLng().longitude);
-                }
-                startActivity(intent);
+        fab_new_group.setOnClickListener(v -> {
+            // FAB Action
+            Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+            intent.putExtra("status", "successful");
+            if (meetingPoint != null) {
+                intent.putExtra("name", meetingPoint.getName().toString());
+                intent.putExtra("lat", meetingPoint.getLatLng().latitude);
+                intent.putExtra("lng", meetingPoint.getLatLng().longitude);
             }
+            startActivity(intent);
         });
     }
 
