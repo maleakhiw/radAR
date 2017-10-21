@@ -17,6 +17,7 @@ import radar.radar.Models.Responses.Status;
 import radar.radar.Services.ChatService;
 import radar.radar.Views.ChatListView;
 
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 
 /**
@@ -68,7 +69,6 @@ public class ChatListPresenterTest {
 
         // Verify if load data successfully called
         Mockito.verify(chatListView).setGroups(groups);
-        Mockito.verify(chatListView).stopRefreshIndicator();
     }
 
     /**
@@ -100,7 +100,6 @@ public class ChatListPresenterTest {
 
         // Verify if load data status false, it will give message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
-        Mockito.verify(chatListView).stopRefreshIndicator();
     }
 
     /**
@@ -135,7 +134,6 @@ public class ChatListPresenterTest {
 
         // Verify if load data status false, it will give message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
-        Mockito.verify(chatListView).stopRefreshIndicator();
     }
 
     /**
@@ -160,7 +158,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData(false);
+        Mockito.doNothing().when(presenter).loadData(anyBoolean());
 
         // Call the presenter
         presenter.deleteGroup(groupID);
@@ -191,7 +189,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData(false);
+        Mockito.doNothing().when(presenter).loadData(anyBoolean());
 
         // Call the presenter
         presenter.deleteGroup(groupID);
@@ -224,7 +222,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData(false);
+        Mockito.doNothing().when(presenter).loadData(anyBoolean());
 
         // Call the presenter
         presenter.deleteGroup(groupID);
