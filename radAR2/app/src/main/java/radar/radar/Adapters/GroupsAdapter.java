@@ -170,7 +170,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 //            menu.setHeaderTitle("Select Action");
-            MenuItem delete = menu.add(Menu.NONE,1,1,"Delete group");   // TODO move to strings
+            MenuItem delete = menu.add(Menu.NONE,1,1,"Leave Group");   // TODO move to strings
             delete.setOnMenuItemClickListener(this);
         }
     }
