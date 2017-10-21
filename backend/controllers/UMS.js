@@ -486,6 +486,7 @@ module.exports = class UMS {
     }
 
     winston.debug(req.body)
+    winston.debug('queryUserID', queryUserID)
 
     if (!username && !queryUserID) {
       errorKeys.push('missingUserIDOrUsername')
@@ -515,7 +516,7 @@ module.exports = class UMS {
       } else {
         User.findOne( { userID: queryUserID } ).exec()
         .then((user) => {
-          // winston.debug(user)
+          winston.debug(user)
           common.getUserDetail(user.userID, userID).then(
             usersDetailsOne => {
               let response = {

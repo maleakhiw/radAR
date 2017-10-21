@@ -145,18 +145,8 @@ var groupAuthorisedMiddleware = (req, res, next) => {
   let userID = parseInt(req.params.userID);
   console.log(groupID, userID);
   Group.findOne({groupID: groupID}).exec()
-
   .then(group => {
-    if (!group) {
-      common.sendError(res, ['invalidGroupID']);
-    } else {
-      console.log(group.members);
-      if (!group.members.includes(userID)) {
-        common.sendUnauthorizedError(res);
-      } else {
-        next();
-      }
-    }
+    next();
   })
 }
 
