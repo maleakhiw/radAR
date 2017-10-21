@@ -476,6 +476,8 @@ module.exports = class UMS {
     let queryUserID = req.params.userID;
     let username = req.body.username;
 
+    console.log(common);
+
     let errorKeys = []
     function sendError() {  // assumption: variables are in closure
       let response = {
