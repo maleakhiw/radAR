@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-import radar.radar.Adapters.NewGroupListAdapter;
+import radar.radar.Adapters.EditGroupListAdapter;
 import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.User;
@@ -62,7 +62,7 @@ public class AddMembersActivity extends AppCompatActivity implements AddMembersV
         // set up RecyclerView
         recyclerView = findViewById(R.id.RecyclerView_members_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new NewGroupListAdapter(new ArrayList<>()));
+        recyclerView.setAdapter(new EditGroupListAdapter(new ArrayList<>(), group));
 
         presenter.loadFriends();
     }
@@ -77,7 +77,7 @@ public class AddMembersActivity extends AppCompatActivity implements AddMembersV
             friendsWithCheckbox.add(new UserWithCheckbox(user, false));
         }
 
-        ((NewGroupListAdapter) recyclerView.getAdapter()).setUsers(friendsWithCheckbox);
+        ((EditGroupListAdapter) recyclerView.getAdapter()).setUsers(friendsWithCheckbox);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class AddMembersActivity extends AppCompatActivity implements AddMembersV
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.done:
-                ArrayList<UserWithCheckbox> users = ((NewGroupListAdapter) recyclerView.getAdapter()).getUsers();
+                ArrayList<UserWithCheckbox> users = ((EditGroupListAdapter) recyclerView.getAdapter()).getUsers();
                 ArrayList<Integer> selectedUsers = new ArrayList<>();
 
                 for (UserWithCheckbox user: users) {

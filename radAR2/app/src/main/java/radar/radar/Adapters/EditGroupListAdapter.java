@@ -11,23 +11,32 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import radar.radar.Models.Domain.User;
 import radar.radar.Models.Android.UserWithCheckbox;
+import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.User;
 import radar.radar.R;
 
 
-public class NewGroupListAdapter extends RecyclerView.Adapter<NewGroupListAdapter.ViewHolder> {
+public class EditGroupListAdapter extends RecyclerView.Adapter<EditGroupListAdapter.ViewHolder> {
 
     ArrayList<UserWithCheckbox> users;
+    Group group;
 
-    public NewGroupListAdapter(ArrayList<UserWithCheckbox> users) {
+    public EditGroupListAdapter(ArrayList<UserWithCheckbox> users, Group group) {
         this.users = users;
+        this.group = group;
     }
 
     public void setUsers(ArrayList<UserWithCheckbox> users) {
-        this.users = users;
+        this.users = new ArrayList<>();
 
-
+        // filter users already in the group
+        for (UserWithCheckbox user: users) {
+            if (!group.members.contains(user.userID)) {
+                this.users.add(user);
+            }
+        }
+        
         notifyDataSetChanged(); // to simplify things, put notifyDataSetChanged() in setters
                                 // to avoid repetitive calls from the Activity
     }

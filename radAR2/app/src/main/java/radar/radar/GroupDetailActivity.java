@@ -180,6 +180,8 @@ public class GroupDetailActivity extends AppCompatActivity implements LocationUp
 
     @Override
     public void onLocationUpdate(Location location) {
-        groupDetailsFragment.updateDistance(location.getLatitude(), location.getLongitude());
+        if (groupDetailsFragment != null) {
+            groupDetailsFragment.updateDistance(location.getLatitude(), location.getLongitude());
+        }
     }
 }

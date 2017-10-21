@@ -108,8 +108,6 @@ public class GroupLocationsFragment extends Fragment {
 
         View rootView = inflater.inflate(R.layout.fragment_group_locations, container, false);
 
-
-
         Bundle args = getArguments();
         if (args != null) {
             group = (Group) args.getSerializable("group");
