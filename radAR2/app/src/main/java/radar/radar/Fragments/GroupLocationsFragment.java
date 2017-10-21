@@ -229,4 +229,8 @@ public class GroupLocationsFragment extends Fragment {
     public void setListener(GroupDetailsLifecycleListener listener) {
         this.listener = listener;
     }
+
+    public void setMeetingPoint(MeetingPoint meetingPoint) {
+        this.group.meetingPoint = meetingPoint;
+    }
 }

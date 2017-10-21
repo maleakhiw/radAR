@@ -9,6 +9,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+
 class LoggingInterceptor implements Interceptor {
     @Override public okhttp3.Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -28,20 +30,30 @@ class LoggingInterceptor implements Interceptor {
 }
 
 public class RetrofitFactory {
+    private static final boolean DEBUG = false;
     private static Retrofit.Builder retrofit;
 
     public static Retrofit.Builder getRetrofitBuilder() {
         if (retrofit == null) {
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new LoggingInterceptor())
-                    .build();
+            if (DEBUG) {
+                OkHttpClient client = new OkHttpClient.Builder()
+                        .addInterceptor(new LoggingInterceptor())
+                        .build();
 
-            retrofit = new Retrofit.Builder()
-                    .client(client)
-                    .baseUrl("https://radar.fadhilanshar.com/api/")
-                    .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                    .addConverterFactory(GsonConverterFactory.create());
-            return retrofit;
+                retrofit = new Retrofit.Builder()
+                        .client(client)
+                        .baseUrl("https://radar.fadhilanshar.com/api/")
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create());
+                return retrofit;
+            } else {
+                retrofit = new Retrofit.Builder()
+                        .baseUrl("https://radar.fadhilanshar.com/api/")
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create());
+                return retrofit;
+            }
+
         }
         return retrofit;
 

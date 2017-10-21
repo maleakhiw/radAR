@@ -6,10 +6,10 @@ import java.util.Date;
  * Data model response for location
  */
 public class GetLocationResponse extends Status {
-    public float lat;
-    public float lon;
-    public float heading;
-    public float accuracy;
+    public double lat;
+    public double lon;
+    public double heading;
+    public double accuracy;
     public Date timeUpdated;
 
 }
