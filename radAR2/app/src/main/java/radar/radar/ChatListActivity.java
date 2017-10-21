@@ -51,6 +51,8 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
 
         groups = new ArrayList<>();
 
+        swipeRefreshLayout.setEnabled(false);
+
         Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
         ChatApi chatApi = retrofit.create(ChatApi.class);
         chatService = new ChatService(this, chatApi);
