@@ -110,7 +110,6 @@ public class ChatPresenter {
             System.out.println("disposing load messages disposable");
             loadMessagesDisposable.dispose();
             System.out.println(loadMessagesDisposable.isDisposed());
-//            responseObservable = null;
             chatService.stopPollingMessages();
         }
     }

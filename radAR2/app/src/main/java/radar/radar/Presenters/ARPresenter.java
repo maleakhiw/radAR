@@ -56,7 +56,6 @@ public class ARPresenter {
         groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
     }
 
-
     void renderDestination(double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
         int userID = -1;
         double bearing = LocationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
