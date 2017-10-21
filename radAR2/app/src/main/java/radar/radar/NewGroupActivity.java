@@ -1,9 +1,9 @@
 package radar.radar;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,28 +18,24 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.NewGroupListAdapter;
+import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.MeetingPoint;
+import radar.radar.Models.Domain.User;
 import radar.radar.Models.Responses.FriendsResponse;
 import radar.radar.Models.Responses.GroupsResponse;
-import radar.radar.Models.Domain.User;
-import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Models.Responses.NewChatResponse;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewGroupActivity extends AppCompatActivity {
 

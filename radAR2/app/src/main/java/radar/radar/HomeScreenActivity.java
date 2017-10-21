@@ -100,6 +100,11 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                     Log.i(TAG, "Successful click ");
                     Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
                     intent.putExtra("status", "successful");
+                    if (meetingPoint != null) {
+                        intent.putExtra("name", meetingPoint.getName().toString());
+                        intent.putExtra("lat", meetingPoint.getLatLng().latitude);
+                        intent.putExtra("lng", meetingPoint.getLatLng().longitude);
+                    }
                     startActivity(intent);
                     return true;
                 });
@@ -159,12 +164,9 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
             intent.putExtra("status", "successful");
             if (meetingPoint != null) {
-                intent.putExtra("place", "selected");
                 intent.putExtra("name", meetingPoint.getName().toString());
                 intent.putExtra("lat", meetingPoint.getLatLng().latitude);
                 intent.putExtra("lng", meetingPoint.getLatLng().longitude);
-            } else {
-                intent.putExtra("place", "unselected");
             }
             startActivity(intent);
         });
