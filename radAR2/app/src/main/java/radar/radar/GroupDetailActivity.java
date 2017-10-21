@@ -145,7 +145,7 @@ public class GroupDetailActivity extends AppCompatActivity implements LocationUp
 
             @Override
             public void onNext(GroupsResponse groupsResponse) {
-                if (groupsResponse.success) {   // TODO too heavyweight? + pass it to Fragments
+                if (groupsResponse.success) {   // TODO - update fragments too
                     group = groupsResponse.group;
                     setTitle(group.name);
                 }

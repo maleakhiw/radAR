@@ -160,9 +160,10 @@ public class NavigationActivityHelper {    // not actually a pure "Presenter"
     }
 
     public void updateDisplay() {
-        if (name != null) { // TODO other null checks
+        if (name != null & email != null) { // TODO other null checks
             name.setText(AuthService.getFirstName(activity) + " " + AuthService.getLastName(activity));
             email.setText(AuthService.getEmail(activity));
+
             // TODO pass this in as a dependency
             Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
             ResourcesApi resourcesApi = retrofit.create(ResourcesApi.class);

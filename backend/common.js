@@ -15,6 +15,51 @@ module.exports.groupExists = groupID => new Promise((resolve, reject) => {
   }).catch(err => reject(err));
 })
 
+// TODO to be removed
+module.exports.getUserDetail = (queryUserID, selfUserID) => {
+  return getUsersDetails([queryUserID], selfUserID);
+}
+
+// TODO to be removed
+module.exports.getUsersDetails = (members, userID) => {
+  return new Promise((resolve, reject) => {
+    let userDetails = {};
+    let promiseAll = members.map((memberUserID) => new Promise((resolve, reject) => {
+      User.findOne({userID: memberUserID}).exec()
+      .then((user) => { // assumption: user is valid (since all other routes validated, module.exports is only a GET route)
+        if (user) {
+          userDetails[memberUserID] = common.getPublicUserInfo(user);
+          userDetails[memberUserID].isFriend = user.friends.includes(parseInt(userID));
+        }
+        resolve();
+      })
+    }))
+
+    // when all info loaded, resolve the promise
+    Promise.all(promiseAll).then(() => {
+      // already got userdetails, now get common groups if userID specified
+      if (userID) {
+        let promiseAll2 = members.map(memberUserID => new Promise((resolve, reject) => {
+          common.getCommonGroups(userID, memberUserID)
+          .then(commonGroups => {
+            userDetails[memberUserID].commonGroups = commonGroups;
+            resolve();
+          })
+        }));
+
+        Promise.all(promiseAll2).then(() => {
+          resolve(userDetails);
+        })
+      } else {
+        resolve(userDetails);
+      }
+    })
+    .catch((err) => {
+      reject(err);
+    })
+  });
+}
+
 module.exports.updateGroupLastUpdated = (groupID, userID) => {
   // runs asynchronously - less "important" to validate if successfully completed
   Group.findOne({groupID: groupID}).exec()

@@ -83,11 +83,13 @@ public class UsersService {
      * @return response from API server
      */
     public Observable<FriendsResponse> getFriends() {
-        // get userID and token from AuthService
-        // TODO check if userID 0, if 0 return an Observable which only emits an error (which should boot the user to the Login screen in the Presenter)
+        if (userID == 0) {
+            return Observable.error(new Throwable("loggedOut"));
+        }
+
         Observable<FriendsResponse> observable = usersApi.getFriends(userID, token)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .observeOn(AndroidSchedulers.mainThread());
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
         return observable;
     }
 

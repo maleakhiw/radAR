@@ -72,16 +72,15 @@ public class ResourcesService {
                 // get header and filename from response
                 String header = response.headers().get("Content-Type");
                 System.out.println(header);
+
+//                String filename = header.replace("attachment; filename=", "");
                 String filename = response.headers().get("filename");
                 if (filename == null) {
                     filename = "temp";
                 }
-//                String filename = header.replace("attachment; filename=", "");
                 System.out.println(filename);
 
                 // create a temp file
-                // TODO randomly generate filename to avoid conflicts.
-                // TODO store saved files in a local dir. (sdcard/radAR/chats/{chatID}/{resID}
                 File file = File.createTempFile(filename, null, context.getCacheDir());
 
                 BufferedSink bufferedSink = Okio.buffer(Okio.sink(file));

@@ -26,6 +26,8 @@ public class NewGroupListAdapter extends RecyclerView.Adapter<NewGroupListAdapte
 
     public void setUsers(ArrayList<UserWithCheckbox> users) {
         this.users = users;
+        notifyDataSetChanged(); // to simplify things, put notifyDataSetChanged() in setters
+                                // to avoid repetitive calls from the Activity
     }
 
     public ArrayList<UserWithCheckbox> getUsers() {

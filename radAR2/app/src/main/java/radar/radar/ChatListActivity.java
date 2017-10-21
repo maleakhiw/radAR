@@ -113,7 +113,7 @@ public class ChatListActivity extends AppCompatActivity implements ChatListView 
                 DividerItemDecoration.VERTICAL));
         swipeRefreshLayout = findViewById(R.id.chat_list_swipeRefreshLayout);
 
-        setTitle("Chats");  // TODO move to String resource
+        setTitle(getString(R.string.chat_list_title));
     }
 
     @Override

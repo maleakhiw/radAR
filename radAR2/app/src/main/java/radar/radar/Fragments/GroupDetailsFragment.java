@@ -39,6 +39,7 @@ import java.util.HashMap;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 import radar.radar.Adapters.GroupMembersAdapter;
+import radar.radar.AddMembersActivity;
 import radar.radar.ChatActivity;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
 import radar.radar.MapsActivity;
@@ -67,6 +68,8 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     TextView mainTextView;
     RecyclerView recyclerView;
     GroupMembersAdapter friendsAdapter;
+
+    Button addMembersButton;
 
     TextView destinationTV;
     TextView distanceTV;
@@ -157,6 +160,14 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
 
 //        nameTextView = rootView.findViewById(R.id.fragment_group_details_name);
 //        nameTextView.setText(group.name);
+
+        addMembersButton = rootView.findViewById(R.id.add_members_button);
+        addMembersButton.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), AddMembersActivity.class);
+            intent.putExtra("group", group);
+            startActivity(intent);
+        });
+
 
         mainTextView = rootView.findViewById(R.id.group_detail_textview);
         mainTextView.setText("Members");

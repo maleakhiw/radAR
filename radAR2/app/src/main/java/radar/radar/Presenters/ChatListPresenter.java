@@ -61,7 +61,7 @@ public class ChatListPresenter {
     }
 
     public void deleteGroup(int groupID) {
-        chatService.deleteGroup(groupID).subscribe(new Observer<Status>() {
+        chatService.leaveGroup(groupID).subscribe(new Observer<Status>() {
             @Override
             public void onSubscribe(Disposable d) {
 
