@@ -37,6 +37,9 @@ public class NewGroupActivity extends AppCompatActivity {
     NewGroupListAdapter adapter;
 
     Button button;
+    private String placeName;
+    private String placeLat;
+    private String placeLng;
 
     void launchGroup(Group group) {
         Intent intent = new Intent(this, GroupDetailActivity.class);
@@ -69,6 +72,17 @@ public class NewGroupActivity extends AppCompatActivity {
         usersService = new UsersService(this, retrofit.create(UsersApi.class));
 
         TextInputLayout textInputEditText = findViewById(R.id.new_group_name);
+
+        Bundle bundle = getIntent().getExtras();
+        String status = bundle.getString("place");
+        if (status.equals("selected")) {
+            // get name location, lat and lng
+            placeName = bundle.getString("name");
+            placeLat = bundle.getString("lat");
+            placeLng = bundle.getString("lng");
+        }
+
+        //set up meeting point view
 
         usersService.getFriends().subscribe(new Observer<FriendsResponse>() {
             @Override
@@ -105,7 +119,6 @@ public class NewGroupActivity extends AppCompatActivity {
                     } else {
                         // disable button, don't want duplicate group
                         button.setEnabled(false);
-
 
                         Intent intent = getIntent();
                         if (intent.getExtras().containsKey("newGroup")) {

@@ -185,9 +185,12 @@
     <string name="edit">Edit</string>
     <string name="done">Done</string>
     <string name="remove">REMOVE</string>
-    <string name="meetingpoint">MeetingPoint</string>
+    <string name="meeting_point">Meeting Point</string>
     <string name="select">SELECT</string>
     <string name="new_group1">New group</string>
-    <string name="meeting_place_location">Meeting place location</string>
+    <string name="meeting_place_location">Click SELECT to select a location</string>
+    <string name="location_image">location image</string>
+    <string name="cancel_button">cancel button</string>
+    <string name="group_name">Group name</string>
 
 </resources>
