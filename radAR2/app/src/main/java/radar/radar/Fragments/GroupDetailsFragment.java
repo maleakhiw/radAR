@@ -82,7 +82,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
     private Group group = null;
 
     private static final int REQUEST_CODE_AUTOCOMPLETE = 1;
-    private static final String TAG = "SearchLocationActivity";
+    private static final String TAG = "GroupDetailFragment";
 
     private static final int REQUEST_FOR_LOCATION_DISTANCE = 2;
     private static final int REQUEST_FOR_LOCATION_MAP = 3;
