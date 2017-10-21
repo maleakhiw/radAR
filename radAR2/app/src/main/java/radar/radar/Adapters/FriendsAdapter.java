@@ -13,6 +13,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -48,6 +50,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
      * @param friends new friend list for this adapter
      */
     public void updateFriends(ArrayList<User> friends) {
+        Comparator<User> comparator = (o1, o2) -> (o1.firstName + o1.lastName).compareTo(o2.firstName + o2.lastName);
+        Collections.sort(friends, comparator);
         this.friends = friends;
     }
 
