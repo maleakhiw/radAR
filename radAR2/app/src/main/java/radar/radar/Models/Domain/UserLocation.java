@@ -7,6 +7,7 @@ import radar.radar.Models.Responses.GetLocationResponse;
 
 
 public class UserLocation extends GetLocationResponse {
+
     public int getUserID() {
         return userID;
     }

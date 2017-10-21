@@ -1,7 +1,5 @@
 package radar.radar.Presenters;
 
-
-
 import android.hardware.SensorManager;
 import android.location.Location;
 
@@ -26,6 +24,9 @@ import radar.radar.AnnotationRenderer;
 import radar.radar.Services.SensorService;
 import radar.radar.Views.ARView;
 
+/**
+ * This class encapsulates the logic of AR activity of the application
+ */
 public class ARPresenter {
     private ARView arView;
 
@@ -45,7 +46,6 @@ public class ARPresenter {
 
     private int activeAnnotationUserID = DESTINATION_ID;
 
-
     public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorManager sensorManager, LocationTransformations locationTransformations, int groupID) {
         this.arView = arView;
         this.locationService = locationService;
@@ -55,8 +55,6 @@ public class ARPresenter {
 
         groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
     }
-
-
 
     void renderDestination(double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
         int userID = -1;
@@ -69,7 +67,6 @@ public class ARPresenter {
         int width = arView.getAnnotationWidth(userID);
 
         arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets - check for overlaps, etc.
-        // TODO move this to AnnotationRenderer.java
     }
 
     public void setActiveAnnotation(int userID) {
@@ -87,7 +84,7 @@ public class ARPresenter {
         renderDestination(latUser, lonUser, destination, azimuth, pitch);
     }
 
-    private void updateLocationTransformations() {
+    public void updateLocationTransformations() {
         Observable<Double> azimuthObservable = sensorService.azimuthUpdates;
         Observable<Double> pitchObservable = sensorService.pitchUpdates;
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -150,7 +147,6 @@ public class ARPresenter {
 
                 if (meetingPoint != null) {
                     userLocations.add(new DestinationLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded, meetingPoint.name));
-//                    renderDestinationLocation(meetingPoint, latCurrent, lonCurrent, azimuth, pitch);
                 }
                 for (UserLocation userLocation: locationAndDeviceData.groupLocationDetails.locations) {
                     userLocations.add(userLocation);

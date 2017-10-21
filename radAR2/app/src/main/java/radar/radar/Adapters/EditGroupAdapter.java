@@ -32,13 +32,21 @@ import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
 import retrofit2.Retrofit;
 
-
+/**
+ * Adapter classes for edit group, changing group name, profile picture, etc
+ */
 public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.ViewHolder> {
     HashMap<Integer, User> friends;
     ArrayList<User> friendsList;
     Context context;
     Group group;
 
+    /**
+     * Constructor for EditGroup
+     * @param context context from when the adapter called (activity)
+     * @param friends hash map mapping friends
+     * @param group instance of group
+     */
     public EditGroupAdapter(Context context, HashMap<Integer, User> friends, Group group) {
         this.context = context;
         this.friends = friends;
@@ -51,6 +59,10 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
         }
     }
 
+    /**
+     * Update the data/ hashmap
+     * @param friends new hashmap to be updated
+     */
     public void updateFriends(HashMap<Integer, User> friends) {
         this.friends = friends;
 
@@ -81,7 +93,6 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
 
         // load stuff
         holder.tvName.setText(user.firstName + " " + user.lastName);
-//        holder.tvUsername.setText(" @" + user.username);
         if (user.profileDesc == null) {
             holder.tvOnlineStatus.setText("Hello, I am using Radar!");
         } else {
@@ -94,10 +105,6 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
 
         if (user.profilePicture != null) {
             if (!holder.profPicLoaded) {
-                // TODO inject service using method from Activity
-//            System.out.println(position);
-//            System.out.println(group.name);
-//            System.out.println(group.profilePicture);
 
                 holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
                     @Override
@@ -136,6 +143,9 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
         return friends.size();
     }
 
+    /**
+     * Inner class for the view holder in EditGroupAdapter
+     */
     public class ViewHolder extends RecyclerView.ViewHolder {
         ImageView profilePic;
         TextView tvName;
@@ -146,6 +156,10 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
         Context context;
         ResourcesService resourcesService;
 
+        /**
+         * Constructor for view holder
+         * @param itemView view instances
+         */
         public ViewHolder(View itemView) {
             super(itemView);
             profilePic = itemView.findViewById(R.id.row_friends_profile_picture);
@@ -159,7 +173,6 @@ public class EditGroupAdapter extends RecyclerView.Adapter<EditGroupAdapter.View
 
             tvDelete = itemView.findViewById(R.id.delete_TV);
 
-            // TODO inject service in constructor
             GroupsApi groupsApi = retrofit.create(GroupsApi.class);
             GroupsService groupsService = new GroupsService(context, groupsApi);
 

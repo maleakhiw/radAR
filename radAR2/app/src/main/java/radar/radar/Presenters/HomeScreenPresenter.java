@@ -21,10 +21,11 @@ import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.NewGroupActivity;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
-
 import static android.content.ContentValues.TAG;
 
-
+/**
+ * Class encapsulated the application logic/ presenter for HomeScreenPresenter
+ */
 public class HomeScreenPresenter {
     private static final float DEFAULT_ZOOM = 15;
 
@@ -36,6 +37,11 @@ public class HomeScreenPresenter {
     private boolean first = true;
     private LatLng current = null;
 
+    /**
+     * Constructor for HomeScreenPresenter
+     * @param homeScreenView instance of the homescreen view
+     * @param locationService instance of the location service
+     */
     @SuppressLint("MissingPermission")
     public HomeScreenPresenter(HomeScreenView homeScreenView, LocationService locationService) {
         this.homeScreenView = homeScreenView;
@@ -55,6 +61,9 @@ public class HomeScreenPresenter {
         locationUpdates();
     }
 
+    /**
+     * When a button is clicked move the camera to our current location
+     */
     public void jumpToCurrentLocation() {
         if (current != null) {
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, DEFAULT_ZOOM));
@@ -76,6 +85,9 @@ public class HomeScreenPresenter {
         }
     }
 
+    /**
+     * Used to update the location
+     */
     public void locationUpdates() {
         try {
             locationService.getLocationUpdates(10000, 5000, LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY, locationCallback);
@@ -84,6 +96,10 @@ public class HomeScreenPresenter {
         }
     }
 
+    /**
+     * Getter for our current position
+     * @return LatLng object
+     */
     public LatLng getCurrent() {
         return current;
     }

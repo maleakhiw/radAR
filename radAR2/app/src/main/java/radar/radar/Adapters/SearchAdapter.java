@@ -9,11 +9,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 import java.util.ArrayList;
 
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import radar.radar.Models.Domain.User;
 import radar.radar.R;
+import radar.radar.RetrofitFactory;
+import radar.radar.Services.ResourcesApi;
+import radar.radar.Services.ResourcesService;
 import radar.radar.UserDetailActivity;
+import retrofit2.Retrofit;
 
 /**
  * Adapter class for SearchUserFragment
@@ -53,6 +62,38 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         holder.tvName.setText(user.firstName + " " + user.lastName);
         holder.tvUsername.setText(" @" + user.username);
         holder.description.setText(user.profileDesc);
+
+        // Load the profile picture
+        if (user.profilePicture != null) {
+            if (!holder.profPicLoaded) {
+                holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(File file) {
+                        System.out.println("Update profile picture for: " + user.userID);
+                        Picasso.with(holder.context).load(file).into(holder.ivProfilePic);
+                        holder.profPicLoaded = true;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+            }
+        }
+        else {
+            holder.ivProfilePic.setImageResource(R.mipmap.ic_launcher_round);
+        }
     }
 
     @Override
@@ -68,10 +109,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         TextView tvName;
         TextView tvUsername;
         TextView description;
+        ResourcesService resourcesService;
+        Context context;
+        boolean profPicLoaded = false;
 
         public ViewHolder(View itemView) {
             super(itemView);
-            ivProfilePic = itemView.findViewById(R.id.searchImageID);
+
+            // Setup resource services
+            context = itemView.getContext();
+            Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+            resourcesService = new ResourcesService(context, retrofit.create(ResourcesApi.class));
+
+            ivProfilePic = itemView.findViewById(R.id.row_friends_profile_picture);
             tvName = itemView.findViewById(R.id.row_input_name);
             tvUsername = itemView.findViewById(R.id.row_search_username);
             description = itemView.findViewById(R.id.row_description);
