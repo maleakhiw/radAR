@@ -11,8 +11,9 @@ import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsService;
 
-
-
+/**
+ * Application logic/ presenter for GroupList
+ */
 public class GroupsListPresenter {
     GroupsService groupsService;
     GroupsListView view;
@@ -21,12 +22,11 @@ public class GroupsListPresenter {
         this.groupsService = groupsService;
         this.view = view;
 
-        loadData();
+        // This was removed to make the unit test easier
+        // loadData();
     }
 
     public void loadData() {
-        System.out.println("loadData()");
-
         view.setRefreshing(true);
 
         groupsService.getGroups()
@@ -52,8 +52,8 @@ public class GroupsListPresenter {
                     @Override
                     public void onError(Throwable e) {
                         System.out.println(e);
+                        view.showToast("Internal Error. Failure to load groups.");
                         view.setRefreshing(false);
-//                        Log.w("error", e.getMessage());
                     }
 
                     @Override
@@ -74,17 +74,17 @@ public class GroupsListPresenter {
             @Override
             public void onNext(Status status) {
                 if (status.success) {
-                    view.showToast("Group deleted");
+                    view.showToast("Group deleted successfully.");
                     loadData();
                 } else {
-                    view.showToast("Unexpected error");
+                    view.showToast("Failure to delete group");
                 }
             }
 
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                view.showToast("Unexpected error");
+                view.showToast("Internal error. Failure to delete group.");
             }
 
             @Override

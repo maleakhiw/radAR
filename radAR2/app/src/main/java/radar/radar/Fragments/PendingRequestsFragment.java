@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -75,6 +76,8 @@ public class PendingRequestsFragment extends Fragment implements PendingRequests
             FriendsRequestAdapter adapter = new FriendsRequestAdapter(getActivity(), friendRequestsResponse.requestDetails);
             recyclerView2.setAdapter(adapter);
             recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerView2.addItemDecoration(new DividerItemDecoration(getActivity(),
+                    DividerItemDecoration.VERTICAL));
             adapter.notifyDataSetChanged();
         } else {
             Log.w("PendingRequests", "Activity is null");

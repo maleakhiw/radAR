@@ -1,244 +1,103 @@
-// let chai = require('chai')
-// let should = chai.should()
-// let expect = chai.expect
-// let assert = chai.assert
-//
-// const sinon = require('sinon')
-//
-// let SVS = require('../controllers/SVS') // our SUT: system under test
-//
-// const User = require('../models/user')
-// const Request = require('../models/request')
-// const LastRequestID = require('../models/lastRequestID')
-// const LastUserID = require('../models/lastUserID')
-// const PasswordHash = require('../models/passwordHash')
-//
-// describe('SVS unit tests', () => {
-//   let Metadata = require('../models/metadata')  // shadow the external Metadata
-//   let metadataFindOneStub
-//
-//   describe('validateRequest(req, res, callback)', () => {
-//
-//     afterEach(() => {
-//       metadataFindOneStub.restore() // reset to unstubbed state
-//     })
-//
-//     it('should handle errors gracefully', (done) => {
-//       // stub findOne of Metadata
-//       var mockFindOne = {
-//         where: () => this,
-//         equals: () => this,
-//         exec: () => new Promise((resolve, reject) => {  // throw an error to see how the system reacts
-//           throw new Error('Some random error')
-//         })
-//       }
-//       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
-//
-//       // SVS
-//       let svs = new SVS(null, Metadata, null, null)
-//
-//       let callback = (req, res) => {
-//         done()
-//       }
-//       // mocks of req and res objects?
-//       let req = {
-//         body: {
-//           userID: 1
-//         },
-//         params: {},
-//         query: {},
-//         get: (key) => {
-//           return "80"  // token
-//         }
-//       }
-//       let res = {
-//         json: (obj) => {
-//           res.sent = obj
-//           return res
-//         },
-//         status: (statusCode) => {
-//           res.statusCode = statusCode
-//           return res
-//         }
-//       }
-//
-//       svs.authenticate(req, res, callback)
-//       done()
-//     })
-//
-//     it('should pass if userID and token is present and valid', (done) => {
-//       // stub findOne of Metadata
-//       var mockFindOne = {
-//         where: () => this,
-//         equals: () => this,
-//         exec: () => new Promise((resolve, reject) => {
-//           resolve({
-//             userID: 1,
-//             username: "test",
-//             lastSeen: Date.now(),
-//             deviceIDs: [],
-//             activeTokens: ["80"],
-//
-//             // methods
-//             save: () => new Promise((resolve, reject) => {
-//               resolve({
-//                 userID: 1,
-//                 username: "test",
-//                 lastSeen: Date.now(),
-//                 deviceIDs: [],
-//                 activeTokens: []
-//               })
-//             })
-//
-//           })
-//         })
-//       }
-//       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
-//
-//       // SVS
-//       let svs = new SVS(null, Metadata, null, null)
-//
-//       let callback = (req, res) => {
-//         done()
-//       }
-//       // mocks of req and res objects?
-//       let req = {
-//         body: {
-//           userID: 1,
-//         },
-//         params: {},
-//         query: {},
-//         get: (key) => {
-//           return "80"  // token
-//         }
-//       }
-//       let res = {
-//         json: (obj) => {
-//           res.sent = obj
-//           return res
-//         },
-//         status: (statusCode) => {
-//           res.statusCode = statusCode
-//           return res
-//         }
-//       }
-//
-//       svs.authenticate(req, res, callback)
-//       // expect(callback.called).to.equal(true) does not work because Promises
-//       // executes *after* expect(callback.called).to.equal(true)
-//     })
-//
-//     it('should send an error if userID is invalid', (done) => {
-//       // stub findOne of Metadata
-//       var mockFindOne = {
-//         where: () => this,
-//         equals: () => this,
-//         exec: () => new Promise((resolve, reject) => resolve(null))
-//       }
-//       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
-//
-//       // SVS
-//       let svs = new SVS(null, Metadata, null, null)
-//
-//       let callback
-//       let req = {
-//         params: {userID: 1},
-//         body: {},
-//         query: {},
-//         get: (key) => {
-//           return "80"  // token
-//         }
-//       }
-//
-//       let res = {
-//         json: (obj) => {
-//           res.sent = obj
-//           res.sent.success.should.equal(false)
-//           done()
-//           return res
-//         },
-//         status: (statusCode) => {
-//           res.statusCode = statusCode
-//           return res
-//         }
-//       }
-//
-//       svs.authenticate(req, res, callback)
-//
-//     })
-//
-//     it('should send an error if token is missing', (done) => {
-//       // stub findOne of Metadata
-//       var mockFindOne = {
-//         where: () => this,
-//         equals: () => this,
-//         exec: () => new Promise((resolve, reject) => {
-//           resolve({
-//             userID: 1,
-//             username: "test",
-//             lastSeen: Date.now(),
-//             deviceIDs: [],
-//             activeTokens: ["80"],
-//
-//             // methods
-//             save: () => new Promise((resolve, reject) => {
-//               resolve({
-//                 userID: 1,
-//                 username: "test",
-//                 lastSeen: Date.now(),
-//                 deviceIDs: [],
-//                 activeTokens: []
-//               })
-//             })
-//
-//           })
-//         })
-//       }
-//       metadataFindOneStub = sinon.stub(Metadata, "findOne").returns(mockFindOne)
-//
-//       // SVS
-//       let svs = new SVS(null, Metadata, null, null)
-//
-//       let callback
-//       let req = {
-//         params: {
-//           userID: 1
-//         },
-//         body: {},
-//         query: {},
-//         get: (key) => {
-//           return null  // token
-//         }
-//       }
-//
-//       let res = {
-//         json: (obj) => {
-//           res.sent = obj
-//           res.sent.success.should.equal(false)
-//           done()
-//           return res
-//         },
-//         status: (statusCode) => {
-//           this.statusCode = statusCode
-//           return res
-//         }
-//       }
-//
-//       // console.log(res)
-//       svs.authenticate(req, res, callback)
-//
-//     })
-//
-//   })
-//
-//   describe('signUp(req, res)', () => {})
-//
-//   describe('login(req, res)', () => {
-//     // mock
-//   })
-//
-//   after(() => {
-//     let svs = new SVS(User, Metadata, LastUserID, PasswordHash) // reinitialise with actual modules for other (integration) tests
-//   })
-//
-// })
+// chai - assertions framework
+const chai = require('chai');
+const should = chai.should();
+const expect = chai.expect;
+const assert = chai.assert;
+
+const SVS = require('../controllers/SVS');
+var svs;
+
+const User = require('../models/user');
+
+// sinon - mocking
+const sinon = require('sinon');
+
+describe('SVS unit tests', () => {
+
+  before(() => {
+    svs = new SVS(User);
+  })
+
+  describe('generateToken', () => {
+    it('should generate a token', (done) => {
+      let token = svs.generateToken(1);
+      token.should.not.equal(null);
+      done();
+    });
+  });
+
+  describe('hashSaltPassword', () => {
+    it('a hash and salt should be generated', (done) => {
+      let hash = svs.hashSaltPassword('hunter2');
+      hash.should.not.equal(null);
+      done();
+    });
+
+    it('should produce differnt outputs even if the input is the same', (done) => {
+      let hash = svs.hashSaltPassword('hunter2');
+      let hash2 = svs.hashSaltPassword('hunter2');
+      hash.should.not.equal(hash2);
+      done();
+    });
+  });
+
+  describe('validatePassword', () => {
+    it('should be able to validate passwords', (done) => {
+      let hash = svs.hashSaltPassword('hunter2');
+      let hash2 = svs.hashSaltPassword('hunter2');
+      svs.validatePassword('hunter2', hash).should.equal(true);
+      svs.validatePassword('hunter2', hash2).should.equal(true);
+      svs.validatePassword('hunter3', hash).should.equal(false);
+      svs.validatePassword('hunter3', hash2).should.equal(false);
+      done();
+    });
+  });
+
+  describe('isValidUser', () => {
+    let userFindOneStub;
+
+    afterEach(() => userFindOneStub.restore()); // restore original behaviour
+
+    it('should reject an invalidUserID', (done) => {
+      var mockFindOne = {
+        where: () => this,
+        equals: () => this,
+        exec: () => new Promise((resolve, reject) => resolve(null))
+      };
+      userFindOneStub = sinon.stub(User, 'findOne').returns(mockFindOne);
+
+      svs.isValidUser(1)
+      .then((user) => {
+        console.log('Should not go here');
+        assert.equal(1, 0);
+      })
+      .catch((err) => {
+        err.should.equal('invalidUserID');
+        done();
+      })
+    });
+
+    it('should resolve() on a valid user', (done) => {
+      var mockFindOne = {
+        where: () => this,
+        equals: () => this,
+        exec: () => new Promise((resolve, reject) => resolve({
+          // stub of a user. Not a complete user object
+          userID: 1
+        }))
+      };
+      userFindOneStub = sinon.stub(User, 'findOne').returns(mockFindOne);
+
+      svs.isValidUser(1)
+      .then((user) => {
+        done();
+      })
+      .catch((err) => {
+        console.log('Should not go here');
+        assert.equal(1, 0);
+      })
+    });
+
+  });
+
+})

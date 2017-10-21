@@ -142,6 +142,7 @@ app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
 app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promoteToTrackingGroup)
 app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
 app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
+app.get("/api/accounts/:userID/chats/with/:queryUserID", authenticate, sms.getOneToOneChat);
 
 // chats and groups
 app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);

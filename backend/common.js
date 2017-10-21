@@ -3,9 +3,55 @@ const metas = require('./consts').metas
 const User = require('./models/user') // TODO refactor so User is plug and play
 const Group = require('./models/group') // TODO refactor as above
 const Resource = require('./models/resource');  // TODO as above
+const Message = require('./models/message');
 
 module.exports.getNumLength = number => (Math.abs(number) + "").length;
 
+module.exports.groupExists = groupID => new Promise((resolve, reject) => {
+  Group.findOne({groupID: groupID})
+  .then(group => {
+    if (group) resolve(true);
+    else resolve(false);
+  }).catch(err => reject(err));
+})
+
+module.exports.getGroupInfo = (groupID, userID) => new Promise((resolve, reject) => {
+
+  let lastMessage;
+
+  Message.findOne({groupID: groupID}).exec()
+  .then(message => {
+    if (message) {
+      lastMessage = {
+        from: message.from,
+        time: message.time,
+        contentType: message.contentType,
+        text: message.text
+      }
+    }
+
+    return Group.findOne({groupID: groupID});
+  })
+  .then(group => {
+    if (group) {
+      let groupInfo = module.exports.formatGroupInfo(group);
+
+      groupInfo.lastMessage = lastMessage;
+
+      module.exports.getUsersDetails(group.members, userID)
+      .then(usersDetails => {
+        groupInfo["usersDetails"] = usersDetails;
+        resolve(groupInfo);
+      })
+    } else {
+      resolve();
+    }
+
+
+  })
+  .catch(err => reject(err))
+
+});
 
 module.exports.updateGroupLastUpdated = (groupID, userID) => {
   // runs asynchronously - less "important" to validate if successfully completed
@@ -136,6 +182,16 @@ module.exports.errorObjectBuilder = function(errorKeys) {
   }
   return errors
 }
+
+module.exports.userExists = userID => new Promise((resolve, reject) => {
+  User.findOne({userID: userID})
+  .then(user => {
+    console.log(user);
+    if (user) resolve(true);
+    else resolve(false);
+  })
+  .catch(err => reject(err));
+})
 
 module.exports.getPublicUserInfo = function(user) {
   // TODO: check settings - privacy, visibility (Iteration 3)
