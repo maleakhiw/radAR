@@ -1,11 +1,9 @@
 package radar.radar;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -25,18 +23,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
@@ -52,7 +43,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
     private static final float DEFAULT_ZOOM = 16;
     private static final int REQUEST_FOR_LOCATION = 1;
 
-    private Location currentLocation;
+    private Place meetingPoint = null;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
     private HomeScreenPresenter presenter;
@@ -66,6 +57,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        // set up navigation bar
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -77,8 +69,10 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
 
+        // set up retrofit
         Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
+        // set up locationApi
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
@@ -91,35 +85,29 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         // set up place autocomplete
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-
         autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                // TODO: Get info about the selected place.
+                // Get info about the selected place.
+                meetingPoint = place;
                 googleMap.clear();
                 Log.i(TAG, "Place: " + place.getName());
                 googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
                         .title((String) place.getName()));
                 googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                    /**
-                     * handle marker click event
-                     */
-                    @Override
-                    public boolean onMarkerClick(Marker marker) {
-                        // TODO Auto-generated method stub
-                        Log.i(TAG, "Successful click ");
-                        Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
-                        intent.putExtra("status", "successful");
-                        startActivity(intent);
-                        return true;
-                    }
+                // handle marker click event
+                googleMap.setOnMarkerClickListener(marker -> {
+                    Log.i(TAG, "Successful click ");
+                    Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                    intent.putExtra("status", "successful");
+                    startActivity(intent);
+                    return true;
                 });
             }
 
             @Override
             public void onError(Status status) {
-                // TODO: Handle the error.
+                // Handle the error.
                 Log.i(TAG, "An error occurred: " + status);
             }
         });
@@ -134,58 +122,48 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         TextView text_new_friend = (TextView) findViewById(R.id.text_new_friend);
         TextView text_new_group = (TextView) findViewById(R.id.text_new_group);
 
-        // set up floating action button behaviour
-        fab_current_loc.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                presenter.jumpToCurrentLocation();
-            }
+        // set up floating action button (fab_current, fab_add, etc.) behaviour
+        fab_current_loc.setOnClickListener(v -> {
+            // FAB Action
+            presenter.jumpToCurrentLocation();
         });
 
-        fab_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                fab_add.setVisibility(View.INVISIBLE);
-                fab_remove.setVisibility(View.VISIBLE);
-                fab_new_friend.setVisibility(View.VISIBLE);
-                text_new_friend.setVisibility(View.VISIBLE);
-                fab_new_group.setVisibility(View.VISIBLE);
-                text_new_group.setVisibility(View.VISIBLE);
-            }
+        fab_add.setOnClickListener(v -> {
+            // FAB Action
+            fab_add.setVisibility(View.INVISIBLE);
+            fab_remove.setVisibility(View.VISIBLE);
+            fab_new_friend.setVisibility(View.VISIBLE);
+            text_new_friend.setVisibility(View.VISIBLE);
+            fab_new_group.setVisibility(View.VISIBLE);
+            text_new_group.setVisibility(View.VISIBLE);
         });
 
-        fab_remove.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                fab_add.setVisibility(View.VISIBLE);
-                fab_remove.setVisibility(View.INVISIBLE);
-                fab_new_friend.setVisibility(View.INVISIBLE);
-                text_new_friend.setVisibility(View.INVISIBLE);
-                fab_new_group.setVisibility(View.INVISIBLE);
-                text_new_group.setVisibility(View.INVISIBLE);
-            }
+        fab_remove.setOnClickListener(v -> {
+            fab_add.setVisibility(View.VISIBLE);
+            fab_remove.setVisibility(View.INVISIBLE);
+            fab_new_friend.setVisibility(View.INVISIBLE);
+            text_new_friend.setVisibility(View.INVISIBLE);
+            fab_new_group.setVisibility(View.INVISIBLE);
+            text_new_group.setVisibility(View.INVISIBLE);
         });
 
 
-        fab_new_friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                Intent intent = new Intent(getApplicationContext(), FriendRequestActivity.class);
-                startActivity(intent);
-            }
+        fab_new_friend.setOnClickListener(v -> {
+            // FAB Action
+            Intent intent = new Intent(getApplicationContext(), FriendRequestActivity.class);
+            startActivity(intent);
         });
 
-        fab_new_group.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // FAB Action
-                Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
-                startActivity(intent);
+        fab_new_group.setOnClickListener(v -> {
+            // FAB Action
+            Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+            intent.putExtra("status", "successful");
+            if (meetingPoint != null) {
+                intent.putExtra("name", meetingPoint.getName().toString());
+                intent.putExtra("lat", meetingPoint.getLatLng().latitude);
+                intent.putExtra("lng", meetingPoint.getLatLng().longitude);
             }
+            startActivity(intent);
         });
     }
 

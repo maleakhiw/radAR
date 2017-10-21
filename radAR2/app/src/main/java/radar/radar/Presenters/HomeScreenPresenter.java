@@ -1,34 +1,37 @@
 package radar.radar.Presenters;
 
 import android.annotation.SuppressLint;
-import android.support.design.widget.FloatingActionButton;
-import android.view.View;
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import io.reactivex.disposables.Disposable;
 import radar.radar.Listeners.LocationCallbackProvider;
-import radar.radar.R;
+import radar.radar.NewGroupActivity;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
+import static android.content.ContentValues.TAG;
 
 /**
  * Class encapsulated the application logic/ presenter for HomeScreenPresenter
  */
 public class HomeScreenPresenter {
+    private static final float DEFAULT_ZOOM = 15;
+
     HomeScreenView homeScreenView;
     LocationService locationService;
-
     GoogleMap googleMap;
-
-    Disposable locationServiceDisposable;
-
     LocationCallback locationCallback;
 
     private boolean first = true;
@@ -49,7 +52,7 @@ public class HomeScreenPresenter {
 
             current = new LatLng(location.getLatitude(), location.getLongitude());
             if (first) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, DEFAULT_ZOOM));
                 googleMap.setMyLocationEnabled(true);
                 first = false;
             }
@@ -63,7 +66,7 @@ public class HomeScreenPresenter {
      */
     public void jumpToCurrentLocation() {
         if (current != null) {
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, DEFAULT_ZOOM));
         }
     }
 

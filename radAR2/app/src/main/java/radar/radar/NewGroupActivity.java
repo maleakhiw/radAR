@@ -62,15 +62,8 @@ public class NewGroupActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.new_group_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO refactor to MVP
-
-        // TODO get bundle and set isNewChatActivity or isNewGroupActivity
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://radar.fadhilanshar.com/api/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        // Set up retrofit
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
         groupsService = new GroupsService(this, retrofit.create(GroupsApi.class));
         usersService = new UsersService(this, retrofit.create(UsersApi.class));
