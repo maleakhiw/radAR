@@ -88,33 +88,4 @@ public class HomeScreenPresenter {
         return current;
     }
 
-    public void setUpAutoCompleteFragment(PlaceAutocompleteFragment autocompleteFragment, Context context) {
-        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(Place place) {
-                // Get info about the selected place.
-                googleMap.clear();
-                Log.i(TAG, "Place: " + place.getName());
-                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
-                        .title((String) place.getName()));
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
-                // handle marker click event
-                googleMap.setOnMarkerClickListener(marker -> {
-                    Log.i(TAG, "Successful click ");
-                    Intent intent = new Intent(context, NewGroupActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.putExtra("status", "successful");
-                    context.startActivity(intent);
-                    return true;
-                });
-            }
-
-            @Override
-            public void onError(Status status) {
-                // Handle the error.
-                Log.i(TAG, "An error occurred: " + status);
-            }
-        });
-    }
-
 }

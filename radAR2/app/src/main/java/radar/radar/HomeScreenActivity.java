@@ -1,11 +1,9 @@
 package radar.radar;
 
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -25,18 +23,11 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import radar.radar.Listeners.LocationCallbackProvider;
 import radar.radar.Listeners.LocationUpdateListener;
@@ -46,13 +37,15 @@ import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
 import retrofit2.Retrofit;
 
+import static android.content.ContentValues.TAG;
+
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
     private static final String TAG = "Home Screen Activity";
     private static final float DEFAULT_ZOOM = 16;
     private static final int REQUEST_FOR_LOCATION = 1;
 
-    private Location currentLocation;
+    private Place meetingPoint = null;
     private GoogleMap googleMap;
     private SupportMapFragment mapFragment;
     private HomeScreenPresenter presenter;
@@ -66,6 +59,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        // set up navigation bar
         android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -77,8 +71,10 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
 
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, image, this);
 
+        // set up retrofit
         Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
 
+        // set up locationApi
         LocationApi locationApi = retrofit.create(LocationApi.class);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         LocationService locationService = new LocationService(locationApi, this, fusedLocationClient);
@@ -91,7 +87,32 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         // set up place autocomplete
         PlaceAutocompleteFragment autocompleteFragment = (PlaceAutocompleteFragment)
                 getFragmentManager().findFragmentById(R.id.place_autocomplete_fragment);
-        presenter.setUpAutoCompleteFragment(autocompleteFragment, getApplicationContext());
+        autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                // Get info about the selected place.
+                meetingPoint = place;
+                googleMap.clear();
+                Log.i(TAG, "Place: " + place.getName());
+                googleMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                        .title((String) place.getName()));
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), DEFAULT_ZOOM));
+                // handle marker click event
+                googleMap.setOnMarkerClickListener(marker -> {
+                    Log.i(TAG, "Successful click ");
+                    Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                    intent.putExtra("status", "successful");
+                    startActivity(intent);
+                    return true;
+                });
+            }
+
+            @Override
+            public void onError(Status status) {
+                // Handle the error.
+                Log.i(TAG, "An error occurred: " + status);
+            }
+        });
 
         // set up floating action button
         FloatingActionButton fab_current_loc = (FloatingActionButton) findViewById(R.id.fab_current_loc);
@@ -103,7 +124,7 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         TextView text_new_friend = (TextView) findViewById(R.id.text_new_friend);
         TextView text_new_group = (TextView) findViewById(R.id.text_new_group);
 
-        // set up floating action button behaviour
+        // set up floating action button (fab_current, fab_add, etc.) behaviour
         fab_current_loc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -153,6 +174,12 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View v) {
                 // FAB Action
                 Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
+                intent.putExtra("status", "successful");
+                if (meetingPoint != null) {
+                    intent.putExtra("name", meetingPoint.getName().toString());
+                    intent.putExtra("lat", meetingPoint.getLatLng().latitude);
+                    intent.putExtra("lng", meetingPoint.getLatLng().longitude);
+                }
                 startActivity(intent);
             }
         });
