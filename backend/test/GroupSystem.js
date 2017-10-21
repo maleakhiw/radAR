@@ -264,6 +264,32 @@ describe('GroupSystem', () => {
     })
   })
 
+  describe('POST /api/accounts/:userID/groups (sms.newGroup)', () => {
+    it('should create a new group with a meeting point', (done) => {
+      chai.request(server)
+      .post('/api/accounts/1/groups')
+      .set('token', user1token)
+      .send({
+        name: 'test group',
+        participantUserIDs: [2],
+        meetingPoint: { "lat" : -37.7983668, "lon" : 144.95937859999998, "name" : "Baillieu Library"}
+      })
+      .end((err, res) => {
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+        expect(res.body.group).to.not.equal(null);
+        expect(res.body.group.meetingPoint).to.not.equal(null);
+        expect(res.body.group.meetingPoint.name).to.equal("Baillieu Library");
+        expect(res.body.group.meetingPoint.lat).to.equal(-37.7983668);
+        expect(res.body.group.meetingPoint.lon).to.equal(144.95937859999998);
+        // console.log(res.body);
+        done();
+      })
+    })
+
+  })
+
 
 
 })

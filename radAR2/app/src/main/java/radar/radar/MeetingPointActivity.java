@@ -21,18 +21,21 @@ import radar.radar.Fragments.GroupLocationsFragment;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
 import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.Models.Domain.Group;
+import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Responses.GroupsResponse;
 import radar.radar.Services.GroupsApi;
 import radar.radar.Services.GroupsService;
 import retrofit2.Retrofit;
 
-public class GroupDetailActivity extends AppCompatActivity implements LocationUpdateListener {
+public class MeetingPointActivity extends AppCompatActivity implements LocationUpdateListener, MeetingPointUpdateListener {
 
     ViewPager viewPager;
     FragmentPagerAdapter pagerAdapter;
 
     GroupDetailsFragment groupDetailsFragment;
     GroupLocationsFragment groupLocationsFragment;
+
+    MeetingPoint meetingPoint;
     // fragment2
 
     GroupsService groupsService;
@@ -183,5 +186,11 @@ public class GroupDetailActivity extends AppCompatActivity implements LocationUp
         if (groupDetailsFragment != null) {
             groupDetailsFragment.updateDistance(location.getLatitude(), location.getLongitude());
         }
+    }
+
+
+    @Override
+    public void setMeetingPoint(MeetingPoint meetingPoint) {
+        this.meetingPoint = meetingPoint;
     }
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import radar.radar.GroupDetailActivity;
+import radar.radar.MeetingPointActivity;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Presenters.GroupsListPresenter;
 import radar.radar.R;
@@ -139,7 +139,7 @@ public class GroupsAdapter extends RecyclerView.Adapter<GroupsAdapter.ViewHolder
                 public void onClick(View view) {
                     // From the displayed friend list send information
                     Group group = groups.get(getAdapterPosition());
-                    Intent intent = new Intent(context, GroupDetailActivity.class);
+                    Intent intent = new Intent(context, MeetingPointActivity.class);
                     intent.putExtra("group", group);
 //                    intent.putExtra("group", group);
 //                    intent.putExtra("load", true);

@@ -56,6 +56,17 @@ public class ARPresenter {
         groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
     }
 
+    // for testing
+    public ARPresenter(ARView arView, LocationService locationService, GroupsService groupsService, SensorService sensorService, LocationTransformations locationTransformations, int groupID) {
+        this.arView = arView;
+        this.locationService = locationService;
+        this.groupsService = groupsService;
+        this.sensorService = sensorService;
+        this.locationTransformations = locationTransformations;
+
+        groupMemberLocationsObservable = locationService.getGroupLocationInfo(groupID, 1000);
+    }
+
     void renderDestination(double latUser, double lonUser, UserLocation userLocation, double azimuth, double pitch) {
         int userID = -1;
         double bearing = LocationTransformations.bearingBetween(latUser, lonUser, userLocation.getLat(), userLocation.getLon());
@@ -73,9 +84,59 @@ public class ARPresenter {
         activeAnnotationUserID = userID;
     }
 
+
+    HashMap<Integer, User> usersDetails;
+    HashMap<Integer, UserLocation> userLocationsMap;
+    ArrayList<UserLocation> userLocations;
+    public void updateGroupData(LocationAndDeviceData locationAndDeviceData, MeetingPoint meetingPoint) {
+        // group members locations
+        userLocations = new ArrayList<>();
+        usersDetails = locationAndDeviceData.groupLocationDetails.userDetails;
+        userLocationsMap = new HashMap<>();
+
+        if (meetingPoint != null) {
+            userLocations.add(new DestinationLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded, meetingPoint.name));
+        }
+        for (UserLocation userLocation: locationAndDeviceData.groupLocationDetails.locations) {
+            userLocations.add(userLocation);
+        }
+
+        for (UserLocation annotationLatLon: userLocations) {
+            int userID = annotationLatLon.getUserID();
+            userLocationsMap.put(userID, annotationLatLon);
+        }
+    }
+
+    public int getActiveAnnotationUserID() {
+        return activeAnnotationUserID;
+    }
+
+    public void renderHUD(MeetingPoint meetingPoint, double latCurrent, double lonCurrent, double azimuth) {
+        UserLocation destination;
+        if (activeAnnotationUserID == DESTINATION_ID) {
+            destination = new UserLocation(DESTINATION_ID,
+                    (float) meetingPoint.lat,
+                    (float) meetingPoint.lon,
+                    0,
+                    0,
+                    meetingPoint.timeAdded);
+            arView.updateDestinationName(meetingPoint.name);
+        } else {
+            destination = userLocationsMap.get(activeAnnotationUserID);
+            arView.updateDestinationName(usersDetails.get(activeAnnotationUserID).firstName);
+        }
+        double bearingToDest = LocationTransformations.bearingBetween(latCurrent, lonCurrent, destination.getLat(), destination.getLon());
+        arView.updateDistanceToDestination(LocationTransformations.distance(latCurrent, lonCurrent, destination.getLat(), destination.getLon(), 'K') * 1000);
+        arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
+
+        // update heading
+        arView.updateHUDHeading(LocationTransformations.getCompassDirection(azimuth));
+
+    }
+
     public void updateLocationTransformations() {
-        Observable<Double> azimuthObservable = sensorService.azimuthUpdates;
-        Observable<Double> pitchObservable = sensorService.pitchUpdates;
+        Observable<Double> azimuthObservable = sensorService.getAzimuthUpdates();
+        Observable<Double> pitchObservable = sensorService.getPitchUpdates();
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         // push location to server
@@ -125,51 +186,16 @@ public class ARPresenter {
                 double azimuth = locationAndDeviceData.azimuth;
                 double pitch = locationAndDeviceData.pitch;
 
-
                 // meeting point
                 MeetingPoint meetingPoint = locationAndDeviceData.groupLocationDetails.meetingPoint;
 
-                // group members locations
-                ArrayList<UserLocation> userLocations = new ArrayList<>();
-                HashMap<Integer, User> usersDetails = locationAndDeviceData.groupLocationDetails.userDetails;
-                HashMap<Integer, UserLocation> userLocationsMap = new HashMap<>();
-
-                if (meetingPoint != null) {
-                    userLocations.add(new DestinationLocation(DESTINATION_ID, (float) meetingPoint.lat, (float) meetingPoint.lon, 0, 0, meetingPoint.timeAdded, meetingPoint.name));
-                }
-                for (UserLocation userLocation: locationAndDeviceData.groupLocationDetails.locations) {
-                    userLocations.add(userLocation);
-                }
-
-                for (UserLocation annotationLatLon: userLocations) {
-                    int userID = annotationLatLon.getUserID();
-                    userLocationsMap.put(userID, annotationLatLon);
-                }
+                updateGroupData(locationAndDeviceData, meetingPoint);
 
                 AnnotationRenderer renderer = new AnnotationRenderer(latCurrent, lonCurrent, azimuth, pitch, userLocations, usersDetails, locationTransformations, arView);
 
                 renderer.render();
 
-                /* render HUD */
-                UserLocation destination;
-                if (activeAnnotationUserID == DESTINATION_ID) {
-                    destination = new UserLocation(DESTINATION_ID,
-                            (float) meetingPoint.lat,
-                            (float) meetingPoint.lon,
-                            0,
-                            0,
-                            meetingPoint.timeAdded);
-                    arView.updateDestinationName(meetingPoint.name);
-                } else {
-                    destination = userLocationsMap.get(activeAnnotationUserID);
-                    arView.updateDestinationName(usersDetails.get(activeAnnotationUserID).firstName);
-                }
-                double bearingToDest = LocationTransformations.bearingBetween(latCurrent, lonCurrent, destination.getLat(), destination.getLon());
-                arView.updateDistanceToDestination(LocationTransformations.distance(latCurrent, lonCurrent, destination.getLat(), destination.getLon(), 'K') * 1000);
-                arView.updateRelativeDestinationPosition(LocationTransformations.getDeltaAngleCompassDirection(bearingToDest, azimuth));
-
-                // update heading
-                arView.updateHUDHeading(LocationTransformations.getCompassDirection(azimuth));
+                renderHUD(meetingPoint, latCurrent, lonCurrent, azimuth);
 
             }
 

@@ -17,6 +17,7 @@ public class LocationAndDeviceData {
         this.groupLocationDetails = groupLocationDetails;
     }
 
+
     @Override
     public String toString() {
         return ((Double) azimuth).toString() + ", " + ((Double) pitch).toString() + ", " + location.toString();

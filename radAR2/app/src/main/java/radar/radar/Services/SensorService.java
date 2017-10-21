@@ -17,6 +17,14 @@ public class SensorService {
     public Observable<Double> pitchUpdates;
     public Observable<Double> azimuthUpdates;
 
+    public Observable<Double> getPitchUpdates() {
+        return pitchUpdates;
+    }
+
+    public Observable<Double> getAzimuthUpdates() {
+        return azimuthUpdates;
+    }
+
     // sensors
     Sensor magneticSensor;
     Sensor rotationSensor;

@@ -25,8 +25,6 @@ import radar.radar.Services.GroupsService;
 import radar.radar.Services.UsersApi;
 import radar.radar.Services.UsersService;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewGroupActivity extends AppCompatActivity {
 
@@ -39,7 +37,7 @@ public class NewGroupActivity extends AppCompatActivity {
     Button button;
 
     void launchGroup(Group group) {
-        Intent intent = new Intent(this, GroupDetailActivity.class);
+        Intent intent = new Intent(this, MeetingPointActivity.class);
         intent.putExtra("group", group);
         startActivity(intent);
         finish();
