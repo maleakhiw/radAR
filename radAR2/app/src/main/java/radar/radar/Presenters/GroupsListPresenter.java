@@ -18,6 +18,11 @@ public class GroupsListPresenter {
     GroupsService groupsService;
     GroupsListView view;
 
+    /**
+     * Constructor for GroupsListPresenter
+     * @param groupsService instance of the group service
+     * @param view instance of the GroupListView
+     */
     public GroupsListPresenter(GroupsService groupsService, GroupsListView view) {
         this.groupsService = groupsService;
         this.view = view;
@@ -26,6 +31,9 @@ public class GroupsListPresenter {
         // loadData();
     }
 
+    /**
+     * Used to load group for a particular user
+     */
     public void loadData() {
         view.setRefreshing(true);
 
@@ -64,6 +72,10 @@ public class GroupsListPresenter {
 
     }
 
+    /**
+     * Used to delete a group when user click delete
+     * @param groupID id of the group to be deleted
+     */
     public void deleteGroup(int groupID) {
         groupsService.deleteGroup(groupID).subscribe(new Observer<Status>() {
             @Override

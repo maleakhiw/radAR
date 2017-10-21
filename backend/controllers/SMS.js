@@ -22,20 +22,9 @@ let svs;
 // data models
 let Group, Message, User;
 
-var getExistingIndividualChat = (userID, queryUserID) => new Promise((resolve, reject) => {
-  winston.debug('getExistingIndividualChat');
-
-  Group.findOne({members: [userID, queryUserID]}).exec()
-  .then(group => {
-    if (group) {
-      console.log(group);
-      resolve(common.getGroupInfo(group.groupID, userID));
-    } else {
-      resolve(null);
-    }
-  })
-});
-
+const GroupsHelper = require('../helpers/groupsHelper');
+let groupsHelper;
+let getExistingIndividualChat;
 
 var getLastMessages = (groups) => new Promise((resolve, reject) => {
   let groupsLastMessages = {};
@@ -112,12 +101,13 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
   })
 
   .then(groupIDs => {
-    let promiseAll = groupIDs.map(groupID => common.getGroupInfo(groupID, userID));
+    let promiseAll = groupIDs.map(groupID => groupsHelper.getGroupInfo(groupID, userID));
 
     return Promise.all(promiseAll);
   })
 
   .then(groupDetails => {
+
     // sort groupDetails - TODO refactor to individual functions; test cases
     groupDetails.sort((group1, group2) => { // custom sort function
       let group1ID = group1.groupID;
@@ -195,11 +185,11 @@ function newGroupImpl(req, res, callback, newOneToOneChat) {
   let errorKeys = []
   // TODO: get rid of code duplication, move sendError() to common.js
   function sendError() { // assumption: variables are in closure
-      let response = {
-          success: false,
-          errors: common.errorObjectBuilder(errorKeys)
-      }
-      res.status(401).json(response)
+    let response = {
+      success: false,
+      errors: common.errorObjectBuilder(errorKeys)
+    }
+    res.status(401).json(response)
   }
 
   if (!participantUserIDs) {
@@ -326,6 +316,9 @@ module.exports = class SMS {
     Message = pMessage
     User = pUser
     svs = new SVS(pUser)
+
+    groupsHelper = new GroupsHelper(Group, Message, User);
+    getExistingIndividualChat = groupsHelper.getExistingIndividualChat;
   }
 
   getOneToOneChat(req, res) {
@@ -336,6 +329,7 @@ module.exports = class SMS {
     winston.debug('getOneToOneChat');
 
     common.userExists(queryUserID).then(exists => {
+      winston.debug('userExists.then');
       winston.debug(exists);
       if (!exists) {
         throw 'invalidUserID';
@@ -363,6 +357,9 @@ module.exports = class SMS {
     .catch(err => {
       if (err == 'invalidUserID') {
         common.sendError(res, ['invalidUserID']);
+      } else {
+        winston.error(err);
+        common.sendInternalError(res);
       }
     })
   }
@@ -382,7 +379,7 @@ module.exports = class SMS {
     common.groupExists(groupID)
     .then(exists => {
       if (exists) {
-        return common.getGroupInfo(groupID, userID);
+        return groupsHelper.getGroupInfo(groupID, userID);
       } else {
         throw 'invalidGroupID';
       }
@@ -435,7 +432,7 @@ module.exports = class SMS {
         return
       }
 
-      return common.getUsersDetails(group.members);
+      return groupsHelper.getUsersDetails(group.members);
     })
 
     .then((pUsersDetails) => {

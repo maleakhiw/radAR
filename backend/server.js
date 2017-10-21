@@ -138,16 +138,44 @@ app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getRe
 // chats
 app.post("/api/accounts/:userID/chats", authenticate, sms.newGroup)
 app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
-app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
-app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promoteToTrackingGroup)
-app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
-app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 app.get("/api/accounts/:userID/chats/with/:queryUserID", authenticate, sms.getOneToOneChat);
 
+var groupAuthorisedMiddleware = (req, res, next) => {
+  let groupID = parseInt(req.params.groupID);
+  let userID = parseInt(req.params.userID);
+  Group.findOne({groupID: groupID}).exec()
+  .then(group => {
+    if (!group) {
+      common.sendError(res, ['invalidGroupID']);
+    } else {
+      if (!group.members.includes(userID)) {
+        common.sendUnauthorizedError(res);
+      } else {
+        next();
+      }
+    }
+  })
+}
+app.get("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, sms.getGroup)
+app.put("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.promoteToTrackingGroup)
+app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate,
+          groupAuthorisedMiddleware, sms.getMessages)
+app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate,
+          groupAuthorisedMiddleware, sms.sendMessage);
+
 // chats and groups
-app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
-app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
-app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate, groupSystem.removeMember);
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.leaveGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.leaveGroup);
+app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.removeMember);
+app.put("/api/accounts/:userID/groups/:groupID/members", authenticate,
+          groupAuthorisedMiddleware, groupSystem.addMembers);
+app.put("/api/accounts/:userID/chats/:groupID/members", authenticate,
+          groupAuthorisedMiddleware, groupSystem.addMembers);
 
 // groups
 app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
@@ -158,7 +186,7 @@ app.get("/api/accounts/:userID/groups/:groupID/locations", authenticate, groupSy
 app.post("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 app.put("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 
-// online statuses
+// online statuses - unused
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 
 // locations
@@ -184,9 +212,6 @@ app.get("/api/users/:queryUserID/location", authenticate, positioningSystem.getL
 app.get("/api/groups", (req, res) => {
   res.json(addMetas({}, "/api/groups"))
 })
-// app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
-// app.post("/api/groups", authenticate, gms.newGroup)
-
 
 // for Let's Encrypt
 app.get('/health-check', (req, res) => res.sendStatus(200));

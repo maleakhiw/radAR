@@ -115,7 +115,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             holder.isTrackingGroup.setVisibility(View.VISIBLE);
         }
 
-//        System.out.println(holder.profPicLoaded);
         if (group.profilePicture != null) {
             holder.resourcesService.getResourceWithCache(group.profilePicture, holder.context).subscribe(new Observer<File>() {
                 @Override
@@ -170,7 +169,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-//            menu.setHeaderTitle("Select Action");
             MenuItem delete = menu.add(Menu.NONE,1,1,"Delete chat");    // TODO move to strings
             delete.setOnMenuItemClickListener(this);
         }
@@ -189,7 +187,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             profilePic = itemView.findViewById(R.id.row_profile_picture);
             isTrackingGroup = itemView.findViewById(R.id.is_tracking_group);
             timestamp = itemView.findViewById(R.id.timestamp);
-//            isChat = itemView.findViewById(R.id.is_chat);
 
             // Setup on click listener on the view
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +215,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     } else {
                         Log.w("onMenuItemClick", "Group missing");
                     }
-//                    presenter.deleteGroup(groups.get(getAdapterPosition()).groupID);
                     return true;
             }
             return false;
