@@ -134,6 +134,7 @@ class AddMembersPresenter {
     }
 
     void addMembers(int groupID, ArrayList<Integer> selectedUsers) {
+        System.out.println("addMembers()");
         groupsService.addMembers(groupID, selectedUsers).subscribe(
                 status -> {
                     if (status.success) {

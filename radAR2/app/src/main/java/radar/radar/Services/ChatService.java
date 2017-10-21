@@ -172,7 +172,9 @@ public class ChatService {
      * @return Observable<Status>
      */
     public Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers) {
-        return chatApi.addMembers(userID, groupID, new AddMembersBody(invitedUsers));
+        return chatApi.addMembers(userID, groupID, new AddMembersBody(invitedUsers))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
 
