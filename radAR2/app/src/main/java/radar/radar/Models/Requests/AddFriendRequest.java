@@ -1,5 +1,8 @@
 package radar.radar.Models.Requests;
 
+/**
+ * Data model for add friend request
+ */
 public class AddFriendRequest {
     int invitedUserID;
 
