@@ -144,6 +144,7 @@ var groupAuthorisedMiddleware = (req, res, next) => {
   let groupID = parseInt(req.params.groupID);
   let userID = parseInt(req.params.userID);
   Group.findOne({groupID: groupID}).exec()
+  console.log(groupID, userID);
   .then(group => {
     if (!group) {
       common.sendError(res, ['invalidGroupID']);
