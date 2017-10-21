@@ -59,7 +59,7 @@ public class NewGroupActivity extends AppCompatActivity {
     private ImageButton cancelButton;
 
     void launchGroup(Group group) {
-        Intent intent = new Intent(this, GroupDetailActivity.class);
+        Intent intent = new Intent(this, MeetingPointActivity.class);
         intent.putExtra("group", group);
         startActivity(intent);
         finish();

@@ -42,35 +42,35 @@ public class UserLocation extends GetLocationResponse {
         this.userID = userID;
     }
 
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public float getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 
-    public float getAccuracy() {
+    public double getAccuracy() {
         return accuracy;
     }
 
-    public void setAccuracy(float accuracy) {
+    public void setAccuracy(double accuracy) {
         this.accuracy = accuracy;
     }
 
-    public float getHeading() {
+    public double getHeading() {
         return heading;
     }
 
-    public void setHeading(float heading) {
+    public void setHeading(double heading) {
         this.heading = heading;
     }
 

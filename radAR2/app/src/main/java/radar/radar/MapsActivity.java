@@ -1,5 +1,8 @@
 package radar.radar;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
@@ -49,6 +52,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private FusedLocationProviderClient fusedLocationClient;
     private LocationService locationService;
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
+        // https://stackoverflow.com/a/10703256
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // CREATE A MATRIX FOR THE MANIPULATION
+        Matrix matrix = new Matrix();
+        // RESIZE THE BIT MAP
+        matrix.postScale(scaleWidth, scaleHeight);
+
+        // "RECREATE" THE NEW BITMAP
+        Bitmap resizedBitmap = Bitmap.createBitmap(
+                bm, 0, 0, width, height, matrix, false);
+        bm.recycle();
+        return resizedBitmap;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,7 +216,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         resourcesService.getResourceWithCache(group.usersDetails.get(location.getUserID()).profilePicture, this)
                                 .subscribe(file -> {
                                     System.out.println(file.getPath());
-                                    marker.setIcon(BitmapDescriptorFactory.fromPath(file.getPath()));
+
+                                    BitmapFactory.Options options = new BitmapFactory.Options();
+                                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                                    Bitmap bitmap = BitmapFactory.decodeFile(file.getPath(), options);
+                                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(getResizedBitmap(bitmap, 128, 128)));
                                 }, Throwable::printStackTrace);
                     } else {
                         marker.setIcon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher));

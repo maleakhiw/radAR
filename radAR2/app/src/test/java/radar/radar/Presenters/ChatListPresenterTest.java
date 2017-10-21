@@ -64,7 +64,7 @@ public class ChatListPresenterTest {
         ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
 
         // Call the method
-        presenter.loadData();
+        presenter.loadData(false);
 
         // Verify if load data successfully called
         Mockito.verify(chatListView).setGroups(groups);
@@ -96,7 +96,7 @@ public class ChatListPresenterTest {
         ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
 
         // Call the method
-        presenter.loadData();
+        presenter.loadData(false);
 
         // Verify if load data status false, it will give message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
@@ -131,7 +131,7 @@ public class ChatListPresenterTest {
         ChatListPresenter presenter = new ChatListPresenter(chatListView, chatService);
 
         // Call the method
-        presenter.loadData();
+        presenter.loadData(false);
 
         // Verify if load data status false, it will give message to user
         Mockito.verify(chatListView).showToastMessage(anyString());
@@ -160,7 +160,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData();
+        Mockito.doNothing().when(presenter).loadData(false);
 
         // Call the presenter
         presenter.deleteGroup(groupID);
@@ -191,7 +191,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData();
+        Mockito.doNothing().when(presenter).loadData(false);
 
         // Call the presenter
         presenter.deleteGroup(groupID);
@@ -224,7 +224,7 @@ public class ChatListPresenterTest {
         Mockito.when(chatService.leaveGroup(groupID)).thenReturn(observable);
 
         // Change behaviour of load data
-        Mockito.doNothing().when(presenter).loadData();
+        Mockito.doNothing().when(presenter).loadData(false);
 
         // Call the presenter
         presenter.deleteGroup(groupID);

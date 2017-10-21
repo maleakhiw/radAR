@@ -57,7 +57,7 @@
             android:name=".GroupsListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".GroupDetailActivity"
+            android:name=".MeetingPointActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ChatListActivity"
