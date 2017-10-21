@@ -68,7 +68,6 @@ public class ARPresenter {
         int width = arView.getAnnotationWidth(userID);
 
         arView.setAnnotationOffsets(userID, xOffset, yOffset);  // TODO make a class to hold the offsets - check for overlaps, etc.
-        // TODO move this to AnnotationRenderer.java
     }
 
     public void setActiveAnnotation(int userID) {
@@ -86,7 +85,7 @@ public class ARPresenter {
         renderDestination(latUser, lonUser, destination, azimuth, pitch);
     }
 
-    private void updateLocationTransformations() {
+    public void updateLocationTransformations() {
         Observable<Double> azimuthObservable = sensorService.azimuthUpdates;
         Observable<Double> pitchObservable = sensorService.pitchUpdates;
         Observable<Location> locationObservable = locationService.getLocationUpdates(5000, 1000, LocationRequest.PRIORITY_HIGH_ACCURACY);
