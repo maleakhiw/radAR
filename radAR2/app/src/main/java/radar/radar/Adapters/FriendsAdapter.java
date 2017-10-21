@@ -77,11 +77,6 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
 
         if (user.profilePicture != null) {
             if (!holder.profPicLoaded) {
-                // TODO inject service using method from Activity
-//            System.out.println(position);
-//            System.out.println(group.name);
-//            System.out.println(group.profilePicture);
-
                 holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
                     @Override
                     public void onSubscribe(Disposable d) {
