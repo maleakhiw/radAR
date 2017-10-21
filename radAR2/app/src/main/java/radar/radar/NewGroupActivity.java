@@ -68,22 +68,11 @@ public class NewGroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_group);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.new_group_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         toolbar.setNavigationOnClickListener(v -> onBackPressed()); // enable back button
-
-        recyclerView = findViewById(R.id.new_group_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        // Set up retrofit
-        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
-
-        groupsService = new GroupsService(this, retrofit.create(GroupsApi.class));
-        usersService = new UsersService(this, retrofit.create(UsersApi.class));
-
-        TextInputLayout textInputEditText = findViewById(R.id.new_group_name);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -95,7 +84,19 @@ public class NewGroupActivity extends AppCompatActivity {
             //set up meeting point view
             TextView locationText = findViewById(R.id.textViewLocn);
             locationText.setText(placeName);
+            first = false;
         }
+
+        recyclerView = findViewById(R.id.new_group_recyclerview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Set up retrofit
+        Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
+        groupsService = new GroupsService(this, retrofit.create(GroupsApi.class));
+        usersService = new UsersService(this, retrofit.create(UsersApi.class));
+
+        TextInputLayout textInputEditText = findViewById(R.id.new_group_name);
 
         usersService.getFriends().subscribe(new Observer<FriendsResponse>() {
             @Override
