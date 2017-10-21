@@ -191,6 +191,10 @@ public class MeetingPointActivity extends AppCompatActivity implements LocationU
 
     @Override
     public void setMeetingPoint(MeetingPoint meetingPoint) {
+        System.out.println("setMeetingPoint()");
         this.meetingPoint = meetingPoint;
+        if (groupLocationsFragment != null) {
+            groupLocationsFragment.setMeetingPoint(meetingPoint);
+        }
     }
 }

@@ -2,6 +2,7 @@ package radar.radar.Fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -42,7 +43,9 @@ import radar.radar.Adapters.GroupMembersAdapter;
 import radar.radar.AddMembersActivity;
 import radar.radar.ChatActivity;
 import radar.radar.Listeners.GroupDetailsLifecycleListener;
+import radar.radar.Listeners.LocationUpdateListener;
 import radar.radar.MapsActivity;
+import radar.radar.MeetingPointUpdateListener;
 import radar.radar.Models.Domain.Group;
 import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
@@ -227,6 +230,21 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
         return rootView;
     }
 
+    MeetingPointUpdateListener meetingPointUpdateListener;
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            meetingPointUpdateListener = (MeetingPointUpdateListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement MeetingPointUpdateListener");
+        }
+    }
+
     /**
      * Click event handler to handle clicking the "Set" Button
      */
@@ -367,7 +385,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
                 meetingPoint = new MeetingPoint(latDouble, lonDouble, name, "");
 
                 GroupsService groupsService = new GroupsService(getActivity(), retrofit.create(GroupsApi.class));
-                groupsService.updateMeetingPoint(group.groupID, new MeetingPoint(latDouble, lonDouble, name, "")).subscribe(new Observer<Status>() {
+                groupsService.updateMeetingPoint(group.groupID, meetingPoint).subscribe(new Observer<Status>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
@@ -377,6 +395,7 @@ public class GroupDetailsFragment extends Fragment implements GroupDetailView {
                     public void onNext(Status status) {
                         if (status.success) {
                             Toast.makeText(getActivity(), "Meeting point updated", Toast.LENGTH_SHORT).show();
+                            meetingPointUpdateListener.setMeetingPoint(meetingPoint);
                         } else {
                             Log.d(TAG, "Error update");
                         }

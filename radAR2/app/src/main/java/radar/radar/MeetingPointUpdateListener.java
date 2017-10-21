@@ -7,6 +7,6 @@ import radar.radar.Models.Domain.MeetingPoint;
  * Created by kenneth on 21/10/17.
  */
 
-interface MeetingPointUpdateListener {
+public interface MeetingPointUpdateListener {
     void setMeetingPoint(MeetingPoint meetingPoint);
 }
