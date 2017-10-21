@@ -57,7 +57,7 @@ public class GroupsListActivity extends AppCompatActivity
         ImageView img = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, img, this);
 
-        setTitle("Groups");  // TODO replace with String resource
+        setTitle("Groups");
 
         loadViews();
 
@@ -70,34 +70,40 @@ public class GroupsListActivity extends AppCompatActivity
             }
         });
 
+        // Setup retrofit
         Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
+
         GroupsApi groupsApi = retrofit.create(GroupsApi.class);
         GroupsService groupsService = new GroupsService(this, groupsApi);
+
+        // Setup GroupListPresenter
         presenter = new GroupsListPresenter(groupsService, this);
         presenter.loadData();
 
-        // setup recyclerView
+        // Setup recyclerView
         rvAdapter = new GroupsAdapter(this, new ArrayList<>(), presenter);
+
         recyclerView.setAdapter(rvAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         recyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
-
 
         if (first) {
             presenter.loadData();
             first = false;
         }
 
-        FloatingActionButton fab = findViewById(R.id.new_group_fab);
 
+        // Setup Floating Action Button 'fab'
+        FloatingActionButton fab = findViewById(R.id.new_group_fab);
 
         fab.setOnClickListener(view -> {
             Intent intent = new Intent(this, NewGroupActivity.class);
             intent.putExtra("newGroup", true);
             startActivity(intent);
         });
+
+        // Create a TextView and a Set and UndoLocationSet button
 
     }
 
