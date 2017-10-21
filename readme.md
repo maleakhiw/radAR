@@ -47,6 +47,11 @@ Ensure that `mocha`, the test driver is installed by running `npm install -g moc
 
 Run `npm run-script unit` to run the unit tests. To run all tests, run `npm test`.
 
+### Application
+To run a test, ensure that you have the project opened in Android Studio. Find the `radar.radar (test)` folder. Right click on that folder and select Run Tests in "radar". 
+
+When all of the dependencies are installed properly by Gradle, tests should work fine. If the tests fail to compile or execute, attempt a full rebuild of the project. If it doesn't work, opt to invalidate caches and restart the IDE. If it still doesn't work, please open an issue.
+
 ## Server Information
 The server for this application is placed on a remote VPS running NodeJS. It uses RESTful design and its API root is accessible from https://radar.fadhilanshar.com/.
 
