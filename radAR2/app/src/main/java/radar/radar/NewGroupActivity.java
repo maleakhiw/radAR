@@ -8,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import radar.radar.Adapters.EditGroupListAdapter;
 import radar.radar.Adapters.NewGroupListAdapter;
 import radar.radar.Models.Android.UserWithCheckbox;
 import radar.radar.Models.Domain.Group;
@@ -51,12 +55,15 @@ public class NewGroupActivity extends AppCompatActivity {
 
     Button button;
 
+    private boolean enabled = false;
+
     private Boolean first = true;
     private String placeName;
     private Double placeLat;
     private Double placeLng;
     private TextView locationText;
     private ImageButton cancelButton;
+    private TextInputLayout textInputEditText;
 
     void launchGroup(Group group) {
         Intent intent = new Intent(this, MeetingPointActivity.class);
@@ -89,8 +96,8 @@ public class NewGroupActivity extends AppCompatActivity {
 
         placeName = bundle.getString("name");
         try {
-            placeLat = Double.parseDouble(bundle.getString("lat"));
-            placeLng = Double.parseDouble(bundle.getString("lng"));
+            placeLat = bundle.getDouble("lat");
+            placeLng = bundle.getDouble("lng");
         } catch (NullPointerException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -140,7 +147,7 @@ public class NewGroupActivity extends AppCompatActivity {
         groupsService = new GroupsService(this, retrofit.create(GroupsApi.class));
         usersService = new UsersService(this, retrofit.create(UsersApi.class));
 
-        TextInputLayout textInputEditText = findViewById(R.id.new_group_name);
+        textInputEditText = findViewById(R.id.new_group_name);
 
         usersService.getFriends().subscribe(new Observer<FriendsResponse>() {
             @Override
@@ -161,36 +168,7 @@ public class NewGroupActivity extends AppCompatActivity {
                 adapter = new NewGroupListAdapter(users2);
                 recyclerView.setAdapter(adapter);
 
-                button = findViewById(R.id.new_group_button);
-                button.setOnClickListener(view -> {
-                    ArrayList<UserWithCheckbox> usersWithCheckboxes = adapter.getUsers();
-                    ArrayList<Integer> selectedUsers = new ArrayList<>();
-
-                    for (UserWithCheckbox user: usersWithCheckboxes) {
-                        if (user.isChecked) {
-                            selectedUsers.add(user.userID);
-                        }
-                    }
-
-                    if (textInputEditText.getEditText().getText().toString().trim().length() == 0) {
-                        textInputEditText.setError("Missing group name");
-                    } else {
-                        // disable button, don't want duplicate group
-                        button.setEnabled(false);
-
-                        Intent intent = getIntent();
-                        if (intent.getExtras().containsKey("newGroup")) {
-                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
-                        } else if (intent.getExtras().containsKey("newChat")) {
-                            newChat(textInputEditText.getEditText().getText().toString(), selectedUsers);
-                        } else {
-                            // default to new group
-                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
-                        }
-
-                    }
-
-                });
+                enabled = true;
 
             }
 
@@ -246,7 +224,7 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                button.setEnabled(true);
+                //button.setEnabled(true);
             }
 
             @Override
@@ -279,7 +257,8 @@ public class NewGroupActivity extends AppCompatActivity {
             @Override
             public void onError(Throwable e) {
                 System.out.println(e);
-                button.setEnabled(true);
+                //button.setEnabled(true);
+                enabled = true;
             }
 
             @Override
@@ -298,5 +277,54 @@ public class NewGroupActivity extends AppCompatActivity {
                             "")).subscribe(observer);
         }
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit_activity_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // only item on menu is Done.
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.done:
+                if (enabled) {
+                    enabled = false;
+                    ArrayList<UserWithCheckbox> usersWithCheckboxes = adapter.getUsers();
+                    ArrayList<Integer> selectedUsers = new ArrayList<>();
+
+                    for (UserWithCheckbox user: usersWithCheckboxes) {
+                        if (user.isChecked) {
+                            selectedUsers.add(user.userID);
+                        }
+                    }
+
+                    if (textInputEditText.getEditText().getText().toString().trim().length() == 0) {
+                        textInputEditText.setError("Missing group name");
+                    } else {
+                        // disable button, don't want duplicate group
+                        //button.setEnabled(false);
+
+                        Intent intent = getIntent();
+                        if (intent.getExtras().containsKey("newGroup")) {
+                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        } else if (intent.getExtras().containsKey("newChat")) {
+                            newChat(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        } else {
+                            // default to new group
+                            newGroup(textInputEditText.getEditText().getText().toString(), selectedUsers);
+                        }
+                    }
+                }
+                
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }
