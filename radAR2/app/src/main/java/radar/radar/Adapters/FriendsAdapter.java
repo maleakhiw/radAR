@@ -50,12 +50,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
      * @param friends new friend list for this adapter
      */
     public void updateFriends(ArrayList<User> friends) {
-        Comparator<User> comparator = new Comparator<User>() {
-            @Override
-            public int compare(User o1, User o2) {
-                return (o1.firstName + o1.lastName).compareTo(o2.firstName + o2.lastName);
-            }
-        };
+        Comparator<User> comparator = (o1, o2) -> (o1.firstName + o1.lastName).compareTo(o2.firstName + o2.lastName);
         Collections.sort(friends, comparator);
         this.friends = friends;
     }
