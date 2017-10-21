@@ -102,9 +102,6 @@ public class GroupsListActivity extends AppCompatActivity
             intent.putExtra("newGroup", true);
             startActivity(intent);
         });
-
-        // Create a TextView and a Set and UndoLocationSet button
-
     }
 
     @Override
