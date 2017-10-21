@@ -126,8 +126,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/ic_check_box_outline_blank_white_24dp"
+                android:background="@drawable/circle"
                 android:contentDescription="@string/cancel_button"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/imageViewLocationIcon"
                 app:srcCompat="@android:drawable/ic_delete" />

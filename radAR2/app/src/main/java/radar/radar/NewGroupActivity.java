@@ -8,9 +8,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -33,7 +42,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NewGroupActivity extends AppCompatActivity {
 
+    private static final String DEFAULT_TEXT = "Click 'SELECT' to select a location";
     private static final String TAG = "NewGroupActivity";
+    private static final int REQUEST_CODE_AUTOCOMPLETE = 111;
+
     GroupsService groupsService;
     UsersService usersService;
 
@@ -46,6 +58,8 @@ public class NewGroupActivity extends AppCompatActivity {
     private String placeName;
     private String placeLat;
     private String placeLng;
+    private TextView locationText;
+    private ImageButton cancelButton;
 
     void launchGroup(Group group) {
         Intent intent = new Intent(this, GroupDetailActivity.class);
@@ -76,16 +90,38 @@ public class NewGroupActivity extends AppCompatActivity {
 
         Bundle bundle = getIntent().getExtras();
 
-        if (first) {
-            placeName = bundle.getString("name");
-            placeLat = bundle.getString("lat");
-            placeLng = bundle.getString("lng");
+        placeName = bundle.getString("name");
+        placeLat = bundle.getString("lat");
+        placeLng = bundle.getString("lng");
 
-            //set up meeting point view
-            TextView locationText = findViewById(R.id.textViewLocn);
+        //set up meeting point view
+        locationText = findViewById(R.id.textViewLocn);
+        if (placeName != null) {
             locationText.setText(placeName);
-            first = false;
+            cancelButton.setVisibility(View.VISIBLE);
         }
+
+        Button selectButton = findViewById(R.id.select_button);
+        selectButton.setOnClickListener(view -> {
+            // The autocomplete activity requires Google Play Services to be available. The intent
+            // builder checks this and throws an exception if it is not the case.
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+            Intent i;
+            try {
+                i = builder.build(this);
+                startActivityForResult(i, REQUEST_CODE_AUTOCOMPLETE);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+        });
+
+        cancelButton.setOnClickListener(view -> {
+            cancelButton.setVisibility(View.INVISIBLE);
+            placeName = null;
+            locationText.setText(DEFAULT_TEXT);
+        });
 
         recyclerView = findViewById(R.id.new_group_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -162,6 +198,21 @@ public class NewGroupActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Check that the result was from the autocomplete widget.
+        if (requestCode == REQUEST_CODE_AUTOCOMPLETE) {
+            if (resultCode == RESULT_OK) {
+                // Get the user's selected place from the Intent.
+                Place place = PlacePicker.getPlace(this, data);
+                Log.i(TAG, "Place Selected: " + place.getName());
+                locationText.setText(place.getName());
+                cancelButton.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     public void newChat(String groupName, ArrayList<Integer> selectedUsers) {
         groupsService.newChat(groupName, selectedUsers).subscribe(new Observer<NewChatResponse>() {
