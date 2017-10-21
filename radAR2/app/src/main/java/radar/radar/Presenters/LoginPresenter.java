@@ -48,7 +48,7 @@ public class LoginPresenter {
 
             @Override
             public void onError(Throwable e) {
-                System.out.println(e);
+                e.printStackTrace();
                 loginView.showToastShort("Internal Error. Failed to login.");
                 loginView.dismissProgressBar();
             }
