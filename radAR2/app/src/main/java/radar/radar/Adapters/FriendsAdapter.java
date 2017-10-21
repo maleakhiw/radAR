@@ -13,6 +13,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -48,6 +50,8 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
      * @param friends new friend list for this adapter
      */
     public void updateFriends(ArrayList<User> friends) {
+        Comparator<User> comparator = (o1, o2) -> (o1.firstName + o1.lastName).compareTo(o2.firstName + o2.lastName);
+        Collections.sort(friends, comparator);
         this.friends = friends;
     }
 
@@ -76,31 +80,29 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.ViewHold
         }
 
         if (user.profilePicture != null) {
-            if (!holder.profPicLoaded) {
-                holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            holder.resourcesService.getResourceWithCache(user.profilePicture, holder.context).subscribe(new Observer<File>() {
+                @Override
+                public void onSubscribe(Disposable d) {
 
-                    }
+                }
 
-                    @Override
-                    public void onNext(File file) {
-                        System.out.println("Update profile picture for: " + user.userID);
-                        Picasso.with(holder.context).load(file).into(holder.profilePic);
-                        holder.profPicLoaded = true;
-                    }
+                @Override
+                public void onNext(File file) {
+                    System.out.println("Update profile picture for: " + user.userID);
+                    Picasso.with(holder.context).load(file).into(holder.profilePic);
+                    holder.profPicLoaded = true;
+                }
 
-                    @Override
-                    public void onError(Throwable e) {
+                @Override
+                public void onError(Throwable e) {
 
-                    }
+                }
 
-                    @Override
-                    public void onComplete() {
+                @Override
+                public void onComplete() {
 
-                    }
-                });
-            }
+                }
+            });
         } else {
             holder.profilePic.setImageResource(R.mipmap.ic_launcher_round);
         }
