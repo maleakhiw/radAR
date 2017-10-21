@@ -57,7 +57,6 @@ public class GroupsListActivity extends AppCompatActivity
         ImageView img = navigationView.getHeaderView(0).findViewById(R.id.profile_picture);
         helper = new NavigationActivityHelper(navigationView, drawerLayout, toolbar, name, email, img, this);
 
-        swipeRefreshLayout.setEnabled(false);
 
         setTitle("Groups");
 
@@ -71,6 +70,7 @@ public class GroupsListActivity extends AppCompatActivity
                 presenter.loadData();
             }
         });
+        swipeRefreshLayout.setEnabled(false);
 
         // Setup retrofit
         Retrofit retrofit = RetrofitFactory.getRetrofitBuilder().build();
