@@ -22,13 +22,6 @@ let svs;
 // data models
 let Group, Message, User;
 
-// var getOneToOneChat = (req, res) => {
-//   /*
-//   GET api/users/userID/existingChat
-//   QUERY userID int
-//   */
-// }
-
 var getExistingIndividualChat = (userID, queryUserID) => new Promise((resolve, reject) => {
   winston.debug('getExistingIndividualChat');
 
@@ -75,7 +68,7 @@ var getLastMessages = (groups) => new Promise((resolve, reject) => {
 })
 
 var getGroupsForUserImpl = (req, res, filterChatsOut) => {
-  let userID = req.params.userID
+  let userID = parseInt(req.params.userID)
 
   let groupsLastMessages = {};
   let groupsTmp, groups;
@@ -98,6 +91,7 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
       // true only if the group is a tracking group
       return Promise.all(promiseAll);
     } else {
+      winston.debug("do not filter chats out")
       groups = user.groups;
       // "keep everything", false indices to be filtered off later
       return Promise.all(groups.map(group => true));
@@ -117,37 +111,13 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
     return new Promise((resolve, reject) => resolve(groupsFirst));
   })
 
-  .then(groups => getLastMessages(groups))
-
-  .then((pGroupLastMessages) => {
-    groupsLastMessages = pGroupLastMessages;
-
-    let promiseAll = groups.map(groupID => new Promise((resolve, reject) => {
-
-      Group.findOne({groupID: groupID}).exec()
-      .then(group => {
-        let groupInfo = common.formatGroupInfo(group);
-
-        groupInfo.lastMessage = groupsLastMessages[groupID];
-
-        common.getUsersDetails(group.members, userID)
-        .then(usersDetails => {
-          groupInfo["usersDetails"] = usersDetails;
-          groupDetails.push(groupInfo);
-          resolve();
-
-        })
-
-
-      })
-      .catch(err => reject(err));
-
-    }))
+  .then(groupIDs => {
+    let promiseAll = groupIDs.map(groupID => common.getGroupInfo(groupID, userID));
 
     return Promise.all(promiseAll);
   })
 
-  .then(() => {
+  .then(groupDetails => {
     // sort groupDetails - TODO refactor to individual functions; test cases
     groupDetails.sort((group1, group2) => { // custom sort function
       let group1ID = group1.groupID;
@@ -184,6 +154,10 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
       }
     });
 
+    groupDetails.map(group => {
+      groupsLastMessages[group.groupID] = group.lastMessage;
+    })
+
     let response = {
       success: true,
       errors: [],
@@ -204,16 +178,18 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
 }
 
 /**
+ * @param req Express request object
+ * @param res Express response object
  * @param callback callback function. If defined, callback should handle response
  */
-function newGroupImpl(req, res, callback, newChat) {
+function newGroupImpl(req, res, callback, newOneToOneChat) {
   let userID = parseInt(req.params.userID); // TODO validate
   let participantUserIDs = req.body.participantUserIDs
   let name = req.body.name
   let meetingPoint = req.body.meetingPoint;
 
-  if (newChat == null) {  // when called from getOneToOneChat
-    newChat = false;
+  if (newOneToOneChat == null) {  // when called from getOneToOneChat
+    newOneToOneChat = false;
   }
 
   let errorKeys = []
@@ -229,7 +205,7 @@ function newGroupImpl(req, res, callback, newChat) {
   if (!participantUserIDs) {
     errorKeys.push('missingParticipantUserIDs');
   }
-  if (!name && !newChat) {
+  if (!name && !newOneToOneChat) {
     errorKeys.push('missingGroupName');
   }
   if (errorKeys.length) {
@@ -251,8 +227,8 @@ function newGroupImpl(req, res, callback, newChat) {
   }
 
   if (!isArray(participantUserIDs)) {
-    errorKeys.push('invalidParticipantUserIDs')
-    sendError()
+    errorKeys.push('invalidParticipantUserIDs');
+    sendError();
     return
   }
 
@@ -260,10 +236,7 @@ function newGroupImpl(req, res, callback, newChat) {
   participantUserIDs.push(userID) // add the requester to participants
   participantUserIDs = unique(participantUserIDs) // filter to only unique userIDs
 
-  let filteredUserIDs
-  let groupID
-  let group;
-
+  let filteredUserIDs, groupID, group;
   let usersDetails = {};
 
   User.find( { userID: { $in: participantUserIDs } } ).exec()
@@ -403,127 +376,99 @@ module.exports = class SMS {
   }
 
   getGroup(req, res) {
-      let userID = req.params.userID
-      let groupID = req.params.groupID
+    let userID = req.params.userID
+    let groupID = req.params.groupID
 
-      let group, usersDetails, lastMessage;
+    common.groupExists(groupID)
+    .then(exists => {
+      if (exists) {
+        return common.getGroupInfo(groupID, userID);
+      } else {
+        throw 'invalidGroupID';
+      }
+    })
 
-      Group.findOne({ groupID: groupID }).exec()
-      .then((groupRes) => {
-        group = groupRes;
+    .then(group => {
+      res.json({
+        success: true,
+        errors: [],
+        group: group
+      });
+    })
 
-        return common.getUsersDetails(groupRes.members, userID);
-      })
-      .then((pUserDetails) => {
-        usersDetails = pUserDetails;
-
-        return Message.findOne({groupID: groupID}).sort({time: -1});
-      })
-
-      .then((message) => {
-        if (message) {
-          lastMessage = {
-            from: message.from,
-            time: message.time,
-            contentType: message.contentType,
-            text: message.text
-          }
-        }
-
-        if (group) {
-          // TODO use function from common
-          let groupObj = {
-            name: group.name,
-            groupID: groupID,
-            admins: group.admins,
-            members: group.members,
-            isTrackingGroup: group.isTrackingGroup,
-            usersDetails: usersDetails,
-            lastMessage: lastMessage
-          }
-
-          res.json({
-            success: true,
-            errors: [],
-            group: groupObj
-          });
-
-        } else {
-          // group does not exist
-          res.status(404).json({
-            success: false,
-            error: common.errorObjectBuilder(['invalidGroupID'])
-          });
-        }
-      })
-      .catch(err => common.sendInternalError(res));
+    .catch(err => {
+      if (err == 'invalidGroupID') {
+        res.status(404).json({
+          success: false,
+          error: common.errorObjectBuilder(['invalidGroupID'])
+        });
+      } else {
+        common.sendInternalError(res)
+      }
+    });
 
   }
 
   getMessages(req, res) {
-      let groupID = parseInt(req.query.groupID) || parseInt(req.params.groupID)
-      let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
+    let groupID = parseInt(req.query.groupID) || parseInt(req.params.groupID)
+    let userID = parseInt(req.body.userID) || parseInt(req.params.userID)
 
-      let usersDetails;
+    let usersDetails;
 
 
-      Group.findOne({ groupID: groupID }).exec()
+    Group.findOne({ groupID: groupID }).exec()
 
-      .then((group) => {
-        if (!group) {
-          res.json({
-            success: false,
-            errors: common.errorObjectBuilder(['invalidGroupID'])
-          })
-          return
-        }
-
-        if (!group.members.includes(userID)) {
-          res.status(401).json({
-            success: false,
-            errors: common.errorObjectBuilder(['unauthorisedGroup'])
-          })
-          return
-        }
-
-        return common.getUsersDetails(group.members);
-      })
-
-      .then((pUsersDetails) => {
-        usersDetails = pUsersDetails;
-        return Message.find({groupID: groupID});
-      })
-
-      .then((messages) => {
-        let messagesRes = messages.map((message) => {
-          return {
-            from: message.from,
-            time: message.time,
-            contentType: message.contentType,
-            text: message.text,
-            contentResourceID: message.contentResourceID,
-          }
-        })
-
-        res.send({
-          success: true,
-          errors: [],
-          messages: messagesRes,
-          usersDetails: usersDetails
-        })
-      })
-
-      .catch((err) => {
-        winston.error(err)
-        res.send({
+    .then((group) => {
+      if (!group) {
+        res.json({
           success: false,
-          errors: common.errorObjectBuilder(['internalError'])
+          errors: common.errorObjectBuilder(['invalidGroupID'])
         })
+        return
+      }
+
+      if (!group.members.includes(userID)) {
+        res.status(401).json({
+          success: false,
+          errors: common.errorObjectBuilder(['unauthorisedGroup'])
+        })
+        return
+      }
+
+      return common.getUsersDetails(group.members);
+    })
+
+    .then((pUsersDetails) => {
+      usersDetails = pUsersDetails;
+      return Message.find({groupID: groupID});
+    })
+
+    .then((messages) => {
+      let messagesRes = messages.map((message) => {
+        return {
+          from: message.from,
+          time: message.time,
+          contentType: message.contentType,
+          text: message.text,
+          contentResourceID: message.contentResourceID,
+        }
       })
-      // check Group if exists
-        // if exists, check if member
-          // if member, return messages (for now return everything.)
-          // otherwise
+
+      res.send({
+        success: true,
+        errors: [],
+        messages: messagesRes,
+        usersDetails: usersDetails
+      })
+    })
+
+    .catch((err) => {
+      winston.error(err)
+      res.send({
+        success: false,
+        errors: common.errorObjectBuilder(['internalError'])
+      })
+    })
 
   }
 

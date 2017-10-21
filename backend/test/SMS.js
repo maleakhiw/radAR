@@ -222,7 +222,7 @@ describe('SMS', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
 
-        console.log(res.body.groupsLastMessages);
+        // console.log(res.body);
 
         expect(res.body.groupsLastMessages['1']).to.not.equal(null);
         expect(res.body.groupsLastMessages['1'].text).to.equal('Hello world');
@@ -444,7 +444,6 @@ describe('SMS - getOneToOneChat', () => {
         expect(res).to.be.json;
         expect(res.body.success).to.equal(false);
         expect(res.body.errors[0].errorCode).to.equal(88);
-
         done();
       })
     })

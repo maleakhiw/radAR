@@ -7,6 +7,14 @@ const Message = require('./models/message');
 
 module.exports.getNumLength = number => (Math.abs(number) + "").length;
 
+module.exports.groupExists = groupID => new Promise((resolve, reject) => {
+  Group.findOne({groupID: groupID})
+  .then(group => {
+    if (group) resolve(true);
+    else resolve(false);
+  }).catch(err => reject(err));
+})
+
 module.exports.getGroupInfo = (groupID, userID) => new Promise((resolve, reject) => {
 
   let lastMessage;
