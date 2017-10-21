@@ -27,7 +27,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import radar.radar.Listeners.LocationCallbackProvider;
@@ -37,8 +36,6 @@ import radar.radar.Services.LocationApi;
 import radar.radar.Services.LocationService;
 import radar.radar.Views.HomeScreenView;
 import retrofit2.Retrofit;
-
-import static android.content.ContentValues.TAG;
 
 public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyCallback, HomeScreenView, LocationCallbackProvider {
 
@@ -142,7 +139,6 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
         });
 
         fab_remove.setOnClickListener(v -> {
-            // FAB Action
             fab_add.setVisibility(View.VISIBLE);
             fab_remove.setVisibility(View.INVISIBLE);
             fab_new_friend.setVisibility(View.INVISIBLE);
