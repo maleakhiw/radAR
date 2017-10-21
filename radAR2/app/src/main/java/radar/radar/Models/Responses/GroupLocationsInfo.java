@@ -13,6 +13,7 @@ import radar.radar.Models.Domain.UserLocation;
 public class GroupLocationsInfo extends Status {
     public MeetingPoint meetingPoint;
     public ArrayList<UserLocation> locations;
+    public HashMap<Integer, User> userDetails;
 
     /**
      * Constructor
@@ -22,6 +23,4 @@ public class GroupLocationsInfo extends Status {
         this.locations = locations;
         this.userDetails = userDetails;
     }
-
-    public HashMap<Integer, User> userDetails;
 }

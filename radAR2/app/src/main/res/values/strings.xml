@@ -143,8 +143,6 @@
     <string name="app_label">Radar</string>
     <string name="search_hint">Search for user..</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_groups">GroupsActivity</string>
     <string name="default_description">Hello, I am using Radar!</string>
 
@@ -181,15 +179,23 @@
     <string name="off_caps">OFF</string>
     <string name="on_caps">ON</string>
     <string name="group_name">Group name</string>
-    <string name="delete_group">Delete Group</string>
+    <string name="leave_group">Leave Group</string>
     <string name="edit">Edit</string>
     <string name="done">Done</string>
-    <string name="remove">REMOVE</string>
-    <string name="meeting_point">Meeting Point</string>
-    <string name="select">SELECT</string>
-    <string name="new_group1">New group</string>
     <string name="meeting_place_location">Click SELECT to select a location</string>
     <string name="location_image">location image</string>
     <string name="cancel_button">cancel button</string>
+    <string name="new_group1">New group</string>
+    <string name="chat_list_title">Chats</string>
+    <string name="add_members">Add members</string>
+    <string name="meeting_point">Meeting point</string>
+    <string name="set_a_meeting_point">Set a meeting point.</string>
+    <string name="select">SELECT</string>
+    <string name="remove">REMOVE</string>
+    <string name="set_meeting_point">SET</string>
+    <string name="navigate">NAVIGATE</string>
+    <string name="members_to_invite">Members to invite</string>
+    <string name="invite_members">Invite</string>
+    <string name="online">Online</string>
 
 </resources>

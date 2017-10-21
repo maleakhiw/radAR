@@ -9,6 +9,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import radar.radar.Models.Domain.MeetingPoint;
+import radar.radar.Models.Requests.AddMembersBody;
 import radar.radar.Models.Requests.NewChatRequest;
 import radar.radar.Models.Requests.NewGroupBody;
 import radar.radar.Models.Responses.GetChatsResponse;
@@ -79,13 +80,27 @@ public class GroupsService {
     }
 
     public Observable<Status> deleteGroup(int groupID) {
-        return groupsApi.deleteGroup(userID, token, groupID)
+        return groupsApi.leaveGroup(userID, token, groupID)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
     public Observable<Status> removeMember(int groupID, int memberUserID) {
         return groupsApi.removeMember(userID, memberUserID, token, groupID)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * Adds users to the group.
+     * @param groupID group in question
+     * @param invitedUsers users to invite to the group
+     * @return Observable<Status>
+     */
+    public Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers) {
+        System.out.println(userID);
+        System.out.println(groupID);
+        return groupsApi.addMembers(userID, groupID, token, new AddMembersBody(invitedUsers))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

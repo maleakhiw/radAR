@@ -164,12 +164,12 @@ public class NewGroupActivity extends AppCompatActivity {
 
                 button = findViewById(R.id.new_group_button);
                 button.setOnClickListener(view -> {
-                    ArrayList<UserWithCheckbox> userWithCheckboxes = adapter.getUsers();
+                    ArrayList<UserWithCheckbox> usersWithCheckboxes = adapter.getUsers();
                     ArrayList<Integer> selectedUsers = new ArrayList<>();
-                    for (int i = 0; i < userWithCheckboxes.size(); i++) {
-                        UserWithCheckbox user = userWithCheckboxes.get(i);
+
+                    for (UserWithCheckbox user: usersWithCheckboxes) {
                         if (user.isChecked) {
-                            selectedUsers.add(users.get(i).userID);
+                            selectedUsers.add(user.userID);
                         }
                     }
 

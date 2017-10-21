@@ -14,6 +14,6 @@ public interface FriendsView {
 
     void launchSearchFriendsActivity();
 
-    void bindAdapterToRecyclerView(ArrayList<User> friends);
+    void updateAdapterDataset(ArrayList<User> friends);
 
 }
