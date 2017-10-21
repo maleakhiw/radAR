@@ -28,7 +28,7 @@ module.exports.getUsersDetails = (members, userID) => {
       User.findOne({userID: memberUserID}).exec()
       .then((user) => { // assumption: user is valid (since all other routes validated, module.exports is only a GET route)
         if (user) {
-          userDetails[memberUserID] = common.getPublicUserInfo(user);
+          userDetails[memberUserID] = module.exports.getPublicUserInfo(user);
           userDetails[memberUserID].isFriend = user.friends.includes(parseInt(userID));
         }
         resolve();
@@ -40,7 +40,7 @@ module.exports.getUsersDetails = (members, userID) => {
       // already got userdetails, now get common groups if userID specified
       if (userID) {
         let promiseAll2 = members.map(memberUserID => new Promise((resolve, reject) => {
-          common.getCommonGroups(userID, memberUserID)
+          module.exports.getCommonGroups(userID, memberUserID)
           .then(commonGroups => {
             userDetails[memberUserID].commonGroups = commonGroups;
             resolve();
@@ -205,7 +205,7 @@ module.exports.getPublicUserInfo = function(user) {
 module.exports.getPublicUserInfoPromise = (userID, userIDToCheck) => new Promise((resolve, reject) => {
   let common = [];
 
-  getCommonGroups(userID, userIDToCheck)
+  module.exports.getCommonGroups(userID, userIDToCheck)
   .then(commonGroups => {
     common = commonGroups;
     return User.findOne({userID: userIDToCheck});
@@ -271,7 +271,6 @@ module.exports.isValidEmail = (email) => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);
 }
-
 
 
 module.exports.getCommonGroups = (userID, userToCheckAgainst) => new Promise((resolve, reject) => {
