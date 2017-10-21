@@ -2,8 +2,10 @@ package radar.radar.Models.Domain;
 
 import java.util.List;
 
+/**
+ * Data model for group details, such as description, information of the group
+ */
 public class GroupDetails {
-
     private Boolean success;
 
     private List<Object> errors = null;

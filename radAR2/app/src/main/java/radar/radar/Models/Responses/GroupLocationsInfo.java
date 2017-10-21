@@ -7,16 +7,21 @@ import radar.radar.Models.Domain.MeetingPoint;
 import radar.radar.Models.Domain.User;
 import radar.radar.Models.Domain.UserLocation;
 
-
+/**
+ * Data model response when getting group locations information
+ */
 public class GroupLocationsInfo extends Status {
     public MeetingPoint meetingPoint;
     public ArrayList<UserLocation> locations;
 
+    /**
+     * Constructor
+     */
     public GroupLocationsInfo(MeetingPoint meetingPoint, ArrayList<UserLocation> locations, HashMap<Integer, User> userDetails) {
         this.meetingPoint = meetingPoint;
         this.locations = locations;
         this.userDetails = userDetails;
     }
 
-    public HashMap<Integer, User> userDetails;  // TODO not all populated
+    public HashMap<Integer, User> userDetails;
 }

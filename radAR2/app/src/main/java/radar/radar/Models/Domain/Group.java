@@ -22,9 +22,7 @@ public class Group implements Serializable {
     public MessageResponse lastMessage;
 
     /**
-     * Constructor for groupo
-     * @param name name of the group/ chat
-     * @param isTrackingGroup type of the instance (group/ chat) represented with true/false
+     * Constructor for group
      */
     public Group(String name, boolean isTrackingGroup) {
         this.name = name;

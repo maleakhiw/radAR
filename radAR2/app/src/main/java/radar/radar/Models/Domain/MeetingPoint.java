@@ -3,6 +3,9 @@ package radar.radar.Models.Domain;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Data model for location meeting point
+ */
 public class MeetingPoint implements Serializable {
     public double lat;
     public double lon;

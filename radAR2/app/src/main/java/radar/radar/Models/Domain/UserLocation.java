@@ -4,10 +4,36 @@ import java.util.Date;
 
 import radar.radar.Models.Responses.GetLocationResponse;
 
-
-
+/**
+ * Data model representing user location
+ */
 public class UserLocation extends GetLocationResponse {
+    int userID;
 
+    /**
+     * Constructor
+     */
+    public UserLocation(int userID, GetLocationResponse response) {
+        this.lat = response.lat;
+        this.lon = response.lon;
+        this.accuracy = response.accuracy;
+        this.heading = response.heading;
+        this.timeUpdated = response.timeUpdated;
+        this.userID = userID;
+    }
+
+    public UserLocation(int userID, float lat, float lon, float accuracy, float heading, Date timeUpdated) {
+        this.userID = userID;
+        this.lat = lat;
+        this.lon = lon;
+        this.accuracy = accuracy;
+        this.heading = heading;
+        this.timeUpdated = timeUpdated;
+    }
+
+    /**
+     * Getter and setter
+     */
     public int getUserID() {
         return userID;
     }
@@ -53,26 +79,6 @@ public class UserLocation extends GetLocationResponse {
     }
 
     public void setTimeUpdated(Date timeUpdated) {
-        this.timeUpdated = timeUpdated;
-    }
-
-    public UserLocation(int userID, GetLocationResponse response) {
-        this.lat = response.lat;
-        this.lon = response.lon;
-        this.accuracy = response.accuracy;
-        this.heading = response.heading;
-        this.timeUpdated = response.timeUpdated;
-        this.userID = userID;
-    }
-
-    int userID;
-
-    public UserLocation(int userID, float lat, float lon, float accuracy, float heading, Date timeUpdated) {
-        this.userID = userID;
-        this.lat = lat;
-        this.lon = lon;
-        this.accuracy = accuracy;
-        this.heading = heading;
         this.timeUpdated = timeUpdated;
     }
 }

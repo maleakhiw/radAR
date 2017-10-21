@@ -50,9 +50,6 @@
             android:name=".FriendRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SearchLocationActivity"
-            android:label="radAR Search Location" />
-        <activity
             android:name=".ARActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />

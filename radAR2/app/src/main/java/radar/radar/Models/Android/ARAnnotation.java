@@ -5,17 +5,19 @@ import android.widget.RelativeLayout;
 
 import radar.radar.Models.Domain.UserLocation;
 
-
+/**
+ * Data model for the annotation in AR functionality/ activity
+ */
 public class ARAnnotation {
     UserLocation userLocation;
     RelativeLayout layout;
-
     Button button;
-
     int offsetX;
     int offsetY;
 
-
+    /**
+     * Getters and setters
+     */
     public int getOffsetX() {
         return offsetX;
     }
@@ -31,7 +33,6 @@ public class ARAnnotation {
     public void setOffsetY(int offsetY) {
         this.offsetY = offsetY;
     }
-
 
     public UserLocation getUserLocation() {
         return userLocation;
@@ -53,11 +54,13 @@ public class ARAnnotation {
         this.layout = layout;
     }
 
+    /**
+     * Constructor
+     */
     public ARAnnotation(UserLocation userLocation, RelativeLayout layout, Button button) {
 
         this.userLocation = userLocation;
         this.layout = layout;
         this.button = button;
-
     }
 }

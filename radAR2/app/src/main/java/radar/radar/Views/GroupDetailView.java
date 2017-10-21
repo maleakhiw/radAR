@@ -2,7 +2,9 @@ package radar.radar.Views;
 
 import radar.radar.Models.Domain.MeetingPoint;
 
-
+/**
+ * Interface for groups to support MVP model
+ */
 public interface GroupDetailView {
     void setMeetingPoint(MeetingPoint meetingPoint);
 
