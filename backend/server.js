@@ -143,8 +143,9 @@ app.get("/api/accounts/:userID/chats/with/:queryUserID", authenticate, sms.getOn
 var groupAuthorisedMiddleware = (req, res, next) => {
   let groupID = parseInt(req.params.groupID);
   let userID = parseInt(req.params.userID);
-  Group.findOne({groupID: groupID}).exec()
   console.log(groupID, userID);
+  Group.findOne({groupID: groupID}).exec()
+
   .then(group => {
     if (!group) {
       common.sendError(res, ['invalidGroupID']);
