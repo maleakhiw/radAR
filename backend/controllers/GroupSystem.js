@@ -382,10 +382,9 @@ module.exports = class GroupSystem extends SMS {
       members = group.members;
       meetingPoint = group.meetingPoint;
 
-      // TODO: implement
-      // if (!members.includes(userID)) {
-      //   throw 'unauthorizedGroup';
-      // }
+      if (!members.includes(userID)) {
+        throw 'unauthorizedGroup';
+      }
 
       // don't include self
       members = members.filter((memberUserID) => memberUserID != userID);

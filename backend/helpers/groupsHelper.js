@@ -3,6 +3,14 @@ const common = require('../common');
 const winston = require('winston');
 
 var getExistingIndividualChat = (userID, queryUserID) => {
+  return getExistingIndividualChatImpl(userID, queryUserID, getGroupInfo);
+}
+
+var isGroupMember = (userID, group) => {
+  return group.members.includes(userID);
+}
+
+var getExistingIndividualChatImpl = (userID, queryUserID, getGroupInfo) => {
   return new Promise((resolve, reject) => {
     winston.debug('getExistingIndividualChat');
 
@@ -19,17 +27,20 @@ var getExistingIndividualChat = (userID, queryUserID) => {
 }
 
 var formatGroupInfo = (group) => {
-  return {
-    name: group.name,
-    groupID: group.groupID,
-    admins: group.admins,
-    members: group.members,
-    isTrackingGroup: group.isTrackingGroup,
-    profilePicture: group.profilePicture,
-    meetingPoint: common.getMeetingPointInfo(group.meetingPoint)
-    // usersDetails: usersDetails,  // TODO pass it in
-    // lastMessage: lastMessage // TODO pass it in
+  if (group) {
+    return {
+      name: group.name,
+      groupID: group.groupID,
+      admins: group.admins,
+      members: group.members,
+      isTrackingGroup: group.isTrackingGroup,
+      profilePicture: group.profilePicture,
+      meetingPoint: common.getMeetingPointInfo(group.meetingPoint)
+    }
+  } else {
+    return null;
   }
+
 }
 
 var getUserDetail = (queryUserID, selfUserID) => {
@@ -120,6 +131,11 @@ class GroupsHelper {
     return getExistingIndividualChat(userID, queryUserID)
   }
 
+  // above with custom getGroupInfo function - for testing
+  getExistingIndividualChatImpl(userID, queryUserID, getGroupInfo) {
+    return getExistingIndividualChatImpl(userID, queryUserID, getGroupInfo);
+  }
+
   formatGroupInfo(group) {
     return formatGroupInfo(group)
   }
@@ -134,6 +150,10 @@ class GroupsHelper {
 
   getUsersDetails(members, userID) {
     return getUsersDetails(members, userID)
+  }
+
+  isGroupMember(userID, group) {
+    return isGroupMember(userID, group);
   }
 }
 

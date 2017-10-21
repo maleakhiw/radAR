@@ -138,16 +138,40 @@ app.get("/api/accounts/:userID/resources/:resourceID", authenticate, resms.getRe
 // chats
 app.post("/api/accounts/:userID/chats", authenticate, sms.newGroup)
 app.get("/api/accounts/:userID/chats", authenticate, sms.getGroupsForUser)
-app.get("/api/accounts/:userID/chats/:groupID", authenticate, sms.getGroup)
-app.put("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.promoteToTrackingGroup)
-app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.getMessages)
-app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate, sms.sendMessage);
 app.get("/api/accounts/:userID/chats/with/:queryUserID", authenticate, sms.getOneToOneChat);
 
+var groupAuthorisedMiddleware = (req, res, next) => {
+  let groupID = parseInt(req.params.groupID);
+  let userID = parseInt(req.params.userID);
+  Group.findOne({groupID: groupID}).exec()
+  .then(group => {
+    if (!group) {
+      common.sendError(res, ['invalidGroupID']);
+    } else {
+      if (!group.members.includes(userID)) {
+        common.sendUnauthorizedError(res);
+      } else {
+        next();
+      }
+    }
+  })
+}
+app.get("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, sms.getGroup)
+app.put("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.promoteToTrackingGroup)
+app.get("/api/accounts/:userID/chats/:groupID/messages", authenticate,
+          groupAuthorisedMiddleware, sms.getMessages)
+app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate,
+          groupAuthorisedMiddleware, sms.sendMessage);
+
 // chats and groups
-app.delete("/api/accounts/:userID/chats/:groupID", authenticate, groupSystem.deleteGroup);
-app.delete("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.deleteGroup);
-app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate, groupSystem.removeMember);
+app.delete("/api/accounts/:userID/chats/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.deleteGroup);
+app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate,
+          groupAuthorisedMiddleware, groupSystem.removeMember);
 
 // groups
 app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);

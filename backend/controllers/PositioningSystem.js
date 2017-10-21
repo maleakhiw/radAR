@@ -101,7 +101,6 @@ module.exports = class PositioningSystem {
   }
 
   updateLocation(req, res) {
-    console.log(req.body);
     // POST {serverURL}/api/accounts/:userID/location
     /* Request body:
        {
@@ -167,8 +166,7 @@ module.exports = class PositioningSystem {
 
   }
 
-  // TODO: make route that can return location of multiple users
-  // TODO (global): make sure all routes can handle accidental arrays in GET requests
+  // Deprecated - use GroupSystem.getLocations
   getLocation(req, res) {
     // GET {serverURL}/api/users/:queryUserID/location
     /* Request params (key: value)
