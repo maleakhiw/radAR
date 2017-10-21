@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#1a237e</color>
     <color name="colorAccent">#ffb300</color>
     <color name="colorAccentDark">#DB9A00</color>
-    <color name="colorAccentMid">#DEBA2F</color>
+    <color name="colorAccentMid">#deba2f</color>
     <color name="colorAccentLight">#DEBC00</color>
     <color name="colorSuperAppBar">#237ccf</color>
     <color name="colorWhite">#ffffff</color>
