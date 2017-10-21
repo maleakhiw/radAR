@@ -100,6 +100,11 @@ public class HomeScreenActivity extends AppCompatActivity implements OnMapReadyC
                     Log.i(TAG, "Successful click ");
                     Intent intent = new Intent(getApplicationContext(), NewGroupActivity.class);
                     intent.putExtra("status", "successful");
+                    if (meetingPoint != null) {
+                        intent.putExtra("name", meetingPoint.getName().toString());
+                        intent.putExtra("lat", meetingPoint.getLatLng().latitude);
+                        intent.putExtra("lng", meetingPoint.getLatLng().longitude);
+                    }
                     startActivity(intent);
                     return true;
                 });

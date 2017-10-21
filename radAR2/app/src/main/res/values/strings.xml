@@ -182,8 +182,10 @@
     <string name="leave_group">Leave Group</string>
     <string name="edit">Edit</string>
     <string name="done">Done</string>
+    <string name="meeting_place_location">Click SELECT to select a location</string>
+    <string name="location_image">location image</string>
+    <string name="cancel_button">cancel button</string>
     <string name="new_group1">New group</string>
-    <string name="meeting_place_location">Meeting place location</string>
     <string name="chat_list_title">Chats</string>
     <string name="add_members">Add members</string>
     <string name="meeting_point">Meeting point</string>

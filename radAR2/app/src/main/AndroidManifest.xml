@@ -49,9 +49,6 @@
             android:name=".FriendRequestActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SearchLocationActivity"
-            android:label="radAR Search Location" />
-        <activity
             android:name=".ARActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
@@ -65,10 +62,10 @@
         <activity
             android:name=".ChatListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".NewGroupActivity" />
-        <activity
-            android:name=".EditProfileActivity"
+        <activity android:name=".NewGroupActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EditProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps" />

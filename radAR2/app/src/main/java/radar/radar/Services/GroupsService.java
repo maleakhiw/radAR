@@ -37,6 +37,14 @@ public class GroupsService {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    public Observable<GroupsResponse> newGroup(String name, ArrayList<Integer> participantUserIDs,
+                                               MeetingPoint meetingPoint) {
+        NewGroupBody newGroupBody = new NewGroupBody(name, participantUserIDs, meetingPoint);
+        return groupsApi.newGroup(userID, newGroupBody, token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     public Observable<NewChatResponse> newChat(String name, ArrayList<Integer> participantUserIDs) {
         System.out.println("newChat");
         NewChatRequest newChatRequest = new NewChatRequest(name, participantUserIDs);
