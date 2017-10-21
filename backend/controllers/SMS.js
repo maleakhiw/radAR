@@ -22,14 +22,27 @@ let svs;
 // data models
 let Group, Message, User;
 
-function getExistingChat(req, res) {
-  /*
-  GET api/users/userID/existingChat
-  QUERY userID int
-  */
+// var getOneToOneChat = (req, res) => {
+//   /*
+//   GET api/users/userID/existingChat
+//   QUERY userID int
+//   */
+// }
 
-  // TODO to prevent creation of multiple chats for the same user
-}
+var getExistingIndividualChat = (userID, queryUserID) => new Promise((resolve, reject) => {
+  winston.debug('getExistingIndividualChat');
+
+  Group.findOne({members: [userID, queryUserID]}).exec()
+  .then(group => {
+    if (group) {
+      console.log(group);
+      resolve(common.getGroupInfo(group.groupID, userID));
+    } else {
+      resolve(null);
+    }
+  })
+});
+
 
 var getLastMessages = (groups) => new Promise((resolve, reject) => {
   let groupsLastMessages = {};
@@ -193,11 +206,15 @@ var getGroupsForUserImpl = (req, res, filterChatsOut) => {
 /**
  * @param callback callback function. If defined, callback should handle response
  */
-function newGroupImpl(req, res, callback) {
+function newGroupImpl(req, res, callback, newChat) {
   let userID = parseInt(req.params.userID); // TODO validate
   let participantUserIDs = req.body.participantUserIDs
   let name = req.body.name
   let meetingPoint = req.body.meetingPoint;
+
+  if (newChat == null) {  // when called from getOneToOneChat
+    newChat = false;
+  }
 
   let errorKeys = []
   // TODO: get rid of code duplication, move sendError() to common.js
@@ -212,7 +229,7 @@ function newGroupImpl(req, res, callback) {
   if (!participantUserIDs) {
     errorKeys.push('missingParticipantUserIDs');
   }
-  if (!name) {
+  if (!name && !newChat) {
     errorKeys.push('missingGroupName');
   }
   if (errorKeys.length) {
@@ -338,9 +355,44 @@ module.exports = class SMS {
     svs = new SVS(pUser)
   }
 
-  // deleteGroup(req, res) {
-  //   deleteGroupImpl(req, res);
-  // }
+  getOneToOneChat(req, res) {
+    // api/accounts/:userID/chats/with/:queryUserID
+    let userID = parseInt(req.params.userID);
+    let queryUserID = parseInt(req.params.queryUserID);
+
+    winston.debug('getOneToOneChat');
+
+    common.userExists(queryUserID).then(exists => {
+      winston.debug(exists);
+      if (!exists) {
+        throw 'invalidUserID';
+      }
+      return getExistingIndividualChat(userID, queryUserID)
+    })
+
+    .then(group => {
+      // winston.debug(group);
+      if (group) {
+        winston.debug('got group');
+        res.json({
+          success: true,
+          errors: [],
+          group: group
+        })
+      } else {
+        winston.debug('new group');
+        req.body.participantUserIDs = [userID, queryUserID];
+        req.body.name = null;
+
+        newGroupImpl(req, res, null, true);
+      }
+    })
+    .catch(err => {
+      if (err == 'invalidUserID') {
+        common.sendError(res, ['invalidUserID']);
+      }
+    })
+  }
 
   newGroup(req, res) {
     newGroupImpl(req, res, null);
