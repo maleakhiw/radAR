@@ -16,7 +16,7 @@ chai.use(chaiHttp)
 mongoose.Promise = global.Promise;
 
 describe('GroupSystem', () => {
-  let user1token, user2token, user3token;
+  let user1token, user2token, user3token, user4token;
 
   before((done) => {
     mongoose.connect('mongodb://localhost/radarTest',
@@ -87,7 +87,22 @@ describe('GroupSystem', () => {
             expect(res.body.userID).to.equal(3)
             user3token = res.body.token;
 
-            done();
+            chai.request(server)
+            .post('/api/auth')
+            .send({
+                "firstName": "User4",
+                "lastName": "LastName",
+                "email": "email4@example.com",
+                "username": "user4",
+                "profileDesc": "",
+                "password": "hunter2",
+                "deviceID": "memes"
+            })
+            .end((err, res) => {
+              user4token = res.body.token;
+              done();
+            })
+
           })
         })
 
@@ -147,6 +162,41 @@ describe('GroupSystem', () => {
           expect(group.name).to.equal("New name");
           done();
         })
+      })
+    })
+
+  })
+
+  describe('PUT /api/accounts/:userID/groups/:groupID/members (addMembers)', () => {
+    it('should add new members', done => {
+      chai.request(server)
+      .put('/api/accounts/1/groups/1/members')
+      .set('token', user1token)
+      .send({
+        participantUserIDs: [3, 4, 79]
+      })
+      .end((err, res) => {
+        console.log(res.body);
+        res.should.have.status(200);
+        expect(res).to.be.json;
+        expect(res.body.success).to.equal(true);
+
+        Group.findOne({groupID: 1})
+        .exec()
+        .then(group => {
+          expect(group.members.includes(3)).to.equal(true);
+          expect(group.members.includes(79)).to.equal(false); // filtering
+          return User.findOne({userID: 3})
+        })
+        .then(user => {
+          expect(user.groups.includes(1)).to.equal(true);
+          return User.findOne({userID: 4})
+        })
+        .then(user => {
+          expect(user.groups.includes(1)).to.equal(true);
+          done();
+        })
+
       })
     })
 

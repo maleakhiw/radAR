@@ -5,6 +5,7 @@
 
 // logging framework
 const winston = require('winston');
+const _ = require('lodash');
 
 winston.level = 'debug';  // TODO use environment variable
 
@@ -144,7 +145,39 @@ function validateMeetingPoint(req) {
   return errorKeys;
 }
 
-function deleteGroupImpl(req, res) {
+function leaveGroupImpl(req, res) {
+  winston.debug('leaveGroupImpl');
+  let groupID = parseInt(req.params.groupID);
+  let userID = parseInt(req.params.userID);
+
+  Group.findOne({groupID: groupID}).exec()
+  .then((group) => {
+    if (group.members.includes(userID)) { // authorised
+      group.members = group.members.filter(memberUserID => memberUserID != userID); // remove the user
+      group.save().then(() => {
+        User.findOne({userID: userID}).exec()
+        .then(user => {
+          user.groups = user.groups.filter((group) => group != groupID);
+          user.save();
+        })
+        .then(group => {
+          res.json({
+            success: true,
+            errors: []
+          })
+        })
+      });
+
+
+    } else {
+      throw 'Unauthorized'
+    }
+  });
+
+}
+
+// deprecated
+function leaveGroupImplOld(req, res) {
   let groupID = parseInt(req.params.groupID);
   let userID = parseInt(req.params.userID);
 
@@ -186,6 +219,80 @@ function deleteGroupImpl(req, res) {
   });
 }
 
+var getExistingUsers = (userIDs) => new Promise((resolve, reject) => {
+  let list = userIDs.map(userID => common.userExists(userID));
+  Promise.all(list)
+  .then(userExistsList => {
+    let zipped = _.zip(userIDs, userExistsList);
+    let filtered = zipped.filter(entry => entry[1]);  // keep if entry[1] is true
+    let mapped = filtered.map(entry => entry[0]);
+
+    resolve(mapped);
+  })
+  .catch(err => reject(err));
+
+})
+
+function validateAddMembersRequest(req) {
+  let groupID = parseInt(req.params.groupID);
+  let userIDs = req.body.participantUserIDs;
+
+  let errorKeys = []
+
+  if (!common.isArray(userIDs)) {
+    errorKeys.push('invalidParticipantUserIDs')
+  }
+
+  if (!common.isNumber(groupID)) {
+    errorKeys.push('invalidGroupID');
+  }
+
+  return errorKeys;
+}
+
+var addMembers = (userIDs, groupID, res) => new Promise((resolve, reject) => {
+  winston.debug("groupID: " + groupID);
+  winston.debug("invited userIDs: " + userIDs);
+
+  getExistingUsers(userIDs)
+  .then(filteredUserIDs => {
+    Group.findOne({groupID: groupID}).exec()
+    .then(group => {
+      if (group) {
+        winston.debug("members (before): " + group.members)
+        group.members = group.members.concat(filteredUserIDs);
+        group.members = common.unique(group.members); // filter down duplicates
+        winston.debug("members (after): " + group.members)
+        return group.save()
+      } else {
+        reject('invalidGroupID');
+      }
+    })
+    .then(group => {
+      let list = filteredUserIDs.map(userID => new Promise((resolve, reject) => {
+        User.findOne({userID: userID}).exec()
+        .then(user => {
+          user.groups = user.groups.push(groupID);
+          user.groups = common.unique(user.groups);
+          return user.save();
+        })
+        .then(user => resolve(user))
+        .catch(err => reject(err));
+      }))
+
+      return Promise.all(list);
+    })
+    .then(saved => {
+      res.json({
+        success: true,
+        errors: []
+      })
+    })
+    .catch(err => winston.error(err))
+
+  })
+})
+
 module.exports = class GroupSystem extends SMS {
 
   constructor(pGroup, pMessage, pUser, pLocation) {
@@ -194,6 +301,20 @@ module.exports = class GroupSystem extends SMS {
     Message = pMessage;
     User = pUser;
     UserLocation = pLocation;
+  }
+
+  addMembers(req, res) {
+    let userIDs = req.body.participantUserIDs;
+    let userID = parseInt(req.params.userID);
+    let groupID = parseInt(req.params.groupID);
+
+    let errorKeys = validateAddMembersRequest(req);
+    if (errorKeys.length) {
+      common.sendError(res, errorKeys);
+    } else {
+      addMembers(userIDs, groupID, res);
+    }
+
   }
 
   getGroupsForUser(req, res) {
@@ -315,8 +436,8 @@ module.exports = class GroupSystem extends SMS {
     SMS.newGroupImpl(req, res, callback);
   }
 
-  deleteGroup(req, res) {
-    deleteGroupImpl(req, res);
+  leaveGroup(req, res) { // TODO rename to leaveGroup
+    leaveGroupImpl(req, res);
   }
 
   promoteToTrackingGroup_validateParams(groupID, isTrackingGroup) {
@@ -376,15 +497,15 @@ module.exports = class GroupSystem extends SMS {
 
     groupExists(groupID).then(() => Group.findOne({groupID: groupID}))
     .then((group) => {
-      // TODO refactor to function isAuthorized()
+
 
       // console.log(group);
       members = group.members;
       meetingPoint = group.meetingPoint;
 
-      if (!members.includes(userID)) {
-        throw 'unauthorizedGroup';
-      }
+      // if (!members.includes(userID)) {
+      //   throw 'unauthorizedGroup';
+      // }
 
       // don't include self
       members = members.filter((memberUserID) => memberUserID != userID);

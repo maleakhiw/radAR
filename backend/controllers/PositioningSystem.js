@@ -162,8 +162,6 @@ module.exports = class PositioningSystem {
     })
     .catch((err) => common.sendInternalError(res));
 
-
-
   }
 
   // Deprecated - use GroupSystem.getLocations

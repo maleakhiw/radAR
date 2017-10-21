@@ -167,11 +167,15 @@ app.post("/api/accounts/:userID/chats/:groupID/messages", authenticate,
 
 // chats and groups
 app.delete("/api/accounts/:userID/chats/:groupID", authenticate,
-          groupAuthorisedMiddleware, groupSystem.deleteGroup);
+          groupAuthorisedMiddleware, groupSystem.leaveGroup);
 app.delete("/api/accounts/:userID/groups/:groupID", authenticate,
-          groupAuthorisedMiddleware, groupSystem.deleteGroup);
+          groupAuthorisedMiddleware, groupSystem.leaveGroup);
 app.delete("/api/accounts/:userID/groups/:groupID/members/:memberUserID", authenticate,
           groupAuthorisedMiddleware, groupSystem.removeMember);
+app.put("/api/accounts/:userID/groups/:groupID/members", authenticate,
+          groupAuthorisedMiddleware, groupSystem.addMembers);
+app.put("/api/accounts/:userID/chats/:groupID/members", authenticate,
+          groupAuthorisedMiddleware, groupSystem.addMembers);
 
 // groups
 app.put("/api/accounts/:userID/groups/:groupID", authenticate, groupSystem.updateGroupDetails);
@@ -182,7 +186,7 @@ app.get("/api/accounts/:userID/groups/:groupID/locations", authenticate, groupSy
 app.post("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 app.put("/api/accounts/:userID/groups/:groupID/meetingPoint", authenticate, groupSystem.updateMeetingPoint);
 
-// online statuses
+// online statuses - unused
 app.get("/api/accounts/:userID/usersOnlineStatuses", authenticate, ums.isOnline)
 
 // locations
@@ -208,9 +212,6 @@ app.get("/api/users/:queryUserID/location", authenticate, positioningSystem.getL
 app.get("/api/groups", (req, res) => {
   res.json(addMetas({}, "/api/groups"))
 })
-// app.get("/api/groups/:groupID", authenticate, gms.getGroupInfo)
-// app.post("/api/groups", authenticate, gms.newGroup)
-
 
 // for Let's Encrypt
 app.get('/health-check', (req, res) => res.sendStatus(200));

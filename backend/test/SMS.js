@@ -159,7 +159,7 @@ describe('SMS', () => {
         res.should.have.status(200);
         expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
-        // console.log(res.body);
+        console.log(res.body);
         expect(res.body.groups[0].members.includes(2)).to.equal(true);
 
         done();
@@ -256,41 +256,23 @@ describe('SMS', () => {
   })
 
   describe('DELETE /api/accounts/:userID/groups/:groupID', () => {
-    it('should not delete the group (not admin)', done => {
+    it('should leave the group', done => {
       chai.request(server)
       .delete('/api/accounts/2/groups/1')
       .set('token', user2token)
       .end((err, res) => {
         expect(res).to.be.json;
-        expect(res.body.success).to.equal(false);
-
-        Group.findOne({groupID: 1}).exec()
-        .then(group => {
-          if (group) {
-            done();
-          } else {
-            throw 'Group should not be deleted';
-          }
-        })
-      })
-    });
-
-    it('should delete the group if admin deletes it', done => {
-      chai.request(server)
-      .delete('/api/accounts/1/groups/1')
-      .set('token', user1token)
-      .end((err, res) => {
-        expect(res).to.be.json;
         expect(res.body.success).to.equal(true);
+
         Group.findOne({groupID: 1}).exec()
         .then(group => {
-          console.log(group)
           if (group) {
-            throw 'Group should be deleted';
-          } else {
+            expect(group.members.includes(2)).to.equal(false);
             done();
           }
         })
+        .catch(err => console.log(err))
+
       })
     });
 
