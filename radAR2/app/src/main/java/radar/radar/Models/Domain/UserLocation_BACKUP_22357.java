@@ -81,4 +81,13 @@ public class UserLocation extends GetLocationResponse {
     public void setTimeUpdated(Date timeUpdated) {
         this.timeUpdated = timeUpdated;
     }
+
+    public UserLocation(int userID, double lat, double lon, double accuracy, double heading, Date timeUpdated) {
+        this.userID = userID;
+        this.lat = lat;
+        this.lon = lon;
+        this.accuracy = accuracy;
+        this.heading = heading;
+        this.timeUpdated = timeUpdated;
+    }
 }

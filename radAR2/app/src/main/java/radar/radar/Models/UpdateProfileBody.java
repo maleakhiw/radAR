@@ -1,6 +1,8 @@
 package radar.radar.Models;
 
-
+/**
+ * Data model for updating profile body
+ */
 public class UpdateProfileBody {
     public String firstName;
     public String lastName;
@@ -8,6 +10,9 @@ public class UpdateProfileBody {
     public String profileDesc;
     public String profilePicture;
 
+    /**
+     * Constructor
+     */
     public UpdateProfileBody(String name, String email, String profileDesc, String profilePicture) {
         String[] splitStr = name.split("\\s+");
         firstName = splitStr[0];

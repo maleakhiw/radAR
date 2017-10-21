@@ -1,12 +1,14 @@
 package radar.radar.Models.Responses;
 
 /**
- * Created by keyst on 1/10/2017.
+ * Data model for message body
  */
-
 public class MessageBody {
     public String message;
 
+    /**
+     * Constructor
+     */
     public MessageBody(String message) {
         this.message = message;
     }
