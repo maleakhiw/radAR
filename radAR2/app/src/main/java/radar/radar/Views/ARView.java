@@ -4,7 +4,9 @@ import radar.radar.Models.Android.ARAnnotation;
 import radar.radar.Models.Android.CompassDirection;
 import radar.radar.Models.Domain.UserLocation;
 
-
+/**
+ * Interface for AR to support MVP architectural model
+ */
 public interface ARView {
     void requestLocationPermissions();
 
