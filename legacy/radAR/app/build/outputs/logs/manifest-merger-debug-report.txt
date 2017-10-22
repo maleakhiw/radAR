@@ -1,0 +1,809 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+MERGED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:17:1-31:12
+MERGED from [com.google.android.gms:play-services:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-11.2.2.aar/115cc68ca7d1591d2835f67a6b5694f5/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-cast:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-11.2.2.aar/4b2ba898ea85ff29b4fd5a8d0c80624d/AndroidManifest.xml:16:1-19:12
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:17:1-28:12
+MERGED from [com.google.android.gms:play-services-awareness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-awareness-11.2.2.aar/35120cc0878a3f0ce506541dd15ee1b5/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-places:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-places-11.2.2.aar/70f28db0544e28bf3e7083d49514646f/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-wallet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wallet-11.2.2.aar/b4f2bee925dad737ae8d9df641388653/AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:16:1-25:12
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:16:1-27:12
+MERGED from [com.google.android.gms:play-services-tagmanager:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-11.2.2.aar/d11600ae648ea079c66cf32b923e3958/AndroidManifest.xml:16:1-18:12
+MERGED from [com.google.android.gms:play-services-tagmanager-v4-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-v4-impl-11.2.2.aar/42121953eb5c966af3a35625c5924e28/AndroidManifest.xml:16:1-20:12
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:16:1-27:12
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:16:1-27:12
+MERGED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:16:1-26:12
+MERGED from [com.google.android.gms:play-services-auth-api-phone:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-api-phone-11.2.2.aar/b8acecdc3d8e50897a8a8f5c94c0fb17/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.android.gms:play-services-auth-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-base-11.2.2.aar/3dff234f38554d700546e52658716500/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.firebase:firebase-config:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-config-11.2.2.aar/3710a1f158589c0bc029410372e9a690/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-games:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-games-11.2.2.aar/9d3ac2b9407feecb8de48e044fe75e26/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-drive:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-drive-11.2.2.aar/34334e4315415b3a1d57e35002f4a6d5/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-fido:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fido-11.2.2.aar/98d5359c22adf8692477535d7768d0fd/AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.firebase:firebase-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.2.2.aar/dfc69c811fbe82d1b5609d61b2b1162a/AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.firebase:firebase-dynamic-links:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-11.2.2.aar/273b853edf01ba2d55e6d54b1b84eb5d/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-fitness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fitness-11.2.2.aar/36d2df1d59c35427fe1081635b51aa7e/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.firebase:firebase-appindexing:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-appindexing-11.2.2.aar/924b46efb8ab27731299f669aef0ee1a/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-identity:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-identity-11.2.2.aar/23229fe9ff27dc8bc0cf4c1eb4595c0e/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:16:1-24:12
+MERGED from [com.google.android.gms:play-services-instantapps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-instantapps-11.2.2.aar/5f2fe1a6544c116ed3df41abc9002a4e/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.android.gms:play-services-location:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-location-11.2.2.aar/2fc9483e3c023621c32ee7556d0b94a5/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:2:1-6:12
+MERGED from [com.google.android.gms:play-services-panorama:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-panorama-11.2.2.aar/525d41cb2900b8599e73dfe91d1821e2/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-plus:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-plus-11.2.2.aar/c5c9f2a68c949ba70a61e130c3ce7fcb/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-safetynet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-11.2.2.aar/a228fd0e60762b97847f4bdd9eee6541/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-vision:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-11.2.2.aar/d23755b4524d60c2f1d93b1cea547a64/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-vision-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-common-11.2.2.aar/c653435a4523797d525a41573918f8e7/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-wearable:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wearable-11.2.2.aar/4e831fffcee732b1f021c49450a800d0/AndroidManifest.xml:16:1-19:12
+MERGED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:16:1-21:12
+MERGED from [com.google.android.gms:play-services-ads:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-11.2.2.aar/94939534be3e8791b1571e5e50f28f9c/AndroidManifest.xml:16:1-18:12
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:16:1-27:12
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:16:1-25:12
+MERGED from [com.google.firebase:firebase-database:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-11.2.2.aar/86c7ec0f5d90808093e5254f63a4f8c0/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.firebase:firebase-database-connection:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-connection-11.2.2.aar/b44cd01cf2bd81514edacba2a5ca1f59/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:16:1-30:12
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:16:1-34:12
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:16:1-35:12
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:16:1-29:12
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:16:1-50:12
+MERGED from [com.google.firebase:firebase-storage:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-11.2.2.aar/6cd06e99dcf8290db81e9b7ffd992085/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.firebase:firebase-storage-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-common-11.2.2.aar/0588a0f64b8b8cd6d2081849229a8e12/AndroidManifest.xml:2:1-4:12
+MERGED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:2:1-8:12
+MERGED from [com.google.android.gms:play-services-gass:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gass-11.2.2.aar/3d606e84d472fa89176cda8fb487f8e4/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-tasks:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.2.2.aar/fa74977e318ed2ab12cd73784a0963c3/AndroidManifest.xml:2:1-5:12
+MERGED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:16:1-23:12
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/ff01c062eb68e6e1a2eac8ce375917b7/AndroidManifest.xml:2:1-11:12
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:17:1-31:12
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/rxandroid-2.0.1.aar/f0466d6b01ffe51f0290e1b098b2da70/AndroidManifest.xml:15:1-21:12
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:17:1-28:12
+MERGED from [com.jakewharton:butterknife:8.6.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/butterknife-8.6.0.aar/3126174d9e733087df7ba17763a752fd/AndroidManifest.xml:2:1-7:12
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:17:1-31:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+	package
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:3:5-31
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:1-68:12
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:2:11-69
+uses-permission#android.permission.GET_ACCOUNTS
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:5:5-71
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:5:22-68
+uses-permission#android.permission.READ_PROFILE
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:6:5-71
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:6:22-68
+uses-permission#android.permission.READ_CONTACTS
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:7:5-72
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:7:22-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:8:5-67
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:18:5-66
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:18:5-66
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:21:5-66
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:19:5-66
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:19:5-66
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:18:5-66
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:18:5-66
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:20:5-66
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:20:5-66
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:20:5-66
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:8:22-64
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:9:5-79
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:9:22-76
+uses-permission#android.permission.CAMERA
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:10:5-65
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:10:22-62
+application
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:14:5-66:19
+MERGED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:25:5-29:19
+MERGED from [com.google.android.gms:play-services:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-11.2.2.aar/115cc68ca7d1591d2835f67a6b5694f5/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-11.2.2.aar/115cc68ca7d1591d2835f67a6b5694f5/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:4:5-8:19
+MERGED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:4:5-8:19
+MERGED from [com.google.android.gms:play-services-cast:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-11.2.2.aar/4b2ba898ea85ff29b4fd5a8d0c80624d/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-cast:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-11.2.2.aar/4b2ba898ea85ff29b4fd5a8d0c80624d/AndroidManifest.xml:18:5-19
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-awareness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-awareness-11.2.2.aar/35120cc0878a3f0ce506541dd15ee1b5/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-awareness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-awareness-11.2.2.aar/35120cc0878a3f0ce506541dd15ee1b5/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-places:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-places-11.2.2.aar/70f28db0544e28bf3e7083d49514646f/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-places:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-places-11.2.2.aar/70f28db0544e28bf3e7083d49514646f/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:24:5-19
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:24:5-19
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:26:5-19
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:26:5-19
+MERGED from [com.google.android.gms:play-services-tagmanager-v4-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-v4-impl-11.2.2.aar/42121953eb5c966af3a35625c5924e28/AndroidManifest.xml:19:5-19
+MERGED from [com.google.android.gms:play-services-tagmanager-v4-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-v4-impl-11.2.2.aar/42121953eb5c966af3a35625c5924e28/AndroidManifest.xml:19:5-19
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:26:5-19
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:26:5-19
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:19:5-26:19
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:19:5-26:19
+MERGED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:19:5-25:19
+MERGED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:19:5-25:19
+MERGED from [com.google.firebase:firebase-config:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-config-11.2.2.aar/3710a1f158589c0bc029410372e9a690/AndroidManifest.xml:18:5-19
+MERGED from [com.google.firebase:firebase-config:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-config-11.2.2.aar/3710a1f158589c0bc029410372e9a690/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-games:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-games-11.2.2.aar/9d3ac2b9407feecb8de48e044fe75e26/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-games:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-games-11.2.2.aar/9d3ac2b9407feecb8de48e044fe75e26/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-drive:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-drive-11.2.2.aar/34334e4315415b3a1d57e35002f4a6d5/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-drive:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-drive-11.2.2.aar/34334e4315415b3a1d57e35002f4a6d5/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-fido:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fido-11.2.2.aar/98d5359c22adf8692477535d7768d0fd/AndroidManifest.xml:5:3-6:17
+MERGED from [com.google.android.gms:play-services-fido:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fido-11.2.2.aar/98d5359c22adf8692477535d7768d0fd/AndroidManifest.xml:5:3-6:17
+MERGED from [com.google.firebase:firebase-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.2.2.aar/dfc69c811fbe82d1b5609d61b2b1162a/AndroidManifest.xml:19:5-20:19
+MERGED from [com.google.firebase:firebase-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.2.2.aar/dfc69c811fbe82d1b5609d61b2b1162a/AndroidManifest.xml:19:5-20:19
+MERGED from [com.google.firebase:firebase-dynamic-links:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-11.2.2.aar/273b853edf01ba2d55e6d54b1b84eb5d/AndroidManifest.xml:5:3-17
+MERGED from [com.google.firebase:firebase-dynamic-links:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-11.2.2.aar/273b853edf01ba2d55e6d54b1b84eb5d/AndroidManifest.xml:5:3-17
+MERGED from [com.google.android.gms:play-services-fitness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fitness-11.2.2.aar/36d2df1d59c35427fe1081635b51aa7e/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-fitness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fitness-11.2.2.aar/36d2df1d59c35427fe1081635b51aa7e/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:23:5-19
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:23:5-19
+MERGED from [com.google.firebase:firebase-appindexing:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-appindexing-11.2.2.aar/924b46efb8ab27731299f669aef0ee1a/AndroidManifest.xml:18:5-19
+MERGED from [com.google.firebase:firebase-appindexing:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-appindexing-11.2.2.aar/924b46efb8ab27731299f669aef0ee1a/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-identity:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-identity-11.2.2.aar/23229fe9ff27dc8bc0cf4c1eb4595c0e/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-identity:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-identity-11.2.2.aar/23229fe9ff27dc8bc0cf4c1eb4595c0e/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:23:5-19
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:23:5-19
+MERGED from [com.google.android.gms:play-services-location:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-location-11.2.2.aar/2fc9483e3c023621c32ee7556d0b94a5/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-location:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-location-11.2.2.aar/2fc9483e3c023621c32ee7556d0b94a5/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:5:5-19
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:5:5-19
+MERGED from [com.google.android.gms:play-services-panorama:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-panorama-11.2.2.aar/525d41cb2900b8599e73dfe91d1821e2/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-panorama:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-panorama-11.2.2.aar/525d41cb2900b8599e73dfe91d1821e2/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-plus:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-plus-11.2.2.aar/c5c9f2a68c949ba70a61e130c3ce7fcb/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-plus:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-plus-11.2.2.aar/c5c9f2a68c949ba70a61e130c3ce7fcb/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-safetynet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-11.2.2.aar/a228fd0e60762b97847f4bdd9eee6541/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-safetynet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-11.2.2.aar/a228fd0e60762b97847f4bdd9eee6541/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-vision:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-11.2.2.aar/d23755b4524d60c2f1d93b1cea547a64/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-vision:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-11.2.2.aar/d23755b4524d60c2f1d93b1cea547a64/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-vision-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-common-11.2.2.aar/c653435a4523797d525a41573918f8e7/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-vision-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-common-11.2.2.aar/c653435a4523797d525a41573918f8e7/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-wearable:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wearable-11.2.2.aar/4e831fffcee732b1f021c49450a800d0/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-wearable:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wearable-11.2.2.aar/4e831fffcee732b1f021c49450a800d0/AndroidManifest.xml:18:5-19
+MERGED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:18:5-20:19
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:23:5-26:19
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:23:5-26:19
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:19:5-29:19
+MERGED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:19:5-29:19
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:23:5-33:19
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:23:5-33:19
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:24:5-34:19
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:24:5-34:19
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:24:5-28:19
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:24:5-28:19
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:28:5-49:19
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:28:5-49:19
+MERGED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:4:5-7:19
+MERGED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:4:5-7:19
+MERGED from [com.google.android.gms:play-services-gass:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gass-11.2.2.aar/3d606e84d472fa89176cda8fb487f8e4/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-gass:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gass-11.2.2.aar/3d606e84d472fa89176cda8fb487f8e4/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-tasks:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.2.2.aar/fa74977e318ed2ab12cd73784a0963c3/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-tasks:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.2.2.aar/fa74977e318ed2ab12cd73784a0963c3/AndroidManifest.xml:4:5-19
+MERGED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:19:5-21:19
+MERGED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:19:5-21:19
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/ff01c062eb68e6e1a2eac8ce375917b7/AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/ff01c062eb68e6e1a2eac8ce375917b7/AndroidManifest.xml:9:5-20
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:25:5-29:19
+	android:supportsRtl
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:19:9-35
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:17:9-41
+	android:roundIcon
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:18:9-54
+	android:icon
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:16:9-43
+	android:allowBackup
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:15:9-35
+	android:theme
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:20:9-53
+activity#com.oxygen.radar.LoginActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:21:9-26:20
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:23:13-45
+	android:theme
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:24:13-72
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:22:13-42
+activity#com.oxygen.radar.LoginActivity2
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:27:9-35:20
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:28:13-43
+intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:30:13-34:29
+action#android.intent.action.MAIN
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:31:17-69
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:31:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:33:17-77
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:33:27-74
+activity#com.oxygen.radar.TrackingGroupActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:36:9-59
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:36:19-56
+activity#com.oxygen.radar.DrawerActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:37:9-40:59
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:39:13-58
+	android:theme
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:40:13-56
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:38:13-43
+activity#com.oxygen.radar.SettingsActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:41:9-43:63
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:43:13-60
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:42:13-45
+activity#com.oxygen.radar.SignupActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:44:9-46:72
+	android:theme
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:46:13-69
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:45:13-43
+activity#com.oxygen.radar.ChatListActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:47:9-50:69
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:49:13-61
+	android:theme
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:50:13-57
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:48:13-45
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:59:9-61:55
+	android:value
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:61:13-52
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:60:13-58
+activity#com.oxygen.radar.MapsActivity
+ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:63:9-65:68
+	android:label
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:65:13-56
+	android:name
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml:64:13-41
+uses-sdk
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+MERGED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:21:5-23:62
+MERGED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:21:5-23:62
+MERGED from [com.google.android.gms:play-services:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-11.2.2.aar/115cc68ca7d1591d2835f67a6b5694f5/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-11.2.2.aar/115cc68ca7d1591d2835f67a6b5694f5/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-cast:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-11.2.2.aar/4b2ba898ea85ff29b4fd5a8d0c80624d/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-cast:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-11.2.2.aar/4b2ba898ea85ff29b4fd5a8d0c80624d/AndroidManifest.xml:17:5-43
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:21:5-23:78
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-awareness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-awareness-11.2.2.aar/35120cc0878a3f0ce506541dd15ee1b5/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-awareness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-awareness-11.2.2.aar/35120cc0878a3f0ce506541dd15ee1b5/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-places:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-places-11.2.2.aar/70f28db0544e28bf3e7083d49514646f/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-places:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-places-11.2.2.aar/70f28db0544e28bf3e7083d49514646f/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-wallet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wallet-11.2.2.aar/b4f2bee925dad737ae8d9df641388653/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-wallet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wallet-11.2.2.aar/b4f2bee925dad737ae8d9df641388653/AndroidManifest.xml:18:5-43
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:23:5-43
+MERGED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:23:5-43
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-11.2.2.aar/d11600ae648ea079c66cf32b923e3958/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-11.2.2.aar/d11600ae648ea079c66cf32b923e3958/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager-v4-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-v4-impl-11.2.2.aar/42121953eb5c966af3a35625c5924e28/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager-v4-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-v4-impl-11.2.2.aar/42121953eb5c966af3a35625c5924e28/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-auth-api-phone:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-api-phone-11.2.2.aar/b8acecdc3d8e50897a8a8f5c94c0fb17/AndroidManifest.xml:3:3-41
+MERGED from [com.google.android.gms:play-services-auth-api-phone:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-api-phone-11.2.2.aar/b8acecdc3d8e50897a8a8f5c94c0fb17/AndroidManifest.xml:3:3-41
+MERGED from [com.google.android.gms:play-services-auth-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-base-11.2.2.aar/3dff234f38554d700546e52658716500/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-auth-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-base-11.2.2.aar/3dff234f38554d700546e52658716500/AndroidManifest.xml:4:5-43
+MERGED from [com.google.firebase:firebase-config:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-config-11.2.2.aar/3710a1f158589c0bc029410372e9a690/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-config:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-config-11.2.2.aar/3710a1f158589c0bc029410372e9a690/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-games:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-games-11.2.2.aar/9d3ac2b9407feecb8de48e044fe75e26/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-games:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-games-11.2.2.aar/9d3ac2b9407feecb8de48e044fe75e26/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-drive:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-drive-11.2.2.aar/34334e4315415b3a1d57e35002f4a6d5/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-drive:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-drive-11.2.2.aar/34334e4315415b3a1d57e35002f4a6d5/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-fido:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fido-11.2.2.aar/98d5359c22adf8692477535d7768d0fd/AndroidManifest.xml:4:3-41
+MERGED from [com.google.android.gms:play-services-fido:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fido-11.2.2.aar/98d5359c22adf8692477535d7768d0fd/AndroidManifest.xml:4:3-41
+MERGED from [com.google.firebase:firebase-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.2.2.aar/dfc69c811fbe82d1b5609d61b2b1162a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-auth-11.2.2.aar/dfc69c811fbe82d1b5609d61b2b1162a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-dynamic-links:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-11.2.2.aar/273b853edf01ba2d55e6d54b1b84eb5d/AndroidManifest.xml:3:3-41
+MERGED from [com.google.firebase:firebase-dynamic-links:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-dynamic-links-11.2.2.aar/273b853edf01ba2d55e6d54b1b84eb5d/AndroidManifest.xml:3:3-41
+MERGED from [com.google.android.gms:play-services-fitness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fitness-11.2.2.aar/36d2df1d59c35427fe1081635b51aa7e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-fitness:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-fitness-11.2.2.aar/36d2df1d59c35427fe1081635b51aa7e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-appindexing:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-appindexing-11.2.2.aar/924b46efb8ab27731299f669aef0ee1a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-appindexing:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-appindexing-11.2.2.aar/924b46efb8ab27731299f669aef0ee1a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-identity:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-identity-11.2.2.aar/23229fe9ff27dc8bc0cf4c1eb4595c0e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-identity:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-identity-11.2.2.aar/23229fe9ff27dc8bc0cf4c1eb4595c0e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-instantapps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-instantapps-11.2.2.aar/5f2fe1a6544c116ed3df41abc9002a4e/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-instantapps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-instantapps-11.2.2.aar/5f2fe1a6544c116ed3df41abc9002a4e/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-location:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-location-11.2.2.aar/2fc9483e3c023621c32ee7556d0b94a5/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-location:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-location-11.2.2.aar/2fc9483e3c023621c32ee7556d0b94a5/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-panorama:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-panorama-11.2.2.aar/525d41cb2900b8599e73dfe91d1821e2/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-panorama:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-panorama-11.2.2.aar/525d41cb2900b8599e73dfe91d1821e2/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-plus:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-plus-11.2.2.aar/c5c9f2a68c949ba70a61e130c3ce7fcb/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-plus:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-plus-11.2.2.aar/c5c9f2a68c949ba70a61e130c3ce7fcb/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-safetynet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-11.2.2.aar/a228fd0e60762b97847f4bdd9eee6541/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-safetynet:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-safetynet-11.2.2.aar/a228fd0e60762b97847f4bdd9eee6541/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-vision:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-11.2.2.aar/d23755b4524d60c2f1d93b1cea547a64/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-vision:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-11.2.2.aar/d23755b4524d60c2f1d93b1cea547a64/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-vision-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-common-11.2.2.aar/c653435a4523797d525a41573918f8e7/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-vision-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-vision-common-11.2.2.aar/c653435a4523797d525a41573918f8e7/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-wearable:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wearable-11.2.2.aar/4e831fffcee732b1f021c49450a800d0/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-wearable:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-wearable-11.2.2.aar/4e831fffcee732b1f021c49450a800d0/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-ads:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-11.2.2.aar/94939534be3e8791b1571e5e50f28f9c/AndroidManifest.xml:17:5-94
+MERGED from [com.google.android.gms:play-services-ads:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-11.2.2.aar/94939534be3e8791b1571e5e50f28f9c/AndroidManifest.xml:17:5-94
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:22:5-43
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:22:5-43
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:20:5-43
+MERGED from [com.google.firebase:firebase-crash:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-crash-11.2.2.aar/97f0cb0643b8aef08ac3ff44ba07100e/AndroidManifest.xml:20:5-43
+MERGED from [com.google.firebase:firebase-database:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-11.2.2.aar/86c7ec0f5d90808093e5254f63a4f8c0/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-database:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-11.2.2.aar/86c7ec0f5d90808093e5254f63a4f8c0/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-database-connection:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-connection-11.2.2.aar/b44cd01cf2bd81514edacba2a5ca1f59/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-database-connection:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-database-connection-11.2.2.aar/b44cd01cf2bd81514edacba2a5ca1f59/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:17:5-43
+MERGED from [com.google.firebase:firebase-storage:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-11.2.2.aar/6cd06e99dcf8290db81e9b7ffd992085/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-storage:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-11.2.2.aar/6cd06e99dcf8290db81e9b7ffd992085/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-storage-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-common-11.2.2.aar/0588a0f64b8b8cd6d2081849229a8e12/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-storage-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-storage-common-11.2.2.aar/0588a0f64b8b8cd6d2081849229a8e12/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:3:5-43
+MERGED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-gass:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gass-11.2.2.aar/3d606e84d472fa89176cda8fb487f8e4/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-gass:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gass-11.2.2.aar/3d606e84d472fa89176cda8fb487f8e4/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.2.2.aar/fa74977e318ed2ab12cd73784a0963c3/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-tasks:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tasks-11.2.2.aar/fa74977e318ed2ab12cd73784a0963c3/AndroidManifest.xml:3:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:17:5-43
+MERGED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:17:5-43
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/ff01c062eb68e6e1a2eac8ce375917b7/AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.0.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/constraint-layout-1.0.2.aar/ff01c062eb68e6e1a2eac8ce375917b7/AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:21:5-23:60
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:21:5-23:61
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:21:5-23:61
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/rxandroid-2.0.1.aar/f0466d6b01ffe51f0290e1b098b2da70/AndroidManifest.xml:19:5-43
+MERGED from [io.reactivex.rxjava2:rxandroid:2.0.1] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/rxandroid-2.0.1.aar/f0466d6b01ffe51f0290e1b098b2da70/AndroidManifest.xml:19:5-43
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:20:5-43
+MERGED from [com.jakewharton:butterknife:8.6.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/butterknife-8.6.0.aar/3126174d9e733087df7ba17763a752fd/AndroidManifest.xml:5:5-43
+MERGED from [com.jakewharton:butterknife:8.6.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/butterknife-8.6.0.aar/3126174d9e733087df7ba17763a752fd/AndroidManifest.xml:5:5-43
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:20:5-43
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:21:5-23:58
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:21:5-23:58
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:23:9-59
+	android:targetSdkVersion
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		ADDED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/kenneth/Desktop/oxygen/radAR/app/src/main/AndroidManifest.xml
+meta-data#android.support.VERSION
+ADDED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:mediarouter-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/mediarouter-v7-25.4.0.aar/eeb3535f946e32b780306cdd4034ed85/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:appcompat-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.4.0.aar/5c5a4e16c5544a68cf66c0ebbc1fa81e/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:animated-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/animated-vector-drawable-25.4.0.aar/544bb7d2e0972278bc8dd326167abf29/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-vector-drawable:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-vector-drawable-25.4.0.aar/a745cdbbd8783964d3a9cd7404475139/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:transition:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/transition-25.4.0.aar/288b3c593a960900aa6112d64dbec769/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-v4:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-v4-25.4.0.aar/3223530e041ec1b85042c02d45f8b3bd/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-fragment:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-fragment-25.4.0.aar/029404625fdc5495dad66d73757d1485/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:palette-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/palette-v7-25.4.0.aar/f2fb278f6322b68040f70e20bcbd027c/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-utils:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-utils-25.4.0.aar/582909934f8c60c4cf20377b5407f7cf/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:recyclerview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/recyclerview-v7-25.4.0.aar/bf93a25bbb7a2e02f308eeb9339b0637/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:cardview-v7:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/cardview-v7-25.4.0.aar/02fc071ed28712da34b2d661dd0ec3c0/AndroidManifest.xml:23:9-25:38
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-core-ui:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-core-ui-25.4.0.aar/941d2c6ad70db2a58c714471a9d348c1/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-media-compat-25.4.0.aar/2e913a2171e5155656b3d09515692262/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-compat:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/support-compat-25.4.0.aar/070fd6c7ae10275540293840577ad589/AndroidManifest.xml:26:9-28:38
+	android:value
+		ADDED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:28:13-35
+	android:name
+		ADDED from [com.android.support:design:25.4.0] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/design-25.4.0.aar/ac4dfd3e8e13962d1bdd17ddcc2a1c87/AndroidManifest.xml:27:13-51
+receiver#com.google.android.gms.cast.framework.media.MediaIntentReceiver
+ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:5:9-99
+	android:name
+		ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:5:19-97
+service#com.google.android.gms.cast.framework.media.MediaNotificationService
+ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:6:9-103
+	android:name
+		ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:6:18-101
+service#com.google.android.gms.cast.framework.ReconnectionService
+ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:7:9-92
+	android:name
+		ADDED from [com.google.android.gms:play-services-cast-framework:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-cast-framework-11.2.2.aar/ee82dca6172edc60920a2cbdb7a42062/AndroidManifest.xml:7:18-90
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:19:5-78
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:4:5-78
+MERGED from [com.google.android.gms:play-services-nearby:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-nearby-11.2.2.aar/7c3e6e1339868c6dbd2bf523bc48d0a7/AndroidManifest.xml:4:5-78
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:20:5-78
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:21:5-78
+MERGED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:21:5-78
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:21:5-78
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:21:5-78
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:21:5-78
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:21:5-78
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:19:5-78
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:19:5-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:19:22-76
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:21:5-77
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:21:19-51
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-maps-11.2.2.aar/6d1af57d60152270d161e692855df62c/AndroidManifest.xml:21:52-75
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-impl-11.2.2.aar/f8d109c6f9481f7a77b84ddfa6df2a46/AndroidManifest.xml:24:5-67
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:22:5-67
+MERGED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:22:5-67
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:22:5-67
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:22:5-67
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:21:5-67
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:21:5-67
+	android:name
+		ADDED from [com.google.android.gms:play-services-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-analytics-11.2.2.aar/ea96d6a047a488f7bbb3b3225a49661a/AndroidManifest.xml:24:22-65
+activity#com.google.android.gms.appinvite.PreviewActivity
+ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:20:9-25:20
+	android:exported
+		ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:20:51-74
+	android:theme
+		ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:20:75-121
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:20:19-50
+intent-filter#android.intent.category.DEFAULT+com.google.android.gms.appinvite.ACTION_PREVIEW
+ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:21:13-24:29
+action#com.google.android.gms.appinvite.ACTION_PREVIEW
+ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:22:17-89
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:22:25-87
+category#android.intent.category.DEFAULT
+ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:23:17-75
+	android:name
+		ADDED from [com.google.android.gms:play-services-appinvite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-appinvite-11.2.2.aar/b874fa146897e877f55cf9df5066d5d6/AndroidManifest.xml:23:27-73
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:20:9-189
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:20:129-162
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:20:163-187
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:20:69-128
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:20:19-68
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:24:9-184
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:24:64-87
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:24:88-182
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-auth-11.2.2.aar/018b5179cd61d640ad39b78a43aea2d7/AndroidManifest.xml:24:18-63
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:20:5-81
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:20:5-81
+MERGED from [com.google.android.gms:play-services-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-iid-11.2.2.aar/e5c53680f9be8e9bd3a2a083e127455a/AndroidManifest.xml:20:5-81
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:22:5-81
+MERGED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:22:5-81
+	android:name
+		ADDED from [com.google.android.gms:play-services-gcm:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-gcm-11.2.2.aar/559463d76bc7b22e805800ca08f6ec0b/AndroidManifest.xml:20:22-79
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:19:9-172
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:19:146-170
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:19:86-145
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-base-11.2.2.aar/f7f01fab6c0e6cb5b226102624be448b/AndroidManifest.xml:19:19-85
+activity#com.google.android.gms.ads.AdActivity
+ADDED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:25:9-257
+	android:exported
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:25:231-255
+	android:configChanges
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:25:72-181
+	android:theme
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:25:182-230
+	android:name
+		ADDED from [com.google.android.gms:play-services-ads-lite:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-ads-lite-11.2.2.aar/0fccc725a71a96befce6b0171f8914e5/AndroidManifest.xml:25:19-71
+service#com.google.firebase.messaging.FirebaseMessagingService
+ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:23:9-27:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:23:88-111
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:23:18-87
+intent-filter#com.google.firebase.MESSAGING_EVENT
+ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:24:13-26:29
+	android:priority
+		ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:24:28-51
+action#com.google.firebase.MESSAGING_EVENT
+ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:25:17-77
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-messaging-11.2.2.aar/21f2ac878acd4778f41a4e949fa3751b/AndroidManifest.xml:25:25-75
+service#com.google.android.gms.tagmanager.TagManagerService
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:24:9-134
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:24:110-132
+	android:exported
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:24:85-109
+	android:name
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:24:18-84
+activity#com.google.android.gms.tagmanager.TagManagerPreviewActivity
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:25:9-32:20
+	android:noHistory
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:25:118-142
+	android:exported
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:25:94-117
+	android:name
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:25:19-93
+intent-filter#android.intent.action.VIEW+android.intent.category.BROWSABLE+android.intent.category.DEFAULT
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:26:13-31:29
+data
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:27:17-71
+	android:scheme
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:27:23-69
+action#android.intent.action.VIEW
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:28:17-68
+	android:name
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:28:25-66
+category#android.intent.category.BROWSABLE
+ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:30:17-77
+	android:name
+		ADDED from [com.google.android.gms:play-services-tagmanager-api:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-tagmanager-api-11.2.2.aar/26eed6a85b404ef9cb4f6d70ee2f8b58/AndroidManifest.xml:30:27-75
+receiver#com.google.android.gms.measurement.AppMeasurementReceiver
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:25:7-26:18
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:25:7-26:18
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:25:7-26:18
+	android:enabled
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:25:90-112
+	android:exported
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:25:113-137
+	android:name
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:25:17-89
+receiver#com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:27:7-31:18
+	android:enabled
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:27:162-184
+	android:exported
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:27:185-208
+	android:permission
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:27:105-161
+	android:name
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:27:17-104
+intent-filter#com.android.vending.INSTALL_REFERRER
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:28:11-30:27
+action#com.android.vending.INSTALL_REFERRER
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:29:15-76
+	android:name
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:29:23-74
+service#com.google.android.gms.measurement.AppMeasurementService
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:32:7-137
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:27:7-137
+MERGED from [com.google.firebase:firebase-analytics-impl:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-impl-11.2.2.aar/4f30a71d24255773f176b14c7ddfa9d3/AndroidManifest.xml:27:7-137
+	android:enabled
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:32:88-110
+	android:exported
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:32:111-135
+	android:name
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:32:16-87
+service#com.google.android.gms.measurement.AppMeasurementJobService
+ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:33:7-197
+	android:enabled
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:33:148-170
+	android:exported
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:33:171-195
+	android:permission
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:33:91-147
+	android:name
+		ADDED from [com.google.firebase:firebase-analytics:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-analytics-11.2.2.aar/12de0f21b17ae10955cb0a0d5166112e/AndroidManifest.xml:33:16-90
+permission#${applicationId}.permission.C2D_MESSAGE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:5-109
+	android:protectionLevel
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:72-107
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:17-71
+permission#com.oxygen.radar.permission.C2D_MESSAGE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:5-109
+	android:protectionLevel
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:72-107
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:24:17-71
+uses-permission#${applicationId}.permission.C2D_MESSAGE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:26:5-78
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:26:22-76
+uses-permission#com.oxygen.radar.permission.C2D_MESSAGE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:26:5-78
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:26:22-76
+receiver#com.google.firebase.iid.FirebaseInstanceIdReceiver
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:30:9-35:20
+	android:exported
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:30:85-108
+	android:permission
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:30:109-169
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:30:19-84
+intent-filter#${applicationId}+com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:31:13-34:29
+intent-filter#com.google.android.c2dm.intent.RECEIVE+com.oxygen.radar
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:31:13-34:29
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:32:17-80
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:32:25-78
+category#${applicationId}
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:33:17-60
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:33:27-58
+category#com.oxygen.radar
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:33:17-60
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:33:27-58
+receiver#com.google.firebase.iid.FirebaseInstanceIdInternalReceiver
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:39:9-119
+	android:exported
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:39:93-117
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:39:19-92
+service#com.google.firebase.iid.FirebaseInstanceIdService
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:43:9-47:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:43:83-106
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:43:18-82
+intent-filter#com.google.firebase.INSTANCE_ID_EVENT
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:44:13-46:29
+	android:priority
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:44:28-51
+action#com.google.firebase.INSTANCE_ID_EVENT
+ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:45:17-79
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-iid-11.2.2.aar/1937dc3fff65d794392185ba250bb953/AndroidManifest.xml:45:25-77
+provider#com.google.firebase.provider.FirebaseInitProvider
+ADDED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:6:9-194
+	android:authorities
+		ADDED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:6:19-78
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:6:144-168
+	android:initOrder
+		ADDED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:6:169-192
+	android:name
+		ADDED from [com.google.firebase:firebase-common:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/firebase-common-11.2.2.aar/e17805244ee97dc28047ad1784e68964/AndroidManifest.xml:6:79-143
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:20:9-121
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:20:66-119
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:11.2.2] /Users/kenneth/.gradle/caches/transforms-1/files-1.1/play-services-basement-11.2.2.aar/3d800de5f8a2f34459ee08ec9acaaa72/AndroidManifest.xml:20:20-65

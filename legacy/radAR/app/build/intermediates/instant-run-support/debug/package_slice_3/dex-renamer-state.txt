@@ -1,0 +1,4 @@
+#Tue Sep 19 15:38:37 AEST 2017
+base.0=/Users/kenneth/Desktop/oxygen/radAR/app/build/intermediates/transforms/dexMerger/debug/3
+renamed.0=classes.dex
+file.0=/Users/kenneth/Desktop/oxygen/radAR/app/build/intermediates/transforms/dexMerger/debug/3/classes.dex

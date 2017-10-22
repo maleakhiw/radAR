@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">AlertDialog</string>
-    <string name="button_name">Show Alert Dialog</string>
-    <string name="title">Alert Dialog</string>
-    <string name="message">You will lose all of your data if you quit the application.</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-</resources>
