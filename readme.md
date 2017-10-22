@@ -11,6 +11,10 @@ The tracking feature relies on phones of users in the group pushing location dat
 
 In addition to location sharing in map-based and AR-based fashion, the application will also implement a messaging system, allowing a medium for users to communicate with each otherin a more familiar way, enhancing effectiveness of the application in completing the users’ goal of locating each other within a given area. This helps users in sharing additionalinformation in form of text, and maximize the application’s proficiency to work as a one-stop-shop to facilitate physical rendezvouses between users.
 
+## Directories
+- `backend` contains the source code for the backend of the application, which runs on Node.js
+- `radAR2` containis the source code for the Android application, as described below
+
 ## Technical Information
 This Android application is built to target Android Lollipop (5.0) and above. To operate to its greatest extent, the application requires permissions for fine location access as wellas camera access.
 
@@ -23,7 +27,7 @@ The backend assumes that Node and NPM has been installed on the computer/server 
 ### Android Application
 The source code is implemented using Android Studio Beta 3.0, [available here](https://developer.android.com/studio/preview/install-preview.html). While this should not cause any issues with the stable version of Android Studio, this is currently not tested. Binaries of the Android application would be attached to the latest releases, but any rebuilding should be done through Android Studio.
 
-The source code uses build tools 26.0.2. If a build fails and the IDE requests you to install it, please do so and build the source code again. To build the source code, please ensure all of the dependencies requested by Gradle are installed and/or granted. 
+The source code uses build tools 26.0.2. If a build fails and the IDE requests you to install it, please do so and build the source code again. To build the source code, please ensure all of the dependencies requested by Gradle are installed and/or granted.
 
 This application is best experienced through a real device, as there are some issues with the AR component which may overload and crash the Android Emulator.
 
@@ -48,7 +52,7 @@ Ensure that `mocha`, the test driver is installed by running `npm install -g moc
 Run `npm run-script unit` to run the unit tests. To run all tests, run `npm test`.
 
 ### Application
-To run a test, ensure that you have the project opened in Android Studio. Find the `radar.radar (test)` folder. Right click on that folder and select Run Tests in "radar". 
+To run a test, ensure that you have the project opened in Android Studio. Find the `radar.radar (test)` folder. Right click on that folder and select Run Tests in "radar".
 
 When all of the dependencies are installed properly by Gradle, tests should work fine. If the tests fail to compile or execute, attempt a full rebuild of the project. If it doesn't work, opt to invalidate caches and restart the IDE. If it still doesn't work, please open an issue.
 
