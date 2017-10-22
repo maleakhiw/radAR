@@ -1,35 +1,32 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
-1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'run-script',
-1 verbose cli   'unit' ]
+1 verbose cli [ '/usr/bin/nodejs', '/usr/bin/npm', 'run-script', 'unit' ]
 2 info using npm@3.10.10
-3 info using node@v6.10.2
+3 info using node@v6.11.2
 4 verbose run-script [ 'preunit', 'unit', 'postunit' ]
 5 info lifecycle radar-backend@1.0.0~preunit: radar-backend@1.0.0
 6 silly lifecycle radar-backend@1.0.0~preunit: no script for preunit, continuing
 7 info lifecycle radar-backend@1.0.0~unit: radar-backend@1.0.0
 8 verbose lifecycle radar-backend@1.0.0~unit: unsafe-perm in lifecycle true
-9 verbose lifecycle radar-backend@1.0.0~unit: PATH: C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\Users\me\Downloads\oxygen-comp30022\backend\node_modules\.bin;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Skype\Phone\;C:\MinGW\bin;C:\Program Files\Git\cmd;C:\Users\me\Anaconda2;C:\Users\me\Anaconda2\Scripts;C:\Users\me\Anaconda2\Library\bin;C:\Users\me\AppData\Local\Programs\Python\Python35-32\Scripts\;C:\Users\me\AppData\Local\Programs\Python\Python35-32\;C:\Users\me\AppData\Local\atom\bin;C:\Program Files\MySQL\MySQL Server 5.7\bin;C:\Program Files\Java\jdk1.8.0_101\bin;C:\Users\me\AppData\Local\Microsoft\WindowsApps;C:\adb;C:\Program Files (x86)\GNU\GnuPG\pub;C:\Program Files\nodejs\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\OpenVPN\bin;C:\Users\me\Anaconda2;C:\Users\me\Anaconda2\Scripts;C:\Users\me\Anaconda2\Library\bin;C:\Users\me\AppData\Local\Programs\Python\Python35-32\Scripts\;C:\Users\me\AppData\Local\Programs\Python\Python35-32\;C:\Program Files\MySQL\MySQL Server 5.7\bin;C:\Program Files\Java\jdk1.8.0_101\bin;C:\Users\me\AppData\Local\Microsoft\WindowsApps;C:\Users\me\AppData\Roaming\npm;;C:\Program Files (x86)\Microsoft VS Code\bin;C:\Users\me\AppData\Local\Keybase\
-10 verbose lifecycle radar-backend@1.0.0~unit: CWD: C:\Users\me\Downloads\oxygen-comp30022\backend
-11 silly lifecycle radar-backend@1.0.0~unit: Args: [ '/d /s /c', 'mocha --grep unit --timeout 10000' ]
+9 verbose lifecycle radar-backend@1.0.0~unit: PATH: /usr/lib/node_modules/npm/bin/node-gyp-bin:/home/rusli_kenneth/oxygen-comp30022/backend/node_modules/.bin:/usr/local/bin:/usr/bin:/bin:/usr/games
+10 verbose lifecycle radar-backend@1.0.0~unit: CWD: /home/rusli_kenneth/oxygen-comp30022/backend
+11 silly lifecycle radar-backend@1.0.0~unit: Args: [ '-c', 'mocha --grep unit --timeout 10000' ]
 12 silly lifecycle radar-backend@1.0.0~unit: Returned: code: 1  signal: null
 13 info lifecycle radar-backend@1.0.0~unit: Failed to exec unit script
 14 verbose stack Error: radar-backend@1.0.0 unit: `mocha --grep unit --timeout 10000`
 14 verbose stack Exit status 1
-14 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:255:16)
+14 verbose stack     at EventEmitter.<anonymous> (/usr/lib/node_modules/npm/lib/utils/lifecycle.js:255:16)
 14 verbose stack     at emitTwo (events.js:106:13)
 14 verbose stack     at EventEmitter.emit (events.js:191:7)
-14 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:40:14)
+14 verbose stack     at ChildProcess.<anonymous> (/usr/lib/node_modules/npm/lib/utils/spawn.js:40:14)
 14 verbose stack     at emitTwo (events.js:106:13)
 14 verbose stack     at ChildProcess.emit (events.js:191:7)
-14 verbose stack     at maybeClose (internal/child_process.js:886:16)
+14 verbose stack     at maybeClose (internal/child_process.js:891:16)
 14 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:226:5)
 15 verbose pkgid radar-backend@1.0.0
-16 verbose cwd C:\Users\me\Downloads\oxygen-comp30022\backend
-17 error Windows_NT 10.0.15063
-18 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run-script" "unit"
-19 error node v6.10.2
+16 verbose cwd /home/rusli_kenneth/oxygen-comp30022/backend
+17 error Linux 4.9.0-3-amd64
+18 error argv "/usr/bin/nodejs" "/usr/bin/npm" "run-script" "unit"
+19 error node v6.11.2
 20 error npm  v3.10.10
 21 error code ELIFECYCLE
 22 error radar-backend@1.0.0 unit: `mocha --grep unit --timeout 10000`
