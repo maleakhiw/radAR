@@ -42,31 +42,31 @@ This application is best experienced through a real device, as there are some is
 - Run `npm install` to install the required Node.js dependencies.
 
 #### Running the server
-If you do not have HTTPS certificates set up, change the flag `HTTPS_MODE` to false (TODO: environment variables). Make sure that the MongoDB server is up, and start the server by running `npm start`
+If you do not have HTTPS certificates set up, change the flag `ENVIRONMENT` to `DEV` in `backend/.env`. Make sure that the MongoDB server is up, and start the server by running `npm start`.
 
 ### Android application
-Open the folder /radAR2 on Android Studio 3.0 or above, build the project and install the resulting application through ADB or to a connected Android device with USB debugging turned on. Alternatively, generate a signed APK (Android package file) using Android Studio and install the APK on the Android phone.
+Open the folder `/radAR2` on Android Studio 3.0 or above, build the project and install the resulting application through ADB or to a connected Android device with USB debugging turned on. Alternatively, generate a signed APK (Android package file) using Android Studio and install the APK on the Android phone.
 
 The AR functionality is best experienced via an actual Android device instead of through the emulator.
 
 ## Testing
 ### Backend
-Ensure that `mocha`, the test driver is installed by running `npm install -g mocha`. Also run `npm install`, which would also install the dependencies required for running the unit tests.
+Run `npm install`, which would also install the dependencies required for running the unit tests. To install `mocha` (the test driver) globally, run `npm install -g mocha`.
 
-Run `npm run-script unit` to run the unit tests. To run all tests, run `npm test`.
+Run `npm run-script unit` to run the unit tests. To run all tests (requires a MongoDB server to be up on `localhost:27017`), run `npm test`.
 
 ### Application
-To run a test, ensure that you have the project opened in Android Studio. Find the `radar.radar (test)` folder. Right click on that folder and select Run Tests in "radar".
+To run a test, ensure that you have the project opened in Android Studio. Find the `radar.radar (test)` folder. Right click on that folder and select *Run Tests* in "radar".
 
-When all of the dependencies are installed properly by Gradle, tests should work fine. If the tests fail to compile or execute, attempt a full rebuild of the project. If it doesn't work, opt to invalidate caches and restart the IDE. If it still doesn't work, please open an issue.
+When all of the dependencies are installed properly by Gradle, tests should work fine. If the tests fail to compile or execute, attempt a full rebuild of the project. If it doesn't work, opt to invalidate caches and restart the IDE. If it still doesn't work, please open an issue or get back to us.
 
 ## Server Information
-The server for this application is placed on a remote VPS running NodeJS. It uses RESTful design and its API root is accessible from https://radar.fadhilanshar.com/.
+The server for this application is placed on a remote VPS running Node.js. It uses RESTful design and its API root is accessible from https://radar.fadhilanshar.com/.
 
-This assumes Node and NPM has been installed on the testing machine.
+The server assumes that a MongoDB server is running on the same server (`localhost:27017`) and Node.js (v6 or above) and npm has been installed and is set up.
 
-## Team Oxygen
 
+## The Team - Team Oxygen
 Full Name | GitHub Username | Student ID
 ---------|--------------------|------------
 Edelin Onggo | edelinonggo | 784172
