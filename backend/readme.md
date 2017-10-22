@@ -14,21 +14,19 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
   - [Tracking Group Component](#tracking-group-component)
   - [Navigation Component](#navigation-component)
   - [Resources Component](#resources-component)
-  - [AR Component](#ar-component)
   - [Location Services Component](#location-services-component)
-  - [Sensors Services Component](#sensors-services-component)
-- [Server-side components](#server-side-components)
-  - [Push Notification System](#push-notification-system)
+  - [Miscellaneous Services](#miscellaneous-services)
+    - [Sensors Services Component](#sensors-services-component)
+    - [Time Format Services](#time-format-services)
+    - [Camera Service](#camera-service)
+- [Server-side components: API Documentation](#server-side-components-api-documentation)
+  - [Authentication Header](#authentication-header)
   - [Groups Management System](#groups-management-system)
     - [getGroup](#getgroup)
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
-    - [respondToRequest](#respondtorequest)
-      - [Description](#description)
-      - [Request format](#request-format)
-      - [Response format](#response-format)
-    - [getLocations](#getlocations)
+    - [updateGroupDetails](#updategroupdetails)
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
@@ -40,7 +38,19 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
-    - [addMemberToGroup](#addmembertogroup)
+    - [addMembers](#addmembers)
+      - [Description](#description)
+      - [Request format](#request-format)
+      - [Response format](#response-format)
+    - [leaveGroup](#leavegroup)
+      - [Description](#description)
+      - [Request format](#request-format)
+      - [Response format](#response-format)
+    - [removeMember](#removemember)
+      - [Description](#description)
+      - [Request format](#request-format)
+      - [Response format](#response-format)
+    - [getLocations](#getlocations)
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
@@ -51,7 +61,7 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
       - [Response format](#response-format)
     - [getLocation](#getlocation)
       - [Description](#description)
-    - [Request format](#request-format)
+      - [Request format](#request-format)
       - [Response format](#response-format)
   - [Server Validation System](#server-validation-system)
     - [Authentication function](#authentication-function)
@@ -76,7 +86,7 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
-    - [sendFile](#sendfile)
+    - [getOneToOneChat](#getonetoonechat)
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
@@ -85,10 +95,6 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
       - [Request format](#request-format)
       - [Response format](#response-format)
   - [User Management System](#user-management-system)
-    - [isOnline](#isonline)
-      - [Description](#description)
-      - [Request format](#request-format)
-      - [Response format](#response-format)
     - [addFriend](#addfriend)
       - [Description](#description)
       - [Request format](#request-format)
@@ -110,6 +116,14 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
       - [Request format](#request-format)
       - [Response format](#response-format)
     - [respondToRequest](#respondtorequest)
+      - [Description](#description)
+      - [Request format](#request-format)
+      - [Response format](#response-format)
+    - [cancelRequest](#cancelrequest)
+      - [Description](#description)
+      - [Request format](#request-format)
+      - [Response format](#response-format)
+    - [updateProfile](#updateprofile)
       - [Description](#description)
       - [Request format](#request-format)
       - [Response format](#response-format)
@@ -136,9 +150,10 @@ An example `.env` file is provided in `.env.example`. Do not remove this file as
 interface AuthenticationService {
   /**
    * Returns the token needed for HTTP requests to server-side components.
-   * @return token
+   * @param context Android Context
+   * @return Authentication token
    */
-  String getToken();
+  String getToken(Context context);
 
   /**
      * Retrieves the userID from SharedPreferences. Returns 0 if unset.
@@ -148,19 +163,33 @@ interface AuthenticationService {
   int getUserID(Context context);
 
   /**
+     * Retrieves the username of a user. Returns 0 if unset.
+     * @param context Android Context
+     * @return userID
+     */
+  String getUsername(Context context)
+
+  /**
   * Retrieves the first name of a user
   * @param context Android Context
   * @return user's first name
   */
 
   String getFirstName(Context context)
-
+  
   /**
   * Retrieves the last name of a user
   * @param context Android Context
   * @return user's last name
   */
   String getLastName(Context context)
+
+  /**
+   * Retrieves the username from SharedPreferences. Returns 0 if unset.
+   * @param context Android Context
+   * @return userID
+   */
+  String getProfileDesc(Context context)
 
 
   /**
@@ -179,9 +208,9 @@ interface AuthenticationService {
    * @param username username for the account
    * @param profileDesc a description for the user account's profile
    * @param password password for the account
-   * @return an Observable to be subscribed by other functions for API responses
+   * @return an Observable to be subscribed by other functions for API responses 
    * TODO: Crosscheck with final interpretation
-   *
+   * 
    */
   Status signUp(String firstName, String lastName, String email, String username);
 
@@ -217,10 +246,10 @@ interface ChatService {
   /**
    * Retrieve messages from a chat.
    * @param chatID Unique identifier for a chat
-   backwards
+   * @param pollingPeriod time in between requests in miliseconds
    * @return List of Message objects
    */
-  Observable<MessagesResponse> getMessages(int chatID);
+  Observable<MessagesResponse> getMessages(int chatID, int pollingPeriod);
 
   /**
    * Retrieve information about a chatroom
@@ -228,7 +257,7 @@ interface ChatService {
    * @return Status object
    */
 
-  Observable<GetChatInfoResponse> getChatInfo(int chatID)
+  Observable<GetChatInfoResponse> getChatInfo(int chatID);
 
   /**
    * Send a message to a chat.
@@ -240,9 +269,26 @@ interface ChatService {
 
   /**
    * Get all chats the user participates within.
-   * @return Chat objects
+   * @return Chat objects 
    */
-  Observable<GetChatsResponse> getChats()
+  Observable<GetChatsResponse> getChats();
+
+  /**
+     * Leaves the group/chat
+     * @param groupID group/chat to leave from
+     * @return status of the request
+     */
+  public Observable<Status> leaveGroup(int groupID);
+
+  /**
+     * Adds users to the group/chat.
+     * This method is found on the service as it is used for both user-to-user
+     * and tracking group chats
+     * @param groupID group in question
+     * @param invitedUsers users to invite to the group
+     * @return Status of the request
+     */
+  Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers);
 
 ```
 
@@ -251,6 +297,7 @@ interface ChatService {
 /**
  * API to handle friend management capabilities and access the corresponding
  * services on the RadAR server.
+ * We use observables in an arraylist to get our return values.
  */
 interface UsersService {
 
@@ -259,13 +306,30 @@ interface UsersService {
      * @param invitedUserID user to send friend request to
      * @return response from API server - with a requestID
      */
-    Observable<AddFriendResponse> addFriend(int invitedUserID)
+
+  Observable<SearchUserResponse> getProfile(int queryUserID);
+  /**
+     * Sends an invitation (friend request) to a user.
+     * @param invitedUserID user to send friend request to
+     * @return response from API server that includes friend request status
+     */
+  Observable<AddFriendResponse> addFriend(int invitedUserID);
+
+  /**
+     * Gets the profile picture for a user
+     * @param queryUserID user to get the profile picture for
+     * @param resourcesService - a service for API, required to access profile picture
+     * @param context Android Context, to load data from SharedPreferences and internal storage
+     * @return
+     */
+  getProfilePicture(int queryUserID, ResourcesService resourcesService, Context context)
+    
 
   /**
    * Retrieve the user's list of friends.
    * @return list of users (friends) objects
    */
-  ArrayList<User> getFriends();
+  Observable<FriendsResponse> getFriends();
 
   /**
    * Search for RadAR users.
@@ -273,7 +337,22 @@ interface UsersService {
    * @param searchType what the search is for - name, email or username
    * @return list of Users
    */
-   ArrayList<User> search(String query, int searchType);
+   Observable<AddFriendResponse> searchForUsers(String query, int searchType);
+
+  /**
+     * Updates the user profile for the signed in user.
+     * @param body fields to be changed from the profile, including 
+     *        name, email, bio, and avatar file 
+     * @return success or failure + reasons
+     */
+  Observable<Status> updateProfile(UpdateProfileBody body)
+
+  /**
+   * Retrieves the last known profile picture resource ID from SharedPreferences. Returns null if unset.
+   * @param context Android Context
+   * @return resource ID
+   */
+  String getProfilePictureResID(Context context)
 
    /**
     * Get friend requests
@@ -292,13 +371,13 @@ interface UsersService {
 }
 ```
 
-### Tracking Group Component
+### Tracking Group Component 
 ```Java
 /**
  * API to access services to manage and get information on Tracking Groups
  * provided by our server-side Groups Management System.
  */
-interface TrackingGroupService {
+interface GroupsService {
   /**
    * Get information about a Tracking Group.
    * @param requestID request to respond to
@@ -319,18 +398,74 @@ interface TrackingGroupService {
     */
    ArrayList<UserLocation> getGroupLocations(int groupID);
 
+  
+   /**
+     * Starts a new chat with a group. This passes on information of the group
+     * into the  Messaging System's API to create a group with the same name
+     * and association with a Tracking Group.
+     * @param name - name of the group.
+     * @param participantUserIDs all the partiicpants of of the chat
+     * @return confirmation of response and new chat
+     */
+   Observable<NewChatResponse> newChat(String name, ArrayList<Integer> participantUserIDs);
+
+  
+   /**
+     * Changes a group's Meeting Point
+     * @param groupID group in question
+     * @param meetingPoint an object that represents the new meeting point
+     * @return status of the request
+     */
+  
+   public Observable<Status> updateMeetingPoint(int groupID, MeetingPoint meetingPoint);
+
+
+   /**
+   * Updates group information
+   * @param groupID group in question
+   * @param UpdateGroupBody Class that defines group information, such as name and profile picture
+   * @return status of the request
+   */
+   Observable<Status> updateGroup(int groupID, UpdateGroupBody body);
+
+   /**
+     * Deletes a group
+     * @param groupID group in question
+     * @return status of the request
+     */
+   Observable<Status> deleteGroup(int groupID);
+
+   /**
+     * Remove members from the group
+     * @param groupID group in question
+     * @param memberUserID user to be removed
+     * @return status of the request
+     */
+   Observable<Status> removeMember(int groupID, int memberUserID);
+
+   /**
+     * Adds users to the group.
+     * @param groupID group in question
+     * @param invitedUsers users to invite to the group
+     * @return status of the request
+     */
+   Observable<Status> addMembers(int groupID, ArrayList<Integer> invitedUsers);
+
    /**
     * Creates a new Tracking Group.
     * @param name Name of the tracking group
     * @param participantUserIDs list of users to invite to the tracking group
+    * @param meetingPoint Meeting Point object with information regarding the meeting point
     * @return success or failure + reason
     */
     Observable<GroupsResponse> newGroup(String name, ArrayList<Integer> participantUserIDs);
+    Observable<GroupsResponse> newGroup(String name, ArrayList<Integer> participantUserIDs,
+                                        MeetingPoint meetingPoint);
 
    /**
     * Modifies the meeting point in a Tracking Group
     * @param groupID unique identifier of the Tracking Group
-    * @param meetingPoint class that contains details of the meeting point
+    * @param meetingPoint class that contains details of the meeting point 
     * @return operation status
     */
    Status Observable<Status> updateMeetingPoint(int groupID, MeetingPoint meetingPoint);
@@ -339,7 +474,7 @@ interface TrackingGroupService {
 ```
 
 ### Navigation Component
-This uses a call to the Google Maps API, however, an abstract implementation of the requests looks as follows.
+This uses a call to the Google Maps API, however, an abstract implementation of the requests looks as follows. 
 
 ```Java
 interface NavigationService {
@@ -376,29 +511,31 @@ interface ResourcesProviderService {
    * @param resourceID Unique identifier for the file (resource)
    * @return The requested file
    */
-  Observable<File> getResource(String resourceID)
+  Observable<File> getResource(String resourceID);
+
+  /**
+   * Retrieves a file from the Resource Management System and cache it. Ideally used only for iamges.
+   * @param resourceID Unique identifier for the file (resource)
+   * @return The requested file
+   */
+  Observable<File> getResourceWithCache(String resourceID);
+  
+  /**
+   * Saves files to the disk and a cache
+   * This is adapted for RxJava2
+   * @param response response from a file fetch from the server
+   * @param fileID the unique file ID
+   * @return The requested file
+   */
+  Observable<File> saveToDiskRxAndCache(Response<ResponseBody> response, String fileID);
 
   /**
    * Saves files to the disk
+   * This is adapted for RxJava2
    * @param response response from a file fetch from the server
    * @return The requested file
    */
-  Observable<File> saveToDiskRx(final Response<ResponseBody> response)
-}
-```
-
-### AR Component
-```Java
-interface ARHelperService {
-  /**
-   * Calculates information for drawing on-screen AR overlays.
-   * @param heading Compass direction in degrees
-   * @param lat Current latitude of the device
-   * @param locations Current locations of other users to be drawn.
-   * @return lon Information for drawing on-screen overlays.
-   */
-  OverlayObjects calculateOnScreenPositions(float heading, float lat,
-    float lon, ArrayList<UserLocations> locations);
+  Observable<File> saveToDiskRx(final Response<ResponseBody> response);
 }
 ```
 
@@ -420,7 +557,8 @@ interface LocationService {
      * @param priority priority, defined in LocationRequest
      * @return Observable of Location objects
      */
-    public Observable<Location> getLocationUpdates(int interval, int fastestInterval, int priority)
+  Observable<Location> getLocationUpdates(int interval, int fastestInterval, int priority);
+  
 
   /**
     * Updates the location of a user to the radAR server
@@ -431,7 +569,7 @@ interface LocationService {
     * @return response from the API server
     */
 
-  public Observable<UpdateLocationResponse> updateLocation(float lat, float lon, float accuracy, float heading);
+  Observable<UpdateLocationResponse> updateLocation(double lat, double lon, double accuracy, double heading);
 
 
   /**
@@ -440,59 +578,119 @@ interface LocationService {
      * @return response from the API server
      */
 
-  public Observable<GetLocationResponse> getLocation(int queryUserID);
-
+  Observable<GetLocationResponse> getLocation(int queryUserID);
+  
   /**
      * Returns location info for a group.
      * @param groupID group for which location info is requested
      * @param interval time between requests in milliseconds
-     * @return location info
+     * @return location information of everyone in the group
      */
-  public Observable<GroupLocationsInfo> getGroupLocationInfo(int groupID, int interval);
+  Observable<GroupLocationsInfo> getGroupLocationInfo(int groupID, int interval);
 
 }
 ```
-### Sensors Services Component
+
+### Miscellaneous Services 
+#### Sensors Services Component
 An auxiliary service that gathers and calculates sensor readings from the device, to be used on other classes. Sensors include accelerometer and compass.
 
 ```Java
-/**
-    * Reregisters the sensor event listeners.
-    * To be used on onStart on the activity lifecycle for when the activity comes back into the
-    * foreground.
-    * Location tracking still can continue in the background via the LocationService.
-    */
-  void reregisterSensorEventListener();
-
+interface SensorService {
   /**
-     * Unregisters the sensor event listeners.
-     * Location tracking still can continue in the background via the LocationService.
-     */
-  void unregisterSensorEventListener();
+      * Reregisters the sensor event listeners.
+      * To be used on onStart on the activity lifecycle for when the activity comes back into the
+      * foreground.
+      * Location tracking still can continue in the background via the LocationService.
+      */
+    void reregisterSensorEventListener();
+
+    /**
+       * Unregisters the sensor event listeners.
+       * Location tracking still can continue in the background via the LocationService.
+       */
+    void unregisterSensorEventListener();
+}
 
 ```
 
+#### Time Format Services
+An auxiliary helper service that allows time conversion. 
 
-## Server-side components
+```Java
+interface TimeFormatService {
+  /**
+      * Parses time input into string
+      * @param timeString string which is generated by system or database using 
+      * their internal representation of time 
+      */
+    String parseTimeString(String timeString);
+
+}
+```
+
+#### Camera Service
+An auxiliary helper service that captures the camera operations.
+
+```Java
+interface CameraService {
+  /**
+     * Sets up a camera preview using Camera2 API.
+     * @return camera objects for a camera preview
+     */
+  Observable<CameraObjects> getCameraObjects(TextureView previewView);
+  
+  /**
+     * Resumes the camera preview.
+     * @return camera objects for a camera preview
+     */
+  Observable<CameraObjects> resumeCameraPreview();
+
+  /**
+     * Gets surface from the camera data stream
+     */
+  Observable<SurfaceAndSurfaceTexture> getSurfaceFromTextureView(TextureView previewView);
+
+   /**
+     * Gets raw camera data
+     */
+  Observable<CameraData> getCameraData(@NonNull CameraManager cameraManager);
+
+   /**
+     * Gets camera hardware
+     */
+
+  Observable<CameraDevice> getCameraDevice(@NonNull CameraManager cameraManager, @NonNull String cameraID);
+
+   /**
+     * Starts a camera capture/live data stream session 
+     */
+
+  Observable<CameraCaptureSession> createCaptureSession(@NonNull Surface previewSurface, @NonNull CameraDevice cameraDevice);
+    
+
+}
+```
+
+
+## Server-side components: API Documentation
+
+### Authentication Header 
 
 On every GET or POST request made to the server, the **authentication token is passed implicitly on the HTTP request header**, and hence are not outlined on every URI.
 
-### Push Notification System
-```JavaScript
-/**
- * Sends a notification to a device.
- * Abstraction layer for Google Cloud Messaging API or other notifications API.
- * @param requestID Unique identifier for the request
- * @param deviceUniqueID Unique identifier for the destination device (UDID, etc.)
- * @param text Text to be displayed in the push notification.
- * TODO: Update when fully implemented.
- */
-function sendNotification(requestID: int, deviceUniqueID: String, text: String) {}
+The JSON format of this authentication part of request headers are as follows:
+
+```JSON
+{
+  "token": int
+}
 ```
 
 ### Groups Management System
 #### getGroup
 `GET https://{serverURL}/api/accounts/{userID}/groups/{groupID}`
+`GET https://{serverURL}/api/accounts/{userID}/chats/{groupID}`
 
 ##### Description
 Get information about a Tracking Group
@@ -502,7 +700,6 @@ Get information about a Tracking Group
 {
     "userID": int,
     "groupID": int,
-    "token": String
 }
 ```
 
@@ -519,56 +716,40 @@ Get information about a Tracking Group
     "info": {
       "name": String,
       "groupID": int,
-      "members": [int],
-      "isTrackingGroup": bool,
+      createdOn: {
+          type: Date, 
+          default: Date.now // current date
+        },
+      "usersDetails": [
+          {
+            userID": int,
+            "username": String,
+            "email": String,
+            "firstName": String,
+            "lastName": String,
+            "profilePicture": File,
+            "profileDesc": String
+          }
+      ...],
+      "isTrackingGroup": bool, 
       "usersDetails": String
     }
 }
 ```
 
-#### respondToRequest
-`POST https://{serverURL}/api/accounts/:userID/friendRequests/:requestID`
+#### updateGroupDetails
+`PUT https://{serverURL}/api/accounts/{userID}/groups/{groupID}`
 
 ##### Description
-Respond to a group invite
+Update all the group details
 
 ##### Request format
 ```JSON
 {
-    "userID": int,
-    "requestID": int,
-    "accept": bool,
-    "token": String
-}
-```
-
-##### Response format
-```JSON
-{
-    "success": bool,
-    "errors": [
-      {
-        "reason": String,
-        "errorCode": int
-      },
-      ...],
-}
-```
-
-#### getLocations
-TODO: Modify when implemented
-
-`GET https://{serverURL}/accounts/{userID}/groups/{groupID}/locations`
-
-##### Description
-Get the location of the members in the tracking group.
-
-##### Request format
-```JSON
-{
+    "name": String,
     "userID": int,
     "groupID": int,
-    "token": String
+    "profilePicture": File
 }
 ```
 
@@ -582,18 +763,9 @@ Get the location of the members in the tracking group.
         "errorCode": int
       },
       ...],
-    "locations": {
-      int: {
-        "userID": int,
-        "lat": float,
-        "lon": float,
-        "heading": float,
-        "accuracy": float,
-        "timeUpdated": Date
-      }
-    }
 }
 ```
+
 
 #### newGroup
 `POST https://{serverURL}/api/groups`
@@ -626,9 +798,10 @@ Creates a new Tracking Group
       groupID: groupID,
       members: filteredUserIDs,
       admins: [userID],
-      footprints: [],
+      footprints: [], // currently not in use
+      usersDetails: [User] // array of Users 
       meetingPoint: null,
-      isTrackingGroup: true
+      isTrackingGroup: true 
       ...],
 }
 ```
@@ -648,9 +821,7 @@ Set the meeting point in the group
     "lat": float,
     "lon": float,
     "name": String,
-    "description": String,
-    "updatedBy": UserID,
-    "token": String
+    "description": String
 }
 ```
 
@@ -658,11 +829,13 @@ Set the meeting point in the group
 ```JSON
 {
     "success": bool,
-    "lat": float,
-    "lon": float,
-    "name": String,
-    "description": String,
-    "updatedBy": UserID,
+    "meetingPoint": {
+      "lat": float,
+      "lon": float,
+      "name": String,
+      "description": String,
+      "updatedBy": int
+    },
     "errors": [
       {
         "reason": String,
@@ -672,20 +845,47 @@ Set the meeting point in the group
 }
 ```
 
-#### addMemberToGroup
-TODO: Modify URI
+#### addMembers
 
-`POST https://{serverURL}/GMS/addMemberToGroup`
+`PUT https://{serverURL}/accounts/{userID}/groups/{groupID}/members/{newMemberUserID}`
+`PUT https://{serverURL}/accounts/{userID}/chats/{groupID}/members/{newMemberUserID}`
 
 ##### Description
-Invites a member to the Tracking Group.
+Adds a user to the Tracking Group.
+
+##### Request format
+```JSON
+{
+    "userID": int, // from newMemberUserID
+    "groupID": int
+}
+```
+
+##### Response format
+```JSON
+{
+    "success": bool,
+    "errors": [
+      {
+        "reason": String,
+        "errorCode": int
+      },
+      ...],
+}
+```
+
+#### leaveGroup
+`DELETE https://{serverURL}/api/accounts/{groupID}/chats/{groupID}`
+`DELETE https://{serverURL}/api/accounts/{groupID}/groups/{groupID}`
+
+##### Description
+Withdraws user from a group. 
 
 ##### Request format
 ```JSON
 {
     "userID": int,
-    "invitedUserID": int,
-    "token": String
+    "groupID": int
 }
 ```
 
@@ -699,13 +899,80 @@ Invites a member to the Tracking Group.
         "errorCode": int
       },
       ...],
+}
+```
+
+#### removeMember
+`DELETE https://{serverURL}/accounts/{userID}/groups/{groupID}/members/{memberUserID}`
+
+##### Description
+Removes a user from the tracking group as another user. 
+
+##### Request format
+```JSON
+{
+    "userID": int,
+    "groupID": int, 
+    "memberUserID": int // user to remove from group
+}
+```
+
+##### Response format
+```JSON
+{
+    "success": bool,
+    "errors": [
+      {
+        "reason": String,
+        "errorCode": int
+      },
+      ...],
+}
+```
+
+#### getLocations
+`GET https://{serverURL}/accounts/{userID}/groups/{groupID}/location`
+
+##### Description
+Retrieves locations of every member of a group. 
+
+##### Request format
+```JSON
+{
+    "userID": int,
+    "groupID": int, 
+}
+```
+
+##### Response format
+```JSON
+{
+    "success": bool,
+    "errors": [
+      {
+        "reason": String,
+        "errorCode": int
+      },
+      ...],
+
+      "locationData" = [
+        {
+          userID: int,
+          lat: float,
+          lon: float,
+          heading: float,
+          accuracy: float,
+          timeUpdated: float
+        },
+      ...]
+
 }
 ```
 
 ### Server User Positioning System
 #### updateLocation
 
-`POST https://{serverURL}/api/accounts/:userID/location`
+`POST https://{serverURL}/api/accounts/{userID}/location`
 
 ##### Description
 Updates the location of the user
@@ -718,8 +985,7 @@ Updates the location of the user
     "lon": float,
     "heading": float,
     "accuracy": float,
-    "timeUpdated": Date,
-    "token": String
+    "heading": float
 }
 ```
 
@@ -738,10 +1004,18 @@ Updates the location of the user
 
 #### getLocation
 
-##### Description
-Takes the location of users
+`GET https://{serverURL}/api/users/{userID}/location`
 
-#### Request format
+##### Description
+Get the location of a user.
+
+##### Request format
+```JSON
+{
+    "userID": int,
+    "groupID": int
+}
+```
 
 ##### Response format
 ```JSON
@@ -753,14 +1027,21 @@ Takes the location of users
         "errorCode": int
       },
       ...],
-    "lat": float,
-    "lon": float,
-    "heading": float,
-    "accuracy": float,
-    "timeUpdated": Date
-
+    "locations": {
+      int: {  
+        "userID": int,
+        "lat": float,
+        "lon": float,
+        "heading": float,
+        "accuracy": float,
+        "timeUpdated": Date
+      },
+    "userDetails": User, // user object schema in JSON - see Data Models at end of document. 
+    "meetingPoint": MeetingPoint // meeting point object schema in JSON
+    }
 }
 ```
+
 
 ### Server Validation System
 #### Authentication function
@@ -789,7 +1070,7 @@ Creates a new account on the server.
     "email": String,
     "username": String,
     "profileDesc": String,
-    "password": String,
+    "password": String, // hashed
     "deviceID": String
 }
 ```
@@ -805,13 +1086,15 @@ Creates a new account on the server.
       },
       ...],
     "token": String,
-    "userID": userID,
-    "firstName": String,
-    "lastName": String,
-    "email": String,
-    "username": String,
-    "profileDesc": String,
-    "profilePicture": File
+    "userInfo": {
+      "userID": userID,
+      "firstName": String,
+      "lastName": String,
+      "email": String,
+      "username": String,
+      "profileDesc": String,
+      "profilePicture": File
+    }
 }
 ```
 
@@ -847,10 +1130,11 @@ Username is part of the URI, but password is part of the query
 ```
 
 ### Server Messaging System
-In the implementation of this API, the data models for both groups and chats are shared due to high similarity.
+In the implementation of this API, the data models for both groups and chats are shared due to high similarity. 
 
 #### newChat / newGroup
-`POST https://{serverURL}/api/groups`
+`POST https://{serverURL}/api/chats`
+`POST https://{serverURL}/groups/chats`
 
 ##### Description
 Create a new conversation (chat) on the Server Messaging System.
@@ -860,10 +1144,9 @@ Create a new conversation (chat) on the Server Messaging System.
 {
     "userID": int,
     "name": String,
-    "memberUserIDs": [int],
-    "description": String,
-    "token": String,
-    "isTrackingGroup": false // use this flag to identify tracking groups from user chats
+    "participantUserIDs": [int],
+    "meetingPoint": MeetingPoint // MeetingPoint object
+    "isTrackingGroup": bool // use this flag to identify tracking groups from user chats
 }
 ```
 
@@ -882,13 +1165,13 @@ Create a new conversation (chat) on the Server Messaging System.
       admins: [userID],
       footprints: [],
       meetingPoint: null,
-      isTrackingGroup: false
+      isTrackingGroup: bool 
       ...],
 }
 ```
 
 #### getMessages
-`GET https://{serverURL}/api/chats/{chatID}/messages`
+`GET https://{serverURL}/api//accounts/{userID}/chats/{groupID}/messages`
 
 ##### Description
 Get messages from a chat.
@@ -897,7 +1180,7 @@ Get messages from a chat.
 ```JSON
 {
     "userID": int,
-    "groupID": int, // the chat ID
+    "groupID": int, // the chat ID 
 }
 ```
 
@@ -933,11 +1216,8 @@ Sends a message to a chat.
 ```JSON
 {
   "from": int, //userID of origin
-  "groupID": chatID // ID of chat
-  "time": Date,
-  "contentType": String,
-  "text": String,
-  "contentResourceID": int
+  "groupID": chatID, // ID of chat
+  "message": String
 }
 ```
 
@@ -954,33 +1234,28 @@ Sends a message to a chat.
       messages: [
         {
           "from": int, //userID of origin
+          "groupID":int,
           "time": Date,
           "contentType": String,
           "text": String,
-          "contentResourceID": int
+          "contentResourceID": null 
         }
 
       ]
 }
 ```
 
-#### sendFile
-
-TODO: Modify URI
-TODO: Not done yet
-`POST https://{serverURL}/SMS/sendFile`
+#### getOneToOneChat
+`GET https://{serverURL}/api/accounts/{userID}/chats/with/{queryUserID}`
 
 ##### Description
-Sends a file to a chat room.
+Get user-to-user chat.
 
 ##### Request format
 ```JSON
 {
     "userID": int,
-    "chatID": int,
-    "file": file,
-    "caption": String,
-    "token": String
+    "queryUserID": int
 }
 ```
 
@@ -994,6 +1269,8 @@ Sends a file to a chat room.
         "errorCode": int
       },
       ...],
+    group: [group] // collection of Group objects
+    ]
 }
 ```
 
@@ -1002,13 +1279,13 @@ Sends a file to a chat room.
 `POST https://{serverURL}/api/accounts/{userID}/chats/{groupID}`
 
 ##### Description
-Changes the chat room to a tracking group, allowing it to be a larger group.
+Changes the chat room to a tracking group, allowing it to be a larger group. 
 
 ##### Request format
 ```JSON
 {
-    "userID": int,
-    "groupID": int
+    "groupID": int,
+    "isTrackingGroup": bool
 }
 ```
 
@@ -1022,49 +1299,21 @@ Changes the chat room to a tracking group, allowing it to be a larger group.
         "errorCode": int
       },
       ...],
-}
-```
-
-### User Management System
-#### isOnline
-TODO: Ensure correct
-
-`GET https://{serverURL}/api/accounts/:userID/usersOnlineStatuses`
-
-##### Description
-Checks if user(s) are online on the system.
-
-##### Request format
-
-TODO: UserInfo implementation
-
-```JSON
-{
-    "userID": int,
-    "userIDsToCheck": [int],
-}
-```
-
-##### Response format
-```JSON
-{
-    "success": bool,
-    "errors": [
-      {
-        "reason": String,
-        "errorCode": int
-      },
-      ...],
-    "onlineStatus": {
-      int: bool,  // userID: online or not
-      ...
-    },
-    "userInfos": {
-      "UserID": [int]
+    "group": {
+      "name": String,
+      "profilePicture": String, // file ID
+      "groupID": int,
+      "createdOn": Date,
+      "admins": [int],
+      "members": [int],
+      "footprints": [],
+      "meetingPoint": meetingPoint, // Meeting Point object 
+      "isTrackingGroup": Boolean
     }
 }
 ```
 
+### User Management System
 #### addFriend
 `POST https://{serverURL}/api/accounts/{userID}/friends`
 
@@ -1119,6 +1368,7 @@ Retrieves information about users in the user's friends list.
   "friends": [ // return User objects
     {
       "userID": int,
+      "username": String,
       "firstName": String,
       "lastName": String,
       "profilePicture": int,  // fileID
@@ -1156,6 +1406,7 @@ Search for a user by a criteria.
     "results": [ // return User objects
     {
       "userID": int,
+      "username": String,
       "firstName": String,
       "lastName": String,
       "profilePicture": int,  // fileID
@@ -1175,7 +1426,8 @@ Get information for a user.
 ```JSON
 {
     "username": String, // either queryUserID or username has to be filled
-    "queryUserID": int
+    "queryUserID": int,
+    "requesterUserID": int
 }
 ```
 
@@ -1191,6 +1443,7 @@ Get information for a user.
       ...],
     "details": { // user object
       "userID": int,
+      "username": String,
       "firstName": String,
       "lastName": String,
       "profilePicture": int,  // fileID
@@ -1224,18 +1477,18 @@ Get pending friend requests (requests waiting for action).
       ...],
     "requestsDetails": [
       {
-        requestID: int,
-        from: int,
-        firstName: String,
-        lastName: String,
-        profilePicture: String  // resourceID
+        "requestID": int,
+        "from": int,
+        "firstName": String,
+        "lastName": String,
+        "profilePicture": String  // resourceID
       }, ...
     ]
 }
 ```
 
 #### respondToRequest
-`POST https://{serverURL}/api/accounts/:userID/friendRequests/:requestID`
+`POST https://{serverURL}/api/accounts/{userID}/friendRequests/{requestID}`
 
 ##### Description
 Accept or decline a friend request.
@@ -1245,7 +1498,6 @@ Accept or decline a friend request.
 {
     "userID": int,
     "requestID": int,
-    "token": String,
     "action": String  // "accept" or "decline"
 }
 ```
@@ -1263,18 +1515,17 @@ Accept or decline a friend request.
 }
 ```
 
-### Resource Management System
-#### getResource
-`GET https://{serverURL}/api/accounts/{userID}/resources`
+#### cancelRequest
+`DELETE https://{serverURL}/api/accounts/{userID}/friendRequests/{requestID}`
 
 ##### Description
-Get a resource (file) from the Resource Management System
+Cancel outgoing request. 
 
 ##### Request format
 ```JSON
 {
     "userID": int,
-    "fileID": int
+    "requestID": int
 }
 ```
 
@@ -1288,9 +1539,62 @@ Get a resource (file) from the Resource Management System
         "errorCode": int
       },
       ...],
-    "resource": File
+    "requestID": int
 }
 ```
+
+
+#### updateProfile
+`GET https://{serverURL}/api/accounts/{userID}`
+
+##### Description
+Get information for a user.
+
+##### Request format
+```JSON
+{
+    "username": String,  // validated
+    "firstName": String,
+    "lastName": String,
+    "email": String, // validated
+    "profilePicture": String,  // validated -> needs to point to a valid resource on the server (already uploaded)
+    "profileDesc": String 
+}
+```
+
+##### Response format
+```JSON
+{
+    "success": bool,
+    "errors": [
+      {
+        "reason": String,
+        "errorCode": int
+      },
+      ...]
+}
+```
+
+### Resource Management System
+#### getResource
+`GET https://{serverURL}/api/accounts/{userID}/resources`
+
+##### Description
+Get a resource (file) from the Resource Management System
+
+##### Request format
+```JSON
+{
+    "userID": int,
+    "file": int // file ID 
+}
+```
+
+##### Response format
+
+The file itself is send over HTTPS on the body.
+
+In case of the file not being available, it will return a 404 error. 
 
 #### uploadFile
 `POST https://{serverURL}/api/accounts/{userID}/resources`
