@@ -44,7 +44,7 @@ The source code uses Build Tools 26.0.2. If a build fails and the IDE requests y
 
 To get the .apk (application installer file), simply select either the `Build APK` or `Generate Signed APK` options in Android Studio, the latter requiring application signing keys. This .apk file can be installed on Android devices meeting the above system requirements.
 
-To install the application on a device with USB debugging enabled (using ADB - Android Debug Bridge: connect the device. If prompted, grant USB debugging permissions on the device. The device should show up on the Run menu (for `app`). Select the device and click on Run to deploy and run the application on the connected device.
+To install the application on a device with USB debugging enabled (using ADB - Android Debug Bridge: connect the device and select `app` in *Run Configurations*. If prompted, grant USB debugging permissions on the device. The device should show up on the Run menu (for `app`). Select the device and click on Run to deploy and run the application on the connected device.
 
 ## Tests: how to run
 ### Backend
