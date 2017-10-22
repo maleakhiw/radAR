@@ -1,24 +1,28 @@
 # RadAR - a COMP30022 project
 
 ## Product Description
+RadAR - an app for meeting up.
 
-The deliverable for this project will be an augmented reality based app for smartphone. The application will be targeted at Android users with phone running Android Lollipop or laterwith working GPS, gyroscope and compass hardware.
+RadAR is an Android application built to help you find your friends and meet up with the help of augmented reality (AR). Create a group, set your meeting point and just *start!*. RadAR will then show you the location of you, your friends and your destinations either on a map or as an augmented reality overlay for the camera.
 
-The flagship functionality of this application utilizes geopositioning technologies to aid visually locate other users, through the proxy of their devices, running the applicationand providing access to others of their position. In addition, any preselected points of destination/rendezvous, current position and other user location should also be displayed.Using the information, user can track other users’ positions and move toward the designated location.
+With Chats, you can communicate with your friends: plan your next meetup, ask them for directions, or just have a chat with them!
 
-At the very general scale, the main functionalities will be implemented to allow user to track, share, and communicate their location with other users. Firstly, users can add otherusers as friends. Secondly, users can share their location to other users and vice versa. In doing so, users can also see the location of other users as specified, in real time.Third, users can create groups consisting of 2 or more users and select a meeting/rendezvous point, while similarly being able to track the location of each user of the group in realtime.
-The tracking feature relies on phones of users in the group pushing location data between one another, and is displayed graphically either on a map display, or in an augmentedreality display where representations of other users are indicated as rendered icon overlays.
-
-In addition to location sharing in map-based and AR-based fashion, the application will also implement a messaging system, allowing a medium for users to communicate with each otherin a more familiar way, enhancing effectiveness of the application in completing the users’ goal of locating each other within a given area. This helps users in sharing additionalinformation in form of text, and maximize the application’s proficiency to work as a one-stop-shop to facilitate physical rendezvouses between users.
+### Device Requirements
+- Android Lollipop (5.0) or above
+- Camera2 API support
+- Compass, gyroscope and GPS
 
 ## Directories
-- `backend` contains the source code for the backend of the application, which runs on Node.js
-- `radAR2` containis the source code for the Android application, as described below
+- `backend` contains the source code for the Node.js backend application, which runs on the server.
+- `radAR2` containis the source code for the Android application, as described below.
 
 ## Technical Information
-This Android application is built to target Android Lollipop (5.0) and above. To operate to its greatest extent, the application requires permissions for fine location access as wellas camera access.
+This Android application is built to target Android Lollipop (5.0) and above. For full functionality, grant the application access to camera and fine location permissions.
 
-The backend runs on top of Node.js and requires a MongoDB server to be running on the same machine as the server. To point it towards another MongoDB server, simply change the line containing `mongoose.connect()`
+The backend runs on top of Node.js and requires a MongoDB server to be running on the same machine as the server. To point it towards another MongoDB server, simply change the line containing `mongoose.connect()` in `server.js`
+
+## How to use
+See [here](tutorial.md) for a guide to the application.
 
 ## Dependencies
 ### Backend
